@@ -1,0 +1,76 @@
+name: AI Autonomous Squad Orchestrator
+
+on:
+  issues:
+    types: [opened, labeled]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  agent-runner:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Parse Vision & Context
+        run: |
+          echo "Loading PROJECT_VISION.md into agent context..."
+          cat PROJECT_VISION.md
+
+      - name: Product Owner Triage (If Issue)
+        if: github.event_name == 'issues'
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_MODEL: ${{ vars.AI_PO_MODEL }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          PROMPT="Read PROJECT_VISION.md. Groom this issue into a Godot 4 developer story with clear Acceptance Criteria:
+          Title: $ISSUE_TITLE
+          Body: $ISSUE_BODY"
+          
+          curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $AI_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "{
+              \"model\": \"$AI_MODEL\",
+              \"max_tokens\": 1000,
+              \"messages\": [{\"role\": \"user\", \"content\": $(jq -R -s . <<< "$PROMPT")}]
+            }" | jq -r '.content[0].text' > po_response.md
+
+          gh issue comment "${{ github.event.issue.html_url }}" --body-file po_response.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lead Architect Code Review (If PR)
+        if: github.event_name == 'pull_request'
+        env:
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
+          AI_MODEL: ${{ vars.AI_ARCHITECT_MODEL }}
+        run: |
+          git diff origin/${{ github.base_ref }}...HEAD > pr_diff.patch
+          PROMPT="Read PROJECT_VISION.md. Audit this PR diff for Godot 4 architecture compliance, signal safety, zero-combat rules, and mobile performance:
+          $(cat pr_diff.patch | head -n 250)"
+
+          curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $AI_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "{
+              \"model\": \"$AI_MODEL\",
+              \"max_tokens\": 1200,
+              \"messages\": [{\"role\": \"user\", \"content\": $(jq -R -s . <<< "$PROMPT")}]
+            }" | jq -r '.content[0].text' > review_comment.md
+
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file review_comment.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
