@@ -287,6 +287,54 @@
       ],
       "notes": "Root cause of the get_height()-on-null errors / 2 failing worldrender checks on main: .godot/imported/ is gitignored, so a checkout whose .ctex cache predates a texture-adding commit (TASK-006) gets null loads headlessly. Not a WorldRender.gd bug -- no art-squad file changed. Added scripts/ci/run_gate.sh (runs `godot --headless --import` then either/both test suites) and documented it in both test files' headers. Both gates confirmed green after the fix: engine 48/48, content 54/54 (was 52/54).",
       "completed_at": "2026-08-31"
+    },
+    {
+      "id": "ENGINE-006",
+      "lane": "engine",
+      "category": "architecture",
+      "title": "Player.gd bypasses SignalBus with hard node-path/tree-walk coupling",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "pr-gatekeeper",
+      "files": [
+        "scenes/entities/Player.gd",
+        "scenes/core/GridManager.gd",
+        "scripts/autoload/SignalBus.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/27",
+      "github_issue_number": 27,
+      "notes": "Found in PR-Gatekeeper audit, not caught at TASK-007/TASK-009 review time. get_node(\"/root/TimeManager\") + find_child tree-walks for GridManager violate the decoupled SignalBus checklist item. Picked up directly by gatekeeper since it's small and self-contained."
+    },
+    {
+      "id": "ENGINE-007",
+      "lane": "engine",
+      "category": "hygiene",
+      "title": "Remove dead duplicate SignalBus at src/scripts/signalbus.gd",
+      "status": "todo",
+      "priority": "low",
+      "owner": "unassigned",
+      "files": [
+        "src/scripts/signalbus.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/28",
+      "github_issue_number": 28,
+      "notes": "Found in PR-Gatekeeper audit. Not autoloaded, not referenced by code, drifted signal set vs canonical scripts/autoload/SignalBus.gd. Landmine for future imports."
+    },
+    {
+      "id": "ENGINE-008",
+      "lane": "engine",
+      "category": "spatial",
+      "title": "Wire NavGrid (A*) into an actual movement consumer",
+      "status": "todo",
+      "priority": "low",
+      "owner": "unassigned",
+      "files": [
+        "scripts/core/NavGrid.gd",
+        "scenes/entities/MonkNPC.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
+      "github_issue_number": 29,
+      "notes": "Found in PR-Gatekeeper audit. ENGINE-002 shipped a correct, unit-tested A* pathfinder with zero in-game callers -- only tests/run_engine_tests.gd instantiates it. Likely first consumer: MonkNPC scripted walk, scoped with narrative-lead given TASK-012 overlap."
     }
   ]
 }

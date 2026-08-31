@@ -33,10 +33,15 @@ func _ready() -> void:
 	hour = start_hour
 	minute = 0
 	_apply_season_effects()
+	SignalBus.time_manager = self
 	# Emit initial state so listeners can sync on load
 	SignalBus.minute_ticked.emit(day, hour, minute)
 	SignalBus.season_changed.emit(current_season)
 	SignalBus.weather_changed.emit(current_weather)
+
+func _exit_tree() -> void:
+	if SignalBus.time_manager == self:
+		SignalBus.time_manager = null
 
 func _process(delta: float) -> void:
 	if not auto_tick:

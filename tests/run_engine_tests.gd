@@ -95,8 +95,16 @@ func _run_all() -> void:
 	var main: Node = main_scene.instantiate() if main_scene else null
 	if main:
 		root.add_child(main)
+		await process_frame
 		var gm: Node = main.get_node_or_null("GridManager")
 		_check(gm != null, "GridManager present in Main")
+
+		_section = "signalbus-registry"
+		_check(sb.grid_manager == gm, "SignalBus.grid_manager registers GridManager on ready (ENGINE-006)")
+		var tm_in_main: Node = main.get_node_or_null("TimeManager")
+		_check(sb.time_manager == tm_in_main, "SignalBus.time_manager registers TimeManager on ready (ENGINE-006)")
+
+		_section = "gridmanager-bounds"
 		if gm:
 			_check(gm.grid_size == Vector2i(20, 16), "grid_size is locked 20x16")
 			_check(gm.is_plantable(Vector2i(0, 0)), "origin cell in bounds")

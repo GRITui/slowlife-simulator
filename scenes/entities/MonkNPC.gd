@@ -24,8 +24,8 @@ func _ready() -> void:
 		area.body_entered.connect(_on_interact_area_body_entered)
 		area.body_exited.connect(_on_interact_area_body_exited)
 	visible = is_present
-	# Sync with existing TimeManager instance if already in tree.
-	var tm := _find_time_manager()
+	# Sync with existing TimeManager instance via SignalBus registry (ENGINE-006).
+	var tm := SignalBus.time_manager
 	if tm != null:
 		_on_minute_ticked(tm.day, tm.hour, tm.minute)
 
@@ -67,7 +67,7 @@ func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 
 func _is_bin_thabat_window(hour: int, minute: int) -> bool:
 	# Prefer TimeManager.is_morning_bin_thabat_window() when available.
-	var tm := _find_time_manager()
+	var tm := SignalBus.time_manager
 	if tm != null and tm.has_method("is_morning_bin_thabat_window"):
 		return tm.is_morning_bin_thabat_window()
 	var total: int = hour * 60 + minute
@@ -144,23 +144,3 @@ func _on_interact_area_body_exited(body: Node) -> void:
 		if body != self:
 			_player_in_range = false
 
-# --- Helpers ---
-
-func _find_time_manager() -> Node:
-	if get_tree() == null:
-		return null
-	# Common locations: autoload (if added later) or scene child.
-	var direct := get_node_or_null("/root/TimeManager")
-	if direct != null:
-		return direct
-	# Search current scene for a node with the expected script/method.
-	var root: Node = get_tree().current_scene
-	if root != null:
-		var found := root.find_child("TimeManager", true, false)
-		if found != null:
-			return found
-	# Fallback: scan tree root children for any node with is_morning_bin_thabat_window.
-	for child in get_tree().root.get_children():
-		if child.has_method("is_morning_bin_thabat_window"):
-			return child
-	return null
