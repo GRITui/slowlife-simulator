@@ -18,7 +18,8 @@ class PlotState:
 @export var maze_origin: Vector2i = Vector2i(14, 10) # SE inset 3×3 lotus maze
 @export var debug_log: bool = false
 
-var plots: Dictionary = {} # Vector2i -> PlotState
+var plots: Dictionary = {}
+var _stage_sprites: Dictionary = {} # TASK-045: cell -> stage Sprite2D # Vector2i -> PlotState
 var current_season: String = "cool"
 var current_weather: String = "clear"
 
@@ -68,8 +69,28 @@ func plant(cell: Vector2i, crop: Resource) -> bool:
 	ps.stage = 0
 	ps.planted_day = 1
 	plots[cell] = ps
+	_set_stage_sprite(cell, ps)
 	SignalBus.crop_growth_progress.emit(int(cell.x + cell.y * 100), 0, crop.total_stages)
 	return true
+
+# TASK-045: finally consume stage_textures — one Sprite2D per plot, texture
+# swapped as the crop advances, freed on harvest. Regrow resets to stage 0.
+func _set_stage_sprite(cell: Vector2i, ps: PlotState) -> void:
+	var textures: Array[Texture2D] = ps.crop.stage_textures
+	if textures.is_empty():
+		return
+	var idx: int = clampi(ps.stage, 0, textures.size() - 1)
+	var sprite: Sprite2D = null
+	if _stage_sprites.has(cell):
+		sprite = _stage_sprites[cell] as Sprite2D
+	if sprite == null:
+		sprite = Sprite2D.new()
+		sprite.centered = false
+		sprite.position = Vector2(cell.x * cell_size + 8, cell.y * cell_size + 4)
+		sprite.z_index = -12
+		add_child(sprite)
+		_stage_sprites[cell] = sprite
+	sprite.texture = textures[idx]
 
 func water(cell: Vector2i) -> bool:
 	if not plots.has(cell):
@@ -97,8 +118,14 @@ func harvest(cell: Vector2i) -> int:
 		ps.stage = 0
 		ps.minutes_in_stage = 0
 		ps.watered = false
+		_set_stage_sprite(cell, ps)
 	else:
 		plots.erase(cell)
+		if _stage_sprites.has(cell):
+			var sprite: Sprite2D = _stage_sprites[cell] as Sprite2D
+			if sprite != null:
+				sprite.queue_free()
+			_stage_sprites.erase(cell)
 	return y
 
 func get_plot(cell: Vector2i) -> PlotState:
@@ -135,6 +162,7 @@ func _on_minute_ticked(_day: int, _hour: int, _minute: int) -> void:
 			ps.minutes_in_stage = 0
 			ps.stage += 1
 			ps.watered = false # needs re-water next stage
+			_set_stage_sprite(cell, ps)
 			SignalBus.crop_growth_progress.emit(int(cell.x + cell.y * 100), ps.stage, crop.total_stages)
 			if debug_log:
 				print("Plot ", cell, " -> stage ", ps.stage)
