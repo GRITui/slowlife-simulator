@@ -7,6 +7,10 @@ idle_monitor = false
 process_unmatched_input = true
 
 [application]
+name="Thai Rural Countryside Sim"
+run/main_scene="res://scenes/core/Main.tscn"
+boot_splash/bg_color=Color(0.9607843, 0.9411765, 0.9098039, 1)
+config/features=PackedStringArray("4.2")
 target_screen_size = Vector2(1600, 900)
 show_cursor = true
 process_mode = idling
@@ -62,10 +66,6 @@ textures/canvas_textures/default_texture_filter=0
 [display]
 window/size/viewport_width=1600
 window/size/viewport_height=900
-
-[application]
-run/main_scene="res://scenes/core/Main.tscn"
-boot_splash/bg_color=Color(0.9607843, 0.9411765, 0.9098039, 1)
 
 [input_devices]
 pointing/emulate_touch_from_mouse=true
