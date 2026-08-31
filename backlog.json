@@ -261,16 +261,18 @@
       "lane": "engine",
       "category": "profiling",
       "title": "Camera lock/zoom render-QA + profiler overlay hook",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "profiler-inspector",
       "files": [
         "scenes/entities/Player.tscn",
-        "scenes/entities/Player.gd"
+        "scripts/core/ProfilerOverlay.gd",
+        "scenes/core/Main.tscn"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
       "github_issue_number": 5,
-      "notes": "Takes over issue #5 (camera center-lock, zoom 2.2-2.5) framed as render-correctness QA, plus frame/memory profiler overlay."
+      "notes": "Camera2D enabled=true, zoom 2.2, drag/smoothing off, limit_smoothed false (Godot 4.7). ProfilerOverlay CanvasLayer 100 (F3 toggle, --profiler flag, FPS/proc/mem/draw/zoom/Y-sort). Gates 48/48 engine + 54/54 content green.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "ENGINE-005",
