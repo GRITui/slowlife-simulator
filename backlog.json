@@ -183,15 +183,22 @@
       "sprint": 2,
       "category": "mechanics",
       "title": "Binthabat event tree + village dialogue passes (elder, child, monk, handler)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": [
-        "scenes/entities/"
+        "scenes/entities/VillagerNPC.gd",
+        "scenes/entities/VillagerNPC.tscn",
+        "scripts/narrative/DialogueDB.gd",
+        "scenes/entities/MonkNPC.gd",
+        "scripts/autoload/GameData.gd",
+        "scenes/core/Main.tscn"
       ],
-      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION.",
+      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION. DialogueDB + VillagerNPC (elder/child/handler) + streak + Main.tscn 3 villagers. Merged PR #57 (squash).",
       "github_issue_number": 40,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/40"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/40",
+      "completed_at": "2026-08-31",
+      "pr_number": 57
     },
     {
       "id": "TASK-013",
