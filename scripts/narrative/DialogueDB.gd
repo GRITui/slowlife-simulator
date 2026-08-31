@@ -90,7 +90,21 @@ const DIALOGUE: Dictionary = {
 		],
 		"offer_thanks": [
 			"Sadhu... may your generosity bring harmony (+%d).",
-			"Anumodana — your offering steadies the village (+%d).",
+			"Anumodana — your offering steadied the village (+%d).",
+		],
+	},
+	# TASK-025 Evening Market Stall — 1 line per season, cozy, no
+	# combat/gold/fail keywords. Keep short so the dialogue panel tween
+	# (3.5s) finishes naturally.
+	"market": {
+		"cool": [
+			"Sticky rice for rice grain? A fair trade — share the harvest.",
+		],
+		"hot": [
+			"Mango for lotus root — the heat ripens both. Share the warmth.",
+		],
+		"monsoon": [
+			"Lotus root for sticky rice? The rains feed us all. Take it.",
 		],
 	},
 }
@@ -133,3 +147,13 @@ static func get_monk_thanks(item_id: String, harmony_yield: int, season: String)
 
 static func get_monk_seasonal_idle(season: String, idx: int) -> String:
 	return get_line("monk", season, idx)
+
+static func get_market_line(season: String, have_id: String, want_id: String) -> String:
+	# Cozy 1-line seasonal flavor for the Evening Market Stall (TASK-025).
+	# No gold/money/fail/debt references — test gate enforces this.
+	var pool: Array = DIALOGUE.get("market", {}).get(season, [])
+	if pool.is_empty():
+		pool = DIALOGUE.get("market", {}).get("cool", [])
+	if pool.is_empty():
+		return "Trade? %s for %s — share the harvest." % [have_id, want_id]
+	return String(pool[0])

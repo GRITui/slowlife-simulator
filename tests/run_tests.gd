@@ -12,9 +12,13 @@ var _passed: int = 0
 var _failed: int = 0
 var _section: String = ""
 var _sig_hits: int = 0
+var _barter_hits: int = 0
 
 func _on_stamina_sig(_c: float, _m: float) -> void:
 	_sig_hits += 1
+
+func _on_barter_completed(_h: String, _w: String) -> void:
+	_barter_hits += 1
 
 func _initialize() -> void:
 	_run_all() # async: resumes across process frames, quits itself when done
@@ -132,6 +136,90 @@ func _run_all() -> void:
 					_check(gd.inventory.get("rice_grain", 0) >= rice_before + yield_n,
 						"harvest adds item to inventory")
 		main.queue_free()
+
+	_section = "market-stall"
+	# TASK-025 Evening Market Stall — load scene headlessly, verify offer
+	# table + GameData.barter() contract + new SignalBus signal.
+	var market_scene: PackedScene = load("res://scenes/market/MarketStall.tscn")
+	_check(market_scene != null, "MarketStall.tscn loads")
+	var market: Node = market_scene.instantiate() if market_scene else null
+	if market:
+		root.add_child(market)
+		await process_frame
+		_check(market != null, "MarketStall instantiates")
+		var mm: Node = market.get_node_or_null("MarketManager")
+		_check(mm != null, "MarketStall has MarketManager child")
+		if mm:
+			var offers: Array[Dictionary] = mm.get_offers("cool")
+			_check(not offers.is_empty(), "MarketManager.get_offers(\"cool\") non-empty")
+			if not offers.is_empty():
+				var offer: Dictionary = offers[0]
+				_check(offer.has("have") and offer.has("want"),
+					"offer has 'have' and 'want' keys")
+				_check(typeof(offer["have"]) == TYPE_STRING
+						and typeof(offer["want"]) == TYPE_STRING,
+					"'have' and 'want' are String")
+			# Verify all 3 seasons return valid offers (typed Array shape).
+			for s in ["cool", "hot", "monsoon"]:
+				var season_offers: Array[Dictionary] = mm.get_offers(s)
+				_check(season_offers.size() == 1, "%s season has 1 offer" % s)
+		if gd:
+			# Barter soft-fail when player lacks the offering item.
+			var sticky_before: int = int(gd.inventory.get("sticky_rice", 0))
+			var rice_before_b: int = int(gd.inventory.get("rice_grain", 0))
+			var fail_ok: bool = gd.barter("sticky_rice", "rice_grain")
+			# If sticky_rice was already present from a prior test, the
+			# barter may succeed — assert inventory delta is consistent.
+			if sticky_before < 1:
+				_check(fail_ok == false,
+					"barter returns false when player lacks sticky_rice")
+			# Ensure sticky_rice present so the success-path assertions are
+			# deterministic regardless of upstream inventory state.
+			if not gd.has_item("sticky_rice", 1):
+				gd.add_item("sticky_rice", 1)
+			sticky_before = int(gd.inventory.get("sticky_rice", 0))
+			rice_before_b = int(gd.inventory.get("rice_grain", 0))
+			_barter_hits = 0
+			if sb:
+				sb.barter_completed.connect(_on_barter_completed)
+			var ok: bool = gd.barter("sticky_rice", "rice_grain")
+			_check(ok == true, "barter succeeds with sticky_rice in inventory")
+			_check(gd.has_item("rice_grain", 1), "rice_grain present after barter")
+			_check(int(gd.inventory.get("sticky_rice", 0)) == sticky_before - 1,
+				"sticky_rice decreased by 1 after barter")
+			_check(int(gd.inventory.get("rice_grain", 0)) == rice_before_b + 1,
+				"rice_grain increased by 1 after barter")
+			_check(_barter_hits >= 1, "SignalBus.barter_completed emitted")
+			# Disconnect so a second iteration (if any) doesn't double-count.
+			if sb and sb.barter_completed.is_connected(_on_barter_completed):
+				sb.barter_completed.disconnect(_on_barter_completed)
+			# Invalid pair must soft-fail (no inventory mutation, no signal).
+			var pre_sticky: int = int(gd.inventory.get("sticky_rice", 0))
+			_barter_hits = 0
+			# rice_grain -> mango is not a valid pair in any season; must
+			# soft-fail with zero inventory mutation and zero emissions.
+			# (Note: rice_grain <-> sticky_rice IS valid, so it can't be
+			# used as the "invalid" probe here.)
+			var bad: bool = gd.barter("rice_grain", "mango")
+			_check(bad == false, "barter rejects invalid pair")
+			_check(int(gd.inventory.get("sticky_rice", 0)) == pre_sticky,
+				"invalid pair leaves inventory untouched")
+			_check(_barter_hits == 0, "invalid pair does not emit signal")
+		if sb:
+			_check(sb.has_signal("barter_completed"),
+				"SignalBus has barter_completed signal")
+		# Verify dialogue line is non-empty and avoids forbidden keywords.
+		# Load DialogueDB via preload (same path MarketStallNPC uses).
+		const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.gd")
+		for s in ["cool", "hot", "monsoon"]:
+			var line: String = DialogueDBScript.get_market_line(s, "sticky_rice", "rice_grain")
+			_check(not line.is_empty(), "%s market line non-empty" % s)
+			var low: String = line.to_lower()
+			_check(not low.contains("gold"), "%s market line avoids 'gold'" % s)
+			_check(not low.contains("money"), "%s market line avoids 'money'" % s)
+			_check(not low.contains("fail"), "%s market line avoids 'fail'" % s)
+			_check(not low.contains("debt"), "%s market line avoids 'debt'" % s)
+		market.queue_free()
 
 	print("\n=== TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
