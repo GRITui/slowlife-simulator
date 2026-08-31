@@ -814,6 +814,125 @@
       "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x).",
       "completed_at": "2026-09-01",
       "pr_number": 89
+    },
+    {
+      "id": "TASK-036",
+      "sprint": 8,
+      "category": "art",
+      "title": "Wire existing NPC/animal walk-cycle art into live scenes (MonkNPC, villager NPCs, Buffalo)",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "art-po",
+      "files": [
+        "scenes/entities/MonkNPC.tscn",
+        "scenes/entities/Buffalo.tscn"
+      ],
+      "notes": "Head-of-Art sprint 1/10: full walk-cycle frame art already exists unused in assets/characters/; pure .tscn wiring, no engine dep. Spec: docs/research/ART-036-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-037",
+      "sprint": 8,
+      "category": "art",
+      "title": "Player action animations: hoe/plant, harvest, carrying-crop",
+      "status": "in_progress",
+      "priority": "high",
+      "owner": "art-po",
+      "files": [
+        "scenes/entities/Player.tscn"
+      ],
+      "notes": "Head-of-Art sprint 2/10: new frame art required (unlike TASK-036). Trigger hookup documented for @po, Player.gd not touched by this task. Spec: docs/research/ART-037-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-038",
+      "sprint": 8,
+      "category": "art",
+      "title": "Monsoon rain particle system (GPUParticles2D)",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "assets/particles/rain.tres",
+        "scripts/autoload/RainDriver.gd"
+      ],
+      "notes": "Head-of-Art sprint 3/10: zero GPUParticles2D exist in repo despite CLAUDE.md mandate; TASK-031 perf budget already reserved headroom for this. Spec: docs/research/ART-038-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-039",
+      "sprint": 9,
+      "category": "art",
+      "title": "Cooking smoke + lotus pollen ambient particles",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "assets/particles/cooking_smoke.tres",
+        "assets/particles/lotus_pollen.tres"
+      ],
+      "notes": "Head-of-Art sprint 4/10: completes TASK-031's 3-pillar particle budget (rain/smoke/pollen). Combined perf check needed with TASK-038. Spec: docs/research/ART-039-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-040",
+      "sprint": 9,
+      "category": "art",
+      "title": "Hot season heat-haze shader (canvas_item)",
+      "status": "in_progress",
+      "priority": "low",
+      "owner": "art-po",
+      "files": [
+        "assets/shaders/heat_haze.gdshader"
+      ],
+      "notes": "Head-of-Art sprint 5/10: last remaining named CLAUDE.md shader pillar unimplemented (water/foliage=TASK-032, day/night=TASK-034 both done). Spec: docs/research/ART-040-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-041",
+      "sprint": 9,
+      "category": "art",
+      "title": "Crop Progress bar asset + HUD wiring",
+      "status": "in_progress",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "assets/ui/crop_progress_bar.png",
+        "scenes/ui/HUD.tscn"
+      ],
+      "notes": "Head-of-Art sprint 6/10: last of the 5 redesigned HUD elements still unwired (TASK-015 wired the other 4). ART_STYLE_GUIDE.md corrected same day to reflect current wired state. Spec: docs/research/ART-041-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-042",
+      "sprint": 10,
+      "category": "art",
+      "title": "Market stall dedicated art + krathong item icon",
+      "status": "in_progress",
+      "priority": "low",
+      "owner": "art-po",
+      "files": [
+        "assets/environment/market_stall.png",
+        "assets/items/krathong.png",
+        "scenes/market/MarketStall.tscn"
+      ],
+      "notes": "Head-of-Art sprint 7/10: MarketStall.tscn borrows clay_stove_tall.png as placeholder; krathong item (TASK-022) has no icon asset. Spec: docs/research/ART-042-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
+      "proposed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-043",
+      "sprint": 10,
+      "category": "art",
+      "title": "Festival visual layer: krathong pond glow + lantern particles",
+      "status": "proposed",
+      "priority": "low",
+      "owner": "art-po",
+      "files": [
+        "assets/particles/festival_lanterns.tres",
+        "assets/shaders/pond_glow.gdshader"
+      ],
+      "notes": "Head-of-Art sprint 10/10: BLOCKED on FestivalManager instantiation + festival_triggered wiring (see PO_INBOX.md #3 / TASK-030 revisit). Art ready to land once that engine unlock exists. Spec: docs/research/ART-043-spec.md",
+      "proposed_at": "2026-09-01"
     }
   ]
 }
