@@ -1029,6 +1029,25 @@
       "notes": "Scout round 3. TASK-031 item 5. Gate 6/6. Deviation: landed direct on main 243d419 (branch push fumble), content verified green.",
       "gate_audit": "PASS 2026-09-01: iOS perf criterion, spec verified.",
       "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-042",
+      "sprint": 9,
+      "category": "performance",
+      "title": "Battery-aware frame cap (mobile-only)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/core/FrameCap.gd",
+        "scripts/autoload/SignalBus.gd",
+        "scenes/core/Main.gd",
+        "project.godot"
+      ],
+      "notes": "Scout round 3. Gate 6/6.",
+      "gate_audit": "PASS 2026-09-01: iOS perf criterion (battery), spec verified.",
+      "completed_at": "2026-09-01",
+      "pr_number": 95
     }
   ]
 }
