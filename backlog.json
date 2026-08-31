@@ -593,7 +593,7 @@
       "sprint": 4,
       "category": "performance",
       "title": "WorldRender cache + prop pooling + ProfilerOverlay throttling",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "spatial-architect",
       "files": [
@@ -603,7 +603,9 @@
       ],
       "notes": "Cache bamboo ring 76 walls, pool props, throttle profiler label to 0.5s, move static ground off YSort. Spec: docs/research/TASK-024-spec.md",
       "github_issue_number": 74,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/74"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/74",
+      "completed_at": "2026-08-31",
+      "pr_number": 77
     }
   ]
 }
