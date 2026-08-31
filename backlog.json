@@ -1150,14 +1150,14 @@
       "sprint": 10,
       "category": "gameplay",
       "title": "Plot stage rendering: stage_textures finally consumed",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/core/GridManager.gd",
       "notes": "PO_INBOX r4 #4: no code reads stage_textures; render per-plot stage sprite, update on growth, clear on harvest.",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 99
     },
     {
       "id": "TASK-046",
@@ -1208,6 +1208,30 @@
         "data/recipes/recipes.json"
       ],
       "notes": "User explicitly insisted on real papaya rather than the cabbage substitute from TASK-190 -- corrected, not just added alongside. New papaya.tres: perennial tree, hot-season-leaning, matches mango/durian/banana/coconut's tall-art pattern (48x96, trunk with leaf-scar rings + crown fruit, distinct silhouette from the other trees). som_tam recipe's inputs changed cabbage->papaya and its description + icon updated to match (icon redrawn with green papaya shreds instead of cabbage). som_tam still depends on fish_sauce (market gap, unresolved as of this round) but papaya itself is not blocked by anything new -- same 'ready once planting generalizes' status as every other crop. Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "TASK-210",
+      "sprint": 13,
+      "category": "art",
+      "title": "Cozy protein set: soybean/tofu (no gap), chicken/eggs + fishing (art ready, new interact logic needed)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/crops/soybean.tres",
+        "scenes/entities/ChickenCoop.tscn",
+        "assets/characters/chicken_idle_01.png",
+        "assets/characters/chicken_walk_01-04.png",
+        "assets/items/soybean.png",
+        "assets/items/seed_soybean.png",
+        "assets/items/tofu.png",
+        "assets/items/egg.png",
+        "assets/items/fish_tilapia.png",
+        "assets/items/fish_catfish.png",
+        "assets/items/fishing_rod.png",
+        "data/recipes/recipes.json"
+      ],
+      "notes": "User asked to assess protein/meat acquisition. Confirmed via Buffalo.gd's own comments and CLAUDE.md that zero-combat/no-animal-harm is a deliberate, established design pillar -- flagged the literal 'meat' framing to the user before building anything; they confirmed 'cozy substitutes only' (eggs, tofu, fishing -- no slaughter mechanic). Soybean+tofu: fully deliverable, zero engine gap (crop + recipe, same as every other processed good). Chicken/eggs: ChickenCoop.tscn is a deliberate visual-only scaffold (idle+4f walk sprite, 28x28 canon -- smaller than the cat's 32x32, a farm bird not a companion-scale animal), no script, not instanced. Egg-laying interact logic doesn't exist anywhere (same category as CompanionNPC.gd) -- spec'd for PO_INBOX rather than guessed at. Fish: no crop possible (not a plant) -- fishing_rod + 2 fish species icons authored, but there is zero water-interact/catch mechanic in the codebase at all; this is the least-ready of the three, flagged as the biggest net-new system. 4 new recipes: tofu (from soybean), khai_jiao/fried egg (needs chicken mechanic), pad_tofu (fully achievable), pla_pao/grilled fish (needs BOTH fishing mechanic AND the still-open market fish_sauce gap -- doubly blocked, noted honestly). Gates: content 100/100, engine 50/50."
     }
   ]
 }
