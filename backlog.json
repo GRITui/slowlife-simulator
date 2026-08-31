@@ -234,13 +234,14 @@
       "lane": "engine",
       "category": "spatial",
       "title": "Tilemap matrix engine layer + collision bounds + A* pathfinding scaffold",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "spatial-physics",
       "files": [
-        "scripts/core/"
+        "scripts/core/NavGrid.gd"
       ],
-      "notes": "Engine-layer slice of TASK-007 only (no Y-sort/edge-dressing art — that stays with the art PO)."
+      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes — caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "ENGINE-003",

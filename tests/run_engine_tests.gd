@@ -12,6 +12,8 @@ extends SceneTree
 # Do not add art/content assertions here (sprite frames, palette, dialogue) —
 # that belongs to the separate content-squad's res://tests/run_tests.gd.
 
+const NavGridScript = preload("res://scripts/core/NavGrid.gd")
+
 var _passed: int = 0
 var _failed: int = 0
 var _section: String = ""
@@ -103,6 +105,29 @@ func _run_all() -> void:
 				for y in range(gm.maze_origin.y, gm.maze_origin.y + 3):
 					_check(gm.is_maze_cell(Vector2i(x, y)), "maze cell (%d,%d) flagged" % [x, y])
 			_check(gm.is_maze_cell(gm.maze_origin - Vector2i(1, 0)) == false, "cell just outside maze not flagged")
+
+		_section = "navgrid-pathfinding"
+		var wr: Node = main.get_node_or_null("WorldRender")
+		if gm and wr and wr.has_method("ground_at"):
+			var nav := NavGridScript.new()
+			nav.setup(gm.grid_size, gm.cell_size, func(cell: Vector2i) -> bool:
+				return NavGridScript.default_walkable(cell, gm.grid_size, gm.maze_origin, wr.ground_at(cell)))
+
+			_check(nav.is_walkable(Vector2i(10, 5)), "open paddy cell walkable")
+			_check(nav.is_walkable(gm.maze_origin) == false, "maze-origin cell blocked (non-walkable water)")
+			_check(nav.is_walkable(Vector2i(-1, 0)) == false, "out-of-bounds cell reported not walkable")
+
+			var path_open: Array = nav.find_path(Vector2i(3, 4), Vector2i(10, 4))
+			_check(not path_open.is_empty(), "path exists across open paddy row")
+			if not path_open.is_empty():
+				_check(path_open[0] == Vector2i(3, 4), "path starts at requested cell")
+				_check(path_open[-1] == Vector2i(10, 4), "path ends at requested cell")
+
+			var path_maze: Array = nav.find_path(Vector2i(3, 4), gm.maze_origin)
+			_check(path_maze.is_empty(), "path into blocked maze-origin cell is empty")
+
+			var path_oob: Array = nav.find_path(Vector2i(3, 4), Vector2i(99, 99))
+			_check(path_oob.is_empty(), "path to out-of-bounds target is empty")
 		main.queue_free()
 
 func _check(cond: bool, label: String) -> void:
