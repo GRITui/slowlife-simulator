@@ -1,6 +1,6 @@
 # ART STYLE GUIDE: Thai Rural Countryside Sim
 
-## Core Palette (12 colors max per scene)
+## Core Palette (16 colors — Hybrid A/B, 4 extra for water/mist)
 | Color | Hex | Usage |
 |-------|-----|-------|
 | Rice White | #F5F0E8 | Background, clouds |
@@ -15,10 +15,14 @@
 | Hot Orange | #FF9800 | Sun, heat |
 | Rice Gold | #FFE0B2 | Skin tones, UI accents |
 | Sky Cyan | #E0F7FA | Daytime sky |
+| Canal Teal | #4DB6AC | Canal water mid (Hybrid B) |
+| Mist Lavender | #B39DDB | Cool fog/mist overlay |
+| Deep Pond | #1565C0 | Lotus maze depth |
+| Wood Amber | #A1887F | Dock/teak wood grain |
 
-**Rules**: Max 12 core colors. Warm colors for sunlight, cool for shade/water. Seasonal tinting applied globally.
+**Rules**: Base 12 + 4 extenders for water/mist/wood (Hybrid B pull). Warm for sunlight, cool for shade/water. Seasonal tinting applied globally. Enforced per-scene max 16.
 
-> **✓ Locked 2026-08-31 — Hybrid A/B (Isan Plain + Canal Maze)** — Flat 20×16 paddy grid (A) + single canal-maze water feature from B (lotus maze + dock/raft + sluice gate). Palette stays strict 12-color. See `ART_WORLD_VISION_V2.html#decision` and decision record `.decision.json`. Grid for TASK-002 remains `20×16` (no islet fragmentation).
+> **✓ Locked 2026-08-31 — Hybrid A/B (Isan Plain + Canal Maze), updated 16-color** — Flat 20×16 paddy grid (A) + single canal-maze water feature from B (lotus maze + dock/raft + sluice gate + canal tile + mango). Palette now 16-color to accommodate Canal Teal / Mist Lavender / Deep Pond / Wood Amber. See `ART_WORLD_VISION_V2.html#decision` and `.decision.json`.
 ## Tile Set Specifications
 
 - **Base size**: 32x32 pixels (scaled from 16x16 originals)
