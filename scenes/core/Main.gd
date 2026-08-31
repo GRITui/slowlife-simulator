@@ -36,6 +36,8 @@ func _ready() -> void:
 	_ensure_game_flow()
 	# TASK-040 (PO_INBOX directive #3): festival wiring — Loy Krathong live.
 	_ensure_festival()
+	# TASK-041: debug perf probe (no-op in release via OS.is_debug_build() guard).
+	_ensure_profiler_overlay()
 
 func _ensure_festival() -> void:
 	if get_node_or_null("FestivalManager") != null:
@@ -46,6 +48,13 @@ func _ensure_festival() -> void:
 	var manager: Node = script.new()
 	manager.name = "FestivalManager"
 	add_child(manager)
+
+func _ensure_profiler_overlay() -> void:
+	if get_node_or_null("ProfilerOverlay") != null:
+		return
+	var overlay: CanvasLayer = load("res://scripts/core/ProfilerOverlay.gd").new()
+	overlay.name = "ProfilerOverlay"
+	add_child(overlay)
 
 func _ensure_game_flow() -> void:
 	if get_node_or_null("TitleScreen") == null:
