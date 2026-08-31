@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://pause000001"]
+[node name="PauseMenu" type="CanvasLayer" groups=["pause_menu"]]
+[node name="Panel" type="Panel" parent="."]
+[node name="Resume" type="Button" parent="Panel" text="Resume"]
+[node name="Settings" type="Button" parent="Panel" text="Settings"]
+[node name="Quit" type="Button" parent="Panel" text="Quit to Title"]
