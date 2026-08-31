@@ -248,13 +248,18 @@
       "lane": "engine",
       "category": "persistence",
       "title": "Save/load state machine + JSON schema for player/world state",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-persistence",
       "files": [
-        "scripts/persistence/"
+        "scripts/persistence/SaveManager.gd",
+        "scenes/core/GridManager.gd",
+        "scripts/autoload/SignalBus.gd"
       ],
-      "notes": "Greenfield — no persistence layer exists yet."
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/21",
+      "github_issue_number": 21,
+      "notes": "SignalBus-decoupled SaveManager (JSON v1: player/time/grid/player_pos/meta) with validation, user://saves/*.json, inventory int coercion, GridManager create_plot_state/apply_save_plots. Round-trip verified 48/48 engine + 54/54 content green.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "ENGINE-004",

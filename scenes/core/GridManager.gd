@@ -149,3 +149,43 @@ func serialize() -> Dictionary:
 
 func get_stats() -> Dictionary:
 	return {"occupied": plots.size(), "total_cells": grid_size.x * grid_size.y - 9, "season": current_season, "weather": current_weather}
+
+# --- Save/load helpers (ENGINE-003, @data-persistence) ---
+
+func create_plot_state(p_crop: Resource, p_stage: int = 0, p_minutes: int = 0, p_watered: bool = false, p_planted_day: int = -1, p_wilt: int = 0) -> PlotState:
+	var ps := PlotState.new()
+	ps.crop = p_crop
+	ps.stage = p_stage
+	ps.minutes_in_stage = p_minutes
+	ps.watered = p_watered
+	ps.planted_day = p_planted_day
+	ps.wilt_minutes = p_wilt
+	return ps
+
+func apply_save_plots(plots_dict: Dictionary) -> void:
+	plots.clear()
+	for key in plots_dict.keys():
+		var cell := _parse_cell_key(String(key))
+		if cell == Vector2i(-999, -999):
+			continue
+		var entry: Dictionary = plots_dict[key]
+		var crop_id: String = String(entry.get("id", ""))
+		if crop_id.is_empty():
+			continue
+		var crop: Resource = load("res://data/crops/%s.tres" % crop_id)
+		if crop == null:
+			crop = load(crop_id) as Resource
+		if crop == null:
+			push_warning("GridManager: crop '%s' not found for cell %s — skipping" % [crop_id, str(cell)])
+			continue
+		var ps := create_plot_state(crop, int(entry.get("stage", 0)), int(entry.get("minutes", 0)), bool(entry.get("watered", false)), int(entry.get("planted_day", -1)), int(entry.get("wilt_minutes", 0)))
+		plots[cell] = ps
+
+func _parse_cell_key(s: String) -> Vector2i:
+	s = s.strip_edges()
+	if s.begins_with("(") and s.ends_with(")"):
+		s = s.substr(1, s.length() - 2)
+	var parts := s.split(",")
+	if parts.size() != 2:
+		return Vector2i(-999, -999)
+	return Vector2i(int(parts[0].strip_edges()), int(parts[1].strip_edges()))
