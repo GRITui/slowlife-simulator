@@ -326,7 +326,7 @@
       "sprint": 3,
       "category": "mechanics",
       "title": "Buffalo care mechanic",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": [
@@ -335,7 +335,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/46",
       "github_issue_number": 46,
-      "notes": "Gap-research finding: PROJECT_VISION.md names buffalo care as a core cultural mechanic and 5 buffalo sprites already exist (assets/characters/animal_buffalo_*), but zero code references buffalo anywhere -- dead art, no mechanic. Pattern off MonkNPC."
+      "notes": "Gap-research finding: PROJECT_VISION.md names buffalo care as a core cultural mechanic and 5 buffalo sprites already exist (assets/characters/animal_buffalo_*), but zero code references buffalo anywhere -- dead art, no mechanic. Pattern off MonkNPC.",
+      "completed_at": "2026-08-31",
+      "pr_number": 62
     },
     {
       "id": "TASK-021",
