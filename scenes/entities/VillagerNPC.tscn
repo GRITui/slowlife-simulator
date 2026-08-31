@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://villager_npc_012"]
+
+[ext_resource type="Script" path="res://scenes/entities/VillagerNPC.gd" id="1_villager"]
+[ext_resource type="Texture2D" path="res://assets/characters/npc_elder_idle_01.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(24, 42)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 48.0
+
+[node name="VillagerNPC" type="CharacterBody2D" groups=["villager_npc"]]
+script = ExtResource("1_villager")
+npc_id = "elder"
+display_name = "Elder"
+collision_layer = 2
+collision_mask = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+centered = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+debug_color = Color(0.6, 0.2, 0.2, 0.42)
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_interact")
+debug_color = Color(0.2, 0.6, 0.8, 0.42)

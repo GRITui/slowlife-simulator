@@ -34,6 +34,11 @@ var binthabat_yields: Dictionary = {
 var daily_offerings: int = 0
 var last_offering_day: int = -1
 
+# Village dialogue / seasonal quest state (TASK-012) — cozy, no heavy exposition
+var villager_talked_days: Dictionary = {} # npc_id -> last_day talked
+var binthabat_streak: int = 0
+var last_binthabat_day: int = -1
+
 func add_item(item_id: String, amount: int = 1) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
 
@@ -92,5 +97,11 @@ func offer_bin_thabat(item_id: String, day: int) -> int:
 	add_harmony(harmony_yield)
 	daily_offerings += 1
 	last_offering_day = day
+	# TASK-012 streak: consecutive-day alms, no fail state, cozy bonus only.
+	if last_binthabat_day == day - 1:
+		binthabat_streak += 1
+	elif last_binthabat_day != day:
+		binthabat_streak = 1
+	last_binthabat_day = day
 	SignalBus.binthabat_offered.emit(item_id, harmony_yield)
 	return harmony_yield
