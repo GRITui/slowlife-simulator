@@ -1,28 +1,39 @@
 # ART STYLE GUIDE: Thai Rural Countryside Sim
 
-## Core Palette (16 colors — Hybrid A/B, 4 extra for water/mist)
-| Color | Hex | Usage |
+## Core Palette — soft-shaded, ~70 colors (Claude Design redesign, 2026-08-31)
+
+> **✓ Superseded 2026-08-31** — The Claude Design redesign pass replaced every
+> character/environment/tileset asset with softly-shaded art: measured directly
+> from the shipped PNGs, the set now uses **73 unique opaque colors with zero
+> exact matches** to the old flat 16-hex lock below. Shading is achieved with
+> blended intermediate tones (highlight/base/shadow per hue), not a fixed
+> per-pixel palette, so the old "enforced per-scene max 16" rule no longer
+> applies. The 16 named roles still describe *where* each hue family is used —
+> only the literal hex enforcement is gone. Anchor hexes below are the highest
+> pixel-count representative for each role, measured across all of `assets/`.
+
+| Color | Anchor Hex | Usage |
 |-------|-----|-------|
-| Rice White | #F5F0E8 | Background, clouds |
-| Jasmine Yellow | #FDD835 | Sunlight, highlights |
-| Pandan Green | #AED581 | Rice fields, vegetation |
-| Lotus Pink | #F48FB1 | Flowers, harmony |
-| Clay Brown | #8D6E63 | Clay stove, mortar |
-| Mo Hom Maroon | #6A1B9A | Traditional cloth accents |
-| Pha Khao Ma Gray | #757575 | Clothing, rope |
-| Monsoon Blue | #2196F3 | Rainy season, water |
-| Cool Teal | #009688 | Cool season, water |
-| Hot Orange | #FF9800 | Sun, heat |
-| Rice Gold | #FFE0B2 | Skin tones, UI accents |
-| Sky Cyan | #E0F7FA | Daytime sky |
-| Canal Teal | #4DB6AC | Canal water mid (Hybrid B) |
-| Mist Lavender | #B39DDB | Cool fog/mist overlay |
-| Deep Pond | #1565C0 | Lotus maze depth |
-| Wood Amber | #A1887F | Dock/teak wood grain |
+| Rice White | #F2E6C4 | Background, cloth highlights |
+| Jasmine Gold | #E0A23A | Sunlight, highlights |
+| Pandan Green | #4F8A3D | Rice fields, vegetation base |
+| Grass Green | #7FAE46 | Lighter grass, foliage highlight |
+| Lotus Pink | #E08AA0 | Flowers, harmony |
+| Clay Brown | #6A4A30 | Clay stove, mortar, dark wood |
+| Ink Outline | #2B1C14 | Character/prop outlines, base shadow |
+| Deep Shadow | #241A12 | Darkest shadow tone |
+| Pha Khao Ma Gray | #B8B0A0 | Clothing, rope |
+| Monsoon Blue | #3D5F80 | Rainy season, deep water |
+| Canal Teal | #5FB6C9 | Canal/pond water mid tone |
+| Hot Orange | #C9622F | Sun, heat accents |
+| Skin/Wood Warm | #D99A68 | Skin tones, warm wood grain |
+| Deep Navy | #274259 | Deepest water, night shadow |
+| Dark Cloth | #3F3E40 | Dark cloth/shadow accents |
+| Soil Tan | #D8C9A0 | Dry earth, plantable soil light |
 
-**Rules**: Base 12 + 4 extenders for water/mist/wood (Hybrid B pull). Warm for sunlight, cool for shade/water. Seasonal tinting applied globally. Enforced per-scene max 16.
+**Rules**: 16 named hue-role anchors, each rendered with its own soft shading ramp (blended highlight → base → shadow) rather than a single flat hex. Warm for sunlight, cool for shade/water — unchanged from the original direction. Seasonal tinting still applied globally on top.
 
-> **✓ Locked 2026-08-31 — Hybrid A/B (Isan Plain + Canal Maze), updated 16-color** — Flat 20×16 paddy grid (A) + single canal-maze water feature from B (lotus maze + dock/raft + sluice gate + canal tile + mango). Palette now 16-color to accommodate Canal Teal / Mist Lavender / Deep Pond / Wood Amber. See `ART_WORLD_VISION_V2.html#decision` and `.decision.json`.
+> **✓ Locked 2026-08-31 — Hybrid A/B (Isan Plain + Canal Maze)** — Flat 20×16 paddy grid (A) + single canal-maze water feature from B (lotus maze + dock/raft + sluice gate + canal tile + mango). See `ART_WORLD_VISION_V2.html#decision` and `.decision.json` for the world-layout decision (palette section above is now maintained separately, following the art redesign).
 
 ## 3/4 Perspective Art Rules (Canon REV 2 — locked 2026-08-31)
 
@@ -75,12 +86,12 @@
 
 ## Tile Set Specifications
 
-- **Base size**: 32x32 pixels (scaled from 16x16 originals)
-- **Grid**: Top-down staggered grid, offset (16, 8)
+- **Base size**: 48x48 pixels (16x16 → 32x32 → 48x48; resolution bump 2026-08-31, see Tile Metrics above)
+- **Grid**: Top-down staggered grid, offset (24, 12)
 - **Categories needed**: Ground, Environment, Structures, Interactive, Decor
 - **Animations**: Crop growth (4 frames), water flow (3-frame loop), wind vegetation (subtle shift)
 - **Naming convention**: `tilesets/ground_ricepaddy.png`, `tilesets/water_lotuspond.png`, etc.
-- **Note (REV 2)**: verticals (walls, trees, standing props) are superseded by the tall-art spec in "3/4 Perspective Art Rules (Canon REV 2)" above — ground tiles remain 32x32
+- **Note (REV 2)**: verticals (walls, trees, standing props) are superseded by the tall-art spec in "3/4 Perspective Art Rules (Canon REV 2)" above — ground tiles remain 48x48
 ## Environmental Assets
 
 ### Core Thai Rural Elements
@@ -124,10 +135,10 @@
 ## Character Design Guidelines
 
 ### Player Character (Farmer)
-- **Size**: 32x48 pixels (including collision)
+- **Size**: 48x72 pixels sprite (was 32x48 pre-redesign); collision shape 21x30
 - **Color scheme**: Mo Hom maroon accents, Pha Khao Ma gray elements
 - **Animations needed**: Idle (4 frames), Walk (8 frames), Hoe/plant (4 frames), Harvest (4 frames), Carrying crop
-- **Palette**: Maroon (Mo Hom) + Gray (Pha Khao Ma) + skin tone #FFE0B2
+- **Palette**: Maroon (Mo Hom) + Gray (Pha Khao Ma #B8B0A0) + skin tone #D99A68
 
 ### NPC Design
 - **Village Elder**: Traditional Thai hat, walking stick, warm colors
@@ -151,18 +162,23 @@
 
 | Element | Size | Design Notes |
 |---------|------|--------------|
-| Energy Bar | 200x12 | Green→Yellow→Red gradient, SignalBus: `player/energy_changed` |
-| Crop Progress | 150x12 | Bar showing growth stage, current crop icon |
-| Village Goodwill | 180x12 | Heart icons or harmony symbols, SignalBus: `village/goodwill_changed` |
-| Season Display | 100x12 | Text + small seasonal icon (Monsoon/Hot/Cool) |
-| Inventory Slot | 32x32 | Border when empty, item icon when filled |
-| Action Prompt | 200x32 | Bottom-center, "Press E to harvest" etc. |
+| Energy Bar (`assets/ui/energy_bar.png`) | 128x28 | Green→Yellow→Red gradient, SignalBus: `player/energy_changed` |
+| Crop Progress | 150x12 | Bar showing growth stage, current crop icon — not yet delivered as a redesigned asset |
+| Village Goodwill (`assets/ui/harmony_bar.png`) | 128x28 | Heart icons or harmony symbols, SignalBus: `village/goodwill_changed` |
+| Season Display (`assets/ui/season_display.png`) | 128x32 | Text + small seasonal icon (Monsoon/Hot/Cool) |
+| Inventory Slot (`assets/ui/inventory_slot.png`) | 48x48 | Border when empty, item icon when filled |
+| Action Prompt (`assets/ui/action_prompt.png`) | 48x48 | Bottom-center, "Press E to harvest" etc. |
+
+> **Note**: these five PNGs were redesigned at their own new dimensions (not the
+> 1.5x world-tile scale above — UI is screen-space, not world-space) but are
+> not yet wired into `HUD.tscn`, which currently renders bars/prompt via plain
+> `ProgressBar`/`ColorRect` nodes. Wiring them in is unstarted follow-up work.
 
 ### UI Color Usage
-- **Background**: Rice White (#F5F0E8) with 90% opacity
-- **Accents**: Jasmine Yellow for positive, Lotus Pink for harmony/bonus
+- **Background**: Rice White (#F2E6C4) with 90% opacity
+- **Accents**: Jasmine Gold for positive, Lotus Pink for harmony/bonus
 - **Text**: Mo Maroon for headings, Pandan Green for subtitles
-- **Borders**: Clay Brown (#8D6E63) 1px rounded
+- **Borders**: Clay Brown (#6A4A30) 1px rounded
 
 ### Font Recommendations
 - **Primary**: Clean pixel font with Thai script support
