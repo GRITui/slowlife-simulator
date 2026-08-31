@@ -55,6 +55,21 @@ interact={
  ]
 }
 
+[rendering]
+renderer/rendering_method="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+
+[display]
+window/size/viewport_width=1600
+window/size/viewport_height=900
+
+[application]
+run/main_scene="res://scenes/core/Main.tscn"
+boot_splash/bg_color=Color(0.9607843, 0.9411765, 0.9098039, 1)
+
+[input_devices]
+pointing/emulate_touch_from_mouse=true
+
 [dep]
 os = "macos"
 cpu = "x86_64"

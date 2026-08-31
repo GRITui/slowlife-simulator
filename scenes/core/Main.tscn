@@ -1,0 +1,69 @@
+[gd_scene load_steps=7 format=3 uid="uid://main000001"]
+
+[ext_resource type="Script" path="res://scenes/core/Main.gd" id="1_main"]
+[ext_resource type="PackedScene" path="res://scenes/core/TimeManager.tscn" id="2_tm"]
+[ext_resource type="PackedScene" path="res://scenes/core/GridManager.tscn" id="3_gm"]
+[ext_resource type="PackedScene" path="res://scenes/entities/MonkNPC.tscn" id="4_monk"]
+[ext_resource type="PackedScene" path="res://scenes/entities/Player.tscn" id="5_pl"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="TimeManager" parent="." instance=ExtResource("2_tm")]
+
+[node name="GridManager" parent="." instance=ExtResource("3_gm")]
+position = Vector2(0, 0)
+
+[node name="MonkNPC" parent="." instance=ExtResource("4_monk")]
+position = Vector2(400, 100)
+
+[node name="Player" parent="." instance=ExtResource("5_pl")]
+position = Vector2(320, 256)
+
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="DialogueLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Panel" type="Panel" parent="DialogueLayer"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -64.0
+offset_right = 260.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="DialogueLabel" type="Label" parent="DialogueLayer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = -8.0
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+text = "Dialogue"
+
+[node name="TintLayer" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="TintRect" type="ColorRect" parent="TintLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.5882353, 0.53333336, 0.078431375)
+mouse_filter = 2
