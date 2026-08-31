@@ -370,9 +370,14 @@ assets/ui empty → energy 200×12, goodwill 180×12, season 100×12, inv 32×32
       <div class="gallery" id="galEnv"></div>
       <h4 style="margin-top:12px">Characters (34)</h4>
       <div class="gallery" id="galChr"></div>
-      <h4 style="margin-top:12px">UI — empty (spec targets)</h4>
-      <div class="gallery"><div class="gallery-card"><div style="width:64px;height:64px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#F5F0E8 6px,#F5F0E8 12px);border-radius:8px;margin:0 auto;border:1px solid var(--border)"></div><small>energy_bar.png 200×12<br>expected · missing</small></div><div class="gallery-card"><div style="width:64px;height:64px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#F5F0E8 6px,#F5F0E8 12px);border-radius:8px;margin:0 auto;border:1px solid var(--border)"></div><small>inventory_slot.png 32×32<br>expected · missing</small></div><div class="gallery-card"><div style="width:64px;height:64px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#F5F0E8 6px,#F5F0E8 12px);border-radius:8px;margin:0 auto;border:1px solid var(--border)"></div><small>goodwill 180×12 · season 100×12<br>expected · missing</small></div></div>
-      <div class="note" style="margin-top:12px"><b>Target mocks:</b> Replace each stub with real pixel art at same 32×32 (filter POINT, compress DISABLED per guide). Keep filenames — TileSet atlas expects <code>ground_ricepaddy.png</code> etc.</div>
+      <h4 style="margin-top:12px">UI — real (5)</h4>
+      <div class="gallery" id="galUi"></div>
+      <details style="margin-top:12px;background:#f9f6f0;border:1px solid var(--border);border-radius:10px;padding:10px">
+        <summary style="cursor:pointer;font-weight:700;color:var(--muted)">Show stub archive (pre-real art, 99–199B) — collapsed for audit</summary>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0">Previous placeholders were flat-color stubs (e.g., <code>ground_grass 106B</code>, <code>player_idle 181B</code>). Preserved in git history (<code>71624ed^</code>) — not loaded in gallery. This block hidden per your choice 3) Hide placeholder.</p>
+        <code style="font-size:11px">git show 71624ed^:assets/tilesets/ground_grass.png | wc -c => 106B (stub) → now 538B (real)</code>
+      </details>
+      <div class="note" style="margin-top:12px">UI now real: <code>energy_bar 299B · harmony_bar 332B · season_display 269B · inventory_slot 205B · action_prompt 375B</code>. Tile/entity galleries exclude stubs per Hide decision.</div>
     </div>
   </div>
 </div>
@@ -431,9 +436,19 @@ function renderGalleries(){
         });
         c.dataset.done='1';
       };
+  const mkUi=()=>{
+    const c=document.getElementById('galUi'); if(!c || c.dataset.done) return; c.innerHTML='';
+    ['energy_bar.png','harmony_bar.png','season_display.png','inventory_slot.png','action_prompt.png'].forEach(f=>{
+      const card=document.createElement('div'); card.className='gallery-card';
+      const img=document.createElement('img'); img.src='assets/ui/'+f+'?v='+Date.now(); img.alt=f; img.style.background='#F5F0E8'; img.loading='lazy';
+      const sm=document.createElement('small'); sm.textContent=f+'\nreal';
+      card.append(img,sm); c.append(card);
+    }); c.dataset.done='1';
+  }
   mk(tiles,'assets/tilesets/','galTiles');
   mk(envs,'assets/environment/','galEnv');
   mk(chrs,'assets/characters/','galChr');
+  mkUi();
 }
 updateBadge();
 if(location.hash) switchTab(location.hash.replace('#',''));
