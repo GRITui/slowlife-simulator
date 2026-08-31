@@ -65,7 +65,7 @@
       "sprint": 1,
       "category": "ui",
       "title": "Define 3/4 art rules in ART_STYLE_GUIDE (tile metrics, Y-sort, zoom 2.2 provisional)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "visual-inspector",
       "files": [
@@ -73,7 +73,8 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/6",
       "github_issue_number": 6,
-      "notes": "3/4 via tall art + Y-sort, no camera squash. Per issue #5 REV 2 + docs/art_direction/."
+      "notes": "3/4 via tall art + Y-sort, no camera squash. Per issue #5 REV 2 + docs/art_direction/.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-006",

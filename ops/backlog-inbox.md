@@ -62,3 +62,5 @@
   <description>Verify HUD anchors + tints per ART_STYLE_GUIDE; add screenshot hook (F12) saving 1600x900 PNG to user:// for director review.</description>
   <researcher_notes>Owner: @visual-inspector. Issue #10. No hard deps.</researcher_notes>
 </task_item>
+
+<!-- PO LEDGER: 2026-08-31 TASK-005 -> PR #11 merged (squash), issue #6 auto-closed. Tests 40/40 green. -->
