@@ -21,7 +21,7 @@ var _max_stamina: float = 100.0
 var _max_harmony: int = 100
 
 func _ready() -> void:
-	# auto-detect mobile by viewport
+	# auto-detect mobile by viewport + OS feature
 	var vp := get_viewport().get_visible_rect().size
 	is_mobile = vp.x < 900 or OS.has_feature("mobile")
 	_apply_scale()
@@ -31,15 +31,31 @@ func _ready() -> void:
 	SignalBus.season_changed.connect(_on_season_changed)
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
 	SignalBus.crop_growth_progress.connect(_on_crop_progress)
+	SignalBus.show_dialogue.connect(_on_show_dialogue_for_prompt)
+	# viewport resize -> re-evaluate mobile scale (TASK-014 80% polish)
+	get_viewport().size_changed.connect(_on_viewport_resized)
 	# init from GameData
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)
+	# action prompt starts hidden, polished fade
+	if prompt_label:
+		prompt_label.get_parent().visible = false
+		prompt_label.get_parent().modulate.a = 0.0
+
+func _on_viewport_resized() -> void:
+	var vp := get_viewport().get_visible_rect().size
+	var now_mobile := vp.x < 900 or OS.has_feature("mobile")
+	if now_mobile != is_mobile:
+		is_mobile = now_mobile
 
 func _apply_scale() -> void:
 	var s: float = mobile_scale if is_mobile else pc_scale
 	if has_node("Margin"):
 		$Margin.scale = Vector2(s, s)
+	# prompt scales with HUD but keeps readable at 80%: bump font slightly on mobile
+	if prompt_label:
+		prompt_label.add_theme_font_size_override("font_size", 12 if is_mobile else 13)
 
 func _on_stamina_changed(cur: float, max_v: float) -> void:
 	_max_stamina = max_v
@@ -78,6 +94,36 @@ func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
 	if crop_label:
 		crop_label.text = "Crop %d/%d" % [progress + 1, max_stage]
+
+var _prompt_tween: Tween
+
+func _on_show_dialogue_for_prompt(speaker: String, text: String) -> void:
+	# Polish: show action prompt briefly for system messages, then fade
+	if not prompt_label:
+		return
+	var prompt_root: Control = prompt_label.get_parent() as Control
+	if prompt_root == null:
+		return
+	# Map dialogue to prompt for interactable hints; keep short
+	if text.length() > 0 and text.length() < 80:
+		prompt_label.text = text
+	prompt_root.visible = true
+	if _prompt_tween:
+		_prompt_tween.kill()
+	_prompt_tween = create_tween()
+	prompt_root.modulate.a = 1.0
+	_prompt_tween.tween_interval(2.2)
+	_prompt_tween.tween_property(prompt_root, "modulate:a", 0.0, 0.5)
+	_prompt_tween.tween_callback(func(): prompt_root.visible = false)
+
+func show_action_prompt(text: String) -> void:
+	_on_show_dialogue_for_prompt("Prompt", text)
+
+func hide_action_prompt() -> void:
+	if prompt_label:
+		var r: Control = prompt_label.get_parent() as Control
+		if r:
+			r.visible = false
 
 # For manual testing
 func set_mobile(v: bool) -> void:
