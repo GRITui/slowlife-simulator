@@ -322,6 +322,69 @@
       ],
       "notes": "Root cause of the get_height()-on-null errors / 2 failing worldrender checks on main: .godot/imported/ is gitignored, so a checkout whose .ctex cache predates a texture-adding commit (TASK-006) gets null loads headlessly. Not a WorldRender.gd bug -- no art-squad file changed. Added scripts/ci/run_gate.sh (runs `godot --headless --import` then either/both test suites) and documented it in both test files' headers. Both gates confirmed green after the fix: engine 48/48, content 54/54 (was 52/54).",
       "completed_at": "2026-08-31"
+    },
+    {
+      "id": "ENGINE-009",
+      "lane": "engine",
+      "category": "ci",
+      "title": "Wire engine/content test gates into GitHub Actions CI",
+      "status": "todo",
+      "priority": "high",
+      "owner": "unassigned",
+      "files": [
+        ".github/workflows/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/37",
+      "github_issue_number": 37,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. No .github/workflows exists -- ENGINE-001s test gate (run_engine_tests.gd) and scripts/ci/run_gate.sh are never run automatically on a PR. Also closes the gap where the review environment itself has no Godot binary to run the gate manually."
+    },
+    {
+      "id": "ENGINE-010",
+      "lane": "engine",
+      "category": "architecture",
+      "title": "Game-state flow -- main menu, pause menu, save/load UI hookup",
+      "status": "todo",
+      "priority": "high",
+      "owner": "unassigned",
+      "files": [
+        "scenes/core/Main.tscn",
+        "scenes/ui/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/38",
+      "github_issue_number": 38,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. Game boots directly into Main.tscn -- no title screen, no pause, no in-game caller for ENGINE-003s save/load once it lands. Needs New Game/Continue flow, a pause layer (new input action), and SignalBus save/load feedback wired to show_dialogue."
+    },
+    {
+      "id": "ENGINE-011",
+      "lane": "engine",
+      "category": "audio",
+      "title": "Audio engine foundation (music/SFX/ambient bus + SignalBus hooks)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "unassigned",
+      "files": [
+        "scripts/autoload/",
+        "default_bus_layout.tres"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/39",
+      "github_issue_number": 39,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. Zero audio infra despite PROJECT_VISION.md explicitly calling for ambient sounds. Foundation only (bus layout + AudioManager autoload + SignalBus hook points) -- no assets needed yet, must no-op cleanly on missing ids so it can land before content does."
+    },
+    {
+      "id": "ENGINE-012",
+      "lane": "engine",
+      "category": "input",
+      "title": "Mobile touch input (virtual joystick + tap-to-interact)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "unassigned",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/41",
+      "github_issue_number": 41,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes."
     }
   ]
 }
