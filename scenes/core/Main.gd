@@ -23,6 +23,9 @@ func _ready() -> void:
 	if GameData.inventory.is_empty():
 		GameData.add_item("rice_grain", 2)
 		GameData.add_item("seed_rice", 3)
+		# TASK-044 decision: machete ships in starting inventory (no equip
+		# system; stem-felling gate checks has_item only).
+		GameData.add_item("machete", 1)
 	# position player near home center
 	var pl := get_node_or_null("Player")
 	if pl:
@@ -38,6 +41,21 @@ func _ready() -> void:
 	_ensure_festival()
 	# TASK-041: debug perf probe (no-op in release via OS.is_debug_build() guard).
 	_ensure_profiler_overlay()
+	# TASK-044: banana harvest unlock at the existing banana prop (4,12).
+	_ensure_banana_tree()
+
+func _ensure_banana_tree() -> void:
+	if get_node_or_null("BananaTree") != null:
+		return
+	var scene: PackedScene = load("res://scenes/entities/BananaTree.tscn")
+	if scene == null:
+		return
+	var tree: Node2D = scene.instantiate() as Node2D
+	if tree == null:
+		return
+	tree.name = "BananaTree"
+	tree.position = Vector2(4 * 48 + 24, 13 * 48)
+	add_child(tree)
 	# TASK-029: crafting unlock — clay stove consumes recipes.json.
 	_ensure_cooking_station()
 
