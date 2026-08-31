@@ -66,11 +66,41 @@ func _on_settings_changed(s: float, hc: bool) -> void:
 	set_font_scale(s)
 	set_high_contrast(hc)
 
+# TASK-028 iOS safe area — insets the HUD MarginContainer by the notch /
+# Dynamic Island / home-indicator gaps reported by the OS. Desktop and
+# headless report an empty safe rect, so the call no-ops there (gate-safe).
+func apply_safe_area() -> void:
+	if not is_mobile:
+		return
+	var safe := DisplayServer.get_display_safe_area()
+	var win := DisplayServer.window_get_size()
+	if safe.size == Vector2i.ZERO or win == Vector2i.ZERO:
+		return
+	var margin := $Margin if has_node("Margin") else null
+	if margin == null:
+		return
+	# Safe rect is in window coordinates on iOS fullscreen (window origin
+	# 0,0); maxi guards against exotic geometries on tablet.
+	var left: int = maxi(0, safe.position.x)
+	var top: int = maxi(0, safe.position.y)
+	var right: int = maxi(0, win.x - (safe.position.x + safe.size.x))
+	var bottom: int = maxi(0, win.y - (safe.position.y + safe.size.y))
+	if left > 0:
+		margin.offset_left += left
+	if top > 0:
+		margin.offset_top += top
+	if right > 0:
+		margin.offset_right -= right
+	if bottom > 0:
+		margin.offset_bottom -= bottom
+
 func _ready() -> void:
 	# auto-detect mobile by viewport
 	var vp := get_viewport().get_visible_rect().size
 	is_mobile = vp.x < 900 or OS.has_feature("mobile")
 	_apply_scale()
+	# TASK-028 iOS safe area — notch / Dynamic Island / home indicator insets.
+	apply_safe_area()
 	SignalBus.stamina_changed.connect(_on_stamina_changed)
 	SignalBus.village_harmony_changed.connect(_on_harmony_changed)
 	SignalBus.village_goodwill_changed.connect(_on_harmony_changed)
