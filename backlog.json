@@ -407,7 +407,7 @@
       "lane": "engine",
       "category": "profiling",
       "title": "Profiler overlay hook (F3 toggle + --profiler flag, FPS/mem/draw/zoom/Y-sort)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "profiler-inspector",
       "files": [
@@ -416,7 +416,9 @@
       ],
       "notes": "Descoped from camera-lock (that half is done, see TASK-008/PR #30 -- issue #5 is closed). PR #23 had a solid, decoupled, headless-safe ProfilerOverlay.gd implementation but was closed as a duplicate alongside its conflicting Camera2D changes; re-propose just the overlay half standalone.",
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/36",
-      "github_issue_number": 36
+      "github_issue_number": 36,
+      "completed_at": "2026-08-31",
+      "pr_number": 65
     },
     {
       "id": "ENGINE-005",
