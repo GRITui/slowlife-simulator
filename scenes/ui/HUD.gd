@@ -116,3 +116,16 @@ func refresh_inventory() -> void:
     var tex: Texture2D = slots[idx].texture
     slots[idx].tooltip_text = "%s x%d" % [item_id, qty]
     idx += 1
+// ENGINE-012 Mobile touch — virtual joystick stub, feeds move_* actions
+var _touch_origin: Vector2 = Vector2.ZERO
+var _touch_active: bool = false
+func _input(event: InputEvent) -> void:
+  if event is InputEventScreenTouch:
+    _touch_active = event.pressed
+    _touch_origin = event.position
+  elif event is InputEventScreenDrag and _touch_active:
+    var delta: Vector2 = event.position - _touch_origin
+    Input.action_press("move_right") if delta.x > 10 else Input.action_release("move_right")
+    Input.action_press("move_left") if delta.x < -10 else Input.action_release("move_left")
+    Input.action_press("move_down") if delta.y > 10 else Input.action_release("move_down")
+    Input.action_press("move_up") if delta.y < -10 else Input.action_release("move_up")
