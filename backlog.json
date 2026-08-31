@@ -303,7 +303,9 @@
         "scripts/core/ProfilerOverlay.gd",
         "scenes/core/Main.tscn"
       ],
-      "notes": "Descoped from camera-lock (that half is done, see TASK-008/PR #30 -- issue #5 is closed). PR #23 had a solid, decoupled, headless-safe ProfilerOverlay.gd implementation but was closed as a duplicate alongside its conflicting Camera2D changes; re-propose just the overlay half standalone."
+      "notes": "Descoped from camera-lock (that half is done, see TASK-008/PR #30 -- issue #5 is closed). PR #23 had a solid, decoupled, headless-safe ProfilerOverlay.gd implementation but was closed as a duplicate alongside its conflicting Camera2D changes; re-propose just the overlay half standalone.",
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/36",
+      "github_issue_number": 36
     },
     {
       "id": "ENGINE-005",
