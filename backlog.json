@@ -81,7 +81,7 @@
       "sprint": 1,
       "category": "ui",
       "title": "Generate tall art assets for 3/4 canon (16-color palette)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "data-pipeline",
       "files": [
@@ -89,7 +89,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/7",
       "github_issue_number": 7,
-      "notes": "bamboo wall 32x48, structure front+cap, mango 32x64, banana/sluice 32x48, stove 32x40. Target: canon_34_draft_B.png."
+      "notes": "bamboo wall 32x48, structure front+cap, mango 32x64, banana/sluice 32x48, stove 32x40. Target: canon_34_draft_B.png.",
+      "completed_at": "2026-08-31",
+      "pr_number": 14
     },
     {
       "id": "TASK-007",
@@ -127,7 +129,7 @@
       "sprint": 1,
       "category": "mechanics",
       "title": "Player walk 8-frame / idle 4-frame animation wiring",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-pipeline",
       "files": [
@@ -136,14 +138,16 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/9",
       "github_issue_number": 9,
-      "notes": "Existing: idle 1 + walk_down/right 04 frames. Generate up; left mirrors right if Pha Khao Ma reads OK."
+      "notes": "Existing: idle 1 + walk_down/right 04 frames. Generate up; left mirrors right if Pha Khao Ma reads OK.",
+      "completed_at": "2026-08-31",
+      "pr_number": 13
     },
     {
       "id": "TASK-010",
       "sprint": 1,
       "category": "ui",
       "title": "HUD QA + seasonal tint + screenshot capture hook",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "visual-inspector",
       "files": [
@@ -152,7 +156,10 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/10",
       "github_issue_number": 10,
-      "notes": "Screenshot hook -> user:// PNG for director review per visual task."
+      "notes": "Screenshot hook -> user:// PNG for director review per visual task.",
+      "completed_at": "2026-08-31",
+      "pr_number": 12,
+      "owner_note": "Delivered by parallel design team (F12 hook + --screenshot CLI); PO-verified green in merged main."
     },
     {
       "id": "TASK-011",
