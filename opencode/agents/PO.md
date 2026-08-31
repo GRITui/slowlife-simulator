@@ -2,7 +2,7 @@
 name: po
 description: Product Owner and Task Router for slowlife-simulator
 model: opencode-go/musespark-1.2
-mode: subagent
+mode: primary
 permission:
   edit: allow
   bash: allow
