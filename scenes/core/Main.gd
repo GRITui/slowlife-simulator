@@ -23,6 +23,25 @@ func _ready() -> void:
 	if pl:
 		pl.global_position = Vector2(10 * 32, 8 * 32)
 	# monk already at temple (400,100) = east lane, warm start at cool season 06:00
+	if "--screenshot" in OS.get_cmdline_user_args():
+		for i in 20:
+			await get_tree().process_frame
+		var out := "user://screenshot_auto.png"
+		for arg in OS.get_cmdline_user_args():
+			if arg.begins_with("--screenshot-out="):
+				out = arg.trim_prefix("--screenshot-out=")
+		_capture_screenshot(out)
+		get_tree().quit()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and event.keycode == KEY_F12:
+		_capture_screenshot("user://screenshot_%s.png" % Time.get_datetime_string_from_system().replace(":", "").replace("-", "").replace(" ", "_"))
+
+func _capture_screenshot(path: String) -> void:
+	var img := get_viewport().get_texture().get_image()
+	img.save_png(path)
+	print("Screenshot saved: %s" % path)
+	SignalBus.show_dialogue.emit("Camera", "Screenshot saved.")
 
 func _on_show_dialogue(speaker: String, text: String) -> void:
 	if dialogue_label == null or dialogue_panel == null:

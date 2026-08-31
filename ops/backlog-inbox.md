@@ -56,7 +56,7 @@
 <task_item>
   <id>TASK-010</id>
   <source>OWNER_POPUP</source>
-  <status>READY_FOR_PM</status>
+  <status>NEEDS_OWNER_REVIEW</status>
   <priority>MEDIUM</priority>
   <title>HUD QA + seasonal tint + screenshot capture hook</title>
   <description>Verify HUD anchors + tints per ART_STYLE_GUIDE; add screenshot hook (F12) saving 1600x900 PNG to user:// for director review.</description>
