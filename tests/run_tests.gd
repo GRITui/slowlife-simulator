@@ -1,5 +1,10 @@
 extends SceneTree
-# Headless CI gate: godot --headless --path . --script res://tests/run_tests.gd
+# Headless CI gate: scripts/ci/run_gate.sh content
+# (or directly: godot --headless --path . --script res://tests/run_tests.gd
+#  — but run `godot --headless --import --path .` first on a fresh clone/CI
+#  runner: .godot/imported/ is gitignored, so un-imported textures load as
+#  null headlessly and worldrender checks below can false-fail. See
+#  scripts/ci/run_gate.sh.)
 # Exit 0 = all green, exit 1 = failures. Covers: autoloads, GameData economy,
 # CropData resource, Main scene boot (player spawn + camera), GridManager round-trip.
 

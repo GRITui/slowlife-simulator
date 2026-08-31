@@ -1,7 +1,7 @@
 <squad_metadata>
   <squad_name>backend-automation</squad_name>
   <current_status>ACTIVE</current_status>
-  <active_task_id>ENGINE-001</active_task_id>
+  <active_task_id>ENGINE-005</active_task_id>
   <sprint_completion_percentage>100%</sprint_completion_percentage>
 </squad_metadata>
 
@@ -11,8 +11,16 @@ engine lane (autoloads, SignalBus contract, TimeManager state machine, GridManag
 bounds contract). Separate from the content squad's tests/run_tests.gd — do not merge
 art/content assertions into this file.
 
+ENGINE-005 done: fixed a headless CI false-fail affecting BOTH gates. Root cause:
+.godot/imported/ is gitignored, so a checkout whose .ctex cache predates a
+texture-adding commit gets null texture loads under `godot --headless`. This was
+misdiagnosed as a WorldRender.gd bug (see spatial-physics.md) — actually a missing
+CI step. Fix: scripts/ci/run_gate.sh runs `godot --headless --import --path .`
+before either test suite. Use this script (not the bare godot invocation) on any
+fresh clone or CI runner going forward.
+
 ## Recent Commits / PRs
-(pending first commit on this task)
+(pending PR)
 
 ## Blockers & QA Failures
 (none)

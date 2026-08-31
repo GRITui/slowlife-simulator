@@ -1,6 +1,10 @@
 extends SceneTree
 # Engine CI gate (Backend Orchestrator / @backend-automation):
-#   godot --headless --path . --script res://tests/run_engine_tests.gd
+#   scripts/ci/run_gate.sh engine
+# (or directly: godot --headless --path . --script res://tests/run_engine_tests.gd
+#  — but run `godot --headless --import --path .` first on a fresh clone/CI
+#  runner, since .godot/imported/ is gitignored and un-imported textures
+#  load as null headlessly. See scripts/ci/run_gate.sh.)
 # Exit 0 = all green, exit 1 = failures. Scope: engine-layer only —
 # autoload wiring, SignalBus contract, TimeManager state machine,
 # GridManager spatial bounds contract.

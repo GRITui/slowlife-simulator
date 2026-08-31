@@ -271,6 +271,22 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
       "github_issue_number": 5,
       "notes": "Takes over issue #5 (camera center-lock, zoom 2.2-2.5) framed as render-correctness QA, plus frame/memory profiler overlay."
+    },
+    {
+      "id": "ENGINE-005",
+      "lane": "engine",
+      "category": "ci",
+      "title": "Fix headless CI false-fail: mandatory asset-import pass",
+      "status": "completed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/ci/run_gate.sh",
+        "tests/run_tests.gd",
+        "tests/run_engine_tests.gd"
+      ],
+      "notes": "Root cause of the get_height()-on-null errors / 2 failing worldrender checks on main: .godot/imported/ is gitignored, so a checkout whose .ctex cache predates a texture-adding commit (TASK-006) gets null loads headlessly. Not a WorldRender.gd bug -- no art-squad file changed. Added scripts/ci/run_gate.sh (runs `godot --headless --import` then either/both test suites) and documented it in both test files' headers. Both gates confirmed green after the fix: engine 48/48, content 54/54 (was 52/54).",
+      "completed_at": "2026-08-31"
     }
   ]
 }
