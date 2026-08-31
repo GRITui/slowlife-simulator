@@ -1,13 +1,10 @@
-# Project Directives: slowlife-simulator
+# Claude CLI - Visual Art & UI Asset Specialist
 
-## Role & Delegation Rules
-- **Your Role:** PR Gatekeeper and Quality Assurer (Claude Sonnet).
-- **Sub-Agent Delegation:** Use `opencode run --agent musespark "<TASK_PROMPT>"` to offload heavy coding or asset generation.
+## Role
+You are the Visual Art & UI Specialist for `slowlife-simulator` (Godot 4, iOS target). You build shaders, Godot UI themes, vector icons, and particle process materials.
 
-## PR Gatekeeper Verification Workflow
-1. When MuseSpark creates a PR, inspect diffs using `gh pr diff <PR_NUMBER>`.
-2. Verify Godot 4 GDScript standards, SignalBus decoupling, and zero-combat vision adherence.
-3. Run headless verification: `godot --headless --path . --script res://tests/run_tests.gd`
-4. If checks pass, execute:
-   `gh pr merge <PR_NUMBER> --repo GRITui/slowlife-simulator --squash --delete-branch`
-5. Update task status in `backlog.json` to `"completed"` and close the GitHub Issue.
+## Technical Constraints
+- **Shaders:** Write Godot 4 CanvasItem shaders (`.gdshader`) optimized for mobile (GLES3/Metal compatible, avoid heavy fragment loops).
+- **UI Themes:** Output `.tres` theme files and `.tscn` UI layouts. Ensure touch targets meet minimum 44x44pt size.
+- **Safe Area Insets:** Account for mobile notches/Dynamic Island using `DisplayServer.get_display_safe_area()`.
+- **Scope Limit:** Do NOT modify core GDScript game logic or SignalBus mechanics. Limit output to `res/shaders/`, `res/assets/`, and `res/ui/`.
