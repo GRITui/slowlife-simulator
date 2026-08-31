@@ -1,4 +1,6 @@
 extends Node2D
+var _cached_ring: Node2D = null
+var _cached_bounds: Node = null
 # WorldRender — TASK-007 world render, Hybrid A/B (Isan 20x16 plain + 3x3 lotus maze)
 # Data-driven: zone matrix + prop table below. Builds into parent (Main):
 #   Backdrop (Deep Pond #1565C0) -> GroundLayer (flat 32x32) -> WaterOverlay ->
