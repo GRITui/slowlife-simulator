@@ -31,15 +31,30 @@ func _ready() -> void:
 	SignalBus.season_changed.connect(_on_season_changed)
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
 	SignalBus.crop_growth_progress.connect(_on_crop_progress)
+	SignalBus.inventory_changed.connect(_on_inventory_changed)
+	get_viewport().size_changed.connect(_on_viewport_resized)
 	# init from GameData
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)
+	_on_inventory_changed(GameData.inventory)
+	# prompt starts hidden polished
+	if prompt_label:
+		prompt_label.get_parent().visible = false
+	SignalBus.show_dialogue.connect(_on_show_dialogue_for_prompt)
+
+func _on_viewport_resized() -> void:
+	var vp := get_viewport().get_visible_rect().size
+	var now_mobile := vp.x < 900 or OS.has_feature("mobile")
+	if now_mobile != is_mobile:
+		is_mobile = now_mobile
 
 func _apply_scale() -> void:
 	var s: float = mobile_scale if is_mobile else pc_scale
 	if has_node("Margin"):
 		$Margin.scale = Vector2(s, s)
+	if prompt_label:
+		prompt_label.add_theme_font_size_override("font_size", 12 if is_mobile else 13)
 
 func _on_stamina_changed(cur: float, max_v: float) -> void:
 	_max_stamina = max_v
@@ -78,6 +93,94 @@ func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
 	if crop_label:
 		crop_label.text = "Crop %d/%d" % [progress + 1, max_stage]
+
+var _prompt_tween: Tween
+var _inv_slots: Array = []
+var _inv_labels: Array = []
+
+func _on_inventory_changed(inv: Dictionary) -> void:
+	# Lazy cache slots
+	if _inv_slots.is_empty():
+		var row := get_node_or_null("Margin/Root/InventoryRow")
+		if row:
+			for c in row.get_children():
+				if c is TextureRect:
+					_inv_slots.append(c)
+					# add quantity label as child if missing
+					var lbl := c.get_node_or_null("Qty")
+					if lbl == null:
+						lbl = Label.new()
+						lbl.name = "Qty"
+						lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+						lbl.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+						lbl.add_theme_font_size_override("font_size", 10)
+						lbl.add_theme_color_override("font_color", Color(1,1,1))
+						lbl.add_theme_color_override("font_outline_color", Color(0,0,0,0.8))
+						lbl.add_theme_constant_override("outline_size", 3)
+						c.add_child(lbl)
+						lbl.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+						lbl.offset_left = -18
+						lbl.offset_top = -14
+						lbl.offset_right = -2
+						lbl.offset_bottom = -2
+					_inv_labels.append(lbl)
+	if _inv_slots.is_empty():
+		return
+	# clear
+	for i in _inv_slots.size():
+		var tex_rect: TextureRect = _inv_slots[i] as TextureRect
+		var lbl: Label = _inv_labels[i] as Label
+		tex_rect.texture = load("res://assets/ui/inventory_slot.png") as Texture2D
+		lbl.text = ""
+		lbl.visible = false
+	# fill in order of inventory keys
+	var idx := 0
+	for item_id in inv.keys():
+		if idx >= _inv_slots.size():
+			break
+		var qty: int = int(inv[item_id])
+		if qty <= 0:
+			continue
+		var icon_path := "res://assets/items/%s.png" % item_id
+		# fallback: map seed/crop ids to icon names
+		var map_dict := {
+			"seed_rice": "seed_rice", "seed_pandan": "seed_pandan", "seed_basil": "seed_basil",
+			"seed_lotus": "seed_lotus", "seed_mango": "seed_mango",
+			"rice_grain": "rice_grain", "pandan_leaf": "pandan_leaf", "thai_basil": "thai_basil",
+			"lotus_root": "lotus_root", "mango": "mango"
+		}
+		var mapped: String = map_dict.get(item_id, item_id) as String
+		icon_path = "res://assets/items/%s.png" % mapped
+		if not ResourceLoader.exists(icon_path):
+			# try raw id
+			icon_path = "res://assets/items/%s.png" % item_id
+			if not ResourceLoader.exists(icon_path):
+				idx += 1
+				continue
+		var tex: Texture2D = load(icon_path) as Texture2D
+		if tex:
+			(_inv_slots[idx] as TextureRect).texture = tex
+			(_inv_labels[idx] as Label).text = "x%d" % qty if qty > 1 else ""
+			(_inv_labels[idx] as Label).visible = qty > 1
+		idx += 1
+
+func _on_show_dialogue_for_prompt(speaker: String, text: String) -> void:
+	if not prompt_label or text.length() == 0:
+		return
+	var root: Control = prompt_label.get_parent() as Control
+	if root == null:
+		return
+	# show prompt for short messages
+	if text.length() < 80:
+		prompt_label.text = text
+	root.visible = true
+	if _prompt_tween:
+		_prompt_tween.kill()
+	_prompt_tween = create_tween()
+	root.modulate.a = 1.0
+	_prompt_tween.tween_interval(2.2)
+	_prompt_tween.tween_property(root, "modulate:a", 0.0, 0.5)
+	_prompt_tween.tween_callback(func(): root.visible = false)
 
 # For manual testing
 func set_mobile(v: bool) -> void:
