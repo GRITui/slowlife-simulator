@@ -28,3 +28,6 @@ signal crop_harvested(crop_id: int)
 signal crop_growth_progress(crop_id: int, progress: int, max_stage: int)
 signal day_night_cycle_changed(time_fraction: float)
 signal festival_triggered(festival_name: String)
+
+# TASK-027 accessibility — emitted by Settings UI, consumed by HUD + SaveManager.
+signal settings_changed(font_scale: float, high_contrast: bool)

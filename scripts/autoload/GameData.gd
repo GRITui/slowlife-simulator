@@ -53,6 +53,10 @@ var villager_talked_days: Dictionary = {} # npc_id -> last_day talked
 var binthabat_streak: int = 0
 var last_binthabat_day: int = -1
 
+# TASK-027 accessibility preferences (persisted via SaveManager v2 fields)
+var font_scale: float = 1.0
+var high_contrast: bool = false
+
 func add_item(item_id: String, amount: int = 1) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
 
