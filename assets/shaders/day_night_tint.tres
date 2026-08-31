@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/day_night_tint.gdshader" id="1_dnt"]
+
+[resource]
+shader = ExtResource("1_dnt")
+shader_parameter/day_fraction = 0.25
+shader_parameter/grade_strength = 0.22
