@@ -1,6 +1,8 @@
 extends CharacterBody2D
 
-# MonkNPC — Binthabat morning alms monk (TASK-004)
+const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.gd")
+
+# MonkNPC — Binthabat morning alms monk (TASK-004, seasonal passes TASK-012)
 # Hybrid A/B temple lane east. Zero combat.
 # Interacts via Area2D proximity + "interact" (E/Space).
 # Presence window: 05:00 - 07:30, driven by SignalBus.minute_ticked.
@@ -14,6 +16,7 @@ var current_day: int = -1
 
 var _player_in_range: bool = false
 var _target_position: Vector2 = Vector2(400, 100)
+var _monk_talk_count: int = 0
 
 func _ready() -> void:
 	add_to_group("monk_npc")
@@ -99,10 +102,20 @@ func interact(player_offer_item_id: String) -> bool:
 		SignalBus.show_dialogue.emit("Monk", "The monk has not yet arrived. Please come between 05:00 and 07:30.")
 		return false
 	if has_received_offering_today:
-		SignalBus.show_dialogue.emit("Monk", "Sadhu... I have already received alms today. May you be blessed.")
+		# Seasonal after-offering flavor (TASK-012) — keep Sadhu keyword for legacy.
+		var season_a: String = GameData.current_season if "current_season" in GameData else "cool"
+		var idle_line: String = DialogueDBScript.get_monk_seasonal_idle(season_a, _monk_talk_count)
+		_monk_talk_count += 1
+		SignalBus.show_dialogue.emit("Monk", "Sadhu... I have already received alms today. %s" % idle_line)
 		return false
 	if player_offer_item_id.is_empty():
-		SignalBus.show_dialogue.emit("Monk", "Bring jasmine rice or lotus... an offering of merit will bring harmony.")
+		var season_b: String = GameData.current_season if "current_season" in GameData else "cool"
+		var hint: String = DialogueDBScript.get_seasonal_line("monk", season_b, false, _monk_talk_count)
+		_monk_talk_count += 1
+		# Fallback to original hint if DB returns generic idle
+		if hint == "...":
+			hint = "Bring jasmine rice or lotus... an offering of merit will bring harmony."
+		SignalBus.show_dialogue.emit("Monk", hint)
 		return false
 	if not GameData.binthabat_yields.has(player_offer_item_id):
 		SignalBus.show_dialogue.emit("Monk", "This is not suitable for alms. Bring jasmine rice or lotus...")
@@ -112,7 +125,8 @@ func interact(player_offer_item_id: String) -> bool:
 	var result: int = GameData.offer_bin_thabat(player_offer_item_id, day_to_use)
 	if result > 0:
 		has_received_offering_today = true
-		SignalBus.show_dialogue.emit("Monk", "Sadhu... may your generosity bring harmony (+%d)." % result)
+		var thanks: String = DialogueDBScript.get_monk_thanks(player_offer_item_id, result, GameData.current_season if "current_season" in GameData else "cool")
+		SignalBus.show_dialogue.emit("Monk", thanks)
 		return true
 	else:
 		if not GameData.can_offer_today(day_to_use):
