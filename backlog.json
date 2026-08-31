@@ -476,7 +476,7 @@
       "lane": "engine",
       "category": "audio",
       "title": "Audio engine foundation (music/SFX/ambient bus + SignalBus hooks)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "unassigned",
       "files": [
@@ -485,7 +485,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/39",
       "github_issue_number": 39,
-      "notes": "Found in PR-Gatekeeper engine-lane audit. Zero audio infra despite PROJECT_VISION.md explicitly calling for ambient sounds. Foundation only (bus layout + AudioManager autoload + SignalBus hook points) -- no assets needed yet, must no-op cleanly on missing ids so it can land before content does."
+      "notes": "Found in PR-Gatekeeper engine-lane audit. Zero audio infra despite PROJECT_VISION.md explicitly calling for ambient sounds. Foundation only (bus layout + AudioManager autoload + SignalBus hook points) -- no assets needed yet, must no-op cleanly on missing ids so it can land before content does.",
+      "completed_at": "2026-08-31",
+      "pr_number": 68
     },
     {
       "id": "ENGINE-012",
