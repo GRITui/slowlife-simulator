@@ -727,7 +727,7 @@
       "sprint": 7,
       "category": "performance",
       "title": "Mobile performance budget: draw-call audit + GPUParticles2D caps",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "spatial-architect",
       "files": [
@@ -736,7 +736,9 @@
       ],
       "notes": "Scout Phase 2 research: measurable 60fps A14+ budget (draw calls/particles/memory) for WorldRender prop load. Spec: docs/research/TASK-031-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "PASS 2026-08-31: iOS perf criterion, spec verified, zero-combat safe. Executing via @minimax-m3."
+      "gate_audit": "PASS 2026-08-31: iOS perf criterion, spec verified, zero-combat safe. Executing via @minimax-m3.",
+      "completed_at": "2026-08-31",
+      "pr_number": 85
     },
     {
       "id": "TASK-032",
@@ -785,6 +787,22 @@
         "scripts/autoload/DayNightTintDriver.gd"
       ],
       "notes": "Phase 2 art audit: zero .gdshader files exist in repo; CLAUDE.md's day/night color-grading pillar is unimplemented and distinct from TASK-032's water/foliage scope. Also gives SignalBus.day_night_cycle_changed (0 listeners per QA-AUDIT-2026-08-31) its first consumer. Spec: docs/research/ART-034-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-035",
+      "sprint": 6,
+      "category": "art",
+      "title": "UI touch-target sizing, safe-area insets & cozy theming (Settings/Pause/Title)",
+      "status": "proposed",
+      "priority": "high",
+      "owner": "art-po",
+      "files": [
+        "scenes/ui/Settings.tscn",
+        "scenes/ui/PauseMenu.tscn",
+        "scenes/ui/TitleScreen.tscn"
+      ],
+      "notes": "Phase 2 art audit: Settings.tscn (live) has sub-44pt FontScaleSlider/HighContrastCheck; Pause/Title (dead, unwired) have unstyled default-gray buttons with no safe-area container. Spec: docs/research/ART-035-spec.md",
       "proposed_at": "2026-08-31"
     }
   ]
