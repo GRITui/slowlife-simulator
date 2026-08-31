@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://hud000001"]
+[gd_scene load_steps=7 format=3 uid="uid://hud000001"]
 
 [ext_resource type="Script" path="res://scenes/ui/HUD.gd" id="1_hud"]
+[ext_resource type="Texture2D" path="res://assets/ui/energy_bar.png" id="2_energy"]
+[ext_resource type="Texture2D" path="res://assets/ui/harmony_bar.png" id="3_harmony"]
+[ext_resource type="Texture2D" path="res://assets/ui/season_display.png" id="4_season"]
+[ext_resource type="Texture2D" path="res://assets/ui/action_prompt.png" id="5_prompt"]
+[ext_resource type="Texture2D" path="res://assets/ui/inventory_slot.png" id="6_slot"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -21,6 +26,7 @@ theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 
 [node name="Root" type="VBoxContainer" parent="Margin"]
+alignment = 0
 
 [node name="HBox" type="HBoxContainer" parent="Margin/Root"]
 layout_mode = 2
@@ -36,12 +42,19 @@ text = "Stamina"
 theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
 theme_override_font_sizes/font_size = 12
 
-[node name="StaminaBar" type="ProgressBar" parent="Margin/Root/HBox/StaminaBox"]
-custom_minimum_size = Vector2(200, 12)
+[node name="StaminaBar" type="TextureProgressBar" parent="Margin/Root/HBox/StaminaBox"]
+custom_minimum_size = Vector2(128, 28)
 layout_mode = 2
 max_value = 100.0
 value = 100.0
 show_percentage = false
+under_texture = ExtResource("2_energy")
+progress_texture = ExtResource("2_energy")
+tint_under = Color(1, 1, 1, 1)
+tint_progress = Color(0.68, 0.83, 0.5, 1)
+tint_over = Color(1, 1, 1, 1)
+fill_mode = 1
+nine_patch_stretch = false
 
 [node name="HarmonyBox" type="VBoxContainer" parent="Margin/Root/HBox"]
 custom_minimum_size = Vector2(180, 0)
@@ -53,25 +66,52 @@ text = "Harmony"
 theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
 theme_override_font_sizes/font_size = 12
 
-[node name="HarmonyBar" type="ProgressBar" parent="Margin/Root/HBox/HarmonyBox"]
-custom_minimum_size = Vector2(180, 12)
+[node name="HarmonyBar" type="TextureProgressBar" parent="Margin/Root/HBox/HarmonyBox"]
+custom_minimum_size = Vector2(128, 28)
 layout_mode = 2
 max_value = 100.0
 value = 0.0
 show_percentage = false
+under_texture = ExtResource("3_harmony")
+progress_texture = ExtResource("3_harmony")
+tint_under = Color(1, 1, 1, 1)
+tint_progress = Color(0.95, 0.56, 0.69, 1)
+fill_mode = 1
 
-[node name="SeasonBox" type="VBoxContainer" parent="Margin/Root/HBox"]
-custom_minimum_size = Vector2(100, 0)
+[node name="SeasonBox" type="Control" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(128, 42)
 layout_mode = 2
 
-[node name="SeasonLabelLabel" type="Label" parent="Margin/Root/HBox/SeasonBox"]
+[node name="SeasonBg" type="TextureRect" parent="Margin/Root/HBox/SeasonBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_season")
+stretch_mode = 1
+expand_mode = 0
+
+[node name="SeasonVBox" type="VBoxContainer" parent="Margin/Root/HBox/SeasonBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="SeasonLabelLabel" type="Label" parent="Margin/Root/HBox/SeasonBox/SeasonVBox"]
 layout_mode = 2
+horizontal_alignment = 1
 text = "Season"
 theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 10
 
-[node name="SeasonLabel" type="Label" parent="Margin/Root/HBox/SeasonBox"]
+[node name="SeasonLabel" type="Label" parent="Margin/Root/HBox/SeasonBox/SeasonVBox"]
 layout_mode = 2
+horizontal_alignment = 1
 text = "Cool"
 theme_override_font_sizes/font_size = 13
 
@@ -100,10 +140,58 @@ layout_mode = 2
 text = "Crop --/--"
 theme_override_font_sizes/font_size = 12
 
-[node name="ActionPrompt" type="Label" parent="Margin/Root"]
-custom_minimum_size = Vector2(200, 32)
+[node name="InventoryRow" type="HBoxContainer" parent="Margin/Root"]
 layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 0
+
+[node name="Slot1" type="TextureRect" parent="Margin/Root/InventoryRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("6_slot")
+stretch_mode = 1
+
+[node name="Slot2" type="TextureRect" parent="Margin/Root/InventoryRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("6_slot")
+stretch_mode = 1
+
+[node name="Slot3" type="TextureRect" parent="Margin/Root/InventoryRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("6_slot")
+stretch_mode = 1
+
+[node name="Slot4" type="TextureRect" parent="Margin/Root/InventoryRow"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+texture = ExtResource("6_slot")
+stretch_mode = 1
+
+[node name="ActionPrompt" type="Control" parent="Margin/Root"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+
+[node name="PromptBg" type="TextureRect" parent="Margin/Root/ActionPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_prompt")
+stretch_mode = 1
+
+[node name="PromptLabel" type="Label" parent="Margin/Root/ActionPrompt"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 horizontal_alignment = 1
+vertical_alignment = 1
 text = "Press [E] to interact"
 theme_override_colors/font_color = Color(0.54901963, 0.43137255, 0.3882353, 1)
 theme_override_font_sizes/font_size = 13
