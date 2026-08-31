@@ -1,7 +1,7 @@
 ---
 name: po
 description: Product Owner managing execution sprints, inbox polling, sub-agent delegation, and autonomous innovation loops
-model: opencode-go/muse-spark-1.2-contributor
+model: opencode-go/GLM-5.3-Flash
 mode: primary
 permission:
   edit: allow
