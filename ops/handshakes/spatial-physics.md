@@ -14,15 +14,18 @@ and collision bounds were already delivered by the art squad's TASK-007
 WorldRender.gd, Main.tscn, or any art-squad file.
 
 ## Recent Commits / PRs
-(pending PR)
+(pending PR for ENGINE-002; ENGINE-005 CI-import-fix in same lane, owned by @backend-automation)
 
 ## Blockers & QA Failures
-FYI (not touched, out of engine-lane scope): WorldRender.gd's _build_bamboo_ring /
-_base_sprite call tex.get_height() unguarded — some tall-art textures return null
-under headless load (missing .import cache?), throwing 77x "Cannot call method
-'get_height' on a null value" per test run and leaking 77 CanvasItem RIDs. Both
-run_tests.gd and run_engine_tests.gd still exit green since it's non-fatal, but
-worth the art PO's attention.
+RESOLVED (root cause found, ENGINE-005): the get_height()-on-null / 77 leaked
+CanvasItem RIDs was not a WorldRender.gd bug — .godot/imported/ is gitignored
+and this checkout's .ctex cache predated the TASK-006 tall-art commit, so
+headless `load()` returned null for those textures. Confirmed by running
+`godot --headless --import --path .` once: both gates went fully green with
+zero script errors (content gate had actually regressed to 52/54, now 54/54).
+Added scripts/ci/run_gate.sh to make the import pass a mandatory first step
+for any fresh clone/CI runner, and noted it in both test files' headers.
+No WorldRender.gd code changes were needed or made.
 
 ## Cross-Squad Requests
 (none)
