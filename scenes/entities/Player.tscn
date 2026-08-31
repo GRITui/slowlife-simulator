@@ -126,9 +126,8 @@ autoplay = "idle"
 shape = SubResource("RectangleShape2D_pl")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-current = true
-zoom = Vector2(1, 1)
-limit_smoothed = true
-position_smoothing_enabled = true
-drag_horizontal_enabled = true
-drag_vertical_enabled = true
+enabled = true
+zoom = Vector2(1.6667, 1.6667)
+position_smoothing_enabled = false
+drag_horizontal_enabled = false
+drag_vertical_enabled = false

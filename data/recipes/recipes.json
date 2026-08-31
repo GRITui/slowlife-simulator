@@ -1,0 +1,44 @@
+{
+  "recipes": [
+    {
+      "id": "pandan_sticky_rice",
+      "display_name": "Pandan Sticky Rice",
+      "description": "Mortar & pestle + clay stove. Monsoon harvest.",
+      "inputs": {"pandan_leaf": 2, "rice_grain": 3},
+      "stamina_cost": 6,
+      "harmony_reward": 6,
+      "requires_infrastructure": "sluice_gate",
+      "season": "monsoon"
+    },
+    {
+      "id": "thai_basil_stirfry",
+      "display_name": "Thai Basil Stir-fry",
+      "description": "Quick wok on clay stove, cool season aroma.",
+      "inputs": {"thai_basil": 3, "rice_grain": 2},
+      "stamina_cost": 5,
+      "harmony_reward": 5,
+      "requires_infrastructure": "",
+      "season": "cool"
+    },
+    {
+      "id": "mango_sticky_rice",
+      "display_name": "Mango Sticky Rice",
+      "description": "Hot season festival dessert.",
+      "inputs": {"mango": 2, "rice_grain": 2, "pandan_leaf": 1},
+      "stamina_cost": 8,
+      "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": "hot"
+    },
+    {
+      "id": "lotus_soup",
+      "display_name": "Lotus Root Soup",
+      "description": "Mazes of the islet, mortar & clay stove slow cook.",
+      "inputs": {"lotus_root": 2, "thai_basil": 1},
+      "stamina_cost": 7,
+      "harmony_reward": 7,
+      "requires_infrastructure": "sluice_gate",
+      "season": "monsoon"
+    }
+  ]
+}

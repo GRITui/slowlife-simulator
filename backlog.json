@@ -240,7 +240,7 @@
       "files": [
         "scripts/core/NavGrid.gd"
       ],
-      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes — caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
+      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes \u2014 caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
       "completed_at": "2026-08-31"
     },
     {
@@ -254,7 +254,7 @@
       "files": [
         "scripts/persistence/"
       ],
-      "notes": "Greenfield — no persistence layer exists yet."
+      "notes": "Greenfield \u2014 no persistence layer exists yet."
     },
     {
       "id": "ENGINE-004",
@@ -335,6 +335,184 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
       "github_issue_number": 29,
       "notes": "Found in PR-Gatekeeper audit. ENGINE-002 shipped a correct, unit-tested A* pathfinder with zero in-game callers -- only tests/run_engine_tests.gd instantiates it. Likely first consumer: MonkNPC scripted walk, scoped with narrative-lead given TASK-012 overlap."
+    },
+    {
+      "id": "TASK-015",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Wire redesigned UI art into HUD.tscn",
+      "status": "completed",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/25",
+      "github_issue_number": 25,
+      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: assets/ui/{energy_bar,harmony_bar,action_prompt,season_display,inventory_slot}.png exist but HUD.tscn still renders via plain ProgressBar/Label/ColorRect. Visual swap only, keep SignalBus wiring. Merged PR #32 (squash).",
+      "completed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-016",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Tileset shading/detail pass to match character sprite fidelity",
+      "status": "todo",
+      "priority": "low",
+      "owner": "visual-inspector",
+      "files": [
+        "assets/tilesets/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/26",
+      "github_issue_number": 26,
+      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: ground tilesets read flatter/more repetitive than the soft-shaded character/prop art. Backdrop void beyond bamboo ring also a flat single-color fill. Art-only, no dimension changes."
+    },
+    {
+      "id": "TASK-017",
+      "sprint": 3,
+      "category": "gameplay",
+      "title": "Title screen + pause menu + settings flow",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/",
+        "scenes/core/Main.tscn"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/45",
+      "github_issue_number": 45,
+      "notes": "Gap-research finding: game boots straight into Main.tscn, no title/pause/settings/quit flow at all. Settings screen should be structured ready for TASK-021's volume controls."
+    },
+    {
+      "id": "TASK-018",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Inventory UI \u2014 display GameData.inventory contents",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd",
+        "scripts/autoload/SignalBus.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/44",
+      "github_issue_number": 44,
+      "notes": "Gap-research finding: GameData.inventory is fully functional (add/remove/has_item all wired) and TASK-015 wired inventory_slot.png border art, but nothing renders held items -- no icons, no quantities. Depends on TASK-019 for icon art.",
+      "depends_on": "TASK-019"
+    },
+    {
+      "id": "TASK-019",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Item icon art set (crops + recipe outputs)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "data-pipeline",
+      "files": [
+        "assets/items/"
+      ],
+      "pr_number": 48,
+      "completed_at": "2026-08-31",
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/43",
+      "github_issue_number": 43,
+      "notes": "Gap-research finding: no per-item icon art exists for any of the 5 crops (data/crops/) or 4 recipe outputs (data/recipes/recipes.json), blocking TASK-018. 48x48 canon, soft-shaded technique matching character/environment art."
+    },
+    {
+      "id": "TASK-020",
+      "sprint": 3,
+      "category": "mechanics",
+      "title": "Buffalo care mechanic",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/entities/",
+        "scripts/autoload/GameData.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/46",
+      "github_issue_number": 46,
+      "notes": "Gap-research finding: PROJECT_VISION.md names buffalo care as a core cultural mechanic and 5 buffalo sprites already exist (assets/characters/animal_buffalo_*), but zero code references buffalo anywhere -- dead art, no mechanic. Pattern off MonkNPC."
+    },
+    {
+      "id": "TASK-021",
+      "sprint": 3,
+      "category": "audio",
+      "title": "Ambient audio system (music + SFX)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "data-pipeline",
+      "files": [
+        "scripts/autoload/AudioManager.gd",
+        "assets/audio/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/47",
+      "github_issue_number": 47,
+      "notes": "Gap-research finding: zero audio in the project -- no assets, no AudioStreamPlayer usage anywhere, despite PROJECT_VISION's explicit 'ambient sounds' Magnify pillar. Seasonal ambient loop + SignalBus-driven action SFX, volume bus ready for TASK-017's settings screen."
+    },
+    {
+      "id": "ENGINE-009",
+      "lane": "engine",
+      "category": "ci",
+      "title": "Wire engine/content test gates into GitHub Actions CI",
+      "status": "todo",
+      "priority": "high",
+      "owner": "unassigned",
+      "files": [
+        ".github/workflows/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/37",
+      "github_issue_number": 37,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. No .github/workflows exists -- ENGINE-001s test gate (run_engine_tests.gd) and scripts/ci/run_gate.sh are never run automatically on a PR. Also closes the gap where the review environment itself has no Godot binary to run the gate manually."
+    },
+    {
+      "id": "ENGINE-010",
+      "lane": "engine",
+      "category": "architecture",
+      "title": "Game-state flow -- main menu, pause menu, save/load UI hookup",
+      "status": "todo",
+      "priority": "high",
+      "owner": "unassigned",
+      "files": [
+        "scenes/core/Main.tscn",
+        "scenes/ui/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/38",
+      "github_issue_number": 38,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. Game boots directly into Main.tscn -- no title screen, no pause, no in-game caller for ENGINE-003s save/load once it lands. Needs New Game/Continue flow, a pause layer (new input action), and SignalBus save/load feedback wired to show_dialogue."
+    },
+    {
+      "id": "ENGINE-011",
+      "lane": "engine",
+      "category": "audio",
+      "title": "Audio engine foundation (music/SFX/ambient bus + SignalBus hooks)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "unassigned",
+      "files": [
+        "scripts/autoload/",
+        "default_bus_layout.tres"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/39",
+      "github_issue_number": 39,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. Zero audio infra despite PROJECT_VISION.md explicitly calling for ambient sounds. Foundation only (bus layout + AudioManager autoload + SignalBus hook points) -- no assets needed yet, must no-op cleanly on missing ids so it can land before content does."
+    },
+    {
+      "id": "ENGINE-012",
+      "lane": "engine",
+      "category": "input",
+      "title": "Mobile touch input (virtual joystick + tap-to-interact)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "unassigned",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/41",
+      "github_issue_number": 41,
+      "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes."
     }
   ]
 }

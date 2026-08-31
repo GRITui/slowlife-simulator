@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_pandan011"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/rice_paddy_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/rice_paddy_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/rice_paddy_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/rice_paddy_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "pandan"
+display_name = "Pandan"
+description = "Fragrant leaves for sticky rice. Unlocks after sluice gate repair — Reverse pillar."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([180, 240, 300, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 0.9,
+"monsoon": 1.3,
+"cool": 1.0
+}
+season_growth_speed = {
+"hot": 0.8,
+"monsoon": 1.2,
+"cool": 1.0
+}
+allowed_seasons = Array[String](["monsoon", "cool"])
+requires_water = true
+yield_item_id = "pandan_leaf"
+yield_amount = 4
+harmony_value = 3
+stamina_cost_plant = 6.0
+stamina_cost_harvest = 4.0
+seed_item_id = "seed_pandan"
+regrow_after_harvest = false
+required_infrastructure = "sluice_gate"
