@@ -34,6 +34,20 @@ var binthabat_yields: Dictionary = {
 var daily_offerings: int = 0
 var last_offering_day: int = -1
 
+# TASK-025 Evening Market Stall — 1:1 barter pairings per season.
+# Bidirectional: (have=sticky_rice, want=rice_grain) and (have=rice_grain,
+# want=sticky_rice) are both accepted during the cool season.
+# Item ids reuse binthabat_yields entries so the market cycles crops the
+# player can actually grow (cool = paddy core, hot = mango, monsoon = lotus).
+# Note: typed Dictionary[String, Array[String]] isn't supported in 4.7
+# (nested typed collections are a 4.4+ feature but parse-rejected here).
+# Use untyped Dictionary + manual casting at the lookup site.
+const BARTER_PAIRS: Dictionary = {
+	"cool": ["sticky_rice", "rice_grain"],
+	"hot": ["mango", "lotus_root"],
+	"monsoon": ["lotus_root", "sticky_rice"],
+}
+
 # Village dialogue / seasonal quest state (TASK-012) — cozy, no heavy exposition
 var villager_talked_days: Dictionary = {} # npc_id -> last_day talked
 var binthabat_streak: int = 0
@@ -64,6 +78,30 @@ func repair_infrastructure(structure_id: String) -> void:
 
 func is_repaired(structure_id: String) -> bool:
 	return infrastructure.get(structure_id, false)
+
+# --- TASK-025 Market Stall 1:1 barter ---
+
+func _is_valid_barter_pair(have_id: String, want_id: String) -> bool:
+	# Bidirectional pair check: any pair (a, b) is also accepted as (b, a).
+	for pair in BARTER_PAIRS.values():
+		var p: Array = pair as Array
+		if (p[0] == have_id and p[1] == want_id) or (p[0] == want_id and p[1] == have_id):
+			return true
+	return false
+
+func barter(have_id: String, want_id: String) -> bool:
+	# Validates inventory ownership and pair membership before mutating.
+	# Soft-fail returns false (no exception, no removal) — the caller emits
+	# a "Not enough to trade." dialogue. Zero combat, zero gold, zero fail.
+	if not _is_valid_barter_pair(have_id, want_id):
+		return false
+	if not has_item(have_id, 1):
+		return false
+	if not remove_item(have_id, 1):
+		return false
+	add_item(want_id, 1)
+	SignalBus.barter_completed.emit(have_id, want_id)
+	return true
 
 func reset_stamina() -> void:
 	current_stamina = max_stamina

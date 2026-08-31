@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://market_stall_025"]
+
+[ext_resource type="Script" path="res://scenes/entities/MarketStallNPC.gd" id="1_stall"]
+[ext_resource type="Script" path="res://scripts/market/MarketManager.gd" id="2_mm"]
+[ext_resource type="Texture2D" path="res://assets/environment/clay_stove_tall.png" id="3_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(32, 24)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 48.0
+
+[node name="MarketStall" type="StaticBody2D" groups=["market_stall"]]
+script = ExtResource("1_stall")
+collision_layer = 2
+collision_mask = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_tex")
+position = Vector2(0, -8)
+centered = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_interact")
+
+[node name="MarketManager" type="Node" parent="."]
+script = ExtResource("2_mm")

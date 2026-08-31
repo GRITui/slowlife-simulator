@@ -11,6 +11,7 @@ signal stamina_changed(current_stamina: float, max_stamina: float)
 signal binthabat_offered(item_id: String, harmony_yield: int)
 signal infrastructure_repaired(structure_id: String)
 signal show_dialogue(speaker_name: String, text: String)
+signal barter_completed(have_id: String, want_id: String)
 
 # Reference registry (ENGINE-006) — set once by the owning system on _ready(),
 # read directly instead of hard node paths / scene-tree walks. Not a signal
