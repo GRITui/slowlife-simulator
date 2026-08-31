@@ -105,3 +105,14 @@ func update_prompt_for_proximity(has_target: bool, action: String = "Press [E] t
 # For manual testing
 func set_mobile(v: bool) -> void:
 	is_mobile = v
+// TASK-018 Inventory UI — display GameData.inventory
+func refresh_inventory() -> void:
+  var slots: Array = [$Margin/Root/InventoryRow/Slot1, $Margin/Root/InventoryRow/Slot2, $Margin/Root/InventoryRow/Slot3, $Margin/Root/InventoryRow/Slot4] if has_node("Margin/Root/InventoryRow/Slot1") else []
+  var idx: int = 0
+  for item_id in GameData.inventory.keys():
+    if idx >= slots.size(): break
+    var qty: int = int(GameData.inventory[item_id])
+    # Show quantity via tooltip; icon wiring via TASK-019 assets/items
+    var tex: Texture2D = slots[idx].texture
+    slots[idx].tooltip_text = "%s x%d" % [item_id, qty]
+    idx += 1
