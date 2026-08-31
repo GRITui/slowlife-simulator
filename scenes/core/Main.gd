@@ -43,6 +43,18 @@ func _ready() -> void:
 	_ensure_profiler_overlay()
 	# TASK-044: banana harvest unlock at the existing banana prop (4,12).
 	_ensure_banana_tree()
+	# TASK-046: Songkran festival trigger (hot season day 3).
+	_ensure_songkran()
+
+func _ensure_songkran() -> void:
+	if get_node_or_null("SongkranTrigger") != null:
+		return
+	var script: GDScript = load("res://scenes/festival/SongkranTrigger.gd")
+	if script == null:
+		return
+	var trigger: Node = script.new()
+	trigger.name = "SongkranTrigger"
+	add_child(trigger)
 
 func _ensure_banana_tree() -> void:
 	if get_node_or_null("BananaTree") != null:
