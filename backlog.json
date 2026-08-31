@@ -254,7 +254,7 @@
       "sprint": 3,
       "category": "ui",
       "title": "Tileset shading/detail pass to match character sprite fidelity",
-      "status": "todo",
+      "status": "completed",
       "priority": "low",
       "owner": "visual-inspector",
       "files": [
@@ -262,7 +262,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/26",
       "github_issue_number": 26,
-      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: ground tilesets read flatter/more repetitive than the soft-shaded character/prop art. Backdrop void beyond bamboo ring also a flat single-color fill. Art-only, no dimension changes."
+      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: ground tilesets read flatter/more repetitive than the soft-shaded character/prop art. Backdrop void beyond bamboo ring also a flat single-color fill. Art-only, no dimension changes.",
+      "completed_at": "2026-08-31",
+      "pr_number": 59
     },
     {
       "id": "TASK-017",
