@@ -820,44 +820,50 @@
       "sprint": 8,
       "category": "art",
       "title": "Wire existing NPC/animal walk-cycle art into live scenes (MonkNPC, villager NPCs, Buffalo)",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "high",
       "owner": "art-po",
       "files": [
         "scenes/entities/MonkNPC.tscn",
         "scenes/entities/Buffalo.tscn"
       ],
-      "notes": "Head-of-Art sprint 1/10: full walk-cycle frame art already exists unused in assets/characters/; pure .tscn wiring, no engine dep. Spec: docs/research/ART-036-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 1/10: MonkNPC.tscn + Buffalo.tscn converted Sprite2D->AnimatedSprite2D with idle+walk/grazing SpriteFrames from existing unused character art, default autoplay=idle (no movement-state script hook, per guardrails). VillagerNPC.tscn needs no change -- it's stationary, idle-only was already correct (walk frames not applicable). Gates: content 100/100, engine 50/50. Spec: docs/research/ART-036-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01",
+      "pr_number": 90
     },
     {
       "id": "TASK-037",
       "sprint": 8,
       "category": "art",
       "title": "Player action animations: hoe/plant, harvest, carrying-crop",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "high",
       "owner": "art-po",
       "files": [
         "scenes/entities/Player.tscn"
       ],
-      "notes": "Head-of-Art sprint 2/10: new frame art required (unlike TASK-036). Trigger hookup documented for @po, Player.gd not touched by this task. Spec: docs/research/ART-037-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 2/10: hoe (4f), harvest (4f), walk_carrying (4f) animation tracks added to Player.tscn's SpriteFrames, non-looping for hoe/harvest so a future trigger can play-once. IMPORTANT: frame art is procedurally generated placeholder (base idle/walk pose + simple tool/crop overlay via PIL), not hand-crafted to match the existing 73-color soft-shaded redesign quality -- flagged for a real art pass. Default animation stays 'idle', existing behavior unaffected. Trigger hookup (Player.gd calling .play('hoe'/'harvest')) intentionally left to @po per guardrails. Gates: content 100/100, engine 50/50. Spec: docs/research/ART-037-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01"
     },
     {
       "id": "TASK-038",
       "sprint": 8,
       "category": "art",
       "title": "Monsoon rain particle system (GPUParticles2D)",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "medium",
       "owner": "art-po",
       "files": [
         "assets/particles/rain.tres",
-        "scripts/autoload/RainDriver.gd"
+        "assets/particles/rain_streak.png",
+        "scenes/core/RainDriver.gd",
+        "scenes/core/Main.tscn"
       ],
-      "notes": "Head-of-Art sprint 3/10: zero GPUParticles2D exist in repo despite CLAUDE.md mandate; TASK-031 perf budget already reserved headroom for this. Spec: docs/research/ART-038-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 3/10: RainLayer CanvasLayer + GPUParticles2D wired into Main.tscn (amount=180, within TASK-031's <=200 peak cap), gated by SignalBus.season_changed via RainDriver.gd (bus-only, same pattern as SeasonShaderDriver/DayNightTintDriver). Gates: content 100/100, engine 50/50. Spec: docs/research/ART-038-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01"
     },
     {
       "id": "TASK-039",
