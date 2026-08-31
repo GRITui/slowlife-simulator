@@ -98,15 +98,17 @@
       "sprint": 1,
       "category": "gameplay",
       "title": "World render: 20x16 tilemap matrix + Y-sort layers + bounds + edge dressing",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "spatial-architect",
       "files": [
-        "scenes/core/Main.tscn"
+        "scenes/core/Main.tscn",
+        "scenes/core/WorldRender.gd"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/8",
       "github_issue_number": 8,
-      "notes": "Hybrid A/B locked layout; bamboo ring + Deep Pond backdrop; consumes TASK-006 art."
+      "notes": "Data-driven WorldRender.gd: zone matrix (paddock/pond/temple/home/pasture/canal/maze), TileMapLayer ground z=-20 + water overlay z=-14, bamboo ring 76 walls z=-5, tall-art props direct under Main (y_sort_enabled), Bounds 4 colliders matching Player clamp, Deep Pond #1565C0 backdrop. Monk moved to temple lane (560,112). Tests 54/54.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-008",
