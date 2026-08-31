@@ -212,6 +212,62 @@
         "scenes/ui/HUD.tscn"
       ],
       "notes": "Dynamic UI scaling PC 100% / mobile 80%."
+    },
+    {
+      "id": "ENGINE-001",
+      "lane": "engine",
+      "category": "ci",
+      "title": "Stand up res://tests/run_engine_tests.gd as engine-lane merge gate",
+      "status": "completed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "tests/run_engine_tests.gd"
+      ],
+      "notes": "Autoload wiring, SignalBus contract, TimeManager state machine, GridManager bounds contract. 40/40 green. Separate from content squad's tests/run_tests.gd.",
+      "completed_at": "2026-08-31"
+    },
+    {
+      "id": "ENGINE-002",
+      "lane": "engine",
+      "category": "spatial",
+      "title": "Tilemap matrix engine layer + collision bounds + A* pathfinding scaffold",
+      "status": "todo",
+      "priority": "high",
+      "owner": "spatial-physics",
+      "files": [
+        "scripts/core/"
+      ],
+      "notes": "Engine-layer slice of TASK-007 only (no Y-sort/edge-dressing art — that stays with the art PO)."
+    },
+    {
+      "id": "ENGINE-003",
+      "lane": "engine",
+      "category": "persistence",
+      "title": "Save/load state machine + JSON schema for player/world state",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "data-persistence",
+      "files": [
+        "scripts/persistence/"
+      ],
+      "notes": "Greenfield — no persistence layer exists yet."
+    },
+    {
+      "id": "ENGINE-004",
+      "lane": "engine",
+      "category": "profiling",
+      "title": "Camera lock/zoom render-QA + profiler overlay hook",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "profiler-inspector",
+      "files": [
+        "scenes/entities/Player.tscn",
+        "scenes/entities/Player.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
+      "github_issue_number": 5,
+      "notes": "Takes over issue #5 (camera center-lock, zoom 2.2-2.5) framed as render-correctness QA, plus frame/memory profiler overlay."
     }
   ]
 }
