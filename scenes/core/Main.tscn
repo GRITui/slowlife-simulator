@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://main000001"]
+[gd_scene load_steps=8 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/Main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scenes/core/WorldRender.gd" id="1_wr"]
 [ext_resource type="PackedScene" path="res://scenes/core/TimeManager.tscn" id="2_tm"]
 [ext_resource type="PackedScene" path="res://scenes/core/GridManager.tscn" id="3_gm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/MonkNPC.tscn" id="4_monk"]
@@ -8,7 +9,11 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
 
 [node name="Main" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_main")
+
+[node name="WorldRender" type="Node2D" parent="."]
+script = ExtResource("1_wr")
 
 [node name="TimeManager" parent="." instance=ExtResource("2_tm")]
 
@@ -16,7 +21,8 @@ script = ExtResource("1_main")
 position = Vector2(0, 0)
 
 [node name="MonkNPC" parent="." instance=ExtResource("4_monk")]
-position = Vector2(400, 100)
+position = Vector2(560, 112)
+temple_position = Vector2(560, 112)
 
 [node name="Player" parent="." instance=ExtResource("5_pl")]
 position = Vector2(320, 256)

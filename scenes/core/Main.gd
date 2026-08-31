@@ -9,6 +9,11 @@ extends Node2D
 var _dialogue_tween: Tween
 
 func _ready() -> void:
+	# world render first (TASK-007): builds layers/props/bounds into Main now that
+	# children are readied
+	var wr := get_node_or_null("WorldRender")
+	if wr and wr.has_method("build"):
+		wr.build(self)
 	SignalBus.show_dialogue.connect(_on_show_dialogue)
 	SignalBus.season_changed.connect(_on_season_tint)
 	SignalBus.weather_changed.connect(_on_weather)
@@ -22,7 +27,7 @@ func _ready() -> void:
 	var pl := get_node_or_null("Player")
 	if pl:
 		pl.global_position = Vector2(10 * 32, 8 * 32)
-	# monk already at temple (400,100) = east lane, warm start at cool season 06:00
+	# monk on temple lane E (cell 17,3), warm start at cool season 06:00
 	if "--screenshot" in OS.get_cmdline_user_args():
 		for i in 20:
 			await get_tree().process_frame

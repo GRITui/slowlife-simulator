@@ -12,8 +12,7 @@ func _on_stamina_sig(_c: float, _m: float) -> void:
 	_sig_hits += 1
 
 func _initialize() -> void:
-	_run_all()
-	quit(1 if _failed > 0 else 0)
+	_run_all() # async: resumes across process frames, quits itself when done
 
 func _run_all() -> void:
 	_section = "autoloads"
@@ -64,6 +63,10 @@ func _run_all() -> void:
 	var main: Node = main_scene.instantiate() if main_scene else null
 	if main:
 		root.add_child(main)
+		# In --script mode _ready propagation lands on the next process frame(s):
+		# let the tree run so Main._ready fires (WorldRender build) before checks.
+		await process_frame
+		await process_frame
 		var player := main.get_node_or_null("Player")
 		_check(player != null, "Player node present")
 		if player:
@@ -76,6 +79,28 @@ func _run_all() -> void:
 		_check(main.get_node_or_null("GridManager") != null, "GridManager present")
 		_check(main.get_node_or_null("MonkNPC") != null, "MonkNPC present")
 		_check(main.get_node_or_null("HUD") != null, "HUD present")
+
+		_section = "worldrender"
+		var wr: Node = main.get_node_or_null("WorldRender")
+		_check(wr != null, "WorldRender present")
+		if wr:
+			_check(main.y_sort_enabled, "Main Y-sort enabled (3/4 canon REV 2)")
+			_check(wr.ground_at(Vector2i(5, 5)) == "plantable_soil", "paddy center is plantable soil")
+			_check(wr.ground_at(Vector2i(10, 6)) == "plantable_soil", "paddy core plantable")
+			_check(wr.ground_at(Vector2i(2, 1)) == "water_lotuspond", "lotus pond NW")
+			_check(wr.ground_at(Vector2i(12, 13)) == "canal", "canal row 13")
+			_check(wr.ground_at(Vector2i(15, 11)) == "deep_pond", "lotus maze 3x3 deep pond at (14,10)")
+			_check(wr.ground_at(Vector2i(17, 3)) == "structure_floor", "temple lane E floor")
+			_check(wr.ground_at(Vector2i(6, 13)) == "ground_grass", "buffalo pasture S grass")
+			_check(wr.ring_count() == 76, "bamboo ring 1 tile outside 20x16 map (76 walls)")
+			_check(wr.prop_count() >= 15, "standing props added under Main for Y-sort")
+			var bounds: Node = main.get_node_or_null("Bounds")
+			_check(bounds != null and bounds.get_child_count() == 4, "bounds colliders: 4 walls matching Player clamp")
+			var bd: Node = main.get_node_or_null("Backdrop")
+			_check(bd != null and (bd.color as Color).is_equal_approx(Color("#1565C0")), "Deep Pond #1565C0 backdrop")
+			var monk: Node = main.get_node_or_null("MonkNPC")
+			if monk:
+				_check(monk.global_position.distance_to(Vector2(560, 112)) < 1.0, "monk on temple lane E (560,112)")
 
 		_section = "gridmanager"
 		var gm: Node = main.get_node_or_null("GridManager")
@@ -106,6 +131,7 @@ func _run_all() -> void:
 	print("\n=== TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
 		push_error("CI GATE FAILED: %d failing checks in sections [%s]" % [_failed, _sections_failed])
+	quit(1 if _failed > 0 else 0)
 
 var _sections_failed: String = ""
 

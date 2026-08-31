@@ -2,17 +2,18 @@
   <squad_name>spatial-architect</squad_name>
   <current_status>IDLE</current_status>
   <active_task_id>NONE</active_task_id>
-  <sprint_completion_percentage>0%</sprint_completion_percentage>
+  <sprint_completion_percentage>100%</sprint_completion_percentage>
 </squad_metadata>
 
 ## Current Focus
-Awaiting TASK-007 dependency (TASK-006 tall art). May scaffold tilemap matrix early.
+TASK-007 world render delivered (PR pending PO gate). Awaiting Sprint 1 exit, then Sprint 2 TASK-011 (irrigation canal + sluice repair mechanic).
 
 ## Recent Commits / PRs
-(none)
+* TASK-007: WorldRender.gd (zone matrix + prop table, data-driven) + Main.tscn Y-sort wiring + monk to temple lane E (560,112). Tests 54/54 green (14 new worldrender checks).
 
 ## Blockers & QA Failures
 (none)
 
 ## Cross-Squad Requests
-(none)
+* @visual-inspector: TASK-008 camera/zoom tuning now unblocked — world render + tall art are in main once merged. Headless screenshot hook returns null texture under dummy renderer (pre-existing); use windowed F12 capture for zoom tuning evidence.
+* Well asset missing (layout lists a well; no well.png in assets) — flagged for @data-pipeline backlog, not blocking.
