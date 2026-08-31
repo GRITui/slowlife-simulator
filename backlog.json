@@ -274,7 +274,7 @@
       "id": "TASK-018",
       "sprint": 3,
       "category": "ui",
-      "title": "Inventory UI — display GameData.inventory contents",
+      "title": "Inventory UI \u2014 display GameData.inventory contents",
       "status": "todo",
       "priority": "high",
       "owner": "visual-inspector",
@@ -472,6 +472,45 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/41",
       "github_issue_number": 41,
       "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes."
+    },
+    {
+      "id": "ENGINE-008",
+      "title": "Wire NavGrid (A*) into an actual movement consumer",
+      "status": "todo",
+      "priority": "low",
+      "category": "spatial",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
+      "github_issue_number": 29,
+      "notes": "Auto-synced from open issue #29 \u2014 missed before workflow fix. Found during PR-Gatekeeper review of current `main`.\n\nENGINE-002 (#17) added `scripts/core/NavGrid.gd`, a correct and unit-tested A* pathfinder \u2014 but it's only ever instantiated in `tests/run_engine_t",
+      "lane": "engine",
+      "owner": "spatial-physics"
+    },
+    {
+      "id": "ENGINE-007",
+      "title": "Remove dead duplicate SignalBus at src/scripts/signalbus.gd",
+      "status": "todo",
+      "priority": "low",
+      "category": "hygiene",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/28",
+      "github_issue_number": 28,
+      "notes": "Auto-synced from open issue #28 \u2014 missed before workflow fix. Found during PR-Gatekeeper review of current `main`.\n\n`src/scripts/signalbus.gd` is a second, drifted copy of `scripts/autoload/SignalBus.gd` (has extra legacy signals \u2014 `ui_update_energy`, `buffalo_f",
+      "lane": "engine",
+      "owner": "backend-automation"
+    },
+    {
+      "id": "ENGINE-006",
+      "title": "Player.gd bypasses SignalBus with hard node-path/tree-walk coupling",
+      "status": "todo",
+      "priority": "medium",
+      "category": "architecture",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/27",
+      "github_issue_number": 27,
+      "notes": "Auto-synced from open issue #27 \u2014 missed before workflow fix. Found during PR-Gatekeeper review of current `main`.\n\n`scenes/entities/Player.gd` couples directly to other systems instead of going through SignalBus:\n- `_find_tm()` uses `get_node(\"/root/TimeManager",
+      "lane": "engine",
+      "owner": "backend-automation"
     }
   ]
 }
