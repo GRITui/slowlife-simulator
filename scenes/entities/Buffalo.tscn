@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://buffalo00001"]
+[ext_resource type="Script" path="res://scenes/entities/Buffalo.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/characters/animal_buffalo_idle.png" id="2"]
+[sub_resource type="CircleShape2D" id="1c"] radius=48.0
+[node name="Buffalo" type="CharacterBody2D" groups=["buffalo"]]
+script = ExtResource("1")
+[node name="Sprite2D" type="Sprite2D" parent="." texture=ExtResource("2")]
+[node name="InteractArea" type="Area2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea" shape=SubResource("1c")]
