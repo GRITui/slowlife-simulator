@@ -79,6 +79,29 @@ func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
 	if crop_label:
 		crop_label.text = "Crop %d/%d" % [progress + 1, max_stage]
 
+# --- Action prompt polish (TASK-014) ---
+# Context-sensitive prompt, mobile-aware sizing, fade on mobile 80% scale stays readable.
+
+func show_prompt(text: String) -> void:
+	if prompt_label:
+		prompt_label.text = text
+		var parent: Control = prompt_label.get_parent() as Control
+		if parent:
+			parent.visible = true
+			parent.modulate.a = 1.0
+
+func hide_prompt() -> void:
+	if prompt_label:
+		var parent: Control = prompt_label.get_parent() as Control
+		if parent:
+			parent.visible = false
+
+func update_prompt_for_proximity(has_target: bool, action: String = "Press [E] to interact") -> void:
+	if has_target:
+		show_prompt(action)
+	else:
+		hide_prompt()
+
 # For manual testing
 func set_mobile(v: bool) -> void:
 	is_mobile = v
