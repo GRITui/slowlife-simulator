@@ -1,9 +1,35 @@
 [gd_scene format=3 uid="uid://title000001"]
+
 [node name="TitleScreen" type="CanvasLayer"]
+
 [node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="VBox" type="VBoxContainer" parent="Center"]
-[node name="Title" type="Label" parent="Center/VBox" text="Thai Rural Countryside Sim"]
-[node name="NewGame" type="Button" parent="Center/VBox" text="New Game"]
-[node name="Continue" type="Button" parent="Center/VBox" text="Continue"]
-[node name="Settings" type="Button" parent="Center/VBox" text="Settings"]
-[node name="Quit" type="Button" parent="Center/VBox" text="Quit"]
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/VBox"]
+text = "Thai Rural Countryside Sim"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.415686, 0.105882, 0.603922, 1)
+theme_override_font_sizes/font_size = 28
+
+[node name="NewGame" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(200, 44)
+text = "New Game"
+
+[node name="Continue" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(200, 44)
+text = "Continue"
+
+[node name="Settings" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(200, 44)
+text = "Settings"
+
+[node name="Quit" type="Button" parent="Center/VBox"]
+custom_minimum_size = Vector2(200, 44)
+text = "Quit"

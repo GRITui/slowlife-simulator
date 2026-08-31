@@ -46,7 +46,7 @@ layout_mode = 2
 text = "Font size"
 
 [node name="FontScaleSlider" type="HSlider" parent="Panel/VBox/FontScaleRow"]
-custom_minimum_size = Vector2(180, 20)
+custom_minimum_size = Vector2(180, 44)
 layout_mode = 2
 min_value = 0.8
 max_value = 1.4
@@ -54,5 +54,6 @@ step = 0.05
 value = 1.0
 
 [node name="HighContrastCheck" type="CheckBox" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 text = "High contrast"
