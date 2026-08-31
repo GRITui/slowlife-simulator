@@ -271,7 +271,7 @@
       "sprint": 3,
       "category": "gameplay",
       "title": "Title screen + pause menu + settings flow",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "visual-inspector",
       "files": [
@@ -280,7 +280,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/45",
       "github_issue_number": 45,
-      "notes": "Gap-research finding: game boots straight into Main.tscn, no title/pause/settings/quit flow at all. Settings screen should be structured ready for TASK-021's volume controls."
+      "notes": "Gap-research finding: game boots straight into Main.tscn, no title/pause/settings/quit flow at all. Settings screen should be structured ready for TASK-021's volume controls.",
+      "completed_at": "2026-08-31",
+      "pr_number": 60
     },
     {
       "id": "TASK-018",
