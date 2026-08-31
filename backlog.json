@@ -745,7 +745,7 @@
       "sprint": 7,
       "category": "ui",
       "title": "Mobile shader polish: seasonal water + foliage sway (canvas_item)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "visual-inspector",
       "files": [
@@ -755,7 +755,9 @@
       ],
       "notes": "Scout Phase 2 research: GLES3-safe canvas_item water/foliage shaders with perf caps. Spec: docs/research/TASK-032-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x)."
+      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x).",
+      "completed_at": "2026-09-01",
+      "pr_number": 87
     },
     {
       "id": "TASK-033",
