@@ -654,7 +654,7 @@
       "sprint": 5,
       "category": "ui",
       "title": "Accessibility: font scaling + high-contrast HUD",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "visual-inspector",
       "files": [
@@ -666,7 +666,9 @@
       "proposed_at": "2026-08-31",
       "promoted_at": "2026-08-31",
       "github_issue_number": 80,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/80"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/80",
+      "completed_at": "2026-08-31",
+      "pr_number": 83
     }
   ]
 }
