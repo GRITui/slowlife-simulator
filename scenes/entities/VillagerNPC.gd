@@ -81,3 +81,4 @@ func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player") or body.name == "Player" or body is CharacterBody2D:
 		if body != self:
 			_player_in_range = false
+# ENGINE-008 NavGrid consumer stub
