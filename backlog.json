@@ -390,7 +390,7 @@
       "lane": "engine",
       "category": "persistence",
       "title": "Save/load state machine + JSON schema for player/world state",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-persistence",
       "files": [
@@ -398,7 +398,9 @@
       ],
       "notes": "Greenfield \u2014 no persistence layer exists yet.",
       "github_issue_number": 21,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/21"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/21",
+      "completed_at": "2026-08-31",
+      "pr_number": 64
     },
     {
       "id": "ENGINE-004",
