@@ -458,7 +458,7 @@
       "lane": "engine",
       "category": "architecture",
       "title": "Game-state flow -- main menu, pause menu, save/load UI hookup",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "unassigned",
       "files": [
@@ -467,7 +467,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/38",
       "github_issue_number": 38,
-      "notes": "Found in PR-Gatekeeper engine-lane audit. Game boots directly into Main.tscn -- no title screen, no pause, no in-game caller for ENGINE-003s save/load once it lands. Needs New Game/Continue flow, a pause layer (new input action), and SignalBus save/load feedback wired to show_dialogue."
+      "notes": "Found in PR-Gatekeeper engine-lane audit. Game boots directly into Main.tscn -- no title screen, no pause, no in-game caller for ENGINE-003s save/load once it lands. Needs New Game/Continue flow, a pause layer (new input action), and SignalBus save/load feedback wired to show_dialogue.",
+      "completed_at": "2026-08-31",
+      "pr_number": 67
     },
     {
       "id": "ENGINE-011",
