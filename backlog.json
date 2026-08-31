@@ -494,7 +494,7 @@
       "lane": "engine",
       "category": "input",
       "title": "Mobile touch input (virtual joystick + tap-to-interact)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "unassigned",
       "files": [
@@ -503,7 +503,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/41",
       "github_issue_number": 41,
-      "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes."
+      "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes.",
+      "completed_at": "2026-08-31",
+      "pr_number": 69
     },
     {
       "id": "ENGINE-006",
