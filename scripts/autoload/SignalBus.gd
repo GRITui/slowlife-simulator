@@ -35,3 +35,5 @@ signal festival_triggered(festival_name: String)
 signal settings_changed(font_scale: float, high_contrast: bool)
 # TASK-042: emitted whenever SceneTree.paused flips (pause menu / resume).
 signal game_paused_changed(paused: bool)
+# TASK-029: emitted by CookingStation after a recipe craft (item_id, qty).
+signal craft_completed(item_id: String, qty: int)

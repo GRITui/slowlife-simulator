@@ -38,6 +38,22 @@ func _ready() -> void:
 	_ensure_festival()
 	# TASK-041: debug perf probe (no-op in release via OS.is_debug_build() guard).
 	_ensure_profiler_overlay()
+	# TASK-029: crafting unlock — clay stove consumes recipes.json.
+	_ensure_cooking_station()
+
+func _ensure_cooking_station() -> void:
+	if get_node_or_null("CookingStation") != null:
+		return
+	var scene: PackedScene = load("res://scenes/interactables/CookingStation.tscn")
+	if scene == null:
+		return
+	var station: Node2D = scene.instantiate() as Node2D
+	if station == null:
+		return
+	station.name = "CookingStation"
+	# Hall floor zone (rect 6,14,3,2): cell (7,15), Y-sorted.
+	station.position = Vector2(7 * 48 + 24, 16 * 48)
+	add_child(station)
 
 func _ensure_festival() -> void:
 	if get_node_or_null("FestivalManager") != null:
