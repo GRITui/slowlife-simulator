@@ -801,7 +801,7 @@
       "sprint": 6,
       "category": "art",
       "title": "UI touch-target sizing, safe-area insets & cozy theming (Settings/Pause/Title)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "art-po",
       "files": [
@@ -811,7 +811,9 @@
       ],
       "notes": "Phase 2 art audit: Settings.tscn (live) has sub-44pt FontScaleSlider/HighContrastCheck; Pause/Title (dead, unwired) have unstyled default-gray buttons with no safe-area container. Spec: docs/research/ART-035-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x)."
+      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x).",
+      "completed_at": "2026-09-01",
+      "pr_number": 89
     }
   ]
 }
