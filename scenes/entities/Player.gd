@@ -35,9 +35,9 @@ func _physics_process(delta: float) -> void:
 	velocity = dir * move_speed
 	move_and_slide()
 	_update_animation(dir)
-	# clamp to Hybrid grid bounds (20*32 approx, keep in view)
-	global_position.x = clamp(global_position.x, 16, 20 * 32 - 16)
-	global_position.y = clamp(global_position.y, 16, 16 * 32 - 16)
+	# clamp to Hybrid grid bounds (20*48 approx, keep in view)
+	global_position.x = clamp(global_position.x, 24, 20 * 48 - 24)
+	global_position.y = clamp(global_position.y, 24, 16 * 48 - 24)
 
 func _update_animation(dir: Vector2) -> void:
 	if dir == Vector2.ZERO:
@@ -61,7 +61,7 @@ func _try_grid_interact() -> void:
 	var gm := _find_gm()
 	if gm == null:
 		return
-	var cell: Vector2i = Vector2i(floor(global_position.x / 32), floor(global_position.y / 32))
+	var cell: Vector2i = Vector2i(floor(global_position.x / 48), floor(global_position.y / 48))
 	var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
 	if plot == null:
 		# try plant jasmine_rice if plantable

@@ -30,22 +30,29 @@
 
 ### Tile Metrics
 
-- **Ground**: flat 32x32 top-down tiles (existing tilesets unchanged)
-- **Verticals** (walls, trees, standing props): tall art with front faces
-- **Characters**: existing 32x48 front-facing sprites, work as-is
+> **✓ Resolution bump 2026-08-31** — Base tile 32x32 → **48x48** (1.5x) following the
+> Claude Design art redesign pass. Characters, tilesets, environment props all
+> upscaled 1.5x in lockstep (`TILE` in WorldRender.gd, `cell_size` in GridManager.gd,
+> Player clamp/interact-cell math, spawn coordinates, collision shapes). UI bar/prompt
+> art in `assets/ui/` was redesigned independently and is not yet wired into HUD.tscn,
+> so it carries its own dimensions and is not part of this scale.
 
-### Tall Art Spec (supersedes 32x32 base for verticals)
+- **Ground**: flat 48x48 top-down tiles (existing tilesets unchanged in ratio, upscaled 1.5x)
+- **Verticals** (walls, trees, standing props): tall art with front faces
+- **Characters**: 48x72 front-facing sprites (was 32x48)
+
+### Tall Art Spec (supersedes 48x48 base for verticals)
 
 | Asset | Size | Notes |
 |-------|------|-------|
-| bamboo_wall_tall | 32x48 | Front face + green cap, edge ring |
-| structure_wall_front | 32x48 | Hut/temple/hall/toolshed facades |
-| structure_wall_cap | 32x16 | Roof cap |
-| mango_tree | 32x64 | Trunk + canopy |
-| banana_circle | 32x48 | — |
-| sluice_gate | 32x48 | Repairable infrastructure |
-| clay_stove | 32x40 | — |
-| dock/raft | 32x32 | Stays flat — on water |
+| bamboo_wall_tall | 48x96 | Front face + green cap, edge ring |
+| structure_wall_front | 48x48 | Hut/temple/hall/toolshed facades |
+| structure_wall_cap | 48x24 | Roof cap |
+| mango_tree | 48x72 | Trunk + canopy |
+| banana_circle | 48x48 | — |
+| sluice_gate | 48x48 | Repairable infrastructure |
+| clay_stove | 48x48 | — |
+| dock/raft | 48x48 | Stays flat — on water |
 
 ### Y-Sort Rules
 

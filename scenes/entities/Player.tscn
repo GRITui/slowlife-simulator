@@ -23,7 +23,7 @@
 [ext_resource type="Texture2D" path="res://assets/characters/player_walk_up_04.png" id="21_wu04"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pl"]
-size = Vector2(14, 20)
+size = Vector2(21, 30)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pl"]
 animations = [{

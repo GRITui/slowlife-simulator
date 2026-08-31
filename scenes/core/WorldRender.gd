@@ -6,7 +6,7 @@ extends Node2D
 #   children so Main.y_sort_enabled sorts them with Player/MonkNPC) -> Bounds.
 # 3/4 canon REV 2: ground flat, verticals tall art, sort origin at feet/base.
 
-const TILE: int = 32
+const TILE: int = 48
 const GRID: Vector2i = Vector2i(20, 16)
 const DEEP_POND := Color("#1565C0")
 
@@ -134,8 +134,8 @@ func _build_backdrop(main: Node) -> void:
 	bd.z_index = -30
 	bd.color = DEEP_POND
 	bd.polygon = PackedVector2Array([
-		Vector2(-320, -256), Vector2(960, -256),
-		Vector2(960, 800), Vector2(-320, 800),
+		Vector2(-TILE * 10, -TILE * 8), Vector2(TILE * (GRID.x + 10), -TILE * 8),
+		Vector2(TILE * (GRID.x + 10), TILE * (GRID.y + 9)), Vector2(-TILE * 10, TILE * (GRID.y + 9)),
 	])
 	main.add_child(bd)
 
@@ -199,9 +199,11 @@ func _build_props(main: Node) -> void:
 		var base := Vector2(p["cell"].x * TILE + TILE / 2.0, (p["cell"].y + 1) * float(TILE))
 		match p["kind"]:
 			"cap":
-				# 32x16 cap sits on wall top: spans [cell_bottom-32, cell_bottom-16].
-				s.position = Vector2(base.x, (p["cell"].y + 1) * float(TILE) - 8.0)
-				s.offset = Vector2(0, -8)
+				# cap sits on wall top: spans one tile above the wall boundary,
+				# height derived from the texture so it works at any TILE/art scale.
+				var cap_half := tex.get_height() / 2.0
+				s.position = Vector2(base.x, (p["cell"].y + 1) * float(TILE) - cap_half)
+				s.offset = Vector2(0, -cap_half)
 			_:
 				s.position = base
 				s.offset = Vector2(0, -tex.get_height() / 2.0)
@@ -211,11 +213,12 @@ func _build_props(main: Node) -> void:
 func _build_bounds(main: Node) -> void:
 	var body := StaticBody2D.new()
 	body.name = "Bounds"
+	var half := TILE / 2.0
 	var walls := [
-		{"center": Vector2(GRID.x * 16.0, -16.0), "size": Vector2((GRID.x + 2) * 32.0, 32.0)}, # top
-		{"center": Vector2(GRID.x * 16.0, GRID.y * 32.0 + 16.0), "size": Vector2((GRID.x + 2) * 32.0, 32.0)}, # bottom
-		{"center": Vector2(-16.0, GRID.y * 16.0), "size": Vector2(32.0, (GRID.y + 2) * 32.0)}, # left
-		{"center": Vector2(GRID.x * 32.0 + 16.0, GRID.y * 16.0), "size": Vector2(32.0, (GRID.y + 2) * 32.0)}, # right
+		{"center": Vector2(GRID.x * half, -half), "size": Vector2((GRID.x + 2) * float(TILE), float(TILE))}, # top
+		{"center": Vector2(GRID.x * half, GRID.y * float(TILE) + half), "size": Vector2((GRID.x + 2) * float(TILE), float(TILE))}, # bottom
+		{"center": Vector2(-half, GRID.y * half), "size": Vector2(float(TILE), (GRID.y + 2) * float(TILE))}, # left
+		{"center": Vector2(GRID.x * float(TILE) + half, GRID.y * half), "size": Vector2(float(TILE), (GRID.y + 2) * float(TILE))}, # right
 	]
 	for w in walls:
 		var cs := CollisionShape2D.new()
