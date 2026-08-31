@@ -344,7 +344,7 @@
       "sprint": 3,
       "category": "audio",
       "title": "Ambient audio system (music + SFX)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-pipeline",
       "files": [
@@ -353,7 +353,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/47",
       "github_issue_number": 47,
-      "notes": "Gap-research finding: zero audio in the project -- no assets, no AudioStreamPlayer usage anywhere, despite PROJECT_VISION's explicit 'ambient sounds' Magnify pillar. Seasonal ambient loop + SignalBus-driven action SFX, volume bus ready for TASK-017's settings screen."
+      "notes": "Gap-research finding: zero audio in the project -- no assets, no AudioStreamPlayer usage anywhere, despite PROJECT_VISION's explicit 'ambient sounds' Magnify pillar. Seasonal ambient loop + SignalBus-driven action SFX, volume bus ready for TASK-017's settings screen.",
+      "completed_at": "2026-08-31",
+      "pr_number": 63
     },
     {
       "id": "ENGINE-001",
