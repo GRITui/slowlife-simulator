@@ -1164,14 +1164,14 @@
       "sprint": 10,
       "category": "gameplay",
       "title": "Songkran festival trigger (hot season) + splash particles",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/festival/SongkranTrigger.gd",
       "notes": "PO_INBOX r4 #6: FestivalManager pattern; songkran_splash.tres exists; DialogueDB lines in place.",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 100
     },
     {
       "id": "TASK-190",
@@ -1232,6 +1232,22 @@
         "data/recipes/recipes.json"
       ],
       "notes": "User asked to assess protein/meat acquisition. Confirmed via Buffalo.gd's own comments and CLAUDE.md that zero-combat/no-animal-harm is a deliberate, established design pillar -- flagged the literal 'meat' framing to the user before building anything; they confirmed 'cozy substitutes only' (eggs, tofu, fishing -- no slaughter mechanic). Soybean+tofu: fully deliverable, zero engine gap (crop + recipe, same as every other processed good). Chicken/eggs: ChickenCoop.tscn is a deliberate visual-only scaffold (idle+4f walk sprite, 28x28 canon -- smaller than the cat's 32x32, a farm bird not a companion-scale animal), no script, not instanced. Egg-laying interact logic doesn't exist anywhere (same category as CompanionNPC.gd) -- spec'd for PO_INBOX rather than guessed at. Fish: no crop possible (not a plant) -- fishing_rod + 2 fish species icons authored, but there is zero water-interact/catch mechanic in the codebase at all; this is the least-ready of the three, flagged as the biggest net-new system. 4 new recipes: tofu (from soybean), khai_jiao/fried egg (needs chicken mechanic), pad_tofu (fully achievable), pla_pao/grilled fish (needs BOTH fishing mechanic AND the still-open market fish_sauce gap -- doubly blocked, noted honestly). Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "TASK-220",
+      "sprint": 13,
+      "category": "art",
+      "title": "20-species fish roster: size tiers, season gates, skill tiers, elder hints for rare catches",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/fish/fish.json",
+        "assets/items/*_small.png / *_mid.png / *_big.png (60 files)",
+        "scripts/narrative/DialogueDB.gd",
+        "data/recipes/recipes.json"
+      ],
+      "notes": "User follow-up on the fishing assessment: needed size tiers (small/mid/big), season-gated species, skill-gated rarity, 20 species total, elder hints for hard catches. Designed data/fish/fish.json (new data file, mirrors recipes.json's pattern): 20 real Thai freshwater species (6 common/skill 1, 7 uncommon/skill 2, 5 rare/skill 3, 2 legendary/skill 4 -- pla_buk the Mekong giant catfish and pla_sai_rung a rainbow fish), each with seasons[], rarity, skill_required, and 3 size variants (small/mid/big, harmony_value scaled 0.6x/1.0x/1.6x) = 60 distinct catchable items, all with real programmatically-varied art (5 body shapes: sleek/round/eel/flat/whiskered/prawn). Added a new 'fishing_hint' branch to DialogueDB.gd's existing elder entry (data-only, same safe pattern as the Songkran lines) with all 7 rare+legendary hints. Consolidated the two placeholder fish from the prior round (fish_tilapia/fish_catfish) into pla_nin/pla_duk properly, updated pla_pao's recipe input to match. IMPORTANT: this is pure data + art. The fishing catch mechanic AND a fishing-skill/XP system are both still completely absent from the codebase (confirmed: zero 'skill' references anywhere) -- this compounds the existing PO_INBOX fishing-mechanic ask with a second new system (skill progression) rather than resolving it. Spec'd precisely in PO_INBOX, not guessed at. Gates: content 100/100, engine 50/50."
     }
   ]
 }
