@@ -24,6 +24,16 @@ var infrastructure: Dictionary = {}
 var current_season: String = "cool"  # hot | monsoon | cool
 var current_weather: String = "clear"
 
+# Binthabat morning offering (TASK-004)
+var binthabat_yields: Dictionary = {
+	"rice_grain": 3,
+	"lotus_root": 5,
+	"mango": 6,
+	"sticky_rice": 4,
+}
+var daily_offerings: int = 0
+var last_offering_day: int = -1
+
 func add_item(item_id: String, amount: int = 1) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
 
@@ -52,3 +62,35 @@ func is_repaired(structure_id: String) -> bool:
 
 func reset_stamina() -> void:
 	current_stamina = max_stamina
+
+# --- Binthabat offering API (TASK-004) ---
+
+func can_offer_today(day: int) -> bool:
+	# One offering per calendar day. If the queried day differs from the last
+	# offering day, the slot is free regardless of the counter value.
+	if last_offering_day != day:
+		return true
+	return daily_offerings < 1
+
+func offer_bin_thabat(item_id: String, day: int) -> int:
+	# Returns harmony yield on success, 0 on failure.
+	# Validates daily limit, item validity, and inventory ownership before
+	# deducting the item, adding harmony, and emitting signals.
+	if not can_offer_today(day):
+		return 0
+	if not binthabat_yields.has(item_id):
+		return 0
+	if not has_item(item_id, 1):
+		return 0
+	# Reset daily counter when the calendar rolls over.
+	if last_offering_day != day:
+		daily_offerings = 0
+	var harmony_yield: int = int(binthabat_yields[item_id])
+	# Inventory deduction must succeed after earlier check.
+	if not remove_item(item_id, 1):
+		return 0
+	add_harmony(harmony_yield)
+	daily_offerings += 1
+	last_offering_day = day
+	SignalBus.binthabat_offered.emit(item_id, harmony_yield)
+	return harmony_yield

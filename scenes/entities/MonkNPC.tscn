@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://binthabat_monk_004"]
+
+[ext_resource type="Script" path="res://scenes/entities/MonkNPC.gd" id="1_monk"]
+[ext_resource type="Texture2D" path="res://assets/characters/npc_priest_idle_01.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(16, 28)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 32.0
+
+[node name="MonkNPC" type="CharacterBody2D" groups=["monk_npc"]]
+script = ExtResource("1_monk")
+temple_position = Vector2(400, 100)
+walk_speed = 40.0
+collision_layer = 2
+collision_mask = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+centered = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+debug_color = Color(0.6, 0.2, 0.2, 0.42)
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_interact")
+debug_color = Color(0.2, 0.6, 0.8, 0.42)

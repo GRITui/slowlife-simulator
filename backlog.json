@@ -49,14 +49,16 @@
       "id": "TASK-004",
       "category": "mechanics",
       "title": "Implement Binthabat morning offering event trigger",
-      "status": "pending",
+      "status": "completed",
       "priority": "medium",
       "files": [
         "scenes/entities/MonkNPC.tscn",
         "scripts/autoload/GameData.gd"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/4",
-      "github_issue_number": 4
+      "github_issue_number": 4,
+      "completed_at": "2026-08-31",
+      "notes": "MonkNPC schedule 05:00-07:30, daily 1 offering, GameData binthabat_yields (rice 3/lotus 5/mango 6/sticky 4), SignalBus binthabat_offered+show_dialogue, temple lane east."
     }
   ]
 }
