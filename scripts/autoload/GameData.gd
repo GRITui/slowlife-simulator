@@ -105,8 +105,9 @@ func offer_bin_thabat(item_id: String, day: int) -> int:
 	last_binthabat_day = day
 	SignalBus.binthabat_offered.emit(item_id, harmony_yield)
 	return harmony_yield
-// TASK-023 typing hardening — typed accessors for gdlint clean
+# TASK-023 typing hardening — typed accessors for gdlint clean
 func get_inventory_item(id: String) -> int:
-  return int(inventory.get(id, 0))
+	return int(inventory.get(id, 0))
+
 func get_infrastructure_state(id: String) -> bool:
-  return bool(infrastructure.get(id, false))
+	return bool(infrastructure.get(id, false))
