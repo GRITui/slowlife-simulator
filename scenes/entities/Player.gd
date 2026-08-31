@@ -15,10 +15,9 @@ func _ready() -> void:
 	SignalBus.season_changed.connect(_on_season_changed)
 	# init stamina display
 	SignalBus.stamina_changed.emit(GameData.current_stamina, GameData.max_stamina)
-	# cache season mult
-	var tm := _find_tm()
-	if tm:
-		_season_mult = tm.get_stamina_multiplier() if tm.has_method("get_stamina_multiplier") else 1.0
+	# cache season mult (SignalBus.time_manager registry, not a node path — ENGINE-006)
+	if SignalBus.time_manager:
+		_season_mult = SignalBus.time_manager.get_stamina_multiplier()
 
 func _physics_process(delta: float) -> void:
 	# stamina drain
@@ -57,8 +56,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_try_grid_interact()
 
 func _try_grid_interact() -> void:
-	# Find GridManager in scene and attempt plant/water/harvest at nearest cell
-	var gm := _find_gm()
+	# Attempt plant/water/harvest at nearest cell via SignalBus.grid_manager registry
+	var gm := SignalBus.grid_manager
 	if gm == null:
 		return
 	var cell: Vector2i = Vector2i(floor(global_position.x / 48), floor(global_position.y / 48))
@@ -89,30 +88,10 @@ func _try_grid_interact() -> void:
 				SignalBus.show_dialogue.emit("Farmer", "Already watered.")
 
 func _on_season_changed(s: String) -> void:
-	var tm := _find_tm()
-	if tm and tm.has_method("get_stamina_multiplier"):
-		_season_mult = tm.get_stamina_multiplier()
+	if SignalBus.time_manager:
+		_season_mult = SignalBus.time_manager.get_stamina_multiplier()
 	else:
 		match s:
 			"hot": _season_mult = 1.3
 			"monsoon": _season_mult = 0.8
 			_: _season_mult = 1.0
-
-func _find_tm() -> Node:
-	if has_node("/root/TimeManager"):
-		return get_node("/root/TimeManager")
-	var r := get_tree().current_scene if get_tree() else null
-	if r:
-		var f := r.find_child("TimeManager", true, false)
-		if f: return f
-	return null
-
-func _find_gm() -> Node:
-	var r := get_tree().current_scene if get_tree() else null
-	if r:
-		var f := r.find_child("GridManager", true, false)
-		if f: return f
-	for c in get_tree().root.get_children():
-		if c.has_method("plant"):
-			return c
-	return null

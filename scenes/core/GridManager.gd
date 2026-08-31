@@ -28,6 +28,11 @@ func _ready() -> void:
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
 	SignalBus.season_changed.connect(_on_season_changed)
 	SignalBus.weather_changed.connect(_on_weather_changed)
+	SignalBus.grid_manager = self
+
+func _exit_tree() -> void:
+	if SignalBus.grid_manager == self:
+		SignalBus.grid_manager = null
 
 func is_maze_cell(cell: Vector2i) -> bool:
 	return cell.x >= maze_origin.x and cell.x < maze_origin.x + 3 and cell.y >= maze_origin.y and cell.y < maze_origin.y + 3

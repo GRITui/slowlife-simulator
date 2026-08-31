@@ -12,6 +12,13 @@ signal binthabat_offered(item_id: String, harmony_yield: int)
 signal infrastructure_repaired(structure_id: String)
 signal show_dialogue(speaker_name: String, text: String)
 
+# Reference registry (ENGINE-006) — set once by the owning system on _ready(),
+# read directly instead of hard node paths / scene-tree walks. Not a signal
+# because a fire-once "ready" signal races with the reader's own _ready()
+# order; a plain field survives late readers.
+var grid_manager: Node = null
+var time_manager: Node = null
+
 # --- Extended signals (backward-compat with existing codebase) ---
 signal energy_changed(new_energy: int)
 signal village_harmony_changed(new_harmony: int)
