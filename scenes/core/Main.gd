@@ -34,6 +34,18 @@ func _ready() -> void:
 	# TASK-039 (PO_INBOX directive #2): game-state flow — dormant
 	# TitleScreen/PauseMenu now wired (boot on title, P/Esc pauses).
 	_ensure_game_flow()
+	# TASK-040 (PO_INBOX directive #3): festival wiring — Loy Krathong live.
+	_ensure_festival()
+
+func _ensure_festival() -> void:
+	if get_node_or_null("FestivalManager") != null:
+		return
+	var script: GDScript = load("res://scenes/festival/FestivalManager.gd")
+	if script == null:
+		return
+	var manager: Node = script.new()
+	manager.name = "FestivalManager"
+	add_child(manager)
 
 func _ensure_game_flow() -> void:
 	if get_node_or_null("TitleScreen") == null:
