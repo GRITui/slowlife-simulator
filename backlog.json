@@ -35,13 +35,15 @@
       "id": "TASK-003",
       "category": "ui",
       "title": "Build dynamic scaling HUD for PC/Mobile with Harmony meter",
-      "status": "pending",
+      "status": "completed",
       "priority": "medium",
       "files": [
         "scenes/ui/HUD.tscn"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/3",
-      "github_issue_number": 3
+      "github_issue_number": 3,
+      "notes": "EN, Hybrid A/B 16-color, CanvasLayer HUD with 0.8 mobile scale, stamina/harmony/season/time/crop via SignalBus.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-004",

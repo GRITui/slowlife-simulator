@@ -5,8 +5,9 @@
   "language": "EN",
   "sequencing": "ui-next-then-task002",
   "grid": "20x16 flat + 3x3 lotus maze islet inset",
-  "notes": "User: 1) Hybrid A/B, 2) 16 colors. Locked via ART_WORLD_VISION_V2.html. 12+4 extenders: Canal Teal #4DB6AC, Mist Lavender #B39DDB, Deep Pond #1565C0, Wood Amber #A1887F.",
+  "notes": "User: 1) Hybrid A/B, 2) 16 colors, 3) Hide placeholder, 4) EN. Locked via ART_WORLD_VISION_V2.html. 12+4 extenders: Canal Teal #4DB6AC, Mist Lavender #B39DDB, Deep Pond #1565C0, Wood Amber #A1887F.",
   "assets_generated": "tilesets 8, environment 10+5 hybrid, characters 34, ui 5 (real pixel art, stubs hidden per user 3)",
   "placeholder": "hide",
-  "next": ["canal/maze add-on tiles", "UI assets", "TASK-002 CropData + GridManager"]
+  "language_confirmed": "EN",
+  "next": ["TASK-003 HUD (proceed per user 5)"]
 }

@@ -1,0 +1,109 @@
+[gd_scene load_steps=2 format=3 uid="uid://hud000001"]
+
+[ext_resource type="Script" path="res://scenes/ui/HUD.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 12.0
+offset_top = 10.0
+offset_right = -12.0
+offset_bottom = -10.0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+
+[node name="HBox" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="StaminaBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="StaminaLabel" type="Label" parent="Margin/Root/HBox/StaminaBox"]
+layout_mode = 2
+text = "Stamina"
+theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="StaminaBar" type="ProgressBar" parent="Margin/Root/HBox/StaminaBox"]
+custom_minimum_size = Vector2(200, 12)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HarmonyBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+
+[node name="HarmonyLabel" type="Label" parent="Margin/Root/HBox/HarmonyBox"]
+layout_mode = 2
+text = "Harmony"
+theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="HarmonyBar" type="ProgressBar" parent="Margin/Root/HBox/HarmonyBox"]
+custom_minimum_size = Vector2(180, 12)
+layout_mode = 2
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="SeasonBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="SeasonLabelLabel" type="Label" parent="Margin/Root/HBox/SeasonBox"]
+layout_mode = 2
+text = "Season"
+theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="SeasonLabel" type="Label" parent="Margin/Root/HBox/SeasonBox"]
+layout_mode = 2
+text = "Cool"
+theme_override_font_sizes/font_size = 13
+
+[node name="TimeBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="TimeLabelHeader" type="Label" parent="Margin/Root/HBox/TimeBox"]
+layout_mode = 2
+text = "Time"
+theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="TimeLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+layout_mode = 2
+text = "06:00  Day 1"
+theme_override_font_sizes/font_size = 13
+
+[node name="CropProgress" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CropLabel" type="Label" parent="Margin/Root/CropProgress"]
+custom_minimum_size = Vector2(150, 12)
+layout_mode = 2
+text = "Crop --/--"
+theme_override_font_sizes/font_size = 12
+
+[node name="ActionPrompt" type="Label" parent="Margin/Root"]
+custom_minimum_size = Vector2(200, 32)
+layout_mode = 2
+horizontal_alignment = 1
+text = "Press [E] to interact"
+theme_override_colors/font_color = Color(0.54901963, 0.43137255, 0.3882353, 1)
+theme_override_font_sizes/font_size = 13
