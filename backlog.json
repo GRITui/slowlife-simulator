@@ -1068,6 +1068,110 @@
         "tests/run_tests.gd"
       ],
       "notes": "New work per user request (2026-09-01): rebalanced ALL crop growth times to a hard design rule -- every growth stage >=1 in-game day (1440 min), fastest crop overall >=3 in-game days. Old fastest was jasmine_rice at 120min/stage (~2.25hrs total); now 4 days. Durian remains the longest at 6 days. Designed 14 NEW crop types to complete a 5-per-season + 3-any-season roster (existing jasmine_rice/lotus_root/thai_basil/pandan counted toward their buckets): hot=chili/sesame/peanut/sugarcane/watermelon, monsoon=water_spinach/taro/ginger (+existing lotus_root/pandan), cool=cabbage/tomato/garlic/lettuce (+existing thai_basil), any-season=eggplant/yardlong_bean (+existing jasmine_rice). Also replaced thai_basil/pandan/lotus_root's placeholder art (they were reusing rice_paddy_stage*.png verbatim, or in lotus_root's case the whole lotus_maze.png tileset image as a single 'stage sprite' -- a real mismatch) with proper distinct 4-stage sprites. Fixed a total_stages/load_steps mismatch left over from lotus_root's old 2-stage structure. Fixed a stale golden-value assertion in tests/run_tests.gd that hardcoded jasmine_rice's old 120min/stage timing. Per the user's explicit design note, exact grow-time numbers are NOT surfaced as new in-game UI -- crop_bar/crop_label already only show stage X/4, unchanged. IMPORTANT: stage_textures has ZERO visual consumer anywhere in the codebase (verified via grep) -- not even jasmine_rice's growth art renders in-game today. This ships at the same 'data + art ready, engine gap' status as everything else this session; flagged to PO_INBOX. Gates: content 100/100, engine 50/50. Perf gate (y-sort) is RED but for an UNRELATED reason -- opencode's own concurrent 'CookingStation' addition pushed 32->33, not this task's changes (verified by direct node enumeration)."
+    },
+    {
+      "id": "TASK-170",
+      "sprint": 12,
+      "category": "art",
+      "title": "Sticky rice + banana tree + rice-milling recipes; banana multi-part harvest spec'd for PO",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/crops/sticky_rice.tres",
+        "data/crops/banana.tres",
+        "data/recipes/recipes.json",
+        "assets/items/banana.png",
+        "assets/items/banana_leaf.png",
+        "assets/items/banana_stem.png",
+        "assets/items/machete.png",
+        "assets/items/sticky_rice_grain.png",
+        "assets/items/seed_sticky_rice.png",
+        "assets/items/seed_banana.png",
+        "assets/items/rice_flour.png",
+        "assets/items/sticky_rice_flour.png",
+        "assets/items/banana_rice_cake.png"
+      ],
+      "notes": "New work per user request (2026-09-01): sticky_rice_grain (glutinous rice, distinct item id from the 'X_sticky_rice' dish names already in recipes.json to avoid collision) as a 21st crop, any-season, 4-day standard tier. banana.tres as a fruit-only perennial CropData (banana_tree_tall.png already existed as WorldRender decoration x3, unused as data until now -- no new WorldRender placement added, avoids the y-sort budget entirely). Rice processing closed via the EXISTING recipe schema (confirmed CookingStation.gd already does GameData.add_item(recipe.id, 1) on craft -- output-item support already shipped via TASK-029, no engine change needed): rice_flour (from rice_grain), sticky_rice_flour (from sticky_rice_grain), banana_rice_cake (from banana + sticky_rice_flour) -- a real crop-to-flour-to-dish chain, all any-season except the hot-season cake. SCOPE LIMIT, explicit per guardrails: banana's leaf/stem harvest (leaf=repeatable, stem=destructive cut-down) is NOT implemented -- CropData has no per-harvest-type model and GridManager/harvest logic is core gameplay, outside Strict Guardrails. banana_leaf.png/banana_stem.png/machete.png icons are authored and ready; the actual mechanic is spec'd in detail in PO_INBOX.md rather than guessed at. Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "TASK-180",
+      "sprint": 13,
+      "category": "art",
+      "title": "Thai flavoring set: coconut milk + palm sugar (producible), fish sauce + shrimp paste (market-only)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "art-po",
+      "files": [
+        "data/crops/coconut.tres",
+        "data/recipes/recipes.json",
+        "data/crops/sticky_rice.tres",
+        "assets/items/coconut.png",
+        "assets/items/seed_coconut.png",
+        "assets/items/coconut_milk.png",
+        "assets/items/palm_sugar.png",
+        "assets/items/fish_sauce.png",
+        "assets/items/shrimp_paste.png",
+        "assets/items/nam_prik.png",
+        "assets/items/kluay_buat_chi.png"
+      ],
+      "notes": "New work per user request (2026-09-01): designed the 4 requested Thai flavorings by production method, not just as a flat item list -- coconut_milk and palm_sugar are PRODUCIBLE (new coconut palm perennial CropData matching mango/banana's pattern, + recipes: coconut->coconut_milk, sugarcane->palm_sugar). fish_sauce and shrimp_paste are MARKET-ONLY by design (fermented goods, not farm-growable) -- icons authored but NOT wired into MarketManager.gd, see PO_INBOX (insisted, not just flagged). Two new signature recipes tie everything together: nam_prik (chili+fish_sauce+shrimp_paste+palm_sugar) and kluay_buat_chi (banana+coconut_milk+palm_sugar) -- nam_prik is intentionally uncraftable until the market gap closes, same 'ready but blocked' pattern as durian. IMPORTANT FIX found and corrected while researching the market system: 'sticky_rice' was ALREADY a load-bearing item id (GameData starting inventory ships 4 of it, MarketManager's cool/monsoon barter offers reference it, tests/run_tests.gd asserts against it) but had NO icon and NO source anywhere -- a real pre-existing gap. My prior round's sticky_rice_grain crop used a different id to dodge a collision that turned out not to exist; renamed it (crop id, yield_item_id, icon, recipe input) to plain 'sticky_rice' to actually close that gap instead of creating a parallel one. Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "TASK-043",
+      "sprint": 10,
+      "category": "mechanics",
+      "title": "Generalize crop planting: seed-item -> CropData lookup (22 crops unlocked)",
+      "status": "todo",
+      "priority": "high",
+      "owner": "narrative-lead",
+      "files": "scenes/entities/Player.gd, data/crops/",
+      "notes": "PO_INBOX r4 #2: Player.gd hardcodes jasmine_rice; 22 CropData resources idle. Lookup by seed_item_id with jasmine fallback.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
+      "completed_at": "",
+      "pr_number": 0
+    },
+    {
+      "id": "TASK-044",
+      "sprint": 10,
+      "category": "mechanics",
+      "title": "Banana multi-part harvest: leaves (cooldown) + stem (machete-gated felling)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": "scenes/entities/BananaTree.gd, scenes/core/Main.gd",
+      "notes": "PO_INBOX r4 #1: BananaTree interactable mirror; leaves non-destructive per-day; stem cut gated has_item('machete'); machete -> starting inventory (decision).",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
+      "completed_at": "",
+      "pr_number": 0
+    },
+    {
+      "id": "TASK-045",
+      "sprint": 10,
+      "category": "gameplay",
+      "title": "Plot stage rendering: stage_textures finally consumed",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": "scenes/core/GridManager.gd",
+      "notes": "PO_INBOX r4 #4: no code reads stage_textures; render per-plot stage sprite, update on growth, clear on harvest.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
+      "completed_at": "",
+      "pr_number": 0
+    },
+    {
+      "id": "TASK-046",
+      "sprint": 10,
+      "category": "gameplay",
+      "title": "Songkran festival trigger (hot season) + splash particles",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": "scenes/festival/SongkranTrigger.gd",
+      "notes": "PO_INBOX r4 #6: FestivalManager pattern; songkran_splash.tres exists; DialogueDB lines in place.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
+      "completed_at": "",
+      "pr_number": 0
     }
   ]
 }
