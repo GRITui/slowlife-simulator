@@ -120,6 +120,13 @@ func _apply_scale() -> void:
 	var s: float = mobile_scale if is_mobile else pc_scale
 	if has_node("Margin"):
 		$Margin.scale = Vector2(s, s)
+	# TASK-036: touch affordances are mobile-only.
+	var joy: Control = get_node_or_null("VirtualJoystick") as Control
+	var tap: Control = get_node_or_null("InteractTap") as Control
+	if joy:
+		joy.visible = is_mobile
+	if tap:
+		tap.visible = is_mobile
 
 func _on_stamina_changed(cur: float, max_v: float) -> void:
 	_max_stamina = max_v
@@ -198,29 +205,5 @@ func refresh_inventory() -> void:
 		var tex: Texture2D = slots[idx].texture
 		slots[idx].tooltip_text = "%s x%d" % [item_id, qty]
 		idx += 1
-# ENGINE-012 Mobile touch — virtual joystick stub, feeds move_* actions
-var _touch_origin: Vector2 = Vector2.ZERO
-var _touch_active: bool = false
-
-func _input(event: InputEvent) -> void:
-	if event is InputEventScreenTouch:
-		_touch_active = event.pressed
-		_touch_origin = event.position
-	elif event is InputEventScreenDrag and _touch_active:
-		var delta: Vector2 = event.position - _touch_origin
-		if delta.x > 10:
-			Input.action_press("move_right")
-		else:
-			Input.action_release("move_right")
-		if delta.x < -10:
-			Input.action_press("move_left")
-		else:
-			Input.action_release("move_left")
-		if delta.y > 10:
-			Input.action_press("move_down")
-		else:
-			Input.action_release("move_down")
-		if delta.y < -10:
-			Input.action_press("move_up")
-		else:
-			Input.action_release("move_up")
+# ENGINE-012/TASK-036: virtual joystick + tap-to-interact replaced this stub.
+# Logic lives in scenes/ui/VirtualJoystick.gd + InteractTap.gd (children of HUD).
