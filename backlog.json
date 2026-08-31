@@ -480,12 +480,13 @@
       "lane": "engine",
       "category": "architecture",
       "title": "Player.gd bypasses SignalBus with hard node-path/tree-walk coupling",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "files": [],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/27",
       "github_issue_number": 27,
-      "notes": "Re-synced \u2014 was open issue #27 but missing from backlog after bad merge."
+      "notes": "Re-synced \u2014 was open issue #27 but missing from backlog after bad merge. Merged PR #33 (squash).",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "ENGINE-007",
