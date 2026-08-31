@@ -26,8 +26,9 @@ signal village_harmony_changed(new_harmony: int)
 signal village_goodwill_changed(new_goodwill: int)
 signal crop_harvested(crop_id: int)
 signal crop_growth_progress(crop_id: int, progress: int, max_stage: int)
-# TASK-033: day_night_cycle_changed removed — orphan emit (zero listeners).
-# Reintroduce only with a live consumer (e.g. DayNightAtmosphere shader).
+# TASK-034: reintroduced WITH a live consumer (DayNightTintDriver grade
+# shader). TASK-033's removal note applies only while no listener exists.
+signal day_night_cycle_changed(time_fraction: float)
 signal festival_triggered(festival_name: String)
 
 # TASK-027 accessibility — emitted by Settings UI, consumed by HUD + SaveManager.

@@ -52,9 +52,10 @@ func _run_all() -> void:
 				"stamina_changed",
 				"show_dialogue", "binthabat_offered", "crop_growth_progress"]:
 			_check(sb.has_signal(sig_name), "SignalBus has signal %s" % sig_name)
-		# TASK-033: orphan signal must stay removed (hygiene contract).
-		_check(sb.has_signal("day_night_cycle_changed") == false,
-			"orphan day_night_cycle_changed stays removed (TASK-033)")
+		# TASK-033 hygiene -> TASK-034 revival: signal must exist again now
+		# that a live consumer (DayNightTintDriver) subscribes to it.
+		_check(sb.has_signal("day_night_cycle_changed"),
+			"day_night_cycle_changed restored with live consumer (TASK-034)")
 
 	_section = "timemanager-boot"
 	var tm_scene: PackedScene = load("res://scenes/core/TimeManager.tscn")
