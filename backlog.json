@@ -608,11 +608,11 @@
       "pr_number": 77
     },
     {
-"id": "TASK-025",
+      "id": "TASK-025",
       "sprint": 5,
       "category": "gameplay",
-      "title": "Evening market stall & barter economy — seasonal 1:1 trade at village center",
-      "status": "todo",
+      "title": "Evening market stall & barter economy \u2014 seasonal 1:1 trade at village center",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": [
@@ -624,7 +624,9 @@
       "proposed_at": "2026-08-31",
       "promoted_at": "2026-08-31",
       "github_issue_number": 79,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/79"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/79",
+      "completed_at": "2026-08-31",
+      "pr_number": 81
     },
     {
       "id": "TASK-026",
