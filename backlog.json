@@ -115,16 +115,17 @@
       "sprint": 1,
       "category": "gameplay",
       "title": "Camera center-lock in-engine + zoom tune (3/4 canon)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "visual-inspector",
       "files": [
-        "scenes/entities/Player.tscn",
-        "scenes/entities/Player.gd"
+        "scenes/entities/Player.tscn"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
       "github_issue_number": 5,
-      "notes": "Issue #5 REV 2. NOTE: Camera2D 'current' property is gone in Godot 4.7 - use 'enabled'; drag margins off, smoothing off, zoom 2.2 provisional."
+      "notes": "Issue #5 REV 2, resolved via PR #30 (squash-merged over duplicate PRs #23/#24, which both carried a stale zoom=2.2 computed for the pre-redesign 32px tile grid). Zoom re-derived for the current 48px canon: 1600/(48*20)=1.6667, same 11.25-row/20-col exact-fit framing the issue specified. Verified in-engine via screenshot. current->enabled fixed (Godot 4.7).",
+      "completed_at": "2026-08-31",
+      "pr_number": 30
     },
     {
       "id": "TASK-009",
@@ -294,17 +295,15 @@
       "id": "ENGINE-004",
       "lane": "engine",
       "category": "profiling",
-      "title": "Camera lock/zoom render-QA + profiler overlay hook",
+      "title": "Profiler overlay hook (F3 toggle + --profiler flag, FPS/mem/draw/zoom/Y-sort)",
       "status": "todo",
       "priority": "medium",
       "owner": "profiler-inspector",
       "files": [
-        "scenes/entities/Player.tscn",
-        "scenes/entities/Player.gd"
+        "scripts/core/ProfilerOverlay.gd",
+        "scenes/core/Main.tscn"
       ],
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
-      "github_issue_number": 5,
-      "notes": "Takes over issue #5 (camera center-lock, zoom 2.2-2.5) framed as render-correctness QA, plus frame/memory profiler overlay."
+      "notes": "Descoped from camera-lock (that half is done, see TASK-008/PR #30 -- issue #5 is closed). PR #23 had a solid, decoupled, headless-safe ProfilerOverlay.gd implementation but was closed as a duplicate alongside its conflicting Camera2D changes; re-propose just the overlay half standalone."
     },
     {
       "id": "ENGINE-005",
