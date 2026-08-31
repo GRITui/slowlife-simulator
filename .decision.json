@@ -1,0 +1,11 @@
+{
+  "date": "2026-08-31",
+  "pick": "A+B Hybrid (Isan Plain + Canal Maze)",
+  "palette": "12",
+  "language": "EN",
+  "sequencing": "ui-next-then-task002",
+  "grid": "20x16 flat + 3x3 lotus maze islet inset",
+  "notes": "User: 1) Hybrid A/B. Locked via ART_WORLD_VISION_V2.html comparison. Strict 12-color retained.",
+  "assets_generated": "tilesets 8, environment 10, characters 34 (real pixel art, cache-busted gallery)",
+  "next": ["canal/maze add-on tiles", "UI assets", "TASK-002 CropData + GridManager"]
+}

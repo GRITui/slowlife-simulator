@@ -20,14 +20,16 @@
       "id": "TASK-002",
       "category": "gameplay",
       "title": "Create CropData Resource class and Rice paddy growth logic",
-      "status": "pending",
+      "status": "completed",
       "priority": "high",
       "files": [
         "scripts/resource_types/CropData.gd",
         "scenes/core/GridManager.tscn"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/2",
-      "github_issue_number": 2
+      "github_issue_number": 2,
+      "notes": "Hybrid A/B locked 2026-08-31: 20x16 flat + 3x3 maze islet. Strict 12-color.",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-003",

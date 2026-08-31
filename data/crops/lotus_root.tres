@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=3 format=3 uid="uid://crop_lotus001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/lotus_maze.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = "lotus_root"
+display_name = "Lotus Root"
+description = "Mazes of the canal islet. Only Monsoon, needs sluice gate."
+stage_textures = Array[Texture2D]([ExtResource("2")])
+growth_minutes_per_stage = Array[int]([360, 0])
+total_stages = 2
+season_yield_multiplier = {
+"hot": 0.5,
+"monsoon": 1.8,
+"cool": 0.7
+}
+season_growth_speed = {
+"hot": 0.6,
+"monsoon": 1.5,
+"cool": 0.8
+}
+allowed_seasons = Array[String](["monsoon"])
+requires_water = true
+yield_item_id = "lotus_root"
+yield_amount = 2
+harmony_value = 4
+stamina_cost_plant = 4.0
+stamina_cost_harvest = 4.0
+seed_item_id = "seed_lotus"
+regrow_after_harvest = true
+required_infrastructure = "sluice_gate"
