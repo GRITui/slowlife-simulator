@@ -899,7 +899,8 @@
       ],
       "notes": "Head-of-Art sprint 5/10: revised during implementation from UV-distortion to a flat-color shimmer overlay (matches TASK-034's proven no-TEXTURE-sampling pattern instead of risking SCREEN_TEXTURE reliability on gl_compatibility). HazeLayer/HazeRect + HeatHazeDriver wired into Main.tscn, gated on season=='hot'. Gates: content 100/100, engine 50/50, perf 6/6. Spec: docs/research/ART-040-spec.md",
       "proposed_at": "2026-09-01",
-      "completed_at": "2026-09-01"
+      "completed_at": "2026-09-01",
+      "pr_number": 93
     },
     {
       "id": "TASK-101",
