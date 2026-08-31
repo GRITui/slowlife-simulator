@@ -10,11 +10,12 @@ extends CanvasLayer
 		is_mobile = v
 		_apply_scale()
 
-@onready var stamina_bar: ProgressBar = $Margin/Root/HBox/StaminaBox/StaminaBar if has_node("Margin/Root/HBox/StaminaBox/StaminaBar") else null
-@onready var harmony_bar: ProgressBar = $Margin/Root/HBox/HarmonyBox/HarmonyBar if has_node("Margin/Root/HBox/HarmonyBox/HarmonyBar") else null
-@onready var season_label: Label = $Margin/Root/HBox/SeasonBox/SeasonLabel if has_node("Margin/Root/HBox/SeasonBox/SeasonLabel") else null
+@onready var stamina_bar: TextureProgressBar = $Margin/Root/HBox/StaminaBox/StaminaBar if has_node("Margin/Root/HBox/StaminaBox/StaminaBar") else null
+@onready var harmony_bar: TextureProgressBar = $Margin/Root/HBox/HarmonyBox/HarmonyBar if has_node("Margin/Root/HBox/HarmonyBox/HarmonyBar") else null
+@onready var season_label: Label = $Margin/Root/HBox/SeasonBox/SeasonVBox/SeasonLabel if has_node("Margin/Root/HBox/SeasonBox/SeasonVBox/SeasonLabel") else null
 @onready var time_label: Label = $Margin/Root/HBox/TimeBox/TimeLabel if has_node("Margin/Root/HBox/TimeBox/TimeLabel") else null
 @onready var crop_label: Label = $Margin/Root/CropProgress/CropLabel if has_node("Margin/Root/CropProgress/CropLabel") else null
+@onready var prompt_label: Label = $Margin/Root/ActionPrompt/PromptLabel if has_node("Margin/Root/ActionPrompt/PromptLabel") else null
 
 var _max_stamina: float = 100.0
 var _max_harmony: int = 100
@@ -45,21 +46,21 @@ func _on_stamina_changed(cur: float, max_v: float) -> void:
 	if stamina_bar:
 		stamina_bar.max_value = max_v
 		stamina_bar.value = cur
-		# color via modulate: green->yellow->red
+		# TextureProgressBar tint_progress drives fill color; keep modulate for fallback
 		var t: float = cur / max(max_v, 1.0)
 		if t > 0.5:
-			stamina_bar.modulate = Color(0.68, 0.83, 0.5) # Pandan-ish
+			stamina_bar.tint_progress = Color(0.68, 0.83, 0.5) # Pandan-ish
 		elif t > 0.25:
-			stamina_bar.modulate = Color(0.99, 0.84, 0.2) # Jasmine
+			stamina_bar.tint_progress = Color(0.99, 0.84, 0.2) # Jasmine
 		else:
-			stamina_bar.modulate = Color(0.95, 0.56, 0.69) # Lotus
+			stamina_bar.tint_progress = Color(0.95, 0.56, 0.69) # Lotus
 
 func _on_harmony_changed(v: int) -> void:
 	if harmony_bar:
 		harmony_bar.max_value = _max_harmony
 		harmony_bar.value = v
 	if harmony_bar:
-		harmony_bar.modulate = Color(0.95, 0.56, 0.69) # Lotus Pink harmony
+		harmony_bar.tint_progress = Color(0.95, 0.56, 0.69) # Lotus Pink harmony
 
 func _on_season_changed(s: String) -> void:
 	if season_label:
