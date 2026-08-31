@@ -255,6 +255,87 @@
       "notes": "Gap surfaced by post-TASK-006/PR#19 art review: ground tilesets read flatter/more repetitive than the soft-shaded character/prop art. Backdrop void beyond bamboo ring also a flat single-color fill. Art-only, no dimension changes."
     },
     {
+      "id": "TASK-017",
+      "sprint": 3,
+      "category": "gameplay",
+      "title": "Title screen + pause menu + settings flow",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/",
+        "scenes/core/Main.tscn"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/45",
+      "github_issue_number": 45,
+      "notes": "Gap-research finding: game boots straight into Main.tscn, no title/pause/settings/quit flow at all. Settings screen should be structured ready for TASK-021's volume controls."
+    },
+    {
+      "id": "TASK-018",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Inventory UI — display GameData.inventory contents",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd",
+        "scripts/autoload/SignalBus.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/44",
+      "github_issue_number": 44,
+      "notes": "Gap-research finding: GameData.inventory is fully functional (add/remove/has_item all wired) and TASK-015 wired inventory_slot.png border art, but nothing renders held items -- no icons, no quantities. Depends on TASK-019 for icon art.",
+      "depends_on": "TASK-019"
+    },
+    {
+      "id": "TASK-019",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Item icon art set (crops + recipe outputs)",
+      "status": "todo",
+      "priority": "high",
+      "owner": "data-pipeline",
+      "files": [
+        "assets/items/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/43",
+      "github_issue_number": 43,
+      "notes": "Gap-research finding: no per-item icon art exists for any of the 5 crops (data/crops/) or 4 recipe outputs (data/recipes/recipes.json), blocking TASK-018. 48x48 canon, soft-shaded technique matching character/environment art."
+    },
+    {
+      "id": "TASK-020",
+      "sprint": 3,
+      "category": "mechanics",
+      "title": "Buffalo care mechanic",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/entities/",
+        "scripts/autoload/GameData.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/46",
+      "github_issue_number": 46,
+      "notes": "Gap-research finding: PROJECT_VISION.md names buffalo care as a core cultural mechanic and 5 buffalo sprites already exist (assets/characters/animal_buffalo_*), but zero code references buffalo anywhere -- dead art, no mechanic. Pattern off MonkNPC."
+    },
+    {
+      "id": "TASK-021",
+      "sprint": 3,
+      "category": "audio",
+      "title": "Ambient audio system (music + SFX)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "data-pipeline",
+      "files": [
+        "scripts/autoload/AudioManager.gd",
+        "assets/audio/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/47",
+      "github_issue_number": 47,
+      "notes": "Gap-research finding: zero audio in the project -- no assets, no AudioStreamPlayer usage anywhere, despite PROJECT_VISION's explicit 'ambient sounds' Magnify pillar. Seasonal ambient loop + SignalBus-driven action SFX, volume bus ready for TASK-017's settings screen."
+    },
+    {
       "id": "ENGINE-001",
       "lane": "engine",
       "category": "ci",
