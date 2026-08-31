@@ -189,7 +189,9 @@
       "files": [
         "scenes/entities/"
       ],
-      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION."
+      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION.",
+      "github_issue_number": 40,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/40"
     },
     {
       "id": "TASK-013",
@@ -216,7 +218,9 @@
       "files": [
         "scenes/ui/HUD.tscn"
       ],
-      "notes": "Dynamic UI scaling PC 100% / mobile 80%."
+      "notes": "Dynamic UI scaling PC 100% / mobile 80%.",
+      "github_issue_number": 42,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/42"
     },
     {
       "id": "TASK-015",
@@ -289,7 +293,9 @@
       "files": [
         "scripts/persistence/"
       ],
-      "notes": "Greenfield \u2014 no persistence layer exists yet."
+      "notes": "Greenfield \u2014 no persistence layer exists yet.",
+      "github_issue_number": 21,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/21"
     },
     {
       "id": "ENGINE-004",
