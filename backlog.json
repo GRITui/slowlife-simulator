@@ -216,6 +216,37 @@
       "notes": "Dynamic UI scaling PC 100% / mobile 80%."
     },
     {
+      "id": "TASK-015",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Wire redesigned UI art into HUD.tscn",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/25",
+      "github_issue_number": 25,
+      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: assets/ui/{energy_bar,harmony_bar,action_prompt,season_display,inventory_slot}.png exist but HUD.tscn still renders via plain ProgressBar/Label/ColorRect. Visual swap only, keep SignalBus wiring."
+    },
+    {
+      "id": "TASK-016",
+      "sprint": 3,
+      "category": "ui",
+      "title": "Tileset shading/detail pass to match character sprite fidelity",
+      "status": "todo",
+      "priority": "low",
+      "owner": "visual-inspector",
+      "files": [
+        "assets/tilesets/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/26",
+      "github_issue_number": 26,
+      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: ground tilesets read flatter/more repetitive than the soft-shaded character/prop art. Backdrop void beyond bamboo ring also a flat single-color fill. Art-only, no dimension changes."
+    },
+    {
       "id": "ENGINE-001",
       "lane": "engine",
       "category": "ci",
