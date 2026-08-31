@@ -17,6 +17,8 @@ func _ready() -> void:
 	SignalBus.show_dialogue.connect(_on_show_dialogue)
 	SignalBus.season_changed.connect(_on_season_tint)
 	SignalBus.weather_changed.connect(_on_weather)
+	# Title/pause flow (TASK-017)
+	_setup_title_pause_flow()
 	# init tint
 	_on_season_tint(GameData.current_season)
 	# seed demo inventory for first Binthabat if empty (so new game can offer)
@@ -27,6 +29,12 @@ func _ready() -> void:
 	var pl := get_node_or_null("Player")
 	if pl:
 		pl.global_position = Vector2(10 * 48, 8 * 48)
+	# Show title on boot (skip if --screenshot)
+	if not "--screenshot" in OS.get_cmdline_user_args():
+		var title: Node = get_node_or_null("TitleScreen")
+		if title and title.has_method("show_title"):
+			title.show_title()
+			get_tree().paused = true
 	# monk on temple lane E (cell 17,3), warm start at cool season 06:00
 	if "--screenshot" in OS.get_cmdline_user_args():
 		for i in 20:
@@ -37,6 +45,70 @@ func _ready() -> void:
 				out = arg.trim_prefix("--screenshot-out=")
 		_capture_screenshot(out)
 		get_tree().quit()
+
+func _setup_title_pause_flow() -> void:
+	var title: Node = get_node_or_null("TitleScreen")
+	if title:
+		if title.has_signal("new_game_requested"):
+			title.new_game_requested.connect(_on_new_game)
+		if title.has_signal("continue_requested"):
+			title.continue_requested.connect(_on_continue)
+		if title.has_signal("settings_requested"):
+			title.settings_requested.connect(_on_settings_from_title)
+	var pause_menu: Node = get_node_or_null("PauseMenu")
+	if pause_menu:
+		if pause_menu.has_signal("resume_requested"):
+			pause_menu.resume_requested.connect(_on_resume)
+		if pause_menu.has_signal("quit_to_title_requested"):
+			pause_menu.quit_to_title_requested.connect(_on_quit_to_title)
+		if pause_menu.has_signal("settings_requested"):
+			pause_menu.settings_requested.connect(_on_settings_from_pause)
+
+func _on_new_game() -> void:
+	GameData.inventory.clear()
+	GameData.harmony = 0
+	GameData.current_stamina = GameData.max_stamina
+	GameData.infrastructure.clear()
+	GameData.daily_offerings = 0
+	GameData.last_offering_day = -1
+	var tm: Node = get_node_or_null("TimeManager")
+	if tm and tm.has_method("set_time"):
+		tm.set_time(1, 6, 0)
+		tm.set_season("cool")
+	var gm: Node = get_node_or_null("GridManager")
+	if gm and "plots" in gm:
+		gm.plots.clear()
+	get_tree().paused = false
+	SignalBus.show_dialogue.emit("System", "New game started.")
+
+func _on_continue() -> void:
+	var SaveMgr: GDScript = load("res://scripts/persistence/SaveManager.gd") if ResourceLoader.exists("res://scripts/persistence/SaveManager.gd") else null
+	if SaveMgr and SaveMgr.has_save("autosave"):
+		var tm: Node = get_node_or_null("TimeManager")
+		var gm: Node = get_node_or_null("GridManager")
+		if SaveMgr.load_game("autosave", tm, gm):
+			SignalBus.show_dialogue.emit("System", "Game loaded.")
+		else:
+			SignalBus.show_dialogue.emit("System", "Load failed.")
+	else:
+		SignalBus.show_dialogue.emit("System", "No save found — starting new game.")
+		_on_new_game()
+	get_tree().paused = false
+
+func _on_quit_to_title() -> void:
+	var title: Node = get_node_or_null("TitleScreen")
+	if title and title.has_method("show_title"):
+		title.show_title()
+		get_tree().paused = true
+
+func _on_resume() -> void:
+	get_tree().paused = false
+
+func _on_settings_from_title() -> void:
+	SignalBus.show_dialogue.emit("System", "Settings — audio/video coming soon.")
+
+func _on_settings_from_pause() -> void:
+	SignalBus.show_dialogue.emit("System", "Settings — audio/video coming soon.")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F12:

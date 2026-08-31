@@ -36,6 +36,7 @@ var last_offering_day: int = -1
 
 func add_item(item_id: String, amount: int = 1) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
+	SignalBus.inventory_changed.emit(inventory.duplicate())
 
 func remove_item(item_id: String, amount: int = 1) -> bool:
 	if inventory.get(item_id, 0) < amount:
@@ -43,6 +44,7 @@ func remove_item(item_id: String, amount: int = 1) -> bool:
 	inventory[item_id] -= amount
 	if inventory[item_id] <= 0:
 		inventory.erase(item_id)
+	SignalBus.inventory_changed.emit(inventory.duplicate())
 	return true
 
 func has_item(item_id: String, amount: int = 1) -> bool:

@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://titlescreen001"]
+
+[ext_resource type="Script" path="res://scenes/ui/TitleScreen.gd" id="1_title"]
+
+[node name="TitleScreen" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_title")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9607843, 0.9411765, 0.9098039, 0.92)
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -120.0
+offset_right = 140.0
+offset_bottom = 120.0
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "SLOWLIFE SIMULATOR"
+theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_font_sizes/font_size = 22
+
+[node name="Subtitle" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "Thai Rural Countryside"
+theme_override_colors/font_color = Color(0.5411765, 0.43137255, 0.3882353, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="NewGameBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(200, 36)
+layout_mode = 2
+text = "New Game"
+
+[node name="ContinueBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(200, 36)
+layout_mode = 2
+text = "Continue"
+
+[node name="SettingsBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(200, 36)
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(200, 36)
+layout_mode = 2
+text = "Quit"

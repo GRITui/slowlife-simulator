@@ -11,6 +11,9 @@ signal stamina_changed(current_stamina: float, max_stamina: float)
 signal binthabat_offered(item_id: String, harmony_yield: int)
 signal infrastructure_repaired(structure_id: String)
 signal show_dialogue(speaker_name: String, text: String)
+signal inventory_changed(inventory: Dictionary)
+signal pause_toggled(is_paused: bool)
+signal action_prompt_changed(text: String, visible: bool)
 
 # --- Extended signals (backward-compat with existing codebase) ---
 signal energy_changed(new_energy: int)
