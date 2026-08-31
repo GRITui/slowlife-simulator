@@ -727,7 +727,7 @@
       "sprint": 7,
       "category": "performance",
       "title": "Mobile performance budget: draw-call audit + GPUParticles2D caps",
-      "status": "proposed",
+      "status": "todo",
       "priority": "high",
       "owner": "spatial-architect",
       "files": [
@@ -735,7 +735,8 @@
         "docs/research/TASK-031-spec.md"
       ],
       "notes": "Scout Phase 2 research: measurable 60fps A14+ budget (draw calls/particles/memory) for WorldRender prop load. Spec: docs/research/TASK-031-spec.md",
-      "proposed_at": "2026-08-31"
+      "proposed_at": "2026-08-31",
+      "gate_audit": "PASS 2026-08-31: iOS perf criterion, spec verified, zero-combat safe. Executing via @minimax-m3."
     },
     {
       "id": "TASK-032",
@@ -751,14 +752,15 @@
         "ART_STYLE_GUIDE.md"
       ],
       "notes": "Scout Phase 2 research: GLES3-safe canvas_item water/foliage shaders with perf caps. Spec: docs/research/TASK-032-spec.md",
-      "proposed_at": "2026-08-31"
+      "proposed_at": "2026-08-31",
+      "gate_audit": "DEFERRED 2026-08-31: passes gate (shaders) but art lane \u2014 PO directive: process visual assets when committed; no Claude CLI this cycle."
     },
     {
       "id": "TASK-033",
       "sprint": 7,
       "category": "performance",
       "title": "SignalBus + startup hygiene: orphan emit removal & export pruning",
-      "status": "proposed",
+      "status": "todo",
       "priority": "high",
       "owner": "backend-automation",
       "files": [
@@ -767,6 +769,22 @@
         "project.godot"
       ],
       "notes": "QA-auditor Phase 2 FAIL verdict: day_night_cycle_changed orphan per-minute emit + unregistered autoload scripts. Spec: docs/research/TASK-033-spec.md",
+      "proposed_at": "2026-08-31",
+      "gate_audit": "PASS 2026-08-31: mobile startup-perf criterion, audit-backed, spec verified. Executing via @north-mini-code."
+    },
+    {
+      "id": "TASK-034",
+      "sprint": 6,
+      "category": "art",
+      "title": "Day/night ambient color-grading shader (canvas_item)",
+      "status": "proposed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "assets/shaders/day_night_tint.gdshader",
+        "scripts/autoload/DayNightTintDriver.gd"
+      ],
+      "notes": "Phase 2 art audit: zero .gdshader files exist in repo; CLAUDE.md's day/night color-grading pillar is unimplemented and distinct from TASK-032's water/foliage scope. Also gives SignalBus.day_night_cycle_changed (0 listeners per QA-AUDIT-2026-08-31) its first consumer. Spec: docs/research/ART-034-spec.md",
       "proposed_at": "2026-08-31"
     }
   ]
