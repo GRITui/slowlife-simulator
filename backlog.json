@@ -115,16 +115,17 @@
       "sprint": 1,
       "category": "gameplay",
       "title": "Camera center-lock in-engine + zoom tune (3/4 canon)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "visual-inspector",
       "files": [
-        "scenes/entities/Player.tscn",
-        "scenes/entities/Player.gd"
+        "scenes/entities/Player.tscn"
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
       "github_issue_number": 5,
-      "notes": "Issue #5 REV 2. NOTE: Camera2D 'current' property is gone in Godot 4.7 - use 'enabled'; drag margins off, smoothing off, zoom 2.2 provisional."
+      "notes": "Issue #5 REV 2, resolved via PR #30 (squash-merged over duplicate PRs #23/#24, which both carried a stale zoom=2.2 computed for the pre-redesign 32px tile grid). Zoom re-derived for the current 48px canon: 1600/(48*20)=1.6667, same 11.25-row/20-col exact-fit framing the issue specified. Verified in-engine via screenshot. current->enabled fixed (Godot 4.7).",
+      "completed_at": "2026-08-31",
+      "pr_number": 30
     },
     {
       "id": "TASK-009",
@@ -168,13 +169,14 @@
       "sprint": 2,
       "category": "gameplay",
       "title": "Irrigation canal + sluice gate repair mechanic -> unlocks Pandan seed",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "spatial-architect",
       "files": [
         "scenes/core/"
       ],
-      "notes": "Reverse pillar: restore infrastructure to unlock rare regional seeds."
+      "notes": "Reverse pillar: restore infrastructure to unlock rare regional seeds. Merged PR #31 (squash).",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-012",
@@ -187,20 +189,23 @@
       "files": [
         "scenes/entities/"
       ],
-      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION."
+      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION.",
+      "github_issue_number": 40,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/40"
     },
     {
       "id": "TASK-013",
       "sprint": 2,
       "category": "mechanics",
       "title": "Crop/item DB (pandan, thai basil, lotus root, mango) + cooking recipes",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-pipeline",
       "files": [
         "data/"
       ],
-      "notes": "Mortar & pestle, clay stove multi-step crafting."
+      "notes": "Mortar & pestle, clay stove multi-step crafting. Merged PR #34 (squash).",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-014",
@@ -213,128 +218,9 @@
       "files": [
         "scenes/ui/HUD.tscn"
       ],
-      "notes": "Dynamic UI scaling PC 100% / mobile 80%."
-    },
-    {
-      "id": "ENGINE-001",
-      "lane": "engine",
-      "category": "ci",
-      "title": "Stand up res://tests/run_engine_tests.gd as engine-lane merge gate",
-      "status": "completed",
-      "priority": "high",
-      "owner": "backend-automation",
-      "files": [
-        "tests/run_engine_tests.gd"
-      ],
-      "notes": "Autoload wiring, SignalBus contract, TimeManager state machine, GridManager bounds contract. 40/40 green. Separate from content squad's tests/run_tests.gd.",
-      "completed_at": "2026-08-31"
-    },
-    {
-      "id": "ENGINE-002",
-      "lane": "engine",
-      "category": "spatial",
-      "title": "Tilemap matrix engine layer + collision bounds + A* pathfinding scaffold",
-      "status": "completed",
-      "priority": "high",
-      "owner": "spatial-physics",
-      "files": [
-        "scripts/core/NavGrid.gd"
-      ],
-      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes \u2014 caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
-      "completed_at": "2026-08-31"
-    },
-    {
-      "id": "ENGINE-003",
-      "lane": "engine",
-      "category": "persistence",
-      "title": "Save/load state machine + JSON schema for player/world state",
-      "status": "todo",
-      "priority": "medium",
-      "owner": "data-persistence",
-      "files": [
-        "scripts/persistence/"
-      ],
-      "notes": "Greenfield \u2014 no persistence layer exists yet."
-    },
-    {
-      "id": "ENGINE-004",
-      "lane": "engine",
-      "category": "profiling",
-      "title": "Camera lock/zoom render-QA + profiler overlay hook",
-      "status": "todo",
-      "priority": "medium",
-      "owner": "profiler-inspector",
-      "files": [
-        "scenes/entities/Player.tscn",
-        "scenes/entities/Player.gd"
-      ],
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
-      "github_issue_number": 5,
-      "notes": "Takes over issue #5 (camera center-lock, zoom 2.2-2.5) framed as render-correctness QA, plus frame/memory profiler overlay."
-    },
-    {
-      "id": "ENGINE-005",
-      "lane": "engine",
-      "category": "ci",
-      "title": "Fix headless CI false-fail: mandatory asset-import pass",
-      "status": "completed",
-      "priority": "high",
-      "owner": "backend-automation",
-      "files": [
-        "scripts/ci/run_gate.sh",
-        "tests/run_tests.gd",
-        "tests/run_engine_tests.gd"
-      ],
-      "notes": "Root cause of the get_height()-on-null errors / 2 failing worldrender checks on main: .godot/imported/ is gitignored, so a checkout whose .ctex cache predates a texture-adding commit (TASK-006) gets null loads headlessly. Not a WorldRender.gd bug -- no art-squad file changed. Added scripts/ci/run_gate.sh (runs `godot --headless --import` then either/both test suites) and documented it in both test files' headers. Both gates confirmed green after the fix: engine 48/48, content 54/54 (was 52/54).",
-      "completed_at": "2026-08-31"
-    },
-    {
-      "id": "ENGINE-006",
-      "lane": "engine",
-      "category": "architecture",
-      "title": "Player.gd bypasses SignalBus with hard node-path/tree-walk coupling",
-      "status": "in_progress",
-      "priority": "medium",
-      "owner": "pr-gatekeeper",
-      "files": [
-        "scenes/entities/Player.gd",
-        "scenes/core/GridManager.gd",
-        "scripts/autoload/SignalBus.gd"
-      ],
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/27",
-      "github_issue_number": 27,
-      "notes": "Found in PR-Gatekeeper audit, not caught at TASK-007/TASK-009 review time. get_node(\"/root/TimeManager\") + find_child tree-walks for GridManager violate the decoupled SignalBus checklist item. Picked up directly by gatekeeper since it's small and self-contained."
-    },
-    {
-      "id": "ENGINE-007",
-      "lane": "engine",
-      "category": "hygiene",
-      "title": "Remove dead duplicate SignalBus at src/scripts/signalbus.gd",
-      "status": "todo",
-      "priority": "low",
-      "owner": "unassigned",
-      "files": [
-        "src/scripts/signalbus.gd"
-      ],
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/28",
-      "github_issue_number": 28,
-      "notes": "Found in PR-Gatekeeper audit. Not autoloaded, not referenced by code, drifted signal set vs canonical scripts/autoload/SignalBus.gd. Landmine for future imports."
-    },
-    {
-      "id": "ENGINE-008",
-      "lane": "engine",
-      "category": "spatial",
-      "title": "Wire NavGrid (A*) into an actual movement consumer",
-      "status": "todo",
-      "priority": "low",
-      "owner": "unassigned",
-      "files": [
-        "scripts/core/NavGrid.gd",
-        "scenes/entities/MonkNPC.gd"
-      ],
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
-      "github_issue_number": 29,
-      "notes": "Found in PR-Gatekeeper audit. ENGINE-002 shipped a correct, unit-tested A* pathfinder with zero in-game callers -- only tests/run_engine_tests.gd instantiates it. Likely first consumer: MonkNPC scripted walk, scoped with narrative-lead given TASK-012 overlap."
+      "notes": "Dynamic UI scaling PC 100% / mobile 80%.",
+      "github_issue_number": 42,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/42"
     },
     {
       "id": "TASK-015",
@@ -452,6 +338,81 @@
       "notes": "Gap-research finding: zero audio in the project -- no assets, no AudioStreamPlayer usage anywhere, despite PROJECT_VISION's explicit 'ambient sounds' Magnify pillar. Seasonal ambient loop + SignalBus-driven action SFX, volume bus ready for TASK-017's settings screen."
     },
     {
+      "id": "ENGINE-001",
+      "lane": "engine",
+      "category": "ci",
+      "title": "Stand up res://tests/run_engine_tests.gd as engine-lane merge gate",
+      "status": "completed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "tests/run_engine_tests.gd"
+      ],
+      "notes": "Autoload wiring, SignalBus contract, TimeManager state machine, GridManager bounds contract. 40/40 green. Separate from content squad's tests/run_tests.gd.",
+      "completed_at": "2026-08-31"
+    },
+    {
+      "id": "ENGINE-002",
+      "lane": "engine",
+      "category": "spatial",
+      "title": "Tilemap matrix engine layer + collision bounds + A* pathfinding scaffold",
+      "status": "completed",
+      "priority": "high",
+      "owner": "spatial-physics",
+      "files": [
+        "scripts/core/NavGrid.gd"
+      ],
+      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes \u2014 caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
+      "completed_at": "2026-08-31"
+    },
+    {
+      "id": "ENGINE-003",
+      "lane": "engine",
+      "category": "persistence",
+      "title": "Save/load state machine + JSON schema for player/world state",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "data-persistence",
+      "files": [
+        "scripts/persistence/"
+      ],
+      "notes": "Greenfield \u2014 no persistence layer exists yet.",
+      "github_issue_number": 21,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/21"
+    },
+    {
+      "id": "ENGINE-004",
+      "lane": "engine",
+      "category": "profiling",
+      "title": "Profiler overlay hook (F3 toggle + --profiler flag, FPS/mem/draw/zoom/Y-sort)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "profiler-inspector",
+      "files": [
+        "scripts/core/ProfilerOverlay.gd",
+        "scenes/core/Main.tscn"
+      ],
+      "notes": "Descoped from camera-lock (that half is done, see TASK-008/PR #30 -- issue #5 is closed). PR #23 had a solid, decoupled, headless-safe ProfilerOverlay.gd implementation but was closed as a duplicate alongside its conflicting Camera2D changes; re-propose just the overlay half standalone.",
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/36",
+      "github_issue_number": 36
+    },
+    {
+      "id": "ENGINE-005",
+      "lane": "engine",
+      "category": "ci",
+      "title": "Fix headless CI false-fail: mandatory asset-import pass",
+      "status": "completed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/ci/run_gate.sh",
+        "tests/run_tests.gd",
+        "tests/run_engine_tests.gd"
+      ],
+      "notes": "Root cause of the get_height()-on-null errors / 2 failing worldrender checks on main: .godot/imported/ is gitignored, so a checkout whose .ctex cache predates a texture-adding commit (TASK-006) gets null loads headlessly. Not a WorldRender.gd bug -- no art-squad file changed. Added scripts/ci/run_gate.sh (runs `godot --headless --import` then either/both test suites) and documented it in both test files' headers. Both gates confirmed green after the fix: engine 48/48, content 54/54 (was 52/54).",
+      "completed_at": "2026-08-31"
+    },
+    {
       "id": "ENGINE-009",
       "lane": "engine",
       "category": "ci",
@@ -513,6 +474,42 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/41",
       "github_issue_number": 41,
       "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes."
+    },
+    {
+      "id": "ENGINE-006",
+      "lane": "engine",
+      "category": "architecture",
+      "title": "Player.gd bypasses SignalBus with hard node-path/tree-walk coupling",
+      "status": "todo",
+      "priority": "medium",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/27",
+      "github_issue_number": 27,
+      "notes": "Re-synced \u2014 was open issue #27 but missing from backlog after bad merge."
+    },
+    {
+      "id": "ENGINE-007",
+      "lane": "engine",
+      "category": "hygiene",
+      "title": "Remove dead duplicate SignalBus at src/scripts/signalbus.gd",
+      "status": "todo",
+      "priority": "low",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/28",
+      "github_issue_number": 28,
+      "notes": "Re-synced \u2014 was open issue #28 but missing from backlog after bad merge."
+    },
+    {
+      "id": "ENGINE-008",
+      "lane": "engine",
+      "category": "spatial",
+      "title": "Wire NavGrid (A*) into an actual movement consumer",
+      "status": "todo",
+      "priority": "low",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
+      "github_issue_number": 29,
+      "notes": "Re-synced \u2014 was open issue #29 but missing from backlog after bad merge."
     }
   ]
 }
