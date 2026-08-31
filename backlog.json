@@ -547,6 +547,59 @@
       "notes": "Re-synced \u2014 was open issue #29 but missing from backlog after bad merge.",
       "completed_at": "2026-08-31",
       "pr_number": 71
+    },
+    {
+      "id": "TASK-022",
+      "sprint": 4,
+      "category": "gameplay",
+      "title": "Loy Krathong seasonal festival \u2014 craft & release krathongs at pond (+5 harmony)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/festival/",
+        "scripts/autoload/GameData.gd",
+        "scenes/core/TimeManager.gd",
+        "scripts/narrative/DialogueDB.gd"
+      ],
+      "notes": "Cozy seasonal festival (cool day 7), no fail state, via SignalBus.festival_triggered. Spec: docs/research/TASK-022-spec.md",
+      "github_issue_number": 72,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/72"
+    },
+    {
+      "id": "TASK-023",
+      "sprint": 4,
+      "category": "architecture",
+      "title": "SignalBus legacy cleanup + static typing hardening",
+      "status": "todo",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/SignalBus.gd",
+        "src/scripts/signalbus.gd",
+        "scripts/autoload/GameData.gd",
+        "tests/run_tests.gd"
+      ],
+      "notes": "Remove energy_changed/ui_update_* duplicates, add TypedDictionary hardening, keep backward compat. Spec: docs/research/TASK-023-spec.md",
+      "github_issue_number": 73,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/73"
+    },
+    {
+      "id": "TASK-024",
+      "sprint": 4,
+      "category": "performance",
+      "title": "WorldRender cache + prop pooling + ProfilerOverlay throttling",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "spatial-architect",
+      "files": [
+        "scenes/core/WorldRender.gd",
+        "scenes/core/Main.tscn",
+        "scripts/core/ProfilerOverlay.gd"
+      ],
+      "notes": "Cache bamboo ring 76 walls, pool props, throttle profiler label to 0.5s, move static ground off YSort. Spec: docs/research/TASK-024-spec.md",
+      "github_issue_number": 74,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/74"
     }
   ]
 }
