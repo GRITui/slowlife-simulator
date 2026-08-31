@@ -15,6 +15,15 @@ cd "$(dirname "$0")/../.."
 GATE="${1:-all}"
 
 echo "== import pass =="
+# TASK-026: gdlint advisory pass (style only, non-fatal) — strict typing
+# errors are caught by the Godot parser below; gdlint adds naming/spacing
+# lint. Install with: pip install gdtoolkit
+if command -v gdlint >/dev/null 2>&1; then
+	echo "== gdlint pass (advisory) =="
+	gdlint scripts/ scenes/ tests/ || echo "gdlint reported style issues (non-fatal)"
+else
+	echo "== gdlint not installed, skipping (pip install gdtoolkit) =="
+fi
 godot --headless --import --path . >/dev/null
 
 run_content() {
@@ -27,9 +36,15 @@ run_engine() {
 	godot --headless --path . --script res://tests/run_engine_tests.gd
 }
 
+run_save_compat() {
+	echo "== save-compat gate: tests/test_save_compat.gd =="
+	godot --headless --path . --script res://tests/test_save_compat.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
-	all) run_engine && run_content ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|all)" >&2; exit 2 ;;
+	save) run_save_compat ;;
+	all) run_engine && run_content && run_save_compat ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|all)" >&2; exit 2 ;;
 esac
