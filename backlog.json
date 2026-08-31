@@ -608,10 +608,10 @@
       "pr_number": 77
     },
     {
-      "id": "TASK-025",
+"id": "TASK-025",
       "sprint": 5,
       "category": "gameplay",
-      "title": "Evening market stall & barter economy \u2014 seasonal 1:1 trade at village center",
+      "title": "Evening market stall & barter economy — seasonal 1:1 trade at village center",
       "status": "todo",
       "priority": "medium",
       "owner": "narrative-lead",
@@ -622,7 +622,9 @@
       ],
       "notes": "Scout proposal: 1:1 barter (no gold/fail), seasonal offers via TimeManager, SignalBus.barter_completed. Spec: docs/research/TASK-025-spec.md",
       "proposed_at": "2026-08-31",
-      "promoted_at": "2026-08-31"
+      "promoted_at": "2026-08-31",
+      "github_issue_number": 79,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/79"
     },
     {
       "id": "TASK-026",
@@ -658,7 +660,9 @@
       ],
       "notes": "QA-auditor proposal: font_scale 0.8-1.4 slider + high-contrast toggle, persists via SaveManager, WCAG AA. Spec: docs/research/TASK-027-spec.md",
       "proposed_at": "2026-08-31",
-      "promoted_at": "2026-08-31"
+      "promoted_at": "2026-08-31",
+      "github_issue_number": 80,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/80"
     }
   ]
 }
