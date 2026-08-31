@@ -606,6 +606,54 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/74",
       "completed_at": "2026-08-31",
       "pr_number": 77
+    },
+    {
+      "id": "TASK-025",
+      "sprint": 5,
+      "category": "gameplay",
+      "title": "Evening market stall & barter economy \u2014 seasonal 1:1 trade at village center",
+      "status": "proposed",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/market/",
+        "scripts/autoload/GameData.gd",
+        "scenes/ui/HUD.gd"
+      ],
+      "notes": "Scout proposal: 1:1 barter (no gold/fail), seasonal offers via TimeManager, SignalBus.barter_completed. Spec: docs/research/TASK-025-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-026",
+      "sprint": 5,
+      "category": "ci",
+      "title": "Save compatibility & migration tests \u2014 versioned JSON + round-trip suite",
+      "status": "proposed",
+      "priority": "high",
+      "owner": "data-persistence",
+      "files": [
+        "tests/test_save_compat.gd",
+        "scripts/persistence/SaveManager.gd",
+        "scripts/ci/run_gate.sh"
+      ],
+      "notes": "QA-auditor proposal: SAVE_VERSION=2, migrate v1->v2, headless test_save_compat, gdlint in CI. Spec: docs/research/TASK-026-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-027",
+      "sprint": 5,
+      "category": "ui",
+      "title": "Accessibility: font scaling + high-contrast HUD",
+      "status": "proposed",
+      "priority": "medium",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd",
+        "scenes/ui/Settings.tscn"
+      ],
+      "notes": "QA-auditor proposal: font_scale 0.8-1.4 slider + high-contrast toggle, persists via SaveManager, WCAG AA. Spec: docs/research/TASK-027-spec.md",
+      "proposed_at": "2026-08-31"
     }
   ]
 }
