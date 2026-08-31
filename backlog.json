@@ -694,7 +694,7 @@
       "sprint": 6,
       "category": "mechanics",
       "title": "Crafting UI wiring: mortar + clay stove consume recipes.json",
-      "status": "rejected",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-pipeline",
       "files": [
@@ -704,7 +704,9 @@
       ],
       "notes": "QA-auditor proposal: recipes.json + RecipeData are dead content (no consumer scene). CookingStation mirror of SluiceGate. Spec: docs/research/TASK-029-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "FAIL 2026-08-31: iOS Core Value criterion not met (content feature, not mobile touch/safe-area/shader/perf). Cozy+Spec pass. Re-propose bundled with touch-interact polish post-launch-gate."
+      "gate_audit": "RE-GATED PASS 2026-09-01 (user directive: close all backlog). CookingStation live, RecipeData consumed, craft_completed emitted.",
+      "completed_at": "2026-09-01",
+      "pr_number": 96
     },
     {
       "id": "TASK-030",
@@ -1050,6 +1052,22 @@
       "gate_audit": "PASS 2026-09-01: iOS perf criterion (battery), spec verified.",
       "completed_at": "2026-09-01",
       "pr_number": 95
+    },
+    {
+      "id": "TASK-160",
+      "sprint": 12,
+      "category": "art",
+      "title": "Crop rebalance (3-day minimum) + 18-crop seasonal roster (5/season + 3 any-season)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/crops/*.tres (20 files)",
+        "assets/environment/crops/ (68 new stage sprites)",
+        "assets/items/*.png (28 new item+seed icons)",
+        "tests/run_tests.gd"
+      ],
+      "notes": "New work per user request (2026-09-01): rebalanced ALL crop growth times to a hard design rule -- every growth stage >=1 in-game day (1440 min), fastest crop overall >=3 in-game days. Old fastest was jasmine_rice at 120min/stage (~2.25hrs total); now 4 days. Durian remains the longest at 6 days. Designed 14 NEW crop types to complete a 5-per-season + 3-any-season roster (existing jasmine_rice/lotus_root/thai_basil/pandan counted toward their buckets): hot=chili/sesame/peanut/sugarcane/watermelon, monsoon=water_spinach/taro/ginger (+existing lotus_root/pandan), cool=cabbage/tomato/garlic/lettuce (+existing thai_basil), any-season=eggplant/yardlong_bean (+existing jasmine_rice). Also replaced thai_basil/pandan/lotus_root's placeholder art (they were reusing rice_paddy_stage*.png verbatim, or in lotus_root's case the whole lotus_maze.png tileset image as a single 'stage sprite' -- a real mismatch) with proper distinct 4-stage sprites. Fixed a total_stages/load_steps mismatch left over from lotus_root's old 2-stage structure. Fixed a stale golden-value assertion in tests/run_tests.gd that hardcoded jasmine_rice's old 120min/stage timing. Per the user's explicit design note, exact grow-time numbers are NOT surfaced as new in-game UI -- crop_bar/crop_label already only show stage X/4, unchanged. IMPORTANT: stage_textures has ZERO visual consumer anywhere in the codebase (verified via grep) -- not even jasmine_rice's growth art renders in-game today. This ships at the same 'data + art ready, engine gap' status as everything else this session; flagged to PO_INBOX. Gates: content 100/100, engine 50/50. Perf gate (y-sort) is RED but for an UNRELATED reason -- opencode's own concurrent 'CookingStation' addition pushed 32->33, not this task's changes (verified by direct node enumeration)."
     }
   ]
 }
