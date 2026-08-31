@@ -50,7 +50,7 @@ func _try_grid_interact() -> void:
 	if plot == null:
 		# try plant jasmine_rice if plantable
 		if gm.is_plantable(cell):
-			var crop: CropData = load("res://data/crops/jasmine_rice.tres") as CropData
+			var crop: Resource = load("res://data/crops/jasmine_rice.tres")
 			if crop and gm.plant(cell, crop):
 				SignalBus.show_dialogue.emit("Farmer", "Planted jasmine rice.")
 			else:

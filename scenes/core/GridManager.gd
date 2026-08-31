@@ -3,8 +3,10 @@ extends Node2D
 # Connects to SignalBus.minute_ticked / season_changed / weather_changed
 # Per spec: backlog.json TASK-002, strict 12-color, SignalBus-decoupled
 
+const CropDataScript = preload("res://scripts/resource_types/CropData.gd")
+
 class PlotState:
-	var crop: CropData
+	var crop: Resource
 	var stage: int = 0
 	var minutes_in_stage: int = 0
 	var watered: bool = false
@@ -39,7 +41,7 @@ func is_plantable(cell: Vector2i) -> bool:
 		return false
 	return true
 
-func plant(cell: Vector2i, crop: CropData) -> bool:
+func plant(cell: Vector2i, crop: Resource) -> bool:
 	if not is_plantable(cell):
 		return false
 	if not crop.is_plantable_in(current_season):
@@ -100,7 +102,7 @@ func get_plot(cell: Vector2i) -> PlotState:
 func _on_minute_ticked(_day: int, _hour: int, _minute: int) -> void:
 	for cell in plots.keys():
 		var ps: PlotState = plots[cell]
-		var crop: CropData = ps.crop
+		var crop: Resource = ps.crop
 		# monsoon rain auto-water
 		if current_weather == "rain" and current_season == "monsoon":
 			ps.watered = true

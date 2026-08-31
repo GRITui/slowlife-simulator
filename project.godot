@@ -11,9 +11,6 @@ name="Thai Rural Countryside Sim"
 run/main_scene="res://scenes/core/Main.tscn"
 boot_splash/bg_color=Color(0.9607843, 0.9411765, 0.9098039, 1)
 config/features=PackedStringArray("4.2")
-target_screen_size = Vector2(1600, 900)
-show_cursor = true
-process_mode = idling
 
 [autoload]
 SignalBus="*res://scripts/autoload/SignalBus.gd"
