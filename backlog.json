@@ -721,6 +721,53 @@
       "notes": "QA-auditor proposal: TASK-022 FestivalManager never instantiated, festival_triggered has zero listeners. Wire via minute_ticked + SignalBus.time_manager registry. Spec: docs/research/TASK-030-spec.md",
       "proposed_at": "2026-08-31",
       "gate_audit": "FAIL 2026-08-31: iOS Core Value criterion not met (gameplay wiring, no direct mobile tech gain). Cozy+Spec pass. Revisit after launch gate."
+    },
+    {
+      "id": "TASK-031",
+      "sprint": 7,
+      "category": "performance",
+      "title": "Mobile performance budget: draw-call audit + GPUParticles2D caps",
+      "status": "proposed",
+      "priority": "high",
+      "owner": "spatial-architect",
+      "files": [
+        "scenes/core/WorldRender.gd",
+        "docs/research/TASK-031-spec.md"
+      ],
+      "notes": "Scout Phase 2 research: measurable 60fps A14+ budget (draw calls/particles/memory) for WorldRender prop load. Spec: docs/research/TASK-031-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-032",
+      "sprint": 7,
+      "category": "ui",
+      "title": "Mobile shader polish: seasonal water + foliage sway (canvas_item)",
+      "status": "proposed",
+      "priority": "medium",
+      "owner": "visual-inspector",
+      "files": [
+        "assets/shaders/",
+        "scenes/core/WorldRender.gd",
+        "ART_STYLE_GUIDE.md"
+      ],
+      "notes": "Scout Phase 2 research: GLES3-safe canvas_item water/foliage shaders with perf caps. Spec: docs/research/TASK-032-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-033",
+      "sprint": 7,
+      "category": "performance",
+      "title": "SignalBus + startup hygiene: orphan emit removal & export pruning",
+      "status": "proposed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/SignalBus.gd",
+        "scenes/core/TimeManager.gd",
+        "project.godot"
+      ],
+      "notes": "QA-auditor Phase 2 FAIL verdict: day_night_cycle_changed orphan per-minute emit + unregistered autoload scripts. Spec: docs/research/TASK-033-spec.md",
+      "proposed_at": "2026-08-31"
     }
   ]
 }
