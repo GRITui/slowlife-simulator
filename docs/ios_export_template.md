@@ -28,6 +28,23 @@ documented here for reproducible setup on the build machine.
 - CLAUDE.md touch rule: interactive targets keep ≥ 44x44pt — slider/check
   rows in `Settings.tscn` and the joystick zone honor the 48px canon grid.
 
+## Startup parse budget (TASK-033)
+
+Every `res://` script is parsed at iOS launch. Prune dead weight via the
+export preset's **Exclude** filter (Patterns):
+
+```text
+scripts/_dormant/*
+```
+
+Currently dormant (audit 2026-08-31, `docs/research/QA-AUDIT-2026-08-31.md`):
+- `scripts/autoload/GameStateManager.gd`, `scripts/autoload/AudioManager.gd`
+  — unregistered autoloads (not in `project.godot`)
+- `scripts/core/ProfilerOverlay.gd`, `scripts/resource_types/RecipeData.gd`
+  — no production consumer
+
+Re-register or delete these when their wiring tasks land; do not ship them.
+
 ## Build steps (local, signing required)
 
 1. `godot --headless --import --path .`
