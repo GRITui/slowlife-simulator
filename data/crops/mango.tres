@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_mango013"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/mango_tree_tall.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/mango_tree_tall.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/mango_tree_tall.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/mango_tree_tall.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "mango"
+display_name = "Mango"
+description = "Late-unlock tree at maze corner, hot season fruit. Needs toolshed? No."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([480, 600, 720, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 1.6,
+"monsoon": 0.8,
+"cool": 1.0
+}
+season_growth_speed = {
+"hot": 1.4,
+"monsoon": 0.7,
+"cool": 1.0
+}
+allowed_seasons = Array[String](["hot"])
+requires_water = false
+yield_item_id = "mango"
+yield_amount = 6
+harmony_value = 5
+stamina_cost_plant = 8.0
+stamina_cost_harvest = 5.0
+seed_item_id = "seed_mango"
+regrow_after_harvest = true
+required_infrastructure = ""
