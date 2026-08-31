@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thai Rural Countryside Sim — Art / World / Map Objects Vision</title>
+<style>
+:root{
+  --rice:#F5F0E8; --jasmine:#FDD835; --pandan:#AED581; --lotus:#F48FB1; --clay:#8D6E63;
+  --mohom:#6A1B9A; --phakhao:#757575; --monsoon:#2196F3; --teal:#009688; --hot:#FF9800;
+  --gold:#FFE0B2; --sky:#E0F7FA; --dark:#1e1a24; --muted:#6b5f6b; --border:#d6c9b8;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Prompt','Segoe UI',system-ui,sans-serif;background:var(--rice);color:var(--dark);line-height:1.65}
+@media(prefers-color-scheme:dark){body{background:#121018;color:#f0e8d8} .card,.matrix,.gallery-card{border-color:#3a2d4a} }
+a{color:var(--mohom)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(245,240,232,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:10px 18px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.02em;color:var(--mohom);font-size:15px}
+.brand small{font-weight:600;color:var(--muted);margin-left:6px}
+.nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.nav a{padding:7px 10px;border-radius:999px;text-decoration:none;font-size:13px;font-weight:600;color:var(--muted);border:1px solid transparent}
+.nav a.active{background:var(--mohom);color:#fff}
+.nav a:hover{background:#fff;border-color:var(--border);color:var(--mohom)}
+.btn{padding:8px 14px;border-radius:999px;border:1px solid var(--clay);background:#fff;color:var(--dark);font-weight:700;font-size:13px;cursor:pointer}
+.btn.primary{background:var(--mohom);color:#fff;border-color:var(--mohom)}
+.btn:hover{transform:translateY(-1px)}
+.container{max-width:1180px;margin:0 auto;padding:24px 20px}
+.hero{padding:18px 0 8px}
+.hero h1{font-size:30px;line-height:1.15;color:var(--mohom)}
+.hero h1 span{background:linear-gradient(90deg,var(--mohom),var(--hot));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--muted);max-width:820px;margin:8px 0 4px}
+.meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.meta code{background:#fff;padding:2px 6px;border-radius:6px;border:1px solid var(--border)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 6px}
+.tabs button{padding:9px 14px;border-radius:999px;border:1px solid var(--border);background:#fff;font-weight:700;font-size:13px;cursor:pointer}
+.tabs button.active{background:var(--mohom);color:#fff;border-color:var(--mohom)}
+.tab{padding:14px 0 0}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:0 4px 18px rgba(30,20,40,.06)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.grid3{grid-template-columns:1fr}}
+.option-head{display:flex;gap:14px;align-items:flex-start}
+.option-badge{padding:4px 9px;border-radius:999px;font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#fff}
+.bA{background:var(--pandan);color:#1a2b12}
+.bB{background:var(--monsoon)}
+.bC{background:var(--teal)}
+.kv{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.kv span{font-size:11px;padding:4px 8px;border-radius:999px;background:var(--rice);border:1px solid var(--border)}
+.hero-mock{height:118px;border-radius:12px;border:1px solid var(--border);overflow:hidden;display:grid;grid-template-columns:1.2fr .8fr;background:#fff;position:relative}
+.hero-mock .left{padding:12px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.hero-mock .right{background:linear-gradient(180deg,var(--sky),var(--rice));position:relative;overflow:hidden}
+.dot{width:10px;height:10px;border-radius:999px;display:inline-block;border:1px solid rgba(0,0,0,.08)}
+.palette-row{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.palette-row i{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.08);display:inline-block}
+.map-ascii{font-family:ui-monospace,Menlo,monospace;font-size:11px;line-height:1.3;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px;overflow:auto}
+.object-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.object-grid div{padding:8px 9px;background:var(--rice);border:1px solid var(--border);border-radius:10px;font-size:12px}
+.object-grid b{font-size:12px}
+.matrix{overflow:auto;border:1px solid var(--border);border-radius:var(--radius);background:#fff}
+.matrix table{width:100%;border-collapse:collapse;min-width:760px}
+.matrix th,.matrix td{padding:10px 11px;border-bottom:1px solid var(--border);font-size:13px;text-align:left}
+.matrix th{background:var(--mohom);color:#fff;position:sticky;top:0}
+.matrix td.sel{text-align:center}
+.radio{accent-color:var(--mohom);transform:scale(1.15)}
+.choice-bar{margin:14px 0;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.gallery-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;text-align:center}
+.gallery-card img{width:64px;height:64px;image-rendering:pixelated;object-fit:contain;background:#121018;border-radius:8px;padding:4px}
+.gallery-card small{color:var(--muted);font-size:11px;display:block;margin-top:4px;word-break:break-all}
+.pick{font-weight:800;color:var(--mohom)}
+.footer{margin:18px 0 30px;padding:14px;border:1px dashed var(--clay);border-radius:12px;background:#fff;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.note{background:#FFF9C4;border-left:4px solid var(--jasmine);padding:10px;border-radius:8px;margin:10px 0;font-size:13px}
+@media print {.topbar,.tabs,.choice-bar .btn{ -webkit-print-color-adjust:exact; print-color-adjust:exact }}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">Thai Rural Countryside Sim — Art / World / Map Objects <small>v2 · 3 options</small></div>
+  <div class="nav">
+    <a href="#overview" class="active" data-nav="overview">Overview</a>
+    <a href="#optA" data-nav="optA">Option A · Isan Plain</a>
+    <a href="#optB" data-nav="optB">Option B · Canal Village</a>
+    <a href="#optC" data-nav="optC">Option C · Lanna Terraces</a>
+    <a href="#compare" data-nav="compare">Comparison</a>
+    <a href="#decision" data-nav="decision">Decision</a>
+    <a href="#gallery" data-nav="gallery">Gallery</a>
+  </div>
+  <button class="btn" onclick="window.print()">Print / PDF</button>
+  <button class="btn primary" onclick="document.querySelector('#decision').scrollIntoView({behavior:'smooth'})">Choose →</button>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <h1><span>Art Design Draft · World Design · Map Objects</span><br>Three visions — pick one to green-light</h1>
+    <p>Palette locked: 12 Thai countryside colors · 32×32 staggered <code>(16,8)</code> · Zero combat · SignalBus <code>minute_ticked / season_changed / weather_changed</code> + <code>GameData</code> inventory. All three preserve Binthabat harmony & infrastructure→seeds. <b>Recommendation: A</b> for v0.1.0-alpha (fastest to TASK-002 GridManager).</p>
+    <div class="meta">
+      <span>Current assets: <b>52</b> PNG <b>real pixel art</b> (156–725B, 32×32 / 32×48) · <code>assets/tilesets</code> 8 · <code>environment</code> 10 · <code>characters</code> 34 · <code>ui</code> empty — <span style="color:#0a7">✓ generated now</span></span>
+      <span>Files: <code>ART_STYLE_GUIDE.md</code> · <code>PROJECT_VISION.md</code> · <code>backlog.json:TASK-002</code> pending</span>
+      <span id="savedBadge"></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="active" data-tab="overview">Overview</button>
+    <button data-tab="optA">Option A</button>
+    <button data-tab="optB">Option B</button>
+    <button data-tab="optC">Option C</button>
+    <button data-tab="compare">Comparison</button>
+    <button data-tab="decision">Decision</button>
+    <button data-tab="gallery">Gallery</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tab">
+    <div id="overview" class="tab-panel active card">
+      <h3>Ground truth & what this deck decides</h3>
+      <p style="color:var(--muted)">Exploration ran at <code>/Users/grit/slowlife-game</code>. No <code>world*</code>/<code>map*</code> docs exist, no TileMap, GridManager pending. <b>Real pixel art now live</b> — 8 tilesets + 10 env (incl. 4-stage rice) + 34 characters replaced (was 99–199B stubs, now 138–725B). Seasonal engine shipped (<code>TimeManager.gd:21</code> hot/monsoon/cool 1.3x/0.8x/1.0x). Objects are <code>StaticBody2D/Area2D</code> + <code>interact</code> (E/Space <code>project.godot:51</code>) → <code>SignalBus: binthabat_offered / buffalo_fed / infrastructure_repaired</code>.</p>
+      <div class="note"><b>This presentation is the gate:</b> pick A/B/C → art checklist + zone map + object roster lock → TASK-002 proceeds with chosen grid size. You can hybridize (e.g., A layout + C fog art).</div>
+      <div class="grid3" style="margin-top:12px">
+        <div class="card" style="background:var(--rice)">
+          <h4>Palette (12 max)</h4>
+          <div class="palette-row">
+            <i style="background:#F5F0E8" title="Rice White"></i><i style="background:#FDD835" title="Jasmine Yellow"></i><i style="background:#AED581" title="Pandan Green"></i><i style="background:#F48FB1" title="Lotus Pink"></i><i style="background:#8D6E63" title="Clay Brown"></i><i style="background:#6A1B9A" title="Mo Hom Maroon"></i><i style="background:#757575" title="Pha Khao Ma Gray"></i><i style="background:#2196F3" title="Monsoon Blue"></i><i style="background:#009688" title="Cool Teal"></i><i style="background:#FF9800" title="Hot Orange"></i><i style="background:#FFE0B2" title="Rice Gold"></i><i style="background:#E0F7FA" title="Sky Cyan"></i>
+          </div>
+          <small style="color:var(--muted)">Shapes: Rice White bg, Mo Hom headings, Clay Brown 1px border, Jasmine positive, Lotus harmony.</small>
+          <div style="margin-top:8px;font-size:12px"><b>Tints:</b> <span style="color:var(--monsoon)">Monsoon +20% #2196F3</span> · <span style="color:var(--hot)">Hot +25% #FF9800</span> · <span style="color:var(--teal)">Cool +15% #009688</span></div>
+        </div>
+        <div class="card" style="background:var(--rice)">
+          <h4>Tile contract</h4>
+          <small style="color:var(--muted)">Base 32×32 (16×16 source scaled) · Grid staggered (16,8) · Layers: Ground / Structures / Water / Decor · Crop 4-frame · Water 3-frame loop · Wind shift · Names: <code>tilesets/ground_ricepaddy.png</code> etc. Filter POINT, compress DISABLED.</small>
+          <div class="map-ascii" style="margin-top:8px">ground_dryearth · ground_grass · ground_ricepaddy · plantable_soil
+structure_floor · structure_wall · water_lotuspond · water_surface
+→ Option B adds dock/canal, C adds terrace wall/teak</div>
+        </div>
+        <div class="card" style="background:var(--rice)">
+          <h4>Object contract</h4>
+          <small style="color:var(--muted)">Each map object: sprite 32×32 + <code>CollisionShape2D</code> + <code>Area2D</code> interact → SignalBus. Season hooks via <code>season_changed</code>/<code>weather_changed</code> (rain auto-water, hot wilt).</small>
+          <div class="kv"><span>buffalo_fed</span><span>binthabat_offered</span><span>infrastructure_repaired</span><span>show_dialogue</span></div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn primary" onclick="switchTab('optA')">View Option A →</button>
+        <button class="btn" onclick="switchTab('compare')">Compare all 3</button>
+        <button class="btn" onclick="switchTab('gallery')">Open Gallery</button>
+      </div>
+    </div>
+
+    <!-- OPTION A -->
+    <div id="optA" class="tab-panel card">
+      <div class="option-head">
+        <span class="option-badge bA">Option A · Recommended</span>
+        <div>
+          <h3>Isan Heartland Plain — Cozy Flat-Farm</h3>
+          <div class="kv"><span>32×32 authentic pixel</span><span>Flat 20×16 grid</span><span>Zero elevation</span><span>Mobile fastest</span><span>SCAMPER true Isan</span></div>
+        </div>
+      </div>
+      <div class="hero-mock" style="margin:10px 0">
+        <div class="left">
+          <b style="color:var(--mohom)">Art: warm, honest, strict 12-color</b>
+          <small style="color:var(--muted)">Flat shading, 1px Clay Brown outlines, 4-frame rice paddy + 3-frame lotus water, wind on bamboo.</small>
+          <div class="palette-row"><i style="background:#F5F0E8"></i><i style="background:#AED581"></i><i style="background:#6A1B9A"></i><i style="background:#F48FB1"></i><i style="background:#FF9800"></i><i style="background:#2196F3"></i></div>
+        </div>
+        <div class="right">
+          <svg viewBox="0 0 200 118" width="100%" height="100%"><rect x="0" y="0" width="200" height="118" fill="#E0F7FA"/><rect x="18" y="78" width="164" height="28" rx="6" fill="#AED581" stroke="#8D6E63"/><rect x="28" y="58" width="40" height="26" rx="4" fill="#F5F0E8" stroke="#8D6E63"/><circle cx="148" cy="44" r="12" fill="#F48FB1" opacity=".9"/><rect x="142" y="52" width="20" height="10" rx="5" fill="#2196F3" opacity=".5"/><text x="36" y="74" font-size="7" fill="#6A1B9A">home</text><text x="138" y="38" font-size="6" fill="#6A1B9A">lotus pond</text><text x="20" y="18" font-size="6" fill="#8D6E63">temple lane →</text></svg>
+        </div>
+      </div>
+      <div class="grid3">
+        <div>
+          <h4>Art Direction</h4>
+          <small style="color:var(--muted)">Warm 12-color strict per <code>ART_STYLE_GUIDE.md:3</code>. Characters 32×48 Mo Hom maroon + Pha Khao Ma gray + skin #FFE0B2. Idle 4 / Walk 8 / Hoe 4 / Harvest 4 / Carry. Tints exact: Monsoon +20% blue, Hot +25% orange, Cool +15% teal. Rain 2px drops, heat haze top band.</small>
+          <div class="map-ascii" style="margin-top:8px">Ref: assets/environment/rice_paddy_stage1..4.png → 4-stage grow
+assets/characters/player_walk_down_* / right_* → add up/left to complete
+assets/ui empty → energy 200×12, goodwill 180×12, season 100×12, inv 32×32</div>
+        </div>
+        <div>
+          <h4>World Layout</h4>
+          <small style="color:var(--muted)">Open rectangle: <b>20×16</b> plantable plots center, village ring around. Zones: Home Paddy · Lotus Pond (NW) · Temple Lane (E, Binhabat 05:00-07:30) · Buffalo Pasture (S) · Bamboo edge (wall). Staggered (16,8) flat — TileMap layer0 ground, layer1 crops.</small>
+          <pre class="map-ascii">[bamboo][  lotus pond  ][temple lane →]
+[  buffalo pasture  ][ 20×16 paddies  ][  home  ]
+[ banana circle ][ well ][ toolshed ][village hall]</pre>
+        </div>
+        <div>
+          <h4>Map Objects (12)</h4>
+          <div class="object-grid">
+            <div><b>Rice paddy S1-4</b><br><small>plant → tick(via minute_ticked) → harvest</small></div>
+            <div><b>Lotus pond</b><br><small>monsoon harvest Lotus Root</small></div>
+            <div><b>Clay stove</b><br><small>cooking (mortar/pestle)</small></div>
+            <div><b>Bamboo thicket</b><br><small>boundary + wind</small></div>
+            <div><b>Banana circle</b><br><small>forage (Cool fog rare)</small></div>
+            <div><b>Buffalo pen</b><br><small>buffalo_fed</small></div>
+            <div><b>Temple gate</b><br><small>Binthabat spot 05:00-07:30</small></div>
+            <div><b>Village hall</b><br><small>repair → unlock seeds</small></div>
+            <div><b>Well</b><br><small>water refill</small></div>
+            <div><b>Drying line</b><br><small>Mo Hom cloth</small></div>
+            <div><b>Loom</b><br><small>Pha Khao Ma</small></div>
+            <div><b>Toolshed</b><br><small>Granite mortar / Sun mats (season tools)</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Pros:</b> 1:1 with current 8 tilesets + 10 env props, fastest to GridManager, mobile trivial, most culturally honest Isan. <b>Con:</b> less vertical screenshot drama (offset by cozy lighting + festivals).</div>
+    </div>
+
+    <!-- OPTION B -->
+    <div id="optB" class="tab-panel card">
+      <div class="option-head">
+        <span class="option-badge bB">Option B · Canal Village</span>
+        <div>
+          <h3>Canal Village / Floating Market — Water is the street</h3>
+          <div class="kv"><span>32×32 pastel</span><span>Island parcels 8×12</span><span>Bridges + canal</span><span>Mekong delta</span></div>
+        </div>
+      </div>
+      <div class="hero-mock" style="margin:10px 0">
+        <div class="left">
+          <b style="color:var(--monsoon)">Art: pastel + reflections</b>
+          <small style="color:var(--muted)">More Sky Cyan + Monsoon Blue, translucent rain, lily pads, stilt-house wood grain, sun-hat variant.</small>
+          <div class="palette-row"><i style="background:#E0F7FA"></i><i style="background:#2196F3"></i><i style="background:#F48FB1"></i><i style="background:#8D6E63"></i><i style="background:#FFE0B2"></i></div>
+        </div>
+        <div class="right">
+          <svg viewBox="0 0 200 118" width="100%" height="100%"><rect x="0" y="0" width="200" height="118" fill="#E0F7FA"/><rect x="0" y="46" width="200" height="26" rx="8" fill="#2196F3" opacity=".35"/><rect x="14" y="22" width="52" height="32" rx="6" fill="#FFE0B2" stroke="#8D6E63"/><rect x="134" y="62" width="52" height="32" rx="6" fill="#FFE0B2" stroke="#8D6E63"/><rect x="72" y="48" width="56" height="6" rx="3" fill="#8D6E63"/><text x="22" y="40" font-size="6" fill="#6A1B9A">stilt home</text><text x="142" y="80" font-size="6" fill="#6A1B9A">market pier</text><text x="84" y="44" font-size="5" fill="#fff">bridge</text></svg>
+        </div>
+      </div>
+      <div class="grid3">
+        <div>
+          <h4>Art Direction</h4>
+          <small style="color:var(--muted)">Pastel-cozy, larger water, reflections, lotus maze clusters animated. Stilt <code>structure_wall/floor</code> extended with wood grain. Needs 3 new tilesets: dock/canal/sluice beyond current 8.</small>
+        </div>
+        <div>
+          <h4>World Layout</h4>
+          <small style="color:var(--muted)">Canal loop parcels (8×12 each) linked by plank bridges (toggle collision). Central Khlong carries monsoon Lotus. Zones: Stilt Row · Floating Stove (raft) · Lotus Maze · Market Pier · Mango Grove (SCAMPER Mango endgame). Paddies narrow bunds, 2× yield in Monsoon.</small>
+          <pre class="map-ascii">[stilt][bridge][stilt][  lotus maze  ]
+[  canal = water street — raft stove  ]
+[market pier][mango grove][sluice gate]</pre>
+        </div>
+        <div>
+          <h4>Map Objects (14)</h4>
+          <div class="object-grid">
+            <div><b>Canal dock + raft</b><br><small>ferry, needs water nav</small></div>
+            <div><b>Bridge</b><br><small>toggle walk / boat</small></div>
+            <div><b>Floating lotus</b><br><small>maze harvest</small></div>
+            <div><b>Sluice gate</b><br><small>repair → water ctrl</small></div>
+            <div><b>Mango tree</b><br><small>late unlock</small></div>
+            <div><b>Fishing trap</b><br><small>passive Lotus Root</small></div>
+            <div><b>Rice bunds S1-4</b><br><small>narrow, cracked in Hot</small></div>
+            <div><b>Market stall</b><br><small>harmony trade alt</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Pros:</b> Distinct from Stardew, leans into Adapt/Monsoon, memorable. <b>Cons:</b> Bridge pathfinding + extra tilesets + heavier mobile load. Diverges from current assets.</div>
+    </div>
+
+    <!-- OPTION C -->
+    <div id="optC" class="tab-panel card">
+      <div class="option-head">
+        <span class="option-badge bC">Option C · Lanna Terraces</span>
+        <div>
+          <h3>Lanna Terraces / Hill Village — Northern mist</h3>
+          <div class="kv"><span>32×32 elevation illusion</span><span>3 terraces 12×10</span><span>Mist + teak</span><span>Scenic wow</span></div>
+        </div>
+      </div>
+      <div class="hero-mock" style="margin:10px 0">
+        <div class="left">
+          <b style="color:var(--teal)">Art: mist + teak + shadow</b>
+          <small style="color:var(--muted)">Terraced walls via structure_wall, height by shadow, Cool fog emphasis, wind chimes.</small>
+          <div class="palette-row"><i style="background:#009688"></i><i style="background:#6A1B9A"></i><i style="background:#8D6E63"></i><i style="background:#AED581"></i><i style="background:#F5F0E8"></i></div>
+        </div>
+        <div class="right">
+          <svg viewBox="0 0 200 118" width="100%" height="100%"><rect x="0" y="0" width="200" height="118" fill="#F5F0E8"/><rect x="10" y="18" width="180" height="18" rx="4" fill="#d6c9b8" stroke="#8D6E63"/><rect x="10" y="40" width="180" height="22" rx="4" fill="#AED581" stroke="#8D6E63"/><rect x="10" y="66" width="180" height="28" rx="6" fill="#AED581" stroke="#6A1B9A"/><text x="16" y="30" font-size="6" fill="#6A1B9A">hill temple</text><text x="16" y="54" font-size="6" fill="#1a2b12">teak houses</text><text x="16" y="84" font-size="6" fill="#1a2b12">terraced paddies</text><circle cx="168" cy="22" r="10" fill="#fff" opacity=".55"/></svg>
+        </div>
+      </div>
+      <div class="grid3">
+        <div>
+          <h4>Art Direction</h4>
+          <small style="color:var(--muted)">Elevation via wall tiles + drop shadows, teak tones replace some Clay Brown, mist particles Cool season, parallax clamp. Needs +2 tilesets (terrace wall, teak).</small>
+        </div>
+        <div>
+          <h4>World Layout</h4>
+          <small style="color:var(--muted)">3 stepped levels: Hill Temple (top, Binthabat terminus) → Teak Houses (mid) → Terraced Paddies low (12×10 each). Ramps link. Zones: Sun-drying Yard (Cool mats), Irrigation Channel (repair unlocks Pandan), Spirit House, Wind Grove.</small>
+          <pre class="map-ascii">── hill temple (top, fog) ──
+── teak houses (mid) ── ramp
+── terraced paddies (low, channels) ──</pre>
+        </div>
+        <div>
+          <h4>Map Objects (15)</h4>
+          <div class="object-grid">
+            <div><b>Terrace wall</b><br><small>collision + height</small></div>
+            <div><b>Irrigation channel</b><br><small>repair → Pandan seed</small></div>
+            <div><b>Sun-drying mat</b><br><small>Cool tool</small></div>
+            <div><b>Spirit house</b><br><small>harmony bonus</small></div>
+            <div><b>Hill shrine</b><br><small>festival</small></div>
+            <div><b>Teak house set</b><br><small>mid village</small></div>
+            <div><b>Compost</b><br><small>fertilize</small></div>
+            <div><b>Wind chime</b><br><small>audio + wind</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>Pros:</b> Strong portfolio screenshots, tutorial via climb (stamina uphill 1.2×). <b>Cons:</b> Y-sort + ramps + sorting complexity.</div>
+    </div>
+
+    <!-- COMPARE -->
+    <div id="compare" class="tab-panel">
+      <div class="matrix card" style="padding:0">
+        <table>
+          <thead><tr><th>Axis</th><th>A · Isan Plain ✓ rec</th><th>B · Canal Village</th><th>C · Lanna Terraces</th></tr></thead>
+          <tbody>
+            <tr><td><b>Build speed</b></td><td>★★★ fastest</td><td>★☆☆ heavy</td><td>★★☆ medium</td></tr>
+            <tr><td><b>Mobile perf</b></td><td>flat 20×16 trivial</td><td>bridges/water heavier</td><td>Y-sort heavier</td></tr>
+            <tr><td><b>Cultural fidelity</b></td><td>Isan heartland ★</td><td>Central delta</td><td>Northern Lanna</td></tr>
+            <tr><td><b>Water gameplay</b></td><td>pond + rain balanced</td><td>water-primary</td><td>channels</td></tr>
+            <tr><td><b>New tilesets</b></td><td>0 (reuse 8)</td><td>+3 (dock/canal/sluice)</td><td>+2 (terrace/teak)</td></tr>
+            <tr><td><b>Stamina story</b></td><td>Hot 1.3× plain</td><td>wade penalty</td><td>uphill 1.2×</td></tr>
+            <tr><td><b>Lotus moment</b></td><td>pond harvest</td><td>maze harvest ★</td><td>channel harvest</td></tr>
+            <tr><td><b>Infra→seeds</b></td><td>village hall</td><td>sluice gate</td><td>irrigation</td></tr>
+            <tr><td><b>Screenshot wow</b></td><td>cozy</td><td>unique</td><td>scenic ★</td></tr>
+            <tr><td><b>Pick</b></td><td class="sel"><input class="radio" type="radio" name="pick" value="A" checked> A</td><td class="sel"><input class="radio" type="radio" name="pick" value="B"> B</td><td class="sel"><input class="radio" type="radio" name="pick" value="C"> C</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="choice-bar">
+        <span>Your pick: <span id="pickLabel" class="pick">A · Isan Plain (Recommended)</span></span>
+        <button class="btn primary" onclick="savePick()">Save choice</button>
+        <small id="saveMsg" style="color:var(--muted)"></small>
+        <span style="margin-left:auto;font-size:12px;color:var(--muted)">Saves to <code>localStorage: slowlife-vision-pick</code> + footer badge.</span>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <h4>hybrid tip</h4>
+        <p style="color:var(--muted);font-size:13px">You can brief: "A layout + C fog" (keep 20×16 flat but add Cool mist + terrace-wall trim as decor). Or "A + B lotus maze" (add one maze pond inside A plain). Note hybrid in Decision → Comments.</p>
+      </div>
+    </div>
+
+    <!-- DECISION -->
+    <div id="decision" class="tab-panel card">
+      <h3>Decision — record your pick</h3>
+      <p style="color:var(--muted)">Choose one, optionally hybrid, add comments. Saving writes badge + <code>localStorage</code>. I will lock <code>ART_STYLE_GUIDE.md</code> zone map + object roster and continue to TASK-002 GridManager with that grid size (A 20×16 / B 8×12 islets / C 3×12×10).</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+        <label>Pick <select id="decPick" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border)"><option value="A">A · Isan Plain (Recommended)</option><option value="B">B · Canal Village</option><option value="C">C · Lanna Terraces</option><option value="A+C">A+C Hybrid (Plain + mist)</option><option value="A+B">A+B Hybrid (Plain + maze)</option></select></label>
+        <label>Palette <select id="decPalette" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border)"><option value="12">Strict 12-color (Guide)</option><option value="16">Relax to 16 (water/mist)</option></select></label>
+      </div>
+      <label style="display:block;margin-top:10px">Comments / hybrid note<textarea id="decNote" rows="3" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border)" placeholder="e.g., A layout, add C fog in Cool season, keep placeholders visible until real art"></textarea></label>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn primary" onclick="submitDecision()">Save decision</button>
+        <button class="btn" onclick="switchTab('gallery')">Back to gallery</button>
+      </div>
+      <div id="decisionOut" style="margin-top:10px;font-size:13px;color:var(--muted)"></div>
+      <div class="footer" style="margin-top:14px">
+        <b>Next after approval:</b> <span style="font-size:13px;color:var(--muted)">(a) patch <code>ART_STYLE_GUIDE.md:19</code> with zone ASCII + roster, (b) generate real tilesets in priority (ground → structure → water), (c) return to <code>scripts/resource_types/CropData.gd</code> with chosen grid.</span>
+      </div>
+      <div style="margin-top:10px">
+        <h4>Verification questions (reply to green-light)</h4>
+        <ol style="font-size:13px;color:var(--muted);margin-left:18px;line-height:1.7">
+          <li><b>A / B / C or hybrid?</b> — which world?</li>
+          <li><b>12 vs 16 colors</b> — keep max-12 discipline or relax for water/mist?</li>
+          <li><b>Placeholders</b> — keep flat-color stubs visible in gallery until replaced?</li>
+          <li><b>Language</b> — EN only or TH/EN bilingual headers?</li>
+          <li><b>Sequencing</b> — real tileset art next, or spec-only and back to TASK-002 CropData first?</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div id="gallery" class="tab-panel card">
+      <h3>Gallery — real pixel art (52 PNG) — freshly generated</h3>
+      <p style="color:var(--muted);font-size:13px">All images at 4×, <code>image-rendering: pixelated</code>. Sources: <code>assets/tilesets</code> 8 · <code>environment</code> 10 · <code>characters</code> 34 · <code>ui</code> empty (next). Sizes now 138–725B = real art (was 99–199B stubs). Open this tab to see tilesets, bamboo/clay stove/lotus, 4-stage rice, and Mo Hom/Pha Khao Ma characters.</p>
+      <div class="note" style="background:#E8F5E9;border-left-color:#4CAF50">✓ Real assets generated: tilesets (ground_dryearth 646B, water_lotuspond 725B) · environment (lotus_pond 530B, rice S4 260B) · characters (buffalo 388B, player 336B). Refresh if cached.</div>
+      <h4 style="margin-top:12px">Tilesets 32×32 (8)</h4>
+      <div class="gallery" id="galTiles"></div>
+      <h4 style="margin-top:12px">Environment 32×32 (10)</h4>
+      <div class="gallery" id="galEnv"></div>
+      <h4 style="margin-top:12px">Characters (34)</h4>
+      <div class="gallery" id="galChr"></div>
+      <h4 style="margin-top:12px">UI — empty (spec targets)</h4>
+      <div class="gallery"><div class="gallery-card"><div style="width:64px;height:64px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#F5F0E8 6px,#F5F0E8 12px);border-radius:8px;margin:0 auto;border:1px solid var(--border)"></div><small>energy_bar.png 200×12<br>expected · missing</small></div><div class="gallery-card"><div style="width:64px;height:64px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#F5F0E8 6px,#F5F0E8 12px);border-radius:8px;margin:0 auto;border:1px solid var(--border)"></div><small>inventory_slot.png 32×32<br>expected · missing</small></div><div class="gallery-card"><div style="width:64px;height:64px;background:repeating-linear-gradient(45deg,#fff,#fff 6px,#F5F0E8 6px,#F5F0E8 12px);border-radius:8px;margin:0 auto;border:1px solid var(--border)"></div><small>goodwill 180×12 · season 100×12<br>expected · missing</small></div></div>
+      <div class="note" style="margin-top:12px"><b>Target mocks:</b> Replace each stub with real pixel art at same 32×32 (filter POINT, compress DISABLED per guide). Keep filenames — TileSet atlas expects <code>ground_ricepaddy.png</code> etc.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const picks={A:'A · Isan Plain (Recommended)',B:'B · Canal Village',C:'C · Lanna Terraces'};
+function switchTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById(id); if(el) el.classList.add('active');
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active', a.dataset.nav===id));
+  history.replaceState(null,'','#'+id);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='gallery') renderGalleries();
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();switchTab(a.dataset.nav)}));
+document.querySelectorAll('input[name="pick"]').forEach(r=>r.addEventListener('change',()=>{
+  document.getElementById('pickLabel').textContent=picks[r.value]||r.value;
+  document.getElementById('decPick').value=r.value;
+}));
+function savePick(){
+  const v=document.querySelector('input[name="pick"]:checked')?.value||'A';
+  localStorage.setItem('slowlife-vision-pick', v);
+  document.getElementById('saveMsg').textContent='Saved: '+picks[v];
+  updateBadge();
+}
+function submitDecision(){
+  const pick=document.getElementById('decPick').value;
+  const pal=document.getElementById('decPalette').value;
+  const note=document.getElementById('decNote').value;
+  const obj={pick,palette:pal,note,at:new Date().toISOString()};
+  localStorage.setItem('slowlife-vision-decision', JSON.stringify(obj));
+  localStorage.setItem('slowlife-vision-pick', pick);
+  document.getElementById('decisionOut').innerHTML='<b style="color:var(--mohom)">Decision saved:</b> '+picks[pick]+' · palette '+pal+'-color'+(note?' · note: '+escapeHtml(note):'');
+  updateBadge();
+}
+function escapeHtml(s){return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
+function updateBadge(){
+  const v=localStorage.getItem('slowlife-vision-pick');
+  const el=document.getElementById('savedBadge');
+  if(v) el.innerHTML='<b style="color:var(--mohom)">↻ Saved pick: '+picks[v]+'</b>';
+}
+function renderGalleries(){
+  const tiles=['ground_dryearth.png','ground_grass.png','ground_ricepaddy.png','plantable_soil.png','structure_floor.png','structure_wall.png','water_lotuspond.png','water_surface.png'];
+  const envs=['bamboo_thicket.png','banana_circle.png','clay_stove.png','lotus_pond.png','mohom_cloth.png','pha_khao_ma.png','rice_paddy_stage1.png','rice_paddy_stage2.png','rice_paddy_stage3.png','rice_paddy_stage4.png'];
+  const chrs=['player_idle_01.png','player_walk_down_01.png','player_walk_down_02.png','player_walk_down_03.png','player_walk_down_04.png','player_walk_right_01.png','player_walk_right_02.png','player_walk_right_03.png','player_walk_right_04.png','npc_elder_idle_01.png','npc_elder_walk_01.png','npc_child_idle_01.png','npc_handler_idle_01.png','npc_priest_idle_01.png','animal_buffalo_idle.png','animal_buffalo_01.png'];
+      const mk=(list,base,id)=>{
+        const c=document.getElementById(id); if(!c || c.dataset.done) return; c.innerHTML='';
+        list.forEach(f=>{
+          const card=document.createElement('div'); card.className='gallery-card';
+          const img=document.createElement('img'); img.src=base+f+'?v='+Date.now(); img.alt=f; img.loading='lazy';
+          img.onerror=()=>{card.style.opacity=.45; card.title='missing: '+f};
+          const sm=document.createElement('small'); sm.textContent=f+'\nclick to view 4×';
+          card.append(img,sm); c.append(card);
+        });
+        c.dataset.done='1';
+      };
+  mk(tiles,'assets/tilesets/','galTiles');
+  mk(envs,'assets/environment/','galEnv');
+  mk(chrs,'assets/characters/','galChr');
+}
+updateBadge();
+if(location.hash) switchTab(location.hash.replace('#',''));
+</script>
+</body>
+</html>
