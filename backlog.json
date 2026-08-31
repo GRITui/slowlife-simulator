@@ -845,7 +845,8 @@
       ],
       "notes": "Head-of-Art sprint 2/10: hoe (4f), harvest (4f), walk_carrying (4f) animation tracks added to Player.tscn's SpriteFrames, non-looping for hoe/harvest so a future trigger can play-once. IMPORTANT: frame art is procedurally generated placeholder (base idle/walk pose + simple tool/crop overlay via PIL), not hand-crafted to match the existing 73-color soft-shaded redesign quality -- flagged for a real art pass. Default animation stays 'idle', existing behavior unaffected. Trigger hookup (Player.gd calling .play('hoe'/'harvest')) intentionally left to @po per guardrails. Gates: content 100/100, engine 50/50. Spec: docs/research/ART-037-spec.md",
       "proposed_at": "2026-09-01",
-      "completed_at": "2026-09-01"
+      "completed_at": "2026-09-01",
+      "pr_number": 94
     },
     {
       "id": "TASK-038",
