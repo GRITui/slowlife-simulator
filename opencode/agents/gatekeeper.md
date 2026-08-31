@@ -1,7 +1,7 @@
 ---
 name: gatekeeper
 description: Autonomous PR Gatekeeper and Quality Assurer for slowlife-simulator
-model: opencode-go/glm
+model: opencode-go/musespark-1.2
 mode: subagent
 permission:
   edit: allow
