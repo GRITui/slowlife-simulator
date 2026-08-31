@@ -861,10 +861,9 @@
         "scenes/core/RainDriver.gd",
         "scenes/core/Main.tscn"
       ],
-      "notes": "Head-of-Art sprint 3/10: RainLayer CanvasLayer + GPUParticles2D wired into Main.tscn (amount=180, within TASK-031's <=200 peak cap), gated by SignalBus.season_changed via RainDriver.gd (bus-only, same pattern as SeasonShaderDriver/DayNightTintDriver). Gates: content 100/100, engine 50/50. Spec: docs/research/ART-038-spec.md",
+      "notes": "Head-of-Art sprint 3/10: RainLayer CanvasLayer + GPUParticles2D wired into Main.tscn (amount=180, within TASK-031's <=200 peak cap), gated by SignalBus.season_changed via RainDriver.gd (bus-only, same pattern as SeasonShaderDriver/DayNightTintDriver). Gates: content 100/100, engine 50/50. Spec: docs/research/ART-038-spec.md | NOTE: this ID collided with opencode's own independently-numbered 'buffalo unlock' task (commit a4fd55e) -- no file overlap occurred (that work went to Main.gd, this is Main.tscn-only), but a stray pr_number got cross-written onto this entry by its ID-keyed completion step; removed.",
       "proposed_at": "2026-09-01",
-      "completed_at": "2026-09-01",
-      "pr_number": 91
+      "completed_at": "2026-09-01"
     },
     {
       "id": "TASK-039",
@@ -881,7 +880,8 @@
       ],
       "notes": "Head-of-Art sprint 4/10: CookingSmoke + LotusPollen GPUParticles2D wired directly into WorldRender (always-emitting, amount 30/35, no signal gating needed). Combined with TASK-038's rain (180 cap), joint worst-case still within TASK-031's 200-peak budget per node-count reasoning (perf-budget gate's headless draw-call probe reads 0 in dummy renderer, can't verify numerically -- flagged for manual on-device check). Gates: content 100/100, engine 50/50, perf-budget 6/6. Spec: docs/research/ART-039-spec.md",
       "proposed_at": "2026-09-01",
-      "completed_at": "2026-09-01"
+      "completed_at": "2026-09-01",
+      "pr_number": 92
     },
     {
       "id": "TASK-040",
@@ -902,38 +902,43 @@
       "completed_at": "2026-09-01"
     },
     {
-      "id": "TASK-041",
+      "id": "TASK-101",
       "sprint": 9,
       "category": "art",
       "title": "Crop Progress bar asset + HUD wiring",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "medium",
       "owner": "art-po",
       "files": [
-        "assets/ui/crop_progress_bar.png",
-        "scenes/ui/HUD.tscn"
+        "assets/ui/crop_progress_bar_under.png",
+        "assets/ui/crop_progress_bar_fill.png",
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd"
       ],
-      "notes": "Head-of-Art sprint 6/10: last of the 5 redesigned HUD elements still unwired (TASK-015 wired the other 4). ART_STYLE_GUIDE.md corrected same day to reflect current wired state. Spec: docs/research/ART-041-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 6/10 (renumbered 041->101 to avoid an ID collision with opencode's own independently-numbered TASK-041). CropBar TextureProgressBar wired alongside existing CropLabel in HUD.tscn (CropProgress container changed HBox->VBox); HUD.gd's _on_crop_progress extended (additive, 2 lines) to also drive the bar. ART_STYLE_GUIDE.md's Required UI Elements table updated -- last of 6 HUD elements now wired. Gates: content 100/100, engine 50/50, perf 6/6. Spec: docs/research/ART-101-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01"
     },
     {
-      "id": "TASK-042",
+      "id": "TASK-102",
       "sprint": 10,
       "category": "art",
       "title": "Market stall dedicated art + krathong item icon",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "low",
       "owner": "art-po",
       "files": [
         "assets/environment/market_stall.png",
         "assets/items/krathong.png",
-        "scenes/market/MarketStall.tscn"
+        "scenes/market/MarketStall.tscn",
+        "scenes/ui/HUD.gd"
       ],
-      "notes": "Head-of-Art sprint 7/10: MarketStall.tscn borrows clay_stove_tall.png as placeholder; krathong item (TASK-022) has no icon asset. Spec: docs/research/ART-042-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 7/10 (renumbered 042->102). market_stall.png authored + swapped in (no longer borrows clay_stove_tall.png); krathong.png icon authored. IMPORTANT correction from the original spec's assumption: HUD.gd's refresh_inventory() was a stub -- it never actually displayed per-item icons for ANY item (just left slots.texture untouched, tooltip-only), so 13 already-existing recipe/crop icons plus krathong were all invisible. Added a small icon-path lookup (ResourceLoader.exists check, same pattern as VillagerNPC.gd's texture fallback) so all 14 items now actually render their art. buffalo_milk has no icon yet -- separate gap, not fixed here. Gates: content 100/100, engine 50/50, perf 6/6. Spec: docs/research/ART-102-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01"
     },
     {
-      "id": "TASK-043",
+      "id": "TASK-103",
       "sprint": 10,
       "category": "art",
       "title": "Festival visual layer: krathong pond glow + lantern particles",
@@ -944,7 +949,7 @@
         "assets/particles/festival_lanterns.tres",
         "assets/shaders/pond_glow.gdshader"
       ],
-      "notes": "Head-of-Art sprint 10/10: BLOCKED on FestivalManager instantiation + festival_triggered wiring (see PO_INBOX.md #3 / TASK-030 revisit). Art ready to land once that engine unlock exists. Spec: docs/research/ART-043-spec.md",
+      "notes": "Head-of-Art sprint 10/10: BLOCKED on FestivalManager instantiation + festival_triggered wiring (see PO_INBOX.md #3 / TASK-030 revisit). Art ready to land once that engine unlock exists. Spec: docs/research/ART-103-spec.md",
       "proposed_at": "2026-09-01"
     }
   ]
