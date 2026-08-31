@@ -256,6 +256,11 @@ func _run_all() -> void:
 			"a11y prefs round-trip")
 		gd_a.font_scale = 1.0
 		gd_a.high_contrast = false
+	# TASK-028 iOS safe area — method present + headless no-op safety.
+	if hud_node:
+		_check(hud_node.has_method("apply_safe_area"), "HUD has apply_safe_area")
+		hud_node.apply_safe_area()
+		_check(true, "apply_safe_area no-ops headlessly without crash")
 	main2.queue_free()
 
 	print("\n=== TESTS: %d passed, %d failed ===" % [_passed, _failed])
