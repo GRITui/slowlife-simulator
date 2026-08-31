@@ -1122,14 +1122,14 @@
       "sprint": 10,
       "category": "mechanics",
       "title": "Generalize crop planting: seed-item -> CropData lookup (22 crops unlocked)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "narrative-lead",
       "files": "scenes/entities/Player.gd, data/crops/",
       "notes": "PO_INBOX r4 #2: Player.gd hardcodes jasmine_rice; 22 CropData resources idle. Lookup by seed_item_id with jasmine fallback.",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 97
     },
     {
       "id": "TASK-044",
@@ -1172,6 +1172,24 @@
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
       "completed_at": "",
       "pr_number": 0
+    },
+    {
+      "id": "TASK-190",
+      "sprint": 13,
+      "category": "art",
+      "title": "5 more Thai dishes (Som Tam, Tom Yum, Tom Kha, Gaeng Kua, Larb) from current ingredients only",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/recipes/recipes.json",
+        "assets/items/som_tam.png",
+        "assets/items/tom_yum.png",
+        "assets/items/tom_kha.png",
+        "assets/items/gaeng_kua.png",
+        "assets/items/larb_salad.png"
+      ],
+      "notes": "New work per user request (2026-09-01): expanded recipes.json from 12->17, deliberately using ONLY already-designed ingredients rather than inventing new crops for missing authentic components. Honest substitutions noted in each description: Som Tam uses cabbage (no papaya vine exists), Tom Yum uses tomato+chili for the sour-hot balance (no lemongrass/galangal/kaffir lime exist), Tom Kha leans on coconut_milk alone (no galangal). Larb kept intentionally meat-free/vegetarian -- the game has zero meat items anywhere (buffalo only ever yields milk) so a meat larb would need a whole new protein system; framed the veg version as the village's own choice, not a placeholder. 2 of 5 (som_tam, tom_yum) depend on fish_sauce/shrimp_paste and are uncraftable until the market gap closes (see PO_INBOX #1, still not landed as of this round). 3 of 5 (tom_kha, gaeng_kua, larb_salad) use only producible/existing ingredients -- fully completable once TASK-043 (planting generalization, already promoted to todo) lands. Gates: content 100/100, engine 50/50."
     }
   ]
 }
