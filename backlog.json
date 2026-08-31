@@ -168,13 +168,14 @@
       "sprint": 2,
       "category": "gameplay",
       "title": "Irrigation canal + sluice gate repair mechanic -> unlocks Pandan seed",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "spatial-architect",
       "files": [
         "scenes/core/"
       ],
-      "notes": "Reverse pillar: restore infrastructure to unlock rare regional seeds."
+      "notes": "Reverse pillar: restore infrastructure to unlock rare regional seeds. Merged PR #31 (squash).",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-012",
@@ -194,13 +195,14 @@
       "sprint": 2,
       "category": "mechanics",
       "title": "Crop/item DB (pandan, thai basil, lotus root, mango) + cooking recipes",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "data-pipeline",
       "files": [
         "data/"
       ],
-      "notes": "Mortar & pestle, clay stove multi-step crafting."
+      "notes": "Mortar & pestle, clay stove multi-step crafting. Merged PR #34 (squash).",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-014",
@@ -220,7 +222,7 @@
       "sprint": 3,
       "category": "ui",
       "title": "Wire redesigned UI art into HUD.tscn",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "visual-inspector",
       "files": [
@@ -229,7 +231,8 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/25",
       "github_issue_number": 25,
-      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: assets/ui/{energy_bar,harmony_bar,action_prompt,season_display,inventory_slot}.png exist but HUD.tscn still renders via plain ProgressBar/Label/ColorRect. Visual swap only, keep SignalBus wiring."
+      "notes": "Gap surfaced by post-TASK-006/PR#19 art review: assets/ui/{energy_bar,harmony_bar,action_prompt,season_display,inventory_slot}.png exist but HUD.tscn still renders via plain ProgressBar/Label/ColorRect. Visual swap only, keep SignalBus wiring. Merged PR #32 (squash).",
+      "completed_at": "2026-08-31"
     },
     {
       "id": "TASK-016",
@@ -271,7 +274,7 @@
       "files": [
         "scripts/core/NavGrid.gd"
       ],
-      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes — caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
+      "notes": "A* pathfinding scaffold (AStarGrid2D), decoupled from scenes \u2014 caller supplies walkability Callable. Tilemap/bounds already landed via art squad's TASK-007 (WorldRender.gd); NavGrid consumes its public query API instead of duplicating it. Engine tests 48/48 green.",
       "completed_at": "2026-08-31"
     },
     {
@@ -285,7 +288,7 @@
       "files": [
         "scripts/persistence/"
       ],
-      "notes": "Greenfield — no persistence layer exists yet."
+      "notes": "Greenfield \u2014 no persistence layer exists yet."
     },
     {
       "id": "ENGINE-004",
