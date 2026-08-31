@@ -1,0 +1,58 @@
+{
+  "project": "slowlife-simulator",
+  "version": "0.1.0-alpha",
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "category": "architecture",
+      "title": "Implement SignalBus and TimeManager system",
+      "status": "completed",
+      "priority": "high",
+      "files": [
+        "scripts/autoload/SignalBus.gd",
+        "scenes/core/TimeManager.tscn"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/1",
+      "github_issue_number": 1,
+      "completed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-002",
+      "category": "gameplay",
+      "title": "Create CropData Resource class and Rice paddy growth logic",
+      "status": "pending",
+      "priority": "high",
+      "files": [
+        "scripts/resource_types/CropData.gd",
+        "scenes/core/GridManager.tscn"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/2",
+      "github_issue_number": 2
+    },
+    {
+      "id": "TASK-003",
+      "category": "ui",
+      "title": "Build dynamic scaling HUD for PC/Mobile with Harmony meter",
+      "status": "pending",
+      "priority": "medium",
+      "files": [
+        "scenes/ui/HUD.tscn"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/3",
+      "github_issue_number": 3
+    },
+    {
+      "id": "TASK-004",
+      "category": "mechanics",
+      "title": "Implement Binthabat morning offering event trigger",
+      "status": "pending",
+      "priority": "medium",
+      "files": [
+        "scenes/entities/MonkNPC.tscn",
+        "scripts/autoload/GameData.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/4",
+      "github_issue_number": 4
+    }
+  ]
+}

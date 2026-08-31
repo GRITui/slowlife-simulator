@@ -1,0 +1,17 @@
+# Godot
+.godot/
+export.cfg
+export_presets.cfg
+
+# Logs & env
+*.log
+*.env
+config.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

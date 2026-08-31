@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8tmanager001"]
+
+[ext_resource type="Script" path="res://scenes/core/TimeManager.gd" id="1_abc"]
+
+[node name="TimeManager" type="Node"]
+script = ExtResource("1_abc")
