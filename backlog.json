@@ -711,7 +711,7 @@
       "sprint": 6,
       "category": "gameplay",
       "title": "Wire FestivalManager into Main + krathong pond interactable (dead code fix)",
-      "status": "rejected",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": [
@@ -720,7 +720,9 @@
       ],
       "notes": "QA-auditor proposal: TASK-022 FestivalManager never instantiated, festival_triggered has zero listeners. Wire via minute_ticked + SignalBus.time_manager registry. Spec: docs/research/TASK-030-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "FAIL 2026-08-31: iOS Core Value criterion not met (gameplay wiring, no direct mobile tech gain). Cozy+Spec pass. Revisit after launch gate."
+      "gate_audit": "RE-GATED PASS 2026-09-01 (user directive: close all backlog + Art PO inbox 'launch lane drained, worth re-gating'). Scope delivered by TASK-040/PR #93: FestivalManager instanced, minute_ticked hook, once-per-season trigger, festival_triggered live. Reconciliation entry.",
+      "completed_at": "2026-09-01",
+      "pr_number": 93
     },
     {
       "id": "TASK-031",
