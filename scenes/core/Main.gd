@@ -112,12 +112,14 @@ func _on_quit_app() -> void:
 
 func _on_resume() -> void:
 	get_tree().paused = false
+	SignalBus.game_paused_changed.emit(false)
 	var pause: CanvasLayer = get_node_or_null("PauseMenu") as CanvasLayer
 	if pause != null:
 		pause.visible = false
 
 func _on_quit_to_title() -> void:
 	get_tree().paused = false
+	SignalBus.game_paused_changed.emit(false)
 	var pause: CanvasLayer = get_node_or_null("PauseMenu") as CanvasLayer
 	if pause != null:
 		pause.visible = false
@@ -133,6 +135,7 @@ func _toggle_pause() -> void:
 		return
 	pause.visible = not pause.visible
 	get_tree().paused = pause.visible
+	SignalBus.game_paused_changed.emit(get_tree().paused)
 
 func _ensure_buffalo() -> void:
 	if get_node_or_null("Buffalo") != null:

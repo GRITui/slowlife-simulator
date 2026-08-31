@@ -33,3 +33,5 @@ signal festival_triggered(festival_name: String)
 
 # TASK-027 accessibility — emitted by Settings UI, consumed by HUD + SaveManager.
 signal settings_changed(font_scale: float, high_contrast: bool)
+# TASK-042: emitted whenever SceneTree.paused flips (pause menu / resume).
+signal game_paused_changed(paused: bool)
