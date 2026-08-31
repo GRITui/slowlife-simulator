@@ -109,6 +109,26 @@ func ground_at(cell: Vector2i) -> String:
 	return _source_names.get(sid, "")
 
 var _ring_tiles: int = 0 # TASK-031: baked ring tile count (test parity for ring_count)
+var _water_mat: ShaderMaterial = null # TASK-032 seasonal water material
+var _season_connected: bool = false
+
+const _SEASON_INDEX := {"hot": 0.0, "monsoon": 1.0, "cool": 2.0}
+
+func _apply_season_to_water(season: String) -> void:
+	if _water_mat == null:
+		return
+	_water_mat.set_shader_parameter("season_index", float(_SEASON_INDEX.get(season, 2.0)))
+
+func _on_season_for_water(season: String) -> void:
+	_apply_season_to_water(season)
+
+# TASK-032: vertex-only sway for the baked ring + tall organic props.
+# Per-sprite material duplicates carry a unique phase (no instance uniforms
+# on the compatibility 2D renderer). Caps are skipped (rigid stone/wood).
+func _attach_sway(sprite: Sprite2D, phase: float) -> void:
+	var mat: ShaderMaterial = (load("res://assets/shaders/foliage_sway.tres") as ShaderMaterial).duplicate()
+	mat.set_shader_parameter("phase", phase)
+	sprite.material = mat
 
 func ring_count() -> int:
 	# Baked single-sprite ring (TASK-031): report baked tile count instead of
@@ -175,6 +195,16 @@ func _build_water_overlay(main: Node) -> void:
 	layer.name = "WaterOverlay"
 	layer.z_index = -14
 	layer.tile_set = ts
+	# TASK-032: seasonal water tint — single shared material, one uniform write
+	# per season change (SignalBus.season_changed), no per-frame cost.
+	var water_mat: ShaderMaterial = load("res://assets/shaders/water_seasonal.tres") as ShaderMaterial
+	if water_mat != null:
+		layer.material = water_mat
+		_water_mat = water_mat
+		if not _season_connected:
+			SignalBus.season_changed.connect(_on_season_for_water)
+			_season_connected = true
+		_apply_season_to_water(GameData.current_season)
 	for cell in maze_cells():
 		layer.set_cell(cell, sids["lotus_maze"], Vector2i(0, 0))
 	layer.set_cell(DOCK_CELL, sids["dock"], Vector2i(0, 0))
@@ -216,6 +246,8 @@ func _build_bamboo_ring(main: Node) -> void:
 		ring.centered = false
 		# Canvas px (0,0) is world cell (-1,-1) top-left == (-TILE, -TILE).
 		ring.position = Vector2(-TILE, -TILE)
+		# TASK-032: crown-weighted sway on the whole baked ring (1 material).
+		_attach_sway(ring, 0.0)
 		main.add_child(ring)
 
 func _build_props(main: Node) -> void:
@@ -235,6 +267,9 @@ func _build_props(main: Node) -> void:
 				s.position = base
 				s.offset = Vector2(0, -tex.get_height() / 2.0)
 		s.set_meta("worldrender_prop", true)
+		# TASK-032: sway tall organic props only; caps stay rigid.
+		if p["kind"] != "cap":
+			_attach_sway(s, float((p["cell"].x + p["cell"].y) % 7) * 0.9)
 		main.add_child(s)
 
 func _build_bounds(main: Node) -> void:
