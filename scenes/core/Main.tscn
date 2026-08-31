@@ -21,11 +21,11 @@ script = ExtResource("1_wr")
 position = Vector2(0, 0)
 
 [node name="MonkNPC" parent="." instance=ExtResource("4_monk")]
-position = Vector2(560, 112)
-temple_position = Vector2(560, 112)
+position = Vector2(840, 168)
+temple_position = Vector2(840, 168)
 
 [node name="Player" parent="." instance=ExtResource("5_pl")]
-position = Vector2(320, 256)
+position = Vector2(480, 384)
 
 [node name="HUD" parent="." instance=ExtResource("6_hud")]
 

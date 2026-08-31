@@ -26,7 +26,7 @@ func _ready() -> void:
 	# position player near home center
 	var pl := get_node_or_null("Player")
 	if pl:
-		pl.global_position = Vector2(10 * 32, 8 * 32)
+		pl.global_position = Vector2(10 * 48, 8 * 48)
 	# monk on temple lane E (cell 17,3), warm start at cool season 06:00
 	if "--screenshot" in OS.get_cmdline_user_args():
 		for i in 20:

@@ -4,14 +4,14 @@
 [ext_resource type="Texture2D" path="res://assets/characters/npc_priest_idle_01.png" id="2_tex"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
-size = Vector2(16, 28)
+size = Vector2(24, 42)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
-radius = 32.0
+radius = 48.0
 
 [node name="MonkNPC" type="CharacterBody2D" groups=["monk_npc"]]
 script = ExtResource("1_monk")
-temple_position = Vector2(400, 100)
+temple_position = Vector2(600, 150)
 walk_speed = 40.0
 collision_layer = 2
 collision_mask = 1

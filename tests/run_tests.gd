@@ -75,8 +75,8 @@ func _run_all() -> void:
 		var player := main.get_node_or_null("Player")
 		_check(player != null, "Player node present")
 		if player:
-			_check(player.global_position.distance_to(Vector2(320, 256)) < 0.1,
-				"player spawns at map center (320,256)")
+			_check(player.global_position.distance_to(Vector2(480, 384)) < 0.1,
+				"player spawns at map center (480,384)")
 			var cam := player.get_node_or_null("Camera2D")
 			_check(cam != null, "Player has Camera2D child")
 			if cam:
@@ -105,7 +105,7 @@ func _run_all() -> void:
 			_check(bd != null and (bd.color as Color).is_equal_approx(Color("#1565C0")), "Deep Pond #1565C0 backdrop")
 			var monk: Node = main.get_node_or_null("MonkNPC")
 			if monk:
-				_check(monk.global_position.distance_to(Vector2(560, 112)) < 1.0, "monk on temple lane E (560,112)")
+				_check(monk.global_position.distance_to(Vector2(840, 168)) < 1.0, "monk on temple lane E (840,168)")
 
 		_section = "gridmanager"
 		var gm: Node = main.get_node_or_null("GridManager")

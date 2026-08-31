@@ -14,7 +14,7 @@ class PlotState:
 	var wilt_minutes: int = 0
 
 @export var grid_size: Vector2i = Vector2i(20, 16)
-@export var cell_size: int = 32
+@export var cell_size: int = 48
 @export var maze_origin: Vector2i = Vector2i(14, 10) # SE inset 3×3 lotus maze
 @export var debug_log: bool = false
 
