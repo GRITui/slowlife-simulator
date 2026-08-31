@@ -669,6 +669,53 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/80",
       "completed_at": "2026-08-31",
       "pr_number": 83
+    },
+    {
+      "id": "TASK-028",
+      "sprint": 6,
+      "category": "ci",
+      "title": "iOS export pipeline + safe-area HUD insets",
+      "status": "proposed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "export_presets.cfg",
+        "scenes/ui/HUD.tscn",
+        "scenes/core/Main.gd"
+      ],
+      "notes": "Scout proposal: DisplayServer.get_display_safe_area() insets on mobile, iOS export template doc. Spec: docs/research/TASK-028-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-029",
+      "sprint": 6,
+      "category": "mechanics",
+      "title": "Crafting UI wiring: mortar + clay stove consume recipes.json",
+      "status": "proposed",
+      "priority": "medium",
+      "owner": "data-pipeline",
+      "files": [
+        "scenes/interactables/",
+        "scripts/resource_types/RecipeData.gd",
+        "data/recipes/recipes.json"
+      ],
+      "notes": "QA-auditor proposal: recipes.json + RecipeData are dead content (no consumer scene). CookingStation mirror of SluiceGate. Spec: docs/research/TASK-029-spec.md",
+      "proposed_at": "2026-08-31"
+    },
+    {
+      "id": "TASK-030",
+      "sprint": 6,
+      "category": "gameplay",
+      "title": "Wire FestivalManager into Main + krathong pond interactable (dead code fix)",
+      "status": "proposed",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/core/Main.tscn",
+        "scenes/festival/"
+      ],
+      "notes": "QA-auditor proposal: TASK-022 FestivalManager never instantiated, festival_triggered has zero listeners. Wire via minute_ticked + SignalBus.time_manager registry. Spec: docs/research/TASK-030-spec.md",
+      "proposed_at": "2026-08-31"
     }
   ]
 }
