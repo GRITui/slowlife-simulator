@@ -573,7 +573,7 @@
       "sprint": 4,
       "category": "architecture",
       "title": "SignalBus legacy cleanup + static typing hardening",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "backend-automation",
       "files": [
@@ -584,7 +584,9 @@
       ],
       "notes": "Remove energy_changed/ui_update_* duplicates, add TypedDictionary hardening, keep backward compat. Spec: docs/research/TASK-023-spec.md",
       "github_issue_number": 73,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/73"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/73",
+      "completed_at": "2026-08-31",
+      "pr_number": 76
     },
     {
       "id": "TASK-024",
