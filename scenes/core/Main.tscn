@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://main000001"]
+[gd_scene load_steps=11 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scenes/core/WorldRender.gd" id="1_wr"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" path="res://scenes/entities/VillagerNPC.tscn" id="8_villager"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/SluiceGate.tscn" id="7_sluice"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/Settings.tscn" id="10_settings"]
 [ext_resource type="PackedScene" path="res://scenes/market/MarketStall.tscn" id="9_market"]
 
 [node name="Main" type="Node2D"]
@@ -52,6 +53,8 @@ position = Vector2(744, 672)
 position = Vector2(480, 320)
 
 [node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="Settings" parent="." instance=ExtResource("10_settings")]
 
 [node name="DialogueLayer" type="CanvasLayer" parent="."]
 layer = 10

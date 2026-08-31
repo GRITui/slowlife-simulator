@@ -20,6 +20,52 @@ extends CanvasLayer
 var _max_stamina: float = 100.0
 var _max_harmony: int = 100
 
+# TASK-027 accessibility — font scaling (0.8-1.4) + high-contrast mode.
+const _BASE_FONT_SIZES: Dictionary = {
+	"StaminaLabel": 12, "HarmonyLabel": 12, "SeasonLabelLabel": 10,
+	"SeasonLabel": 13, "TimeLabelHeader": 12, "TimeLabel": 13,
+	"CropLabel": 12, "PromptLabel": 13,
+}
+@export var font_scale: float = 1.0
+@export var high_contrast: bool = false
+
+func set_font_scale(s: float) -> void:
+	font_scale = clampf(s, 0.8, 1.4)
+	for node_name: String in _BASE_FONT_SIZES.keys():
+		var label: Label = find_child(node_name, true, false) as Label
+		if label:
+			label.add_theme_font_size_override("font_size",
+				int(_BASE_FONT_SIZES[node_name] * font_scale))
+
+func set_high_contrast(v: bool) -> void:
+	high_contrast = v
+	if high_contrast:
+		# WCAG-AA: white fill on dark under, brightened season chip.
+		if stamina_bar:
+			stamina_bar.tint_under = Color(0.05, 0.05, 0.05)
+			stamina_bar.tint_progress = Color(1, 1, 1)
+		if harmony_bar:
+			harmony_bar.tint_under = Color(0.05, 0.05, 0.05)
+			harmony_bar.tint_progress = Color(1, 1, 1)
+		var bg: TextureRect = find_child("SeasonBg", true, false) as TextureRect
+		if bg:
+			bg.modulate = Color(1.5, 1.5, 1.5)
+	else:
+		if stamina_bar:
+			stamina_bar.tint_under = Color(1, 1, 1)
+		if harmony_bar:
+			harmony_bar.tint_under = Color(1, 1, 1)
+		var bg2: TextureRect = find_child("SeasonBg", true, false) as TextureRect
+		if bg2:
+			bg2.modulate = Color(1, 1, 1)
+		# Restore seasonal tints on the bars.
+		_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
+		_on_harmony_changed(GameData.harmony)
+
+func _on_settings_changed(s: float, hc: bool) -> void:
+	set_font_scale(s)
+	set_high_contrast(hc)
+
 func _ready() -> void:
 	# auto-detect mobile by viewport
 	var vp := get_viewport().get_visible_rect().size
@@ -31,6 +77,10 @@ func _ready() -> void:
 	SignalBus.season_changed.connect(_on_season_changed)
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
 	SignalBus.crop_growth_progress.connect(_on_crop_progress)
+	SignalBus.settings_changed.connect(_on_settings_changed)
+	# TASK-027: restore persisted a11y prefs (defaults keep legacy behavior).
+	set_font_scale(GameData.font_scale)
+	set_high_contrast(GameData.high_contrast)
 	# init from GameData
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
@@ -105,27 +155,42 @@ func update_prompt_for_proximity(has_target: bool, action: String = "Press [E] t
 # For manual testing
 func set_mobile(v: bool) -> void:
 	is_mobile = v
-// TASK-018 Inventory UI — display GameData.inventory
+
+# TASK-018 Inventory UI — display GameData.inventory
 func refresh_inventory() -> void:
-  var slots: Array = [$Margin/Root/InventoryRow/Slot1, $Margin/Root/InventoryRow/Slot2, $Margin/Root/InventoryRow/Slot3, $Margin/Root/InventoryRow/Slot4] if has_node("Margin/Root/InventoryRow/Slot1") else []
-  var idx: int = 0
-  for item_id in GameData.inventory.keys():
-    if idx >= slots.size(): break
-    var qty: int = int(GameData.inventory[item_id])
-    # Show quantity via tooltip; icon wiring via TASK-019 assets/items
-    var tex: Texture2D = slots[idx].texture
-    slots[idx].tooltip_text = "%s x%d" % [item_id, qty]
-    idx += 1
-// ENGINE-012 Mobile touch — virtual joystick stub, feeds move_* actions
+	var slots: Array = [$Margin/Root/InventoryRow/Slot1, $Margin/Root/InventoryRow/Slot2, $Margin/Root/InventoryRow/Slot3, $Margin/Root/InventoryRow/Slot4] if has_node("Margin/Root/InventoryRow/Slot1") else []
+	var idx: int = 0
+	for item_id in GameData.inventory.keys():
+		if idx >= slots.size():
+			break
+		var qty: int = int(GameData.inventory[item_id])
+		# Show quantity via tooltip; icon wiring via TASK-019 assets/items
+		var tex: Texture2D = slots[idx].texture
+		slots[idx].tooltip_text = "%s x%d" % [item_id, qty]
+		idx += 1
+# ENGINE-012 Mobile touch — virtual joystick stub, feeds move_* actions
 var _touch_origin: Vector2 = Vector2.ZERO
 var _touch_active: bool = false
+
 func _input(event: InputEvent) -> void:
-  if event is InputEventScreenTouch:
-    _touch_active = event.pressed
-    _touch_origin = event.position
-  elif event is InputEventScreenDrag and _touch_active:
-    var delta: Vector2 = event.position - _touch_origin
-    Input.action_press("move_right") if delta.x > 10 else Input.action_release("move_right")
-    Input.action_press("move_left") if delta.x < -10 else Input.action_release("move_left")
-    Input.action_press("move_down") if delta.y > 10 else Input.action_release("move_down")
-    Input.action_press("move_up") if delta.y < -10 else Input.action_release("move_up")
+	if event is InputEventScreenTouch:
+		_touch_active = event.pressed
+		_touch_origin = event.position
+	elif event is InputEventScreenDrag and _touch_active:
+		var delta: Vector2 = event.position - _touch_origin
+		if delta.x > 10:
+			Input.action_press("move_right")
+		else:
+			Input.action_release("move_right")
+		if delta.x < -10:
+			Input.action_press("move_left")
+		else:
+			Input.action_release("move_left")
+		if delta.y > 10:
+			Input.action_press("move_down")
+		else:
+			Input.action_release("move_down")
+		if delta.y < -10:
+			Input.action_press("move_up")
+		else:
+			Input.action_release("move_up")

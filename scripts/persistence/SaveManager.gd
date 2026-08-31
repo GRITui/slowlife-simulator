@@ -22,6 +22,9 @@ func save_game() -> bool:
 		"inventory": gd.inventory,
 		"harmony": gd.harmony,
 		"season": gd.current_season,
+		# TASK-027 a11y prefs (additive v2 fields, tolerate absence on old saves)
+		"font_scale": gd.font_scale,
+		"high_contrast": gd.high_contrast,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -67,6 +70,9 @@ func load_game() -> bool:
 			gd.inventory[item_id] = int(inv[item_id])
 		gd.harmony = int(data.get("harmony", 0))
 		gd.current_season = String(data.get("season", "cool"))
+		# TASK-027: restore a11y prefs when present (old saves keep defaults).
+		gd.font_scale = float(data.get("font_scale", 1.0))
+		gd.high_contrast = bool(data.get("high_contrast", false))
 		sb.show_dialogue.emit("System", "Game loaded.")
 		return true
 	return false

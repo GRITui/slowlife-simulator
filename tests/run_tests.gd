@@ -12,6 +12,7 @@ var _passed: int = 0
 var _failed: int = 0
 var _section: String = ""
 var _sig_hits: int = 0
+var sm_sm: Node = null # SaveManager under test (TASK-026/027)
 var _barter_hits: int = 0
 
 func _on_stamina_sig(_c: float, _m: float) -> void:
@@ -220,6 +221,42 @@ func _run_all() -> void:
 			_check(not low.contains("fail"), "%s market line avoids 'fail'" % s)
 			_check(not low.contains("debt"), "%s market line avoids 'debt'" % s)
 		market.queue_free()
+
+	_section = "a11y"
+	# TASK-027 accessibility — settings signal, HUD scaling methods,
+	# Settings scene, save persistence of a11y prefs.
+	_check(sb != null and sb.has_signal("settings_changed"), "SignalBus has settings_changed")
+	var settings_scene: PackedScene = load("res://scenes/ui/Settings.tscn")
+	_check(settings_scene != null, "Settings.tscn loads")
+	# Main was queue_freed in the gridmanager section; boot a fresh instance
+	# so the HUD methods can be exercised against a live scene.
+	var main2: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	root.add_child(main2)
+	await process_frame
+	var hud_node: Node = main2.get_node_or_null("HUD")
+	_check(hud_node != null and hud_node.has_method("set_font_scale"), "HUD has set_font_scale")
+	_check(hud_node != null and hud_node.has_method("set_high_contrast"), "HUD has set_high_contrast")
+	if hud_node:
+		hud_node.set_font_scale(1.2)
+		_check(is_equal_approx(float(hud_node.font_scale), 1.2), "set_font_scale applies 1.2")
+		hud_node.set_font_scale(9.9)
+		_check(is_equal_approx(float(hud_node.font_scale), 1.4), "font_scale clamps to 1.4 max")
+		hud_node.set_high_contrast(true)
+		_check(bool(hud_node.high_contrast), "set_high_contrast applies")
+	if sm_sm == null:
+		sm_sm = load("res://scripts/persistence/SaveManager.gd").new()
+		var gd_a: Node = root.get_node("GameData")
+		gd_a.font_scale = 1.3
+		gd_a.high_contrast = true
+		_check(sm_sm.save_game(), "a11y prefs save")
+		gd_a.font_scale = 1.0
+		gd_a.high_contrast = false
+		_check(sm_sm.load_game(), "a11y prefs load")
+		_check(is_equal_approx(float(gd_a.font_scale), 1.3) and bool(gd_a.high_contrast),
+			"a11y prefs round-trip")
+		gd_a.font_scale = 1.0
+		gd_a.high_contrast = false
+	main2.queue_free()
 
 	print("\n=== TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
