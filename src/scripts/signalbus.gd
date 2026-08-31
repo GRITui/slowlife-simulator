@@ -1,3 +1,2 @@
-extends Node
-# DEPRECATED — use res://scripts/autoload/SignalBus.gd (ENGINE-007)
-# Kept as shim for legacy scenes; canonical is SignalBus autoload.
+extends "res://scripts/autoload/SignalBus.gd"
+# Shim for legacy src/ path — canonical is scripts/autoload/SignalBus.gd (TASK-023)
