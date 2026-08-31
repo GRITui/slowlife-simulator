@@ -23,6 +23,49 @@
 **Rules**: Base 12 + 4 extenders for water/mist/wood (Hybrid B pull). Warm for sunlight, cool for shade/water. Seasonal tinting applied globally. Enforced per-scene max 16.
 
 > **✓ Locked 2026-08-31 — Hybrid A/B (Isan Plain + Canal Maze), updated 16-color** — Flat 20×16 paddy grid (A) + single canal-maze water feature from B (lotus maze + dock/raft + sluice gate + canal tile + mango). Palette now 16-color to accommodate Canal Teal / Mist Lavender / Deep Pond / Wood Amber. See `ART_WORLD_VISION_V2.html#decision` and `.decision.json`.
+
+## 3/4 Perspective Art Rules (Canon REV 2 — locked 2026-08-31)
+
+**Decision**: Option B (3/4 perspective) selected over top-down (see `docs/art_direction/perspective_A_B_comparison.png`). Implementation is "3/4 via art + Y-sort" — **NO camera squash**. Orthographic Camera2D hard center-locked on Player (issue #5 REV 2).
+
+### Tile Metrics
+
+- **Ground**: flat 32x32 top-down tiles (existing tilesets unchanged)
+- **Verticals** (walls, trees, standing props): tall art with front faces
+- **Characters**: existing 32x48 front-facing sprites, work as-is
+
+### Tall Art Spec (supersedes 32x32 base for verticals)
+
+| Asset | Size | Notes |
+|-------|------|-------|
+| bamboo_wall_tall | 32x48 | Front face + green cap, edge ring |
+| structure_wall_front | 32x48 | Hut/temple/hall/toolshed facades |
+| structure_wall_cap | 32x16 | Roof cap |
+| mango_tree | 32x64 | Trunk + canopy |
+| banana_circle | 32x48 | — |
+| sluice_gate | 32x48 | Repairable infrastructure |
+| clay_stove | 32x40 | — |
+| dock/raft | 32x32 | Stays flat — on water |
+
+### Y-Sort Rules
+
+- Standing sprites + characters share one Y-sorted layer; sort origin at feet/base
+- Ground/water/crops render below the Y-sorted layer
+- Player renders behind walls/trees when above, in front when below
+
+### Camera & Zoom
+
+- Player pinned to exact screen center (drag margins OFF, position smoothing OFF)
+- **Zoom 2.2 provisional** (12.9 rows visible, bamboo ring frames both sides) — final lock at TASK-008 with real tall art
+- Palette unchanged (16-color Hybrid A/B)
+
+### References
+
+- `docs/art_direction/canon_34_draft_B.png` (canon target)
+- `docs/art_direction/archived_topdown_option_A.png` (archive)
+- `docs/art_direction/zoom_framing_comparison.png`
+- GitHub issue #5 REV 2
+
 ## Tile Set Specifications
 
 - **Base size**: 32x32 pixels (scaled from 16x16 originals)
@@ -30,6 +73,7 @@
 - **Categories needed**: Ground, Environment, Structures, Interactive, Decor
 - **Animations**: Crop growth (4 frames), water flow (3-frame loop), wind vegetation (subtle shift)
 - **Naming convention**: `tilesets/ground_ricepaddy.png`, `tilesets/water_lotuspond.png`, etc.
+- **Note (REV 2)**: verticals (walls, trees, standing props) are superseded by the tall-art spec in "3/4 Perspective Art Rules (Canon REV 2)" above — ground tiles remain 32x32
 ## Environmental Assets
 
 ### Core Thai Rural Elements

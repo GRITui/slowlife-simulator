@@ -6,7 +6,7 @@
 <task_item>
   <id>TASK-005</id>
   <source>OWNER_POPUP</source>
-  <status>READY_FOR_PM</status>
+  <status>NEEDS_OWNER_REVIEW</status>
   <priority>HIGH</priority>
   <title>Define 3/4 art rules in ART_STYLE_GUIDE (tile metrics, Y-sort, zoom 2.2 provisional)</title>
   <description>Update ART_STYLE_GUIDE.md with the 3/4 perspective canon per issue #5 REV 2. Ground stays flat 32x32; verticals get tall art; Y-sort origin at feet; zoom 2.2 provisional.</description>
