@@ -8,6 +8,8 @@ extends CharacterBody2D
 
 var _season_mult: float = 1.0
 
+@onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 func _ready() -> void:
 	add_to_group("player")
 	SignalBus.season_changed.connect(_on_season_changed)
@@ -32,9 +34,23 @@ func _physics_process(delta: float) -> void:
 		dir = dir.normalized()
 	velocity = dir * move_speed
 	move_and_slide()
+	_update_animation(dir)
 	# clamp to Hybrid grid bounds (20*32 approx, keep in view)
 	global_position.x = clamp(global_position.x, 16, 20 * 32 - 16)
 	global_position.y = clamp(global_position.y, 16, 16 * 32 - 16)
+
+func _update_animation(dir: Vector2) -> void:
+	if dir == Vector2.ZERO:
+		if _sprite.animation != &"idle" or not _sprite.is_playing():
+			_sprite.play(&"idle")
+		return
+	var next: StringName
+	if absf(dir.x) >= absf(dir.y):
+		next = &"walk_right" if dir.x > 0.0 else &"walk_left"
+	else:
+		next = &"walk_down" if dir.y > 0.0 else &"walk_up"
+	if _sprite.animation != next or not _sprite.is_playing():
+		_sprite.play(next)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
