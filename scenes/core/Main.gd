@@ -27,6 +27,24 @@ func _ready() -> void:
 	var pl := get_node_or_null("Player")
 	if pl:
 		pl.global_position = Vector2(10 * 48, 8 * 48)
+	# TASK-038 (PO_INBOX directive #1): buffalo unlock — instance the dormant
+	# TASK-020 scene into the pasture zone. Programmatic (not .tscn) so the
+	# art lane's in-flight Main.tscn sprint stays conflict-free.
+	_ensure_buffalo()
+
+func _ensure_buffalo() -> void:
+	if get_node_or_null("Buffalo") != null:
+		return
+	var scene: PackedScene = load("res://scenes/entities/Buffalo.tscn")
+	if scene == null:
+		return
+	var buffalo: Node2D = scene.instantiate() as Node2D
+	if buffalo == null:
+		return
+	buffalo.name = "Buffalo"
+	# Pasture zone (rect 0,10,9,6): cell (4,12) center-bottom, y-sorted.
+	buffalo.position = Vector2(4 * 48 + 24, 13 * 48)
+	add_child(buffalo)
 	# monk on temple lane E (cell 17,3), warm start at cool season 06:00
 	if "--screenshot" in OS.get_cmdline_user_args():
 		for i in 20:
