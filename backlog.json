@@ -289,7 +289,7 @@
       "sprint": 3,
       "category": "ui",
       "title": "Inventory UI \u2014 display GameData.inventory contents",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "visual-inspector",
       "files": [
@@ -300,7 +300,9 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/44",
       "github_issue_number": 44,
       "notes": "Gap-research finding: GameData.inventory is fully functional (add/remove/has_item all wired) and TASK-015 wired inventory_slot.png border art, but nothing renders held items -- no icons, no quantities. Depends on TASK-019 for icon art.",
-      "depends_on": "TASK-019"
+      "depends_on": "TASK-019",
+      "completed_at": "2026-08-31",
+      "pr_number": 61
     },
     {
       "id": "TASK-019",
