@@ -63,16 +63,16 @@ func _try_grid_interact() -> void:
 	var cell: Vector2i = Vector2i(floor(global_position.x / 48), floor(global_position.y / 48))
 	var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
 	if plot == null:
-		# try plant jasmine_rice if plantable
-		if gm.is_plantable(cell):
-			var crop: Resource = load("res://data/crops/jasmine_rice.tres")
-			if crop and gm.plant(cell, crop):
-				SignalBus.show_dialogue.emit("Farmer", "Planted jasmine rice.")
-			else:
-				SignalBus.show_dialogue.emit("Farmer", "Cannot plant here.")
+		# TASK-043: seed-driven planting — first owned seed_* item maps to its
+		# CropData; falls back to jasmine_rice when no seeds are held (demo).
+		var crop: Resource = _find_crop_for_held_seed()
+		if crop == null:
+			crop = load("res://data/crops/jasmine_rice.tres")
+		if crop != null and gm.plant(cell, crop):
+			var crop_name: String = String(crop.get("display_name")) if "display_name" in crop else "crop"
+			SignalBus.show_dialogue.emit("Farmer", "Planted %s." % crop_name)
 		else:
-			# maybe near monk? monk handles its own interact
-			pass
+			SignalBus.show_dialogue.emit("Farmer", "Cannot plant here.")
 	else:
 		# has plot: if harvest-ready -> harvest, else water
 		if plot.stage >= plot.crop.total_stages - 1:
@@ -86,6 +86,30 @@ func _try_grid_interact() -> void:
 				SignalBus.show_dialogue.emit("Farmer", "Watered plot.")
 			else:
 				SignalBus.show_dialogue.emit("Farmer", "Already watered.")
+
+func _find_crop_for_held_seed() -> Resource:
+	# TASK-043: index data/crops/*.tres by seed_item_id once, then match the
+	# first seed_* item the player holds. Static cache survives respawns.
+	if _seed_lookup.is_empty():
+		var dir: DirAccess = DirAccess.open("res://data/crops")
+		if dir == null:
+			return null
+		dir.list_dir_begin()
+		var fname: String = dir.get_next()
+		while fname != "":
+			if fname.ends_with(".tres"):
+				var res: Resource = load("res://data/crops/" + fname)
+				if res != null and "seed_item_id" in res:
+					var sid: String = String(res.seed_item_id)
+					if sid != "":
+						_seed_lookup[sid] = res
+			fname = dir.get_next()
+	for item_id: String in GameData.inventory.keys():
+		if String(item_id).begins_with("seed_") and _seed_lookup.has(String(item_id)):
+			return _seed_lookup[String(item_id)] as Resource
+	return null
+
+static var _seed_lookup: Dictionary = {}
 
 func _on_season_changed(s: String) -> void:
 	if SignalBus.time_manager:
