@@ -762,7 +762,7 @@
       "sprint": 7,
       "category": "performance",
       "title": "SignalBus + startup hygiene: orphan emit removal & export pruning",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "backend-automation",
       "files": [
@@ -772,7 +772,9 @@
       ],
       "notes": "QA-auditor Phase 2 FAIL verdict: day_night_cycle_changed orphan per-minute emit + unregistered autoload scripts. Spec: docs/research/TASK-033-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "PASS 2026-08-31: mobile startup-perf criterion, audit-backed, spec verified. Executing via @north-mini-code."
+      "gate_audit": "PASS 2026-08-31: mobile startup-perf criterion, audit-backed, spec verified. Executing via @north-mini-code.",
+      "completed_at": "2026-08-31",
+      "pr_number": 86
     },
     {
       "id": "TASK-034",
