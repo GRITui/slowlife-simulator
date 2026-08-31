@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bananatree044"]
+
+[ext_resource type="Script" path="res://scenes/entities/BananaTree.gd" id="1_ban"]
+[ext_resource type="Texture2D" path="res://assets/environment/banana_tree_tall.png" id="2_tex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 48.0
+
+[node name="BananaTree" type="StaticBody2D" groups=["banana_tree"]]
+script = ExtResource("1_ban")
+collision_layer = 2
+collision_mask = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+centered = true
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_interact")
