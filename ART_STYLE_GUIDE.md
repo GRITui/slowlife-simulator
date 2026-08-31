@@ -219,7 +219,7 @@
 - **Rendering**: 2D canvas items, pixel art friendly (filter = POINT)
 - **Import settings**: compress_mode = DISABLED (development), max_size = 256 (UI)
 - **Project Settings → Language**: GDScript 4.x
-- **Autoload**: SignalBus singleton (name: "SignalBus", path: "res://src/scripts/signalbus.gd")
+- **Autoload**: SignalBus singleton (name: "SignalBus", path: "res://scripts/autoload/SignalBus.gd")
 
 ### SignalBus Architecture (Simplified Core Signals)
 - `player/energy_changed` (int new_energy)

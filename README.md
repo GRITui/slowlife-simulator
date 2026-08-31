@@ -11,9 +11,8 @@
 /slowlife-game/
   project.godot          # Godot project configuration
   ART_STYLE_GUIDE.md     # Art style guide (created)
-  src/
-    scripts/
-      signalbus.gd       # Central signalbus singleton
+  scripts/autoload/
+      SignalBus.gd       # Central signalbus singleton
       gameday.gd         # Season/day/night cycle
       player.gd          # Player character control
     scenes/              # Godot scenes
@@ -36,7 +35,7 @@
 2. Autoload tab
 3. Click "Add Singleton"
 4. **Name**: `SignalBus`
-5. **Path**: `res://src/scripts/signalbus.gd`
+5. **Path**: `res://scripts/autoload/SignalBus.gd`
 6. Click "Add"
 
 ### Current Systems Implemented
