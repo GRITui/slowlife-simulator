@@ -274,7 +274,7 @@
       "id": "TASK-018",
       "sprint": 3,
       "category": "ui",
-      "title": "Inventory UI — display GameData.inventory contents",
+      "title": "Inventory UI \u2014 display GameData.inventory contents",
       "status": "todo",
       "priority": "high",
       "owner": "visual-inspector",
@@ -474,6 +474,42 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/41",
       "github_issue_number": 41,
       "notes": "Found in PR-Gatekeeper engine-lane audit. PROJECT_VISION.md requires PC & Mobile but only keyboard input actions exist in project.godot -- no virtual joystick or touch-interact affordance. Should reuse HUD.is_mobile device detection, feed the existing move_* input actions so Player.gd needs no changes."
+    },
+    {
+      "id": "ENGINE-006",
+      "lane": "engine",
+      "category": "architecture",
+      "title": "Player.gd bypasses SignalBus with hard node-path/tree-walk coupling",
+      "status": "todo",
+      "priority": "medium",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/27",
+      "github_issue_number": 27,
+      "notes": "Re-synced \u2014 was open issue #27 but missing from backlog after bad merge."
+    },
+    {
+      "id": "ENGINE-007",
+      "lane": "engine",
+      "category": "hygiene",
+      "title": "Remove dead duplicate SignalBus at src/scripts/signalbus.gd",
+      "status": "todo",
+      "priority": "low",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/28",
+      "github_issue_number": 28,
+      "notes": "Re-synced \u2014 was open issue #28 but missing from backlog after bad merge."
+    },
+    {
+      "id": "ENGINE-008",
+      "lane": "engine",
+      "category": "spatial",
+      "title": "Wire NavGrid (A*) into an actual movement consumer",
+      "status": "todo",
+      "priority": "low",
+      "files": [],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
+      "github_issue_number": 29,
+      "notes": "Re-synced \u2014 was open issue #29 but missing from backlog after bad merge."
     }
   ]
 }
