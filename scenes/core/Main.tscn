@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/core/GridManager.tscn" id="3_gm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/MonkNPC.tscn" id="4_monk"]
 [ext_resource type="PackedScene" path="res://scenes/entities/Player.tscn" id="5_pl"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/SluiceGate.tscn" id="7_sluice"]
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
 
 [node name="Main" type="Node2D"]
@@ -26,6 +27,9 @@ temple_position = Vector2(840, 168)
 
 [node name="Player" parent="." instance=ExtResource("5_pl")]
 position = Vector2(480, 384)
+
+[node name="SluiceGate" parent="." instance=ExtResource("7_sluice")]
+position = Vector2(744, 672)
 
 [node name="HUD" parent="." instance=ExtResource("6_hud")]
 

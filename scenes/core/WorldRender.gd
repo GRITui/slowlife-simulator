@@ -62,8 +62,8 @@ const PROPS := [
 	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(6, 14), "kind": "cap"},
 	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(7, 14), "kind": "cap"},
 	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(8, 14), "kind": "cap"},
-	# Maze add-ons: sluice on canal at maze south, mango at maze NE corner, banana circle SW
-	{"tex": "res://assets/environment/sluice_gate_tall.png", "cell": Vector2i(15, 13), "kind": "prop"},
+	# Maze add-ons: sluice now interactive via scenes/interactables/SluiceGate.tscn (TASK-011) — skip static prop
+	# {"tex": "res://assets/environment/sluice_gate_tall.png", "cell": Vector2i(15, 13), "kind": "prop"},
 	{"tex": "res://assets/environment/mango_tree_tall.png", "cell": Vector2i(17, 10), "kind": "prop"},
 	{"tex": "res://assets/environment/banana_tree_tall.png", "cell": Vector2i(4, 12), "kind": "prop"},
 	{"tex": "res://assets/environment/banana_tree_tall.png", "cell": Vector2i(5, 13), "kind": "prop"},
