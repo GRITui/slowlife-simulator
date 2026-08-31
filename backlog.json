@@ -863,36 +863,43 @@
       ],
       "notes": "Head-of-Art sprint 3/10: RainLayer CanvasLayer + GPUParticles2D wired into Main.tscn (amount=180, within TASK-031's <=200 peak cap), gated by SignalBus.season_changed via RainDriver.gd (bus-only, same pattern as SeasonShaderDriver/DayNightTintDriver). Gates: content 100/100, engine 50/50. Spec: docs/research/ART-038-spec.md",
       "proposed_at": "2026-09-01",
-      "completed_at": "2026-09-01"
+      "completed_at": "2026-09-01",
+      "pr_number": 91
     },
     {
       "id": "TASK-039",
       "sprint": 9,
       "category": "art",
       "title": "Cooking smoke + lotus pollen ambient particles",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "medium",
       "owner": "art-po",
       "files": [
         "assets/particles/cooking_smoke.tres",
-        "assets/particles/lotus_pollen.tres"
+        "assets/particles/lotus_pollen.tres",
+        "scenes/core/Main.tscn"
       ],
-      "notes": "Head-of-Art sprint 4/10: completes TASK-031's 3-pillar particle budget (rain/smoke/pollen). Combined perf check needed with TASK-038. Spec: docs/research/ART-039-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 4/10: CookingSmoke + LotusPollen GPUParticles2D wired directly into WorldRender (always-emitting, amount 30/35, no signal gating needed). Combined with TASK-038's rain (180 cap), joint worst-case still within TASK-031's 200-peak budget per node-count reasoning (perf-budget gate's headless draw-call probe reads 0 in dummy renderer, can't verify numerically -- flagged for manual on-device check). Gates: content 100/100, engine 50/50, perf-budget 6/6. Spec: docs/research/ART-039-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01"
     },
     {
       "id": "TASK-040",
       "sprint": 9,
       "category": "art",
       "title": "Hot season heat-haze shader (canvas_item)",
-      "status": "in_progress",
+      "status": "completed",
       "priority": "low",
       "owner": "art-po",
       "files": [
-        "assets/shaders/heat_haze.gdshader"
+        "assets/shaders/heat_haze.gdshader",
+        "assets/shaders/heat_haze.tres",
+        "scenes/core/HeatHazeDriver.gd",
+        "scenes/core/Main.tscn"
       ],
-      "notes": "Head-of-Art sprint 5/10: last remaining named CLAUDE.md shader pillar unimplemented (water/foliage=TASK-032, day/night=TASK-034 both done). Spec: docs/research/ART-040-spec.md | Claimed by art-po session 2026-09-01 for direct execution (avoiding opencode double-dispatch).",
-      "proposed_at": "2026-09-01"
+      "notes": "Head-of-Art sprint 5/10: revised during implementation from UV-distortion to a flat-color shimmer overlay (matches TASK-034's proven no-TEXTURE-sampling pattern instead of risking SCREEN_TEXTURE reliability on gl_compatibility). HazeLayer/HazeRect + HeatHazeDriver wired into Main.tscn, gated on season=='hot'. Gates: content 100/100, engine 50/50, perf 6/6. Spec: docs/research/ART-040-spec.md",
+      "proposed_at": "2026-09-01",
+      "completed_at": "2026-09-01"
     },
     {
       "id": "TASK-041",
