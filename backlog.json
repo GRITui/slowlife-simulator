@@ -633,7 +633,7 @@
       "sprint": 5,
       "category": "ci",
       "title": "Save compatibility & migration tests \u2014 versioned JSON + round-trip suite",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "data-persistence",
       "files": [
@@ -645,7 +645,9 @@
       "proposed_at": "2026-08-31",
       "promoted_at": "2026-08-31",
       "github_issue_number": 78,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/78"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/78",
+      "completed_at": "2026-08-31",
+      "pr_number": 82
     },
     {
       "id": "TASK-027",
