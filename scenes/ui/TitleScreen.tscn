@@ -1,0 +1,99 @@
+[gd_scene load_steps=2 format=3 uid="uid://title017"]
+
+[ext_resource type="Script" path="res://scenes/ui/TitleScreen.gd" id="1_title"]
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_title")
+
+[node name="Bg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9607843, 0.9411765, 0.9098039, 1)
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -120.0
+offset_right = 200.0
+offset_bottom = -60.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+text = "Slowlife Simulator"
+theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_font_sizes/font_size = 32
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -60.0
+offset_right = 200.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+text = "Thai Rural Countryside — Cozy Farm Sim"
+theme_override_colors/font_color = Color(0.5529412, 0.43137255, 0.3882353, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -180.0
+offset_right = 100.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="NewGameButton" type="Button" parent="VBox"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "New Game"
+script = null
+
+[node name="ContinueButton" type="Button" parent="VBox"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "Continue"
+
+[node name="SettingsButton" type="Button" parent="VBox"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="VBox"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="VBox/NewGameButton" to="." method="_on_new_game_pressed"]
+[connection signal="pressed" from="VBox/ContinueButton" to="." method="_on_continue_pressed"]
+[connection signal="pressed" from="VBox/SettingsButton" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="VBox/QuitButton" to="." method="_on_quit_pressed"]
