@@ -108,7 +108,13 @@ func ground_at(cell: Vector2i) -> String:
 	var sid: int = _ground_layer.get_cell_source_id(cell)
 	return _source_names.get(sid, "")
 
+var _ring_tiles: int = 0 # TASK-031: baked ring tile count (test parity for ring_count)
+
 func ring_count() -> int:
+	# Baked single-sprite ring (TASK-031): report baked tile count instead of
+	# child count; legacy child-based fallback kept for safety.
+	if _ring_tiles > 0:
+		return _ring_tiles
 	var ring := _main.get_node_or_null("BambooRing") as Node2D
 	return ring.get_child_count() if ring else 0
 
@@ -181,17 +187,36 @@ func _build_flat_decor(main: Node) -> void:
 		main.add_child(s)
 
 func _build_bamboo_ring(main: Node) -> void:
-	var ring := Node2D.new()
-	ring.name = "BambooRing"
-	ring.z_index = -5
-	var tex: Texture2D = load("res://assets/environment/bamboo_wall_tall.png")
-	for x in range(-1, GRID.x + 1):
-		for y in [-1, GRID.y]:
-			ring.add_child(_base_sprite(tex, Vector2i(x, y)))
-	for y in range(0, GRID.y):
-		for x in [-1, GRID.x]:
-			ring.add_child(_base_sprite(tex, Vector2i(x, y)))
-	main.add_child(ring)
+	# TASK-031 perf budget: bake all 76 ring tiles into ONE ImageTexture so
+	# the ring costs a single draw call (was 76 individual Sprite2D draws —
+	# the dominant offender in the idle draw-call audit). Pixel-identical:
+	# each 32x48 tile is blitted at the same cell-relative offset the old
+	# _base_sprite produced (centered horizontally in the 48px cell).
+	var src_tex: Texture2D = load("res://assets/environment/bamboo_wall_tall.png")
+	var src_img: Image = src_tex.get_image()
+	if src_img != null:
+		src_img.convert(Image.FORMAT_RGBA8)
+		var canvas: Image = Image.create((GRID.x + 2) * TILE, (GRID.y + 2) * TILE, false, Image.FORMAT_RGBA8)
+		var tw: int = src_img.get_width()
+		var th: int = src_img.get_height()
+		var x_off: int = (TILE - tw) / 2
+		_ring_tiles = 0
+		for x in range(-1, GRID.x + 1):
+			for y in [-1, GRID.y]:
+				canvas.blit_rect(src_img, Rect2i(0, 0, tw, th), Vector2i((x + 1) * TILE + x_off, (y + 1) * TILE))
+				_ring_tiles += 1
+		for y in range(0, GRID.y):
+			for x in [-1, GRID.x]:
+				canvas.blit_rect(src_img, Rect2i(0, 0, tw, th), Vector2i((x + 1) * TILE + x_off, (y + 1) * TILE))
+				_ring_tiles += 1
+		var ring := Sprite2D.new()
+		ring.name = "BambooRing"
+		ring.z_index = -5
+		ring.texture = ImageTexture.create_from_image(canvas)
+		ring.centered = false
+		# Canvas px (0,0) is world cell (-1,-1) top-left == (-TILE, -TILE).
+		ring.position = Vector2(-TILE, -TILE)
+		main.add_child(ring)
 
 func _build_props(main: Node) -> void:
 	for p in PROPS:

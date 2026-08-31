@@ -41,10 +41,16 @@ run_save_compat() {
 	godot --headless --path . --script res://tests/test_save_compat.gd
 }
 
+run_perf() {
+	echo "== perf-budget gate: tests/perf/test_mobile_budget.gd =="
+	godot --headless --path . --script res://tests/perf/test_mobile_budget.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
 	save) run_save_compat ;;
-	all) run_engine && run_content && run_save_compat ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|all)" >&2; exit 2 ;;
+	perf) run_perf ;;
+	all) run_engine && run_content && run_save_compat && run_perf ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|all)" >&2; exit 2 ;;
 esac
