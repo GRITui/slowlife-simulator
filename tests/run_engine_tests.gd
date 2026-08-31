@@ -49,9 +49,12 @@ func _run_all() -> void:
 	_check(gd != null, "GameData autoload present")
 	if sb:
 		for sig_name in ["minute_ticked", "season_changed", "weather_changed",
-				"day_night_cycle_changed", "stamina_changed",
+				"stamina_changed",
 				"show_dialogue", "binthabat_offered", "crop_growth_progress"]:
 			_check(sb.has_signal(sig_name), "SignalBus has signal %s" % sig_name)
+		# TASK-033: orphan signal must stay removed (hygiene contract).
+		_check(sb.has_signal("day_night_cycle_changed") == false,
+			"orphan day_night_cycle_changed stays removed (TASK-033)")
 
 	_section = "timemanager-boot"
 	var tm_scene: PackedScene = load("res://scenes/core/TimeManager.tscn")

@@ -64,9 +64,8 @@ func _advance_minute() -> void:
 				_rotate_season()
 			_update_weather_for_new_day()
 	SignalBus.minute_ticked.emit(day, hour, minute)
-	# Day-night fraction for visuals (0.0 = midnight, 0.5 = noon)
-	var frac := (hour * 60.0 + minute) / 1440.0
-	SignalBus.day_night_cycle_changed.emit(frac)
+	# TASK-033: day_night_cycle_changed orphan emit removed (zero listeners,
+	# per-minute cost). Reintroduce alongside a DayNightAtmosphere consumer.
 
 func _rotate_season() -> void:
 	_days_in_season = 0
