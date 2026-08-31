@@ -6,10 +6,10 @@
 </squad_metadata>
 
 ## Current Focus
-TASK-005 in PR review — next pull: TASK-008 (blocked on TASK-007) or TASK-010.
+Sprint 1 next pull: TASK-010 (no deps). TASK-008 queued behind TASK-007 world render.
 
 ## Recent Commits / PRs
-- PR #11: docs: TASK-005 3/4 perspective art rules in ART_STYLE_GUIDE — https://github.com/GRITui/slowlife-simulator/pull/11 (awaiting PO review)
+- PR #11: docs: TASK-005 3/4 perspective art rules in ART_STYLE_GUIDE — https://github.com/GRITui/slowlife-simulator/pull/11 (MERGED, issue #6 closed)
 
 ## Blockers & QA Failures
 (none)
