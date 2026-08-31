@@ -1136,14 +1136,14 @@
       "sprint": 10,
       "category": "mechanics",
       "title": "Banana multi-part harvest: leaves (cooldown) + stem (machete-gated felling)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/entities/BananaTree.gd, scenes/core/Main.gd",
       "notes": "PO_INBOX r4 #1: BananaTree interactable mirror; leaves non-destructive per-day; stem cut gated has_item('machete'); machete -> starting inventory (decision).",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r4 directive + user close-backlog order): core-mechanic unlocks feeding art lane; specs per inbox.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 98
     },
     {
       "id": "TASK-045",
@@ -1190,6 +1190,24 @@
         "assets/items/larb_salad.png"
       ],
       "notes": "New work per user request (2026-09-01): expanded recipes.json from 12->17, deliberately using ONLY already-designed ingredients rather than inventing new crops for missing authentic components. Honest substitutions noted in each description: Som Tam uses cabbage (no papaya vine exists), Tom Yum uses tomato+chili for the sour-hot balance (no lemongrass/galangal/kaffir lime exist), Tom Kha leans on coconut_milk alone (no galangal). Larb kept intentionally meat-free/vegetarian -- the game has zero meat items anywhere (buffalo only ever yields milk) so a meat larb would need a whole new protein system; framed the veg version as the village's own choice, not a placeholder. 2 of 5 (som_tam, tom_yum) depend on fish_sauce/shrimp_paste and are uncraftable until the market gap closes (see PO_INBOX #1, still not landed as of this round). 3 of 5 (tom_kha, gaeng_kua, larb_salad) use only producible/existing ingredients -- fully completable once TASK-043 (planting generalization, already promoted to todo) lands. Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "TASK-200",
+      "sprint": 13,
+      "category": "art",
+      "title": "Real papaya tree crop; som_tam recipe corrected to use it instead of the cabbage substitute",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/crops/papaya.tres",
+        "assets/environment/crops/papaya_stage1-4.png",
+        "assets/items/papaya.png",
+        "assets/items/seed_papaya.png",
+        "assets/items/som_tam.png",
+        "data/recipes/recipes.json"
+      ],
+      "notes": "User explicitly insisted on real papaya rather than the cabbage substitute from TASK-190 -- corrected, not just added alongside. New papaya.tres: perennial tree, hot-season-leaning, matches mango/durian/banana/coconut's tall-art pattern (48x96, trunk with leaf-scar rings + crown fruit, distinct silhouette from the other trees). som_tam recipe's inputs changed cabbage->papaya and its description + icon updated to match (icon redrawn with green papaya shreds instead of cabbage). som_tam still depends on fish_sauce (market gap, unresolved as of this round) but papaya itself is not blocked by anything new -- same 'ready once planting generalizes' status as every other crop. Gates: content 100/100, engine 50/50."
     }
   ]
 }
