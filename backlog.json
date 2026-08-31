@@ -441,7 +441,7 @@
       "lane": "engine",
       "category": "ci",
       "title": "Wire engine/content test gates into GitHub Actions CI",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "unassigned",
       "files": [
@@ -449,7 +449,9 @@
       ],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/37",
       "github_issue_number": 37,
-      "notes": "Found in PR-Gatekeeper engine-lane audit. No .github/workflows exists -- ENGINE-001s test gate (run_engine_tests.gd) and scripts/ci/run_gate.sh are never run automatically on a PR. Also closes the gap where the review environment itself has no Godot binary to run the gate manually."
+      "notes": "Found in PR-Gatekeeper engine-lane audit. No .github/workflows exists -- ENGINE-001s test gate (run_engine_tests.gd) and scripts/ci/run_gate.sh are never run automatically on a PR. Also closes the gap where the review environment itself has no Godot binary to run the gate manually.",
+      "completed_at": "2026-08-31",
+      "pr_number": 66
     },
     {
       "id": "ENGINE-010",
