@@ -539,12 +539,14 @@
       "lane": "engine",
       "category": "spatial",
       "title": "Wire NavGrid (A*) into an actual movement consumer",
-      "status": "todo",
+      "status": "completed",
       "priority": "low",
       "files": [],
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/29",
       "github_issue_number": 29,
-      "notes": "Re-synced \u2014 was open issue #29 but missing from backlog after bad merge."
+      "notes": "Re-synced \u2014 was open issue #29 but missing from backlog after bad merge.",
+      "completed_at": "2026-08-31",
+      "pr_number": 71
     }
   ]
 }
