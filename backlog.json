@@ -639,7 +639,9 @@
       ],
       "notes": "QA-auditor proposal: SAVE_VERSION=2, migrate v1->v2, headless test_save_compat, gdlint in CI. Spec: docs/research/TASK-026-spec.md",
       "proposed_at": "2026-08-31",
-      "promoted_at": "2026-08-31"
+      "promoted_at": "2026-08-31",
+      "github_issue_number": 78,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/78"
     },
     {
       "id": "TASK-027",
