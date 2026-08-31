@@ -745,7 +745,7 @@
       "sprint": 7,
       "category": "ui",
       "title": "Mobile shader polish: seasonal water + foliage sway (canvas_item)",
-      "status": "proposed",
+      "status": "todo",
       "priority": "medium",
       "owner": "visual-inspector",
       "files": [
@@ -755,7 +755,7 @@
       ],
       "notes": "Scout Phase 2 research: GLES3-safe canvas_item water/foliage shaders with perf caps. Spec: docs/research/TASK-032-spec.md",
       "proposed_at": "2026-08-31",
-      "gate_audit": "DEFERRED 2026-08-31: passes gate (shaders) but art lane \u2014 PO directive: process visual assets when committed; no Claude CLI this cycle."
+      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x)."
     },
     {
       "id": "TASK-033",
@@ -781,22 +781,23 @@
       "sprint": 6,
       "category": "art",
       "title": "Day/night ambient color-grading shader (canvas_item)",
-      "status": "proposed",
+      "status": "todo",
       "priority": "medium",
       "owner": "art-po",
       "files": [
         "assets/shaders/day_night_tint.gdshader",
         "scripts/autoload/DayNightTintDriver.gd"
       ],
-      "notes": "Phase 2 art audit: zero .gdshader files exist in repo; CLAUDE.md's day/night color-grading pillar is unimplemented and distinct from TASK-032's water/foliage scope. Also gives SignalBus.day_night_cycle_changed (0 listeners per QA-AUDIT-2026-08-31) its first consumer. Spec: docs/research/ART-034-spec.md",
-      "proposed_at": "2026-08-31"
+      "notes": "Phase 2 art audit: zero .gdshader files exist in repo; CLAUDE.md's day/night color-grading pillar is unimplemented and distinct from TASK-032's water/foliage scope. UPDATE 2026-08-31: TASK-033 (PR #86) removed SignalBus.day_night_cycle_changed + added a negative-contract gate before this was gated. Spec revised to re-add the signal alongside the shader (per TASK-033's own commit note) and update the negative-contract test in the same PR. Spec: docs/research/ART-034-spec.md",
+      "proposed_at": "2026-08-31",
+      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x)."
     },
     {
       "id": "TASK-035",
       "sprint": 6,
       "category": "art",
       "title": "UI touch-target sizing, safe-area insets & cozy theming (Settings/Pause/Title)",
-      "status": "proposed",
+      "status": "todo",
       "priority": "high",
       "owner": "art-po",
       "files": [
@@ -805,7 +806,8 @@
         "scenes/ui/TitleScreen.tscn"
       ],
       "notes": "Phase 2 art audit: Settings.tscn (live) has sub-44pt FontScaleSlider/HighContrastCheck; Pause/Title (dead, unwired) have unstyled default-gray buttons with no safe-area container. Spec: docs/research/ART-035-spec.md",
-      "proposed_at": "2026-08-31"
+      "proposed_at": "2026-08-31",
+      "gate_audit": "PASS 2026-08-31 iter1: iOS Core Value (shaders/safe-area), cozy, spec verified (ART-03x copied to TASK-03x)."
     }
   ]
 }
