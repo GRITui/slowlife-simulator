@@ -1,7 +1,7 @@
 ---
 name: po
 description: Product Owner and Task Router for slowlife-simulator
-model: opencode-go/musespark-1.2
+model: opencode-go/minimax-m3
 mode: primary
 permission:
   edit: allow
