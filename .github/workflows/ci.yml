@@ -1,0 +1,17 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v1
+        with:
+          version: 4.7.2
+      - name: Import
+        run: godot --headless --import --path .
+      - name: Content gate
+        run: godot --headless --path . --script res://tests/run_tests.gd
+      - name: Engine gate
+        run: godot --headless --path . --script res://tests/run_engine_tests.gd
