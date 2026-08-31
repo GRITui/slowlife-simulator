@@ -219,15 +219,18 @@
       "sprint": 2,
       "category": "ui",
       "title": "Mobile 80% viewport scaling + action prompt polish",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "visual-inspector",
       "files": [
-        "scenes/ui/HUD.tscn"
+        "scenes/ui/HUD.tscn",
+        "scenes/ui/HUD.gd"
       ],
-      "notes": "Dynamic UI scaling PC 100% / mobile 80%.",
+      "notes": "Dynamic UI scaling PC 100% / mobile 80% - Margin.scale 0.8 + prompt helpers show/hide/update_for_proximity. Merged PR #58 (squash).",
       "github_issue_number": 42,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/42"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/42",
+      "completed_at": "2026-08-31",
+      "pr_number": 58
     },
     {
       "id": "TASK-015",
