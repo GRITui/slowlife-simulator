@@ -1,8 +1,8 @@
 ---
 name: qa-auditor
 description: Lightweight, token-efficient QA auditor running static analysis, headless engine tests, and type checks
-model: opencode-go/GLM-5.3-Flash
-mode: subagent
+model: opencode-go/minimax-m3
+mode: primary
 permission:
   edit: allow
   bash: allow

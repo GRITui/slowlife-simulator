@@ -1,8 +1,8 @@
 ---
 name: scout
 description: Technical & Visual Scout researching Godot 4 architecture, iOS compliance, shaders, UI themes, and cozy art specs
-model: opencode-go/deepseek-v4-pro
-mode: subagent
+model: opencode-go/minimax-m3
+mode: primary
 permission:
   edit: allow
   bash: allow
