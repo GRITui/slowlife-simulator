@@ -59,6 +59,151 @@
       "github_issue_number": 4,
       "completed_at": "2026-08-31",
       "notes": "MonkNPC schedule 05:00-07:30, daily 1 offering, GameData binthabat_yields (rice 3/lotus 5/mango 6/sticky 4), SignalBus binthabat_offered+show_dialogue, temple lane east."
+    },
+    {
+      "id": "TASK-005",
+      "sprint": 1,
+      "category": "ui",
+      "title": "Define 3/4 art rules in ART_STYLE_GUIDE (tile metrics, Y-sort, zoom 2.2 provisional)",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "ART_STYLE_GUIDE.md"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/6",
+      "github_issue_number": 6,
+      "notes": "3/4 via tall art + Y-sort, no camera squash. Per issue #5 REV 2 + docs/art_direction/."
+    },
+    {
+      "id": "TASK-006",
+      "sprint": 1,
+      "category": "ui",
+      "title": "Generate tall art assets for 3/4 canon (16-color palette)",
+      "status": "todo",
+      "priority": "high",
+      "owner": "data-pipeline",
+      "files": [
+        "assets/environment/"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/7",
+      "github_issue_number": 7,
+      "notes": "bamboo wall 32x48, structure front+cap, mango 32x64, banana/sluice 32x48, stove 32x40. Target: canon_34_draft_B.png."
+    },
+    {
+      "id": "TASK-007",
+      "sprint": 1,
+      "category": "gameplay",
+      "title": "World render: 20x16 tilemap matrix + Y-sort layers + bounds + edge dressing",
+      "status": "todo",
+      "priority": "high",
+      "owner": "spatial-architect",
+      "files": [
+        "scenes/core/Main.tscn"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/8",
+      "github_issue_number": 8,
+      "notes": "Hybrid A/B locked layout; bamboo ring + Deep Pond backdrop; consumes TASK-006 art."
+    },
+    {
+      "id": "TASK-008",
+      "sprint": 1,
+      "category": "gameplay",
+      "title": "Camera center-lock in-engine + zoom tune (3/4 canon)",
+      "status": "todo",
+      "priority": "high",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/entities/Player.tscn",
+        "scenes/entities/Player.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/5",
+      "github_issue_number": 5,
+      "notes": "Issue #5 REV 2. NOTE: Camera2D 'current' property is gone in Godot 4.7 - use 'enabled'; drag margins off, smoothing off, zoom 2.2 provisional."
+    },
+    {
+      "id": "TASK-009",
+      "sprint": 1,
+      "category": "mechanics",
+      "title": "Player walk 8-frame / idle 4-frame animation wiring",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "data-pipeline",
+      "files": [
+        "scenes/entities/Player.tscn",
+        "scenes/entities/Player.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/9",
+      "github_issue_number": 9,
+      "notes": "Existing: idle 1 + walk_down/right 04 frames. Generate up; left mirrors right if Pha Khao Ma reads OK."
+    },
+    {
+      "id": "TASK-010",
+      "sprint": 1,
+      "category": "ui",
+      "title": "HUD QA + seasonal tint + screenshot capture hook",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn",
+        "scenes/core/Main.gd"
+      ],
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/10",
+      "github_issue_number": 10,
+      "notes": "Screenshot hook -> user:// PNG for director review per visual task."
+    },
+    {
+      "id": "TASK-011",
+      "sprint": 2,
+      "category": "gameplay",
+      "title": "Irrigation canal + sluice gate repair mechanic -> unlocks Pandan seed",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "spatial-architect",
+      "files": [
+        "scenes/core/"
+      ],
+      "notes": "Reverse pillar: restore infrastructure to unlock rare regional seeds."
+    },
+    {
+      "id": "TASK-012",
+      "sprint": 2,
+      "category": "mechanics",
+      "title": "Binthabat event tree + village dialogue passes (elder, child, monk, handler)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/entities/"
+      ],
+      "notes": "Seasonal quest chains, no heavy exposition per PROJECT_VISION."
+    },
+    {
+      "id": "TASK-013",
+      "sprint": 2,
+      "category": "mechanics",
+      "title": "Crop/item DB (pandan, thai basil, lotus root, mango) + cooking recipes",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "data-pipeline",
+      "files": [
+        "data/"
+      ],
+      "notes": "Mortar & pestle, clay stove multi-step crafting."
+    },
+    {
+      "id": "TASK-014",
+      "sprint": 2,
+      "category": "ui",
+      "title": "Mobile 80% viewport scaling + action prompt polish",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.tscn"
+      ],
+      "notes": "Dynamic UI scaling PC 100% / mobile 80%."
     }
   ]
 }
