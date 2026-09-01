@@ -29,6 +29,26 @@ func _load_recipes() -> void:
 	if parsed is Dictionary and (parsed as Dictionary).has("recipes"):
 		_recipes = (parsed as Dictionary)["recipes"] as Array
 
+## TASK-055: every recipe craftable right now (first-match callers use
+## get_craftable; ordering follows recipes.json content curation).
+func get_all_craftable() -> Array:
+	var out: Array = []
+	var season: String = String(GameData.current_season)
+	for r: Dictionary in _recipes:
+		if String(r.get("season", "")) != "" and String(r.get("season")) != season:
+			continue
+		if String(r.get("requires_infrastructure", "")) != "" and not GameData.is_repaired(String(r["requires_infrastructure"])):
+			continue
+		var ok: bool = true
+		var inputs: Dictionary = r.get("inputs", {}) as Dictionary
+		for item_id: String in inputs.keys():
+			if not GameData.has_item(item_id, int(inputs[item_id])):
+				ok = false
+				break
+		if ok:
+			out.append(r)
+	return out
+
 ## First recipe craftable right now (season + infrastructure + inventory).
 func get_craftable() -> Dictionary:
 	var season: String = String(GameData.current_season)
