@@ -21,7 +21,6 @@ var grid_manager: Node = null
 var time_manager: Node = null
 
 # --- Extended signals (backward-compat with existing codebase) ---
-signal energy_changed(new_energy: int)
 signal village_harmony_changed(new_harmony: int)
 signal village_goodwill_changed(new_goodwill: int)
 signal crop_harvested(crop_id: int)
