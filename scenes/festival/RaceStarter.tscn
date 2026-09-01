@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://racestarter303"]
 
 [ext_resource type="Script" path="res://scenes/festival/RaceStarter.gd" id="1_rs"]
-[ext_resource type="Texture2D" path="res://assets/environment/festival/wing_kwai_flag.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/environment/festival/wing_kwai_official_stand.png" id="2_tex"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
 radius = 48.0
