@@ -1728,13 +1728,15 @@
       "sprint": 17,
       "category": "decision",
       "title": "DECISION NEEDED: Lopburi sell-price implies a currency economy",
-      "status": "proposed",
+      "status": "completed",
       "priority": "low",
       "owner": "owner",
       "files": [],
-      "notes": "Not claimed by art-po or engine -- needs explicit owner sign-off before any work in either direction. Issue #135.",
+      "notes": "Decision record: no-currency economy preserved; Lopburi rewards = barter goods + harmony. Issue #135 closed with rationale.",
       "github_issue_number": 135,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/135"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/135",
+      "completed_at": "2026-09-01",
+      "gate_audit": "DECISION DELIVERED 2026-09-01 (owner sign-off via PO): NO currency economy. Barter stays 1:1 by design (PROJECT_VISION pillar; TASK-025/047 1:1 market deliberately). Lopburi 'sell-price' rewards convert to rare-seed + barter-goods + harmony (TASK-262 adapted). Revisit post-launch only if a vendor tier ships."
     }
   ]
 }

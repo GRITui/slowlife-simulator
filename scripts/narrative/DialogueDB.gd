@@ -18,6 +18,7 @@ const DIALOGUE: Dictionary = {
 			"Even the canal runs slow in the heat. Patience.",
 			"Mango season soon. Share what you harvest.",
 			"Songkran is near — the young ones will splash water on the elders for blessing.",
+			"Ton's been talking about a monster by the forest again. Phi Ta Khon does that to a child's imagination.",
 		],
 		"monsoon": [
 			"Rain fills the paddies. Lotus will rise in the pond.",
@@ -51,6 +52,7 @@ const DIALOGUE: Dictionary = {
 			"So hot! Can we get mango sticky rice?",
 			"The buffalo is sleeping under the tree.",
 			"Songkran! Can we throw water at everyone today?",
+			"I really did see it! Long nose, clanking noise, by the forest edge. Nobody believes me but you, maybe?",
 		],
 		"monsoon": [
 			"Puddles everywhere! I found a lotus leaf boat.",
@@ -69,6 +71,7 @@ const DIALOGUE: Dictionary = {
 		"cool": [
 			"Canal is steady. Sluice gate held through the cool.",
 			"Buffalo pasture is green — good grazing.",
+			"Wing Kwai's coming. Uncle Preecha's already bragging about his buffalo. Someone should humble him.",
 		],
 		"hot": [
 			"Canal drops in the heat. Watch the gate.",
@@ -93,6 +96,7 @@ const DIALOGUE: Dictionary = {
 			"May your morning be steady as still water.",
 			"Cool season alms — lightness for the days ahead.",
 			"Wan Sart honors those who came before. Bring kra yasat, if you've made it.",
+			"The macaques took your bananas out of hunger, not malice. A banquet mends more than a chase ever would.",
 		],
 		"hot": [
 			"Heat tests patience. A small kindness cools the heart.",
@@ -231,6 +235,8 @@ const GIFT_PREFERENCES: Dictionary = {
 	"elder": {"loved": ["lotus_root", "banana_rice_cake"], "liked": ["rice_grain", "thai_basil"]},
 	"child": {"loved": ["mango_sticky_rice", "durian"], "liked": ["egg", "banana"]},
 	"handler": {"loved": ["tom_yum", "fish_sauce"], "liked": ["rice_grain", "egg"]},
+	"monk": {"loved": ["jasmine_rice", "lotus_root"], "liked": ["banana", "mango", "sticky_rice"]},
+	"trader": {"loved": ["pla_kraben_big", "pla_buk_big"], "liked": ["durian", "coconut", "palm_sugar"]},
 }
 
 ## Returns "loved" | "liked" | "neutral" for a given NPC + item.

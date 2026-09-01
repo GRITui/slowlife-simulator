@@ -454,6 +454,20 @@
       "harmony_reward": 4,
       "requires_infrastructure": "",
       "season": ""
+    },
+    {
+      "id": "stamina_mash",
+      "display_name": "Stamina Mash",
+      "description": "Rice, sugarcane, and ginger mashed for the buffalo the night before Wing Kwai \u2014 no rare herb needed, the valley's own crops do the job.",
+      "inputs": {
+        "rice_grain": 5,
+        "sugarcane": 2,
+        "ginger": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 4,
+      "requires_infrastructure": "",
+      "season": "cool"
     }
   ]
 }
