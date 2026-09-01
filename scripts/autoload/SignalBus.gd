@@ -39,3 +39,5 @@ signal game_paused_changed(paused: bool)
 signal craft_completed(item_id: String, qty: int)
 # ISSUE-135: emitted whenever the silver wallet changes.
 signal silver_changed(silver: int)
+# TASK-311: emitted on buffalo interact (affinity, hearts) — HUD hearts UI.
+signal buffalo_affinity_changed(affinity: int, hearts: int)
