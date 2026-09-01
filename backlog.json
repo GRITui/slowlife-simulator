@@ -2015,7 +2015,7 @@
     {
       "id": "TASK-317",
       "title": "Tool tier HUD display and Handler upgrade shop UI",
-      "status": "todo",
+      "status": "completed",
       "category": "ui",
       "owner": "visual-inspector",
       "files": [
@@ -2023,7 +2023,9 @@
         "scenes/ui/HUD.tscn"
       ],
       "priority": "low",
-      "notes": "QA-auditor: tool_tiers are now wired to Handler but have no HUD display. Add tier icons to HUD or Handler dialogue that shows current tier and cost for next upgrade. Low priority, polish."
+      "notes": "QA-auditor: tool_tiers are now wired to Handler but have no HUD display. Add tier icons to HUD or Handler dialogue that shows current tier and cost for next upgrade. Low priority, polish.",
+      "completed_at": "2026-09-01",
+      "pr_number": 168
     }
   ]
 }
