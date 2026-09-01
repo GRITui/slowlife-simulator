@@ -68,21 +68,22 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## TASK-272: mount/dismount. Buffalo repositions under the rider each frame
 ## while mounted (visual rider illusion without a ride node).
-func toggle_mount() -> void:
+func toggle_mount() -> bool:
 	if mounted:
 		mounted = false
 		SignalBus.show_dialogue.emit("Farmer", "Dismounted. The buffalo grazes.")
-		return
+		return false
 	var buffalos: Array = get_tree().get_nodes_in_group("buffalo")
 	if buffalos.is_empty():
 		SignalBus.show_dialogue.emit("Farmer", "No buffalo nearby to ride.")
-		return
+		return false
 	_buffalo_ref = buffalos[0]
 	if _buffalo_ref != null and global_position.distance_to((_buffalo_ref as Node2D).global_position) > 96.0:
 		SignalBus.show_dialogue.emit("Farmer", "Get closer to the buffalo to mount.")
-		return
+		return false
 	mounted = true
 	SignalBus.show_dialogue.emit("Farmer", "Mounted — Wing Kwai style. Interact to auto-plant 3x3.")
+	return true
 
 ## Mounted interact: plant held seed in a 3x3 patch around the facing cell.
 func _mounted_plant_3x3(gm: Node, center: Vector2i) -> void:
