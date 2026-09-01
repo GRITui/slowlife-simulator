@@ -129,6 +129,9 @@ func _ensure_peer_npcs() -> void:
 		# TASK-058 schedules cover headman/vet movement; SCHEDULES keys match.
 		"HeadmanNPC": {"scene": "res://scenes/entities/HeadmanNPC.tscn", "pos": Vector2(1 * 48 + 24, 3 * 48)},
 		"VetNPC": {"scene": "res://scenes/entities/VetNPC.tscn", "pos": Vector2(2 * 48 + 24, 14 * 48)},
+		# ISSUE-132: Phi Ta Khon villagers (festival hosts).
+		"NongTonNPC": {"scene": "res://scenes/entities/NongTonNPC.tscn", "pos": Vector2(2 * 48 + 24, 2 * 48)},
+		"SomchaiNPC": {"scene": "res://scenes/entities/SomchaiNPC.tscn", "pos": Vector2(3 * 48 + 24, 2 * 48)},
 	}
 	for npc_name: String in spots.keys():
 		if get_node_or_null(npc_name) != null:

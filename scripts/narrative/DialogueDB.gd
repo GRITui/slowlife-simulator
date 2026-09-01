@@ -161,6 +161,19 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
+	"nong_ton": {
+		"cool": [
+			"Uncle Somchai says the ghosts wore their masks all wrong this year!",
+			"I'm Nong Ton — I know EVERY ghost story in the village. Every one!",
+		],
+	},
+	"somchai": {
+		"cool": [
+			"Uncle Somchai, at your service. I carve the Phi Ta Khon masks.",
+			"A good mask takes patience. So does good rice.",
+		],
+	},
+
 	"fah": {
 		"stranger": [
 			"The canal's calm this morning. Good for thinking, if you like that sort of thing.",
