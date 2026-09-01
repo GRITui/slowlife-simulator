@@ -27,12 +27,33 @@ func _unhandled_input(event: InputEvent) -> void:
 		try_interact()
 		get_viewport().set_input_as_handled()
 
-## Gift first (if holding food), otherwise tiered conversation.
+## Gift first, then proposal check (romantic + krathong held), else talk.
 func try_interact() -> bool:
+	if GameData.married and GameData.spouse == npc_id:
+		SignalBus.show_dialogue.emit(display_name, "Home is wherever the two of us stop working. Let's head in soon.")
+		return true
 	if _give_gift():
+		return true
+	if _check_proposal():
 		return true
 	_talk()
 	return false
+
+## TASK-059: proposal — romantic tier (>=90) + krathong held. Cozy, mutual:
+## the NPC accepts and a small wedding fires via festival_triggered.
+func _check_proposal() -> bool:
+	if GameData.married or GameData.get_affinity(npc_id) < 90:
+		return false
+	if not GameData.has_item("krathong", 1):
+		return false
+	GameData.remove_item("krathong", 1)
+	GameData.married = true
+	GameData.spouse = npc_id
+	GameData.add_affinity(npc_id, 10) # cap keeps it at 100
+	GameData.add_harmony(20)
+	SignalBus.festival_triggered.emit("wedding_" + npc_id)
+	SignalBus.show_dialogue.emit(display_name, "Yes. Lanterns, family, the whole village — let's be married.")
+	return true
 
 func _give_gift() -> bool:
 	var gift_id: String = ""

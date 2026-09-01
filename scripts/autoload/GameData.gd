@@ -82,6 +82,11 @@ const FOOD_ITEMS: Array[String] = [
 # TASK-053 quest-state primitive: quest_id -> {"stage": int, "objectives_done": Array[String]}
 var active_quests: Dictionary = {}
 
+# TASK-059 romance payoff: spouse npc_id ("" until wed). Proposal requires
+# romantic tier (affinity >= 90) + a krathong as the offering. One spouse.
+var spouse: String = ""
+var married: bool = false
+
 func start_quest(quest_id: String, objective_count: int = 0) -> void:
 	if active_quests.has(quest_id):
 		return
