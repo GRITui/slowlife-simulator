@@ -46,6 +46,7 @@ func _ready() -> void:
 	# TASK-038 (PO_INBOX directive #1): buffalo unlock — instance the dormant
 	# TASK-020 scene into the pasture zone. Programmatic (not .tscn) so the
 	# art lane's in-flight Main.tscn sprint stays conflict-free.
+	_ensure_trader()
 	_ensure_buffalo()
 	# TASK-039 (PO_INBOX directive #2): game-state flow — dormant
 	# TitleScreen/PauseMenu now wired (boot on title, P/Esc pauses).
@@ -139,6 +140,19 @@ func _ensure_forest() -> void:
 		tree.name = name
 		tree.position = Vector2(cell.x * 48 + 24, (cell.y + 1) * 48)
 		add_child(tree)
+
+func _ensure_trader() -> void:
+	if get_node_or_null("TraderNPC") != null:
+		return
+	var scene: PackedScene = load("res://scenes/entities/TraderNPC.tscn")
+	if scene == null:
+		return
+	var trader: Node2D = scene.instantiate() as Node2D
+	if trader == null:
+		return
+	trader.name = "TraderNPC"
+	trader.position = Vector2(15 * 48 + 24, 8 * 48) # near market
+	add_child(trader)
 
 func _ensure_quest_log() -> void:
 	if get_node_or_null("QuestLog") != null:
