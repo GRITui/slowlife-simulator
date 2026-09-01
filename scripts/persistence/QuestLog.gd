@@ -94,7 +94,7 @@ func _check_objective_by_item(item_id: String) -> void:
 		if item_id.ends_with("_rare") or item_id.ends_with("_big"):
 			complete_objective_everywhere("catch_rare_tier_fish")
 		complete_objective_everywhere("catch_two_fish")
-	elif item_id == "wan_sart_basket" or item_id == "krathong":
+	elif item_id == "wan_sart_basket" or item_id == "kra_yasat" or item_id == "krathong":
 		complete_objective_everywhere("make_offering")
 	elif item_id == "durian":
 		complete_objective_everywhere("deliver_durian_to_niran")

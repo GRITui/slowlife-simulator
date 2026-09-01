@@ -38,25 +38,29 @@ func _initialize() -> void:
 		_check(_hits == 1, "cool day-5 morning triggers once")
 		tm.set_time(5, 14, 0)
 		_check(_hits == 1, "afternoon does not re-trigger (window closed)")
-	# Offering flow.
-	gd.inventory.erase("wan_sart_basket")
+	# Offering flow. AI-ENG-001 run 2 (2026-09-01): festival now checks for
+	# kra_yasat (the real Wan Sart merit-offering dish), not the generic
+	# wan_sart_basket placeholder — see WanSartTrigger.gd.
+	gd.inventory.erase("kra_yasat")
 	ws.release_offering()
-	_check(int(gd.inventory.get("wan_sart_basket", 0)) == 0 and not gd.has_item("wan_sart_basket", 1),
-		"no basket -> soft nudge")
-	gd.add_item("banana_leaf", 1)
-	gd.add_item("rice_grain", 2)
+	_check(int(gd.inventory.get("kra_yasat", 0)) == 0 and not gd.has_item("kra_yasat", 1),
+		"no kra yasat -> soft nudge")
+	gd.add_item("sticky_rice", 2)
+	gd.add_item("peanut", 1)
+	gd.add_item("sesame", 1)
+	gd.add_item("palm_sugar", 1)
 	gd.current_season = "cool"
 	var station: Node = main.get_node_or_null("CookingStation")
-	# Basket is craftable at the station in cool season via recipes.json.
+	# Kra yasat is craftable at the station in cool season via recipes.json.
 	var all: Array = station.get_all_craftable() if station != null else []
 	var ids: Array = []
 	for r: Dictionary in all:
 		ids.append(String(r.get("id", "")))
-	_check(ids.has("wan_sart_basket"),
-		"wan_sart_basket among craftable (%s)" % str(ids))
-	if station != null and ids.has("wan_sart_basket"):
+	_check(ids.has("kra_yasat"),
+		"kra_yasat among craftable (%s)" % str(ids))
+	if station != null and ids.has("kra_yasat"):
 		station.try_craft()
-	gd.add_item("wan_sart_basket", 1)
+	gd.add_item("kra_yasat", 1)
 	gd.harmony = 0
 	ws.release_offering()
 	_check(int(gd.harmony) == 8, "release grants +8 harmony")

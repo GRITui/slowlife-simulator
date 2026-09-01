@@ -1,8 +1,12 @@
 extends Node
 ## WanSartTrigger — TASK-055 (#113) Wan Sart, ancestor-honoring festival
 ## (cool season, day 5). FestivalManager pattern (Loy Krathong/Songkran).
-## Offering: craftable wan_sart_basket (banana_leaf + rice_grain) then
-## release at the temple lane for harmony — same shape as krathong flow.
+## Offering: craftable kra_yasat (sticky_rice + peanut + sesame +
+## palm_sugar — the real Wan Sart merit-offering dish, AI-ENG-001 run 2
+## fact-check 2026-09-01) then release for harmony — same shape as
+## krathong flow. wan_sart_basket (generic banana leaf + rice) predates
+## the kra_yasat recipe and is left craftable for save compatibility but
+## is no longer what the festival checks for.
 
 @export var festival_day: int = 5
 var _triggered_keys: Dictionary = {}
@@ -34,14 +38,14 @@ func _on_minute_ticked(day: int, hour: int, _minute: int) -> void:
 		return
 	_triggered_keys[key] = true
 	SignalBus.festival_triggered.emit("wan_sart")
-	SignalBus.show_dialogue.emit("Elder", "Wan Sart — lay an offering for those who tended these fields before us.")
+	SignalBus.show_dialogue.emit("Elder", "Wan Sart — prepare kra yasat for those who tended these fields before us.")
 
 ## Crafting recipe injected into the seasonal offer flow via recipes.json;
 ## this helper is the release interaction (mirror of release_krathong).
 func release_offering() -> void:
-	if not GameData.has_item("wan_sart_basket", 1):
-		SignalBus.show_dialogue.emit("Elder", "Prepare a wan sart basket — banana leaf and rice.")
+	if not GameData.has_item("kra_yasat", 1):
+		SignalBus.show_dialogue.emit("Elder", "Prepare kra yasat — sticky rice, peanut, sesame, and palm sugar.")
 		return
-	GameData.remove_item("wan_sart_basket", 1)
+	GameData.remove_item("kra_yasat", 1)
 	GameData.add_harmony(8)
 	SignalBus.show_dialogue.emit("Elder", "The offering is laid. The ancestors remember. (+8 harmony)")

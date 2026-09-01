@@ -50,18 +50,18 @@ func raid() -> void:
 	if _truce_day == 9 and GameData.has_item("banana", 1):
 		GameData.remove_item("banana", 1)
 		GameData.add_harmony(3)
-		SignalBus.show_dialogue.emit("Lopburi", "The monkeys take your banana — Crop Truce! The fields are safe. (+3 harmony)")
+		SignalBus.show_dialogue.emit("Lopburi Monkey Raid", "The monkeys take your banana — Crop Truce! The fields are safe. (+3 harmony)")
 		return
 	var gm: Node = SignalBus.grid_manager
 	var plots: Array = _raidable_plots()
 	if plots.is_empty():
-		SignalBus.show_dialogue.emit("Lopburi", "Monkeys scout the fields... nothing planted to raid.")
+		SignalBus.show_dialogue.emit("Lopburi Monkey Raid", "Monkeys scout the fields... nothing planted to raid.")
 		return
 	if GameData.has_item("banana", 1):
 		_truce_day = 9
 		GameData.remove_item("banana", 1)
 		GameData.add_harmony(3)
-		SignalBus.show_dialogue.emit("Lopburi", "Monkeys raid! You offer a banana — Crop Truce declared. (+3 harmony)")
+		SignalBus.show_dialogue.emit("Lopburi Monkey Raid", "Monkeys raid! You offer a banana — Crop Truce declared. (+3 harmony)")
 		return
 	# Raid: clear up to 2 plots (soft loss — stage resets, not permanent harm).
 	plots.shuffle()
@@ -77,4 +77,4 @@ func raid() -> void:
 				ps.stage = 0
 				ps.minutes_in_stage = 0
 				raided += 1
-	SignalBus.show_dialogue.emit("Lopburi", "Monkeys raided %d plots! (Offer a banana tomorrow for a truce.)" % raided)
+	SignalBus.show_dialogue.emit("Lopburi Monkey Raid", "Monkeys raided %d plots! (Offer a banana tomorrow for a truce.)" % raided)
