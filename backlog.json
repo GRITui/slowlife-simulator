@@ -1732,11 +1732,93 @@
       "priority": "low",
       "owner": "owner",
       "files": [],
-      "notes": "Decision record: no-currency economy preserved; Lopburi rewards = barter goods + harmony. Issue #135 closed with rationale.",
+      "notes": "Issue-135 RESOLVED via silver implementation (PR #147); earlier no-currency decision reversed by owner.",
       "github_issue_number": 135,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/135",
       "completed_at": "2026-09-01",
-      "gate_audit": "DECISION DELIVERED 2026-09-01 (owner sign-off via PO): NO currency economy. Barter stays 1:1 by design (PROJECT_VISION pillar; TASK-025/047 1:1 market deliberately). Lopburi 'sell-price' rewards convert to rare-seed + barter-goods + harmony (TASK-262 adapted). Revisit post-launch only if a vendor tier ships."
+      "gate_audit": "SUPERSEDED 2026-09-01: owner reversed the no-currency decision \u2014 silver economy IMPLEMENTED (wallet, sell prices, market buy offers, counter flow, HUD, save field). Barter coexists. Lopburi rewards can now grant silver. Gate 13/13."
+    },
+    {
+      "id": "TASK-280",
+      "sprint": 18,
+      "category": "design",
+      "title": "Long-term content repetition past Year 1 (deferred pending playtest)",
+      "status": "proposed",
+      "priority": "low",
+      "owner": "unclaimed",
+      "files": [],
+      "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #143.",
+      "github_issue_number": 143,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/143"
+    },
+    {
+      "id": "TASK-281",
+      "sprint": 18,
+      "category": "design",
+      "title": "No payoff for maxing fishing skill (deferred pending playtest)",
+      "status": "proposed",
+      "priority": "low",
+      "owner": "unclaimed",
+      "files": [],
+      "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #144.",
+      "github_issue_number": 144,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/144"
+    },
+    {
+      "id": "TASK-282",
+      "sprint": 18,
+      "category": "design",
+      "title": "Romance has no ceiling event beyond marriage flag (deferred pending playtest)",
+      "status": "proposed",
+      "priority": "low",
+      "owner": "unclaimed",
+      "files": [],
+      "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #145.",
+      "github_issue_number": 145,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/145"
+    },
+    {
+      "id": "TASK-290",
+      "sprint": 19,
+      "category": "engine",
+      "title": "Calendar length: season_duration_days 10->30 (90 days/year, genre-standard pacing)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "art-po",
+      "completed_at": "2026-09-01",
+      "files": [
+        "scenes/core/TimeManager.gd"
+      ],
+      "notes": "User-insisted change per genre comparison (Stardew-class ~112 days/year vs our old 30). Single exported constant, pure tuning -- reassessed ripple effects rather than guessing: crop growth times (already tuned in absolute days) and quest pacing both improve automatically without rebalancing, since they were previously a too-large fraction of a too-short season. PLAYER_JOURNEY.md fully rewritten with the new 90-day-year math. Gates: content 100/100, engine 50/50, perf 6/6."
+    },
+    {
+      "id": "TASK-291",
+      "sprint": 19,
+      "category": "art",
+      "title": "Monsoon disaster quest: 'The Canal Breaks'",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "completed_at": "2026-09-01",
+      "files": [
+        "data/quests/canal_breaks.tres",
+        "assets/items/flood_ward_charm.png",
+        "scripts/narrative/DialogueDB.gd"
+      ],
+      "notes": "User-requested monsoon disaster/random-event content, assessed then built as a scripted quest (matches established QuestData pattern) rather than a true randomized recurring event -- that variant is a bigger, distinct engine ask, noted but not built. Handler-given: gather wood, report, reinforce the sluice-gate banks before flooding. Zero-combat framing (weather race, not conflict). Gates: content 100/100, engine 50/50, perf 6/6."
+    },
+    {
+      "id": "TASK-292",
+      "sprint": 19,
+      "category": "engine",
+      "title": "BUG: all 4 festival triggers check absolute day, fire exactly once ever",
+      "status": "proposed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [],
+      "notes": "Real pre-existing defect found during the calendar reassessment, not mine to fix (control-flow logic). Issue #146.",
+      "github_issue_number": 146,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/146"
     }
   ]
 }
