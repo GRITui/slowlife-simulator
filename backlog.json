@@ -1304,6 +1304,21 @@
       "notes": "Engine gap audit 2026-09-01: 3 orphan signals (binthabat_offered/crop_harvested/craft_completed) + dormant TASK-021 stub. Lazy init pattern. Gate 11/11.",
       "completed_at": "2026-09-01",
       "pr_number": 102
+    },
+    {
+      "id": "ENGINE-015",
+      "lane": "engine",
+      "category": "ci",
+      "title": "CI consolidation \u2014 full gate sweep via run_gate.sh all",
+      "status": "completed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        ".github/workflows/ci.yml"
+      ],
+      "notes": "Engine gap audit 2026-09-01: CI ran 2 of 16+ suites. Single source of truth.",
+      "completed_at": "2026-09-01",
+      "pr_number": 103
     }
   ]
 }
