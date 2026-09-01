@@ -88,8 +88,11 @@ func _roll_catch() -> Dictionary:
 			picked = pool[i]
 			break
 	# Size roll skews by rarity (rare -> bigger expected size).
+	# TASK-281 skill-4 payoff: master anglers get big-fish bias + silver tip.
 	var big_bias: float = 0.15
-	if String(picked.get("rarity", "common")) in ["rare", "legendary"]:
+	if _skill() >= 4:
+		big_bias = 0.55
+	elif String(picked.get("rarity", "common")) in ["rare", "legendary"]:
 		big_bias = 0.4
 	var size_roll: float = randf()
 	var size: String = "small"
@@ -117,6 +120,9 @@ func cast_line() -> bool:
 		return false
 	GameData.add_item(item, 1)
 	GameData.add_harmony(int(catch_data["harmony"]))
+	# TASK-281: skill-4 mastery tip — silver for every catch.
+	if _skill() >= 4:
+		GameData.add_silver(5)
 	fishing_rolls += 1
 	# Skill growth: 1 level per 5 rolls, capped at 4 (top tier).
 	var level: int = clampi(1 + fishing_rolls / 5, 1, 4)
