@@ -1,0 +1,83 @@
+[gd_scene load_steps=2 format=3 uid="uid://marketshop000327"]
+
+[ext_resource type="Script" path="res://scenes/ui/MarketShop.gd" id="1_marketshop"]
+
+[node name="MarketShop" type="CanvasLayer"]
+layer = 20
+visible = false
+script = ExtResource("1_marketshop")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -220.0
+offset_right = 260.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Market"
+horizontal_alignment = 1
+
+[node name="BarterRow" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="BarterLabel" type="Label" parent="Panel/VBox/BarterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "No trade today."
+
+[node name="BarterButton" type="Button" parent="Panel/VBox/BarterRow"]
+custom_minimum_size = Vector2(88, 44)
+layout_mode = 2
+text = "Barter"
+
+[node name="SellRow" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="SellLabel" type="Label" parent="Panel/VBox/SellRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Nothing to sell."
+
+[node name="SellButton" type="Button" parent="Panel/VBox/SellRow"]
+custom_minimum_size = Vector2(88, 44)
+layout_mode = 2
+text = "Sell"
+
+[node name="BuyTitle" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Seeds & Goods"
+
+[node name="BuyScroll" type="ScrollContainer" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BuyList" type="VBoxContainer" parent="Panel/VBox/BuyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="CloseButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+text = "Close"

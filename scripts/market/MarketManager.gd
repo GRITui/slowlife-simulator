@@ -30,20 +30,62 @@ const OFFERS: Dictionary[String, Array] = {
 
 # ISSUE-135 silver economy: goods purchasable with silver. Prices scale
 # gently by season (coastal goods cheaper in monsoon, boats in port).
+# TASK-327: seed entries added per crop's allowed_seasons (data/crops/*.tres).
+# jasmine_rice intentionally excluded — stays free via GridManager.plant()'s
+# existing exception, not duplicated as a purchase.
 const BUY_OFFERS: Dictionary[String, Array] = {
 	"cool": [
 		{"item": "fish_sauce", "price": 18},
 		{"item": "shrimp_paste", "price": 20},
 		{"item": "axe", "price": 30},
+		{"item": "seed_cabbage", "price": 8},
+		{"item": "seed_garlic", "price": 8},
+		{"item": "seed_lettuce", "price": 8},
+		{"item": "seed_tomato", "price": 10},
+		{"item": "seed_pandan", "price": 15},
+		{"item": "seed_coconut", "price": 20},
+		{"item": "seed_eggplant", "price": 12},
+		{"item": "seed_papaya", "price": 20},
+		{"item": "seed_soybean", "price": 12},
+		{"item": "seed_sticky_rice", "price": 15},
+		{"item": "seed_basil", "price": 12},
+		{"item": "seed_yardlong_bean", "price": 12},
 	],
 	"hot": [
 		{"item": "fish_sauce", "price": 14},
 		{"item": "shrimp_paste", "price": 16},
 		{"item": "fishing_rod", "price": 40},
+		{"item": "seed_banana", "price": 15},
+		{"item": "seed_chili", "price": 9},
+		{"item": "seed_durian", "price": 30},
+		{"item": "seed_mango", "price": 30},
+		{"item": "seed_peanut", "price": 9},
+		{"item": "seed_sesame", "price": 9},
+		{"item": "seed_sugarcane", "price": 18},
+		{"item": "seed_watermelon", "price": 18},
+		{"item": "seed_coconut", "price": 20},
+		{"item": "seed_eggplant", "price": 12},
+		{"item": "seed_papaya", "price": 20},
+		{"item": "seed_soybean", "price": 12},
+		{"item": "seed_sticky_rice", "price": 15},
+		{"item": "seed_basil", "price": 12},
+		{"item": "seed_yardlong_bean", "price": 12},
 	],
 	"monsoon": [
 		{"item": "fish_sauce", "price": 12},
 		{"item": "shrimp_paste", "price": 14},
+		{"item": "seed_ginger", "price": 10},
+		{"item": "seed_lotus", "price": 12},
+		{"item": "seed_taro", "price": 10},
+		{"item": "seed_water_spinach", "price": 10},
+		{"item": "seed_pandan", "price": 15},
+		{"item": "seed_coconut", "price": 20},
+		{"item": "seed_eggplant", "price": 12},
+		{"item": "seed_papaya", "price": 20},
+		{"item": "seed_soybean", "price": 12},
+		{"item": "seed_sticky_rice", "price": 15},
+		{"item": "seed_basil", "price": 12},
+		{"item": "seed_yardlong_bean", "price": 12},
 		{"item": "machete", "price": 45},
 	],
 }

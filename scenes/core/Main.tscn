@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://main000001"]
+[gd_scene load_steps=13 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scenes/core/DayNightTintDriver.gd" id="11_dnt"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="6_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/Settings.tscn" id="10_settings"]
 [ext_resource type="PackedScene" path="res://scenes/market/MarketStall.tscn" id="9_market"]
+[ext_resource type="PackedScene" path="res://scenes/ui/MarketShop.tscn" id="12_marketshop"]
 
 [node name="Main" type="Node2D"]
 y_sort_enabled = true
@@ -56,6 +57,8 @@ position = Vector2(480, 320)
 [node name="HUD" parent="." instance=ExtResource("6_hud")]
 
 [node name="Settings" parent="." instance=ExtResource("10_settings")]
+
+[node name="MarketShop" parent="." instance=ExtResource("12_marketshop")]
 
 [node name="DialogueLayer" type="CanvasLayer" parent="."]
 layer = 10

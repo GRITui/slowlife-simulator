@@ -19,6 +19,7 @@ signal barter_completed(have_id: String, want_id: String)
 # order; a plain field survives late readers.
 var grid_manager: Node = null
 var time_manager: Node = null
+var market_shop: Node = null # TASK-327: MarketShop UI panel registry slot.
 
 # --- Extended signals (backward-compat with existing codebase) ---
 signal village_harmony_changed(new_harmony: int)

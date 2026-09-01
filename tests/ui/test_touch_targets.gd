@@ -42,6 +42,7 @@ func _initialize() -> void:
 	_scan_scene("res://scenes/ui/TitleScreen.tscn")
 	_scan_scene("res://scenes/ui/PauseMenu.tscn")
 	_scan_scene("res://scenes/ui/HUD.tscn")
+	_scan_scene("res://scenes/ui/MarketShop.tscn")
 	print("\n=== TOUCH-TARGET TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
 		push_error("TOUCH GATE FAILED: %d failing checks" % _failed)
