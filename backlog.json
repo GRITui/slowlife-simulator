@@ -1265,6 +1265,45 @@
       "notes": "Engine gap audit 2026-09-01: SaveManager orphaned from UI. Gate 7/7.",
       "completed_at": "2026-09-01",
       "pr_number": 101
+    },
+    {
+      "id": "TASK-230",
+      "sprint": 13,
+      "category": "art",
+      "title": "9 more recipes closing every unused-ingredient gap (recipes.json 21->30)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/recipes/recipes.json",
+        "assets/items/pad_pak_bung.png",
+        "assets/items/yam_thua_fak_yao.png",
+        "assets/items/nam_jim_satay.png",
+        "assets/items/taeng_mo_pan.png",
+        "assets/items/tom_som.png",
+        "assets/items/pad_cabbage.png",
+        "assets/items/khao_tan.png",
+        "assets/items/khanom_krok.png",
+        "assets/items/sangkhaya.png"
+      ],
+      "notes": "User directive: keep expanding recipes now, market/fishing/chicken wiring can catch up later -- not blocking content on engine gaps. Audited all 21 existing recipes' inputs and found 9 crop/item ids that had NEVER been used in any recipe: sesame, peanut, watermelon, water_spinach, cabbage, garlic, yardlong_bean, rice_flour (produced but never consumed further!), buffalo_milk. Designed one real Thai dish per gap: pad_pak_bung (water spinach), yam_thua_fak_yao (long bean salad), nam_jim_satay (peanut sauce), taeng_mo_pan (watermelon cooler, hot-season only), tom_som (mild sour soup, no shrimp paste needed), pad_cabbage, khao_tan (sesame rice crackers), khanom_krok (coconut rice pancakes -- closes the rice_flour dead-end), sangkhaya (custard, first recipe to use buffalo_milk at all). 5 of 9 are achievable now (no market/chicken/fishing dependency); 4 depend on fish_sauce (still open) or egg (chicken mechanic still open). recipes.json now covers every crop/processed item in the game at least once except the 20 fish species (pla_pao only uses 1 of 60). Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "ENGINE-014",
+      "lane": "engine",
+      "category": "audio",
+      "title": "AudioManager activation \u2014 synth SFX consumes orphan signals",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/AudioManager.gd",
+        "project.godot",
+        "tests/test_audio.gd"
+      ],
+      "notes": "Engine gap audit 2026-09-01: 3 orphan signals (binthabat_offered/crop_harvested/craft_completed) + dormant TASK-021 stub. Lazy init pattern. Gate 11/11.",
+      "completed_at": "2026-09-01",
+      "pr_number": 102
     }
   ]
 }
