@@ -43,7 +43,13 @@ time-elapsed.
       Code Quality Review ran, a real bug (redundant signal emission)
       shipped and had to be fixed forward (`8e3adff`). Pipeline corrected
       for future runs — see `ops/ai-eng-log.md` run 7.
-- [ ] TASK-323 split B (breeding/incubator), 321, 322, 324, 325 —
+- [x] TASK-322 (carpenter house-kitchen upgrade) — `7df45e8` + regression
+      fix `9679f23`. Process fix from run 7 held (no self-merge this
+      time); Code Quality Review caught a different bug class (a
+      pattern-mismatch double-emission, not a leftover duplicate) plus
+      an unrelated Claude-authored regression in `test_silver.gd` from
+      TASK-327. See `ops/ai-eng-log.md` run 8.
+- [ ] TASK-323 split B (breeding/incubator), 321, 324, 325 —
       remaining approved backlog items
 - [ ] All MVP-scope systems implemented + headless-tested
 - [ ] Feature freeze declared — new asks go to a post-launch backlog

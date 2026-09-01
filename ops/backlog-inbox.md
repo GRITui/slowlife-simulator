@@ -84,11 +84,11 @@
 <task_item>
   <id>TASK-322</id>
   <source>AI-LOOP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>HIGH</priority>
   <title>Farm/house building upgrades (carpenter-equivalent sink)</title>
-  <description>Zero presence in codebase (confirmed via rg — no house_upgrade/carpenter/lumber matches). No cash/material sink currently expands house, barn, or coop capacity. This is a core mid-game progression pillar in the genre.</description>
-  <researcher_notes>Source: Gemini gap analysis, AI-ENG-001. Owner call: needed for MVP or stretch? Depends on Phase 1 scope decision.</researcher_notes>
+  <description>Implemented as a carpenter house-kitchen upgrade (50 silver + 5 wood + 20 stamina), reusing the existing infrastructure registry (GameData.repair_infrastructure/is_repaired, same pattern as SluiceGate) rather than a new mechanic. Unlocks two new house_kitchen-gated recipes (khao_soi, massaman_curry). Scene built by Claude (UI tier), script/data/test by OpenCode. Merged 7df45e8, pushed.</description>
+  <researcher_notes>Code Quality Review caught a speculative-deduct-then-refund pattern that double-fired SignalBus.silver_changed — fixed to check-then-deduct matching SluiceGate.gd. Also surfaced and fixed an unrelated regression in tests/test_silver.gd from TASK-327 (commit 9679f23). Full record: ops/ai-eng-log.md run 8. Spec: docs/research/TASK-322-spec.md.</researcher_notes>
 </task_item>
 
 <task_item>

@@ -329,3 +329,55 @@ category from the role reassessment, discovered live.
   deleted post-merge (standard cleanup, unrelated to the incident itself).
 - **Stop reason:** goal met (feature shipped, bug found and fixed,
   process gap identified and closed for future runs).
+
+---
+
+## 2026-09-01 — Run 8 (OpenCode worker, TASK-322 — corrected process, first run)
+
+- **Worker:** OpenCode, `openrouter/minimax/minimax-m3:free`, single attempt
+  (no fallback needed, ~10 min for a 3-part task: script + recipe data + test).
+- **Prompt boundary held:** explicit "no git, no gh, stop after code+tests"
+  instruction from the Run 7 correction worked — OpenCode wrote the code,
+  ran its own verification, and stopped, reporting the diff for review.
+  No push/PR/merge attempted. First real evidence the process fix works.
+- **Scope:** Claude built `CarpenterUpgrade.tscn` (new UI/scene work, own
+  tier per `CLAUDE.md`) and the spec first; OpenCode implemented
+  `CarpenterUpgrade.gd`, two new `house_kitchen`-gated recipes, and
+  `test_carpenter_upgrade.gd` (29 checks). Design reused the existing
+  `GameData.repair_infrastructure`/`is_repaired` registry exactly as
+  `SluiceGate.gd` already does — no new mechanic.
+- **Code Quality Review catch:** `_try_repair()` deducted silver
+  speculatively via `spend_silver()`, then refunded it with `add_silver()`
+  on a later wood/stamina soft-fail. Both functions emit
+  `SignalBus.silver_changed`, so a soft-fail would flicker the wallet
+  display down-then-up — same *category* as the Run 7 incident (redundant
+  emission), different mechanism (a pattern mismatch vs. a literal
+  duplicate call). Fixed to check all three requirements before deducting
+  anything, matching `SluiceGate.gd`'s actual contract — this removed the
+  need for refund logic entirely, not just the emission.
+- **Second, unrelated bug found during verification:** `tests/test_silver.gd`
+  failed — OpenCode's own diligence (it ran adjacent tests unprompted)
+  caught this, but concluded it was pre-existing since it only compared
+  against this branch's base commit, which was already after TASK-327.
+  Traced further: TASK-327 (Claude's own work, run 6) removed
+  `MarketStallNPC._try_barter()`, which this test called directly — a
+  real regression Claude introduced and missed at the time, since TASK-327's
+  own verification pass ran `test_market_multi.gd` but not this standalone
+  test. Rewired the test to use `MarketShop.gd`'s actual button handlers
+  and corrected the expected math (the shop's sell step uses the +15%
+  market-premium channel, not the base sell price — `ceil(5*1.15)=6`, not
+  `5`). Fixed in commit `9679f23`.
+- **Verification:** `test_carpenter_upgrade.gd` 29/29, `test_silver.gd`
+  14/14 (post-fix), `run_tests.gd` 100/100, `run_engine_tests.gd` 50/50,
+  plus manual spot-checks on `test_crafting.gd`/`test_wansart.gd`/
+  `test_festival_wiring.gd`.
+- **Integration outcome:** committed (`7df45e8`) and merged directly (no
+  `gh`/PR — Claude did this personally, post-review), pushed. Follow-up
+  fix `9679f23` pushed separately once the unrelated regression surfaced.
+- **Process note:** two bugs this run, from two different sources (a
+  generated-code pattern issue, and a Claude-authored gap in an earlier
+  task's own verification) — reinforces that "tests green" and "Code
+  Quality Review" are catching genuinely different failure classes, and
+  neither one is optional even when the other passes clean.
+- **Stop reason:** goal met (feature shipped, both bugs found and fixed
+  before/after merge respectively).
