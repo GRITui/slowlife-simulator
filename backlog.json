@@ -1575,6 +1575,23 @@
       "notes": "#117. Cozy proposal + wedding festival event; cutscenes/jealousy out of scope.",
       "completed_at": "2026-09-01",
       "pr_number": 123
+    },
+    {
+      "id": "TASK-060",
+      "sprint": 14,
+      "category": "gameplay",
+      "title": "Tool upgrade tiers (hoe/can/sickle progression)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/GameData.gd",
+        "scenes/core/GridManager.gd",
+        "tests/test_tool_tiers.gd"
+      ],
+      "notes": "#116. Rice-barter purchases; effects on water/plant/harvest.",
+      "completed_at": "2026-09-01",
+      "pr_number": 124
     }
   ]
 }
