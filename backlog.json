@@ -1743,39 +1743,42 @@
       "sprint": 18,
       "category": "design",
       "title": "Long-term content repetition past Year 1 (deferred pending playtest)",
-      "status": "proposed",
+      "status": "todo",
       "priority": "low",
       "owner": "unclaimed",
       "files": [],
       "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #143.",
       "github_issue_number": 143,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/143"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/143",
+      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix."
     },
     {
       "id": "TASK-281",
       "sprint": 18,
       "category": "design",
       "title": "No payoff for maxing fishing skill (deferred pending playtest)",
-      "status": "proposed",
+      "status": "todo",
       "priority": "low",
       "owner": "unclaimed",
       "files": [],
       "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #144.",
       "github_issue_number": 144,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/144"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/144",
+      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix."
     },
     {
       "id": "TASK-282",
       "sprint": 18,
       "category": "design",
       "title": "Romance has no ceiling event beyond marriage flag (deferred pending playtest)",
-      "status": "proposed",
+      "status": "todo",
       "priority": "low",
       "owner": "unclaimed",
       "files": [],
       "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #145.",
       "github_issue_number": 145,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/145"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/145",
+      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix."
     },
     {
       "id": "TASK-290",
@@ -1812,13 +1815,14 @@
       "sprint": 19,
       "category": "engine",
       "title": "BUG: all 4 festival triggers check absolute day, fire exactly once ever",
-      "status": "proposed",
+      "status": "todo",
       "priority": "high",
       "owner": "backend-automation",
       "files": [],
       "notes": "Real pre-existing defect found during the calendar reassessment, not mine to fix (control-flow logic). Issue #146.",
       "github_issue_number": 146,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/146"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/146",
+      "gate_audit": "PASS 2026-09-01: confirmed BUG \u2014 triggers key absolute day vs festival_day 3/5/7/9, so year-2+ (day 37+) never fires. Fix now."
     }
   ]
 }
