@@ -1872,7 +1872,7 @@
     {
       "id": "TASK-303",
       "title": "BUG: Wing Kwai race unreachable \u2014 start_race() never called outside tests",
-      "status": "todo",
+      "status": "completed",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1881,7 +1881,9 @@
       "github_issue_number": 155,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/155",
       "priority": "high",
-      "gate_audit": "PASS 2026-09-01: confirmed BUG \u2014 start_race() has no in-game entry point (tests only). Fix via RaceStarter interactable on the flag course."
+      "gate_audit": "PASS 2026-09-01: confirmed BUG \u2014 start_race() has no in-game entry point (tests only). Fix via RaceStarter interactable on the flag course.",
+      "completed_at": "2026-09-01",
+      "pr_number": 157
     },
     {
       "id": "TASK-304",
