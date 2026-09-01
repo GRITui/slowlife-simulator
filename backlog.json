@@ -1520,14 +1520,16 @@
       "sprint": 13,
       "category": "gameplay",
       "title": "NPC daily schedules / movement AI",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/entities/VillagerNPC.gd, scripts/narrative/ScheduleDB.gd",
       "notes": "#115: schedule waypoints per NPC, move between them on minute_ticked.",
       "gate_audit": "PASS 2026-09-01 (issue-direct): requested enhancement on shipped system, zero-combat, assets/data ready. Order: effort ascending.",
       "github_issue_number": 115,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/115"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/115",
+      "completed_at": "2026-09-01",
+      "pr_number": 122
     },
     {
       "id": "TASK-059",
