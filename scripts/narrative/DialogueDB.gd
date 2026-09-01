@@ -16,6 +16,7 @@ const DIALOGUE: Dictionary = {
 			"Hot season — water early, rest at noon.",
 			"Even the canal runs slow in the heat. Patience.",
 			"Mango season soon. Share what you harvest.",
+			"Songkran is near — the young ones will splash water on the elders for blessing.",
 		],
 		"monsoon": [
 			"Rain fills the paddies. Lotus will rise in the pond.",
@@ -30,6 +31,15 @@ const DIALOGUE: Dictionary = {
 			"If you have rice, offer it before 07:30 on temple lane.",
 			"Lotus or mango — the monk accepts what is offered with care.",
 		],
+		"fishing_hint": [
+			"The eels hide in the canal mud after heavy rain — feel for them, don't look.",
+			"Salit surface at the hottest part of the afternoon, when the paddy water's low.",
+			"Deep canal bends, monsoon only — the whiskered one doesn't come to shallow water.",
+			"Careful with that one's tail. It rests flat on the sandy bottom, hot season only.",
+			"The golden one runs upriver when the water cools — patience, not strength, catches it.",
+			"My grandmother spoke of a giant in the deep canal bend — once a generation, monsoon only. Few believe her. I do.",
+			"At high noon in the hot season, something flashes every color in the sun near the lotus maze. I've only seen it once.",
+		],
 	},
 	"child": {
 		"cool": [
@@ -39,6 +49,7 @@ const DIALOGUE: Dictionary = {
 		"hot": [
 			"So hot! Can we get mango sticky rice?",
 			"The buffalo is sleeping under the tree.",
+			"Songkran! Can we throw water at everyone today?",
 		],
 		"monsoon": [
 			"Puddles everywhere! I found a lotus leaf boat.",
@@ -61,6 +72,7 @@ const DIALOGUE: Dictionary = {
 		"hot": [
 			"Canal drops in the heat. Watch the gate.",
 			"If the gate sticks, a few grains and some strength will free it.",
+			"We fill the jars early for Songkran — every drop gets shared that day.",
 		],
 		"monsoon": [
 			"Gate is working hard this season. Listen to the water.",
@@ -83,6 +95,7 @@ const DIALOGUE: Dictionary = {
 		"hot": [
 			"Heat tests patience. A small kindness cools the heart.",
 			"Walk slowly in the hot season, farmer.",
+			"Pour water gently over the Buddha image this Songkran — cleanse, don't drench.",
 		],
 		"monsoon": [
 			"Rain feeds the rice. Patience feeds the soul.",
@@ -105,6 +118,46 @@ const DIALOGUE: Dictionary = {
 		],
 		"monsoon": [
 			"Lotus root for sticky rice? The rains feed us all. Take it.",
+		],
+	},
+	# New peer-age romance-eligible NPCs (Head-of-Art round, 2026-09-01).
+	# Affinity-tiered, not season-tiered — mirrors the round's PO_INBOX MVP
+	# spec: stranger -> friendly -> close -> romantic, gated by a future
+	# GameData.affinity[npc_id] int this data doesn't itself track.
+	"niran": {
+		"stranger": [
+			"You're new to the paddies. Mind the eastern bund, it floods first.",
+			"Elder says you're doing fine for a first season. High praise, from her.",
+		],
+		"friendly": [
+			"Race you to the harvest this time? Loser waters both plots tomorrow.",
+			"Saved you the good seed. Don't tell the market I undercut myself.",
+		],
+		"close": [
+			"Honestly — I look forward to the days you're out in the fields too.",
+			"You make the long seasons feel shorter. Don't know how else to say it.",
+		],
+		"romantic": [
+			"Walk the canal path with me tonight? Just us, no rivalry this time.",
+			"I used to farm alone before you got here. I don't want to go back to that.",
+		],
+	},
+	"fah": {
+		"stranger": [
+			"The canal's calm this morning. Good for thinking, if you like that sort of thing.",
+			"You fish? No — didn't think so. Ask me sometime, if you're curious.",
+		],
+		"friendly": [
+			"Caught something strange near the lotus maze yesterday. Still thinking about it.",
+			"You're quieter than the village gives you credit for. I like that.",
+		],
+		"close": [
+			"I don't tell many people about the deep-canal spots. You're one of the few.",
+			"Some evenings I'd rather sit by the water with you than anywhere else.",
+		],
+		"romantic": [
+			"Stay till the lanterns come out? The water looks different after dark.",
+			"I've started saving the best catches to cook for you. Didn't plan that. Just happened.",
 		],
 	},
 }
@@ -157,3 +210,13 @@ static func get_market_line(season: String, have_id: String, want_id: String) ->
 	if pool.is_empty():
 		return "Trade? %s for %s — share the harvest." % [have_id, want_id]
 	return String(pool[0])
+
+## TASK-051: affinity -> dialogue tier (breakpoints 25/60/90).
+static func get_affinity_tier(affinity: int) -> String:
+	if affinity >= 90:
+		return "romantic"
+	if affinity >= 60:
+		return "close"
+	if affinity >= 25:
+		return "friendly"
+	return "stranger"

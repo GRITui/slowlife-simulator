@@ -65,6 +65,26 @@ var high_contrast: bool = false
 # TASK-050 fishing skill — 1..4, gates fish.json skill_required tiers.
 var fishing_skill: int = 1
 
+# TASK-051 affinity/dating MVP — npc_id -> 0..100. Tiers (25/60/90) map to
+# DialogueDB's stranger/friendly/close/romantic branches. No marriage/
+# jealousy systems (explicitly out of scope per PO_INBOX r6).
+var affinity: Dictionary = {}
+const AFFINITY_CAP: int = 100
+## v1 gift rule: any of these held items is gift-able (no per-NPC table yet).
+const FOOD_ITEMS: Array[String] = [
+	"rice_grain", "sticky_rice", "mango", "durian", "banana", "egg",
+	"thai_basil", "lotus_root", "pandan_leaf", "banana_leaf",
+	"thai_basil_stirfry", "pandan_sticky_rice", "mango_sticky_rice",
+	"durian_sticky_rice", "lotus_soup", "banana_rice_cake",
+	"nam_prik", "som_tam", "tom_yum",
+]
+
+func add_affinity(npc_id: String, amount: int) -> void:
+	affinity[npc_id] = clampi(int(affinity.get(npc_id, 0)) + amount, 0, AFFINITY_CAP)
+
+func get_affinity(npc_id: String) -> int:
+	return int(affinity.get(npc_id, 0))
+
 func add_item(item_id: String, amount: int = 1) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
 
