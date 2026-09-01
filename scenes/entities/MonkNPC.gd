@@ -52,8 +52,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("interact"):
 		var item_id: String = _get_best_offer_item()
-		interact(item_id)
+		var offered: bool = interact(item_id)
+		if not offered:
+			_try_offer_quest()
 		get_viewport().set_input_as_handled()
+
+func _try_offer_quest() -> void:
+	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
+	if quest_logs.is_empty():
+		return
+	var quest_log: Node = quest_logs[0] as Node
+	if quest_log != null and quest_log.has_method("offer_quest_for_giver"):
+		quest_log.offer_quest_for_giver("monk")
 
 # --- Time window ---
 
