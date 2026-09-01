@@ -162,6 +162,7 @@ const SELL_PRICES: Dictionary = {
 	"thai_basil_stirfry": 14, "pandan_sticky_rice": 15, "mango_sticky_rice": 14,
 	"durian_sticky_rice": 18, "lotus_soup": 16, "banana_rice_cake": 12,
 	"nam_prik": 16, "som_tam": 15, "tom_yum": 18, "wan_sart_basket": 10,
+	"khao_soi": 20, "massaman_curry": 24,
 }
 
 func add_silver(amount: int) -> void:

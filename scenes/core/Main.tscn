@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://main000001"]
+[gd_scene load_steps=14 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/Main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scenes/core/DayNightTintDriver.gd" id="11_dnt"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/Settings.tscn" id="10_settings"]
 [ext_resource type="PackedScene" path="res://scenes/market/MarketStall.tscn" id="9_market"]
 [ext_resource type="PackedScene" path="res://scenes/ui/MarketShop.tscn" id="12_marketshop"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/CarpenterUpgrade.tscn" id="13_carpenter"]
 
 [node name="Main" type="Node2D"]
 y_sort_enabled = true
@@ -50,6 +51,9 @@ position = Vector2(480, 384)
 
 [node name="SluiceGate" parent="." instance=ExtResource("7_sluice")]
 position = Vector2(744, 672)
+
+[node name="CarpenterUpgrade" parent="." instance=ExtResource("13_carpenter")]
+position = Vector2(864, 384)
 
 [node name="MarketStall" parent="." instance=ExtResource("9_market")]
 position = Vector2(480, 320)

@@ -468,6 +468,36 @@
       "harmony_reward": 4,
       "requires_infrastructure": "",
       "season": "cool"
+    },
+    {
+      "id": "khao_soi",
+      "display_name": "Khao Soi",
+      "description": "Northern coconut-curry noodle soup \u2014 rice flour noodles in spiced coconut milk with chili and palm sugar. Needs the extended kitchen.",
+      "inputs": {
+        "rice_flour": 1,
+        "coconut_milk": 1,
+        "chili": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 8,
+      "harmony_reward": 12,
+      "requires_infrastructure": "house_kitchen",
+      "season": ""
+    },
+    {
+      "id": "massaman_curry",
+      "display_name": "Massaman Curry",
+      "description": "Slow-simmered peanut curry with high-grade buffalo milk, chili, and palm sugar. Needs the extended kitchen.",
+      "inputs": {
+        "buffalo_milk_high": 1,
+        "peanut": 1,
+        "palm_sugar": 1,
+        "chili": 1
+      },
+      "stamina_cost": 9,
+      "harmony_reward": 15,
+      "requires_infrastructure": "house_kitchen",
+      "season": ""
     }
   ]
 }
