@@ -4,6 +4,11 @@ extends CharacterBody2D
 # Stamina drain uses TimeManager stamina multiplier, syncs to SignalBus + GameData.
 
 @export var move_speed: float = 110.0
+## TASK-272 Wing Kwai: mounted buffalo riding (mount near buffalo, 1.6x speed,
+## mounted interact auto-plants the held seed in a 3x3 patch).
+var mounted: bool = false
+var mount_speed_mult: float = 1.6
+var _buffalo_ref: Node = null
 @export var stamina_drain_per_sec: float = 0.6
 
 var _season_mult: float = 1.0
@@ -31,8 +36,10 @@ func _physics_process(delta: float) -> void:
 	)
 	if dir.length() > 1.0:
 		dir = dir.normalized()
-	velocity = dir * move_speed
+	velocity = dir * (move_speed * (mount_speed_mult if mounted else 1.0))
 	move_and_slide()
+	if mounted and _buffalo_ref != null and is_instance_valid(_buffalo_ref):
+		(_buffalo_ref as Node2D).global_position = global_position + Vector2(0, 24)
 	_update_animation(dir)
 	# clamp to Hybrid grid bounds (20*48 approx, keep in view)
 	global_position.x = clamp(global_position.x, 24, 20 * 48 - 24)
@@ -54,6 +61,40 @@ func _update_animation(dir: Vector2) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		_try_grid_interact()
+	# TASK-272: R mounts/dismounts the buffalo (dedicated key avoids the
+	# buffalo-milk interact conflict).
+	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
+		toggle_mount()
+
+## TASK-272: mount/dismount. Buffalo repositions under the rider each frame
+## while mounted (visual rider illusion without a ride node).
+func toggle_mount() -> void:
+	if mounted:
+		mounted = false
+		SignalBus.show_dialogue.emit("Farmer", "Dismounted. The buffalo grazes.")
+		return
+	var buffalos: Array = get_tree().get_nodes_in_group("buffalo")
+	if buffalos.is_empty():
+		SignalBus.show_dialogue.emit("Farmer", "No buffalo nearby to ride.")
+		return
+	_buffalo_ref = buffalos[0]
+	if _buffalo_ref != null and global_position.distance_to((_buffalo_ref as Node2D).global_position) > 96.0:
+		SignalBus.show_dialogue.emit("Farmer", "Get closer to the buffalo to mount.")
+		return
+	mounted = true
+	SignalBus.show_dialogue.emit("Farmer", "Mounted — Wing Kwai style. Interact to auto-plant 3x3.")
+
+## Mounted interact: plant held seed in a 3x3 patch around the facing cell.
+func _mounted_plant_3x3(gm: Node, center: Vector2i) -> void:
+	var crop: Resource = _find_crop_for_held_seed()
+	if crop == null:
+		crop = load("res://data/crops/jasmine_rice.tres")
+	var planted: int = 0
+	for dx: int in [-1, 0, 1]:
+		for dy: int in [-1, 0, 1]:
+			if gm.plant(center + Vector2i(dx, dy), crop):
+				planted += 1
+	SignalBus.show_dialogue.emit("Farmer", "Buffalo plow: %d/9 plots planted." % planted)
 
 func _try_grid_interact() -> void:
 	# Attempt plant/water/harvest at nearest cell via SignalBus.grid_manager registry
@@ -61,6 +102,9 @@ func _try_grid_interact() -> void:
 	if gm == null:
 		return
 	var cell: Vector2i = Vector2i(floor(global_position.x / 48), floor(global_position.y / 48))
+	if mounted:
+		_mounted_plant_3x3(gm, cell)
+		return
 	var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
 	if plot == null:
 		# TASK-043: seed-driven planting — first owned seed_* item maps to its
