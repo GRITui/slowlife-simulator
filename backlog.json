@@ -1773,14 +1773,16 @@
       "sprint": 18,
       "category": "design",
       "title": "Romance has no ceiling event beyond marriage flag (deferred pending playtest)",
-      "status": "todo",
+      "status": "completed",
       "priority": "low",
       "owner": "unclaimed",
       "files": [],
       "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #145.",
       "github_issue_number": 145,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/145",
-      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix."
+      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix.",
+      "completed_at": "2026-09-01",
+      "pr_number": 150
     },
     {
       "id": "TASK-290",
