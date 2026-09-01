@@ -62,6 +62,9 @@ var last_binthabat_day: int = -1
 var font_scale: float = 1.0
 var high_contrast: bool = false
 
+# TASK-050 fishing skill — 1..4, gates fish.json skill_required tiers.
+var fishing_skill: int = 1
+
 func add_item(item_id: String, amount: int = 1) -> void:
 	inventory[item_id] = inventory.get(item_id, 0) + amount
 

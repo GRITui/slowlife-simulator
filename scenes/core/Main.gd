@@ -62,6 +62,23 @@ func _ready() -> void:
 	_ensure_companion()
 	# TASK-049: chicken coop — daily egg (pasture edge).
 	_ensure_chicken_coop()
+	# TASK-050: fishing spot on the canal; rod ships in inventory (decision).
+	_ensure_fishing_spot()
+
+func _ensure_fishing_spot() -> void:
+	if get_node_or_null("FishingSpot") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/FishingSpot.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "FishingSpot"
+	spot.position = Vector2(11 * 48 + 24, 13 * 48 - 48) # canal row north bank
+	add_child(spot)
+	if GameData.inventory.is_empty() or not GameData.has_item("fishing_rod", 1):
+		GameData.add_item("fishing_rod", 1)
 
 func _ensure_chicken_coop() -> void:
 	if get_node_or_null("ChickenCoop") != null:
