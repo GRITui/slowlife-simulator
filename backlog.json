@@ -1815,14 +1815,16 @@
       "sprint": 19,
       "category": "engine",
       "title": "BUG: all 4 festival triggers check absolute day, fire exactly once ever",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "backend-automation",
       "files": [],
       "notes": "Real pre-existing defect found during the calendar reassessment, not mine to fix (control-flow logic). Issue #146.",
       "github_issue_number": 146,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/146",
-      "gate_audit": "PASS 2026-09-01: confirmed BUG \u2014 triggers key absolute day vs festival_day 3/5/7/9, so year-2+ (day 37+) never fires. Fix now."
+      "gate_audit": "PASS 2026-09-01: confirmed BUG \u2014 triggers key absolute day vs festival_day 3/5/7/9, so year-2+ (day 37+) never fires. Fix now.",
+      "completed_at": "2026-09-01",
+      "pr_number": 148
     }
   ]
 }
