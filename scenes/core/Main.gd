@@ -68,6 +68,21 @@ func _ready() -> void:
 	_ensure_peer_npcs()
 	# TASK-055: Wan Sart ancestor-honoring trigger (cool day 5).
 	_ensure_wansart()
+	# TASK-056: goat — daily goat_milk (pasture, beside the coop).
+	_ensure_goat()
+
+func _ensure_goat() -> void:
+	if get_node_or_null("Goat") != null:
+		return
+	var scene: PackedScene = load("res://scenes/entities/Goat.tscn")
+	if scene == null:
+		return
+	var goat: Node2D = scene.instantiate() as Node2D
+	if goat == null:
+		return
+	goat.name = "Goat"
+	goat.position = Vector2(3 * 48 + 24, 14 * 48) # pasture SW, next to coop
+	add_child(goat)
 
 func _ensure_wansart() -> void:
 	if get_node_or_null("WanSartTrigger") != null:
