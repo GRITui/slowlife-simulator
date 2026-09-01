@@ -1325,14 +1325,14 @@
       "sprint": 11,
       "category": "mechanics",
       "title": "Market multi-offer: OFFERS -> per-season list (fish_sauce/shrimp_paste; unblocks nam_prik/som_tom/tom_yum)",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "narrative-lead",
       "files": "scripts/market/MarketManager.gd, scenes/entities/MarketStallNPC.gd, tests/run_tests.gd",
       "notes": "PO_INBOX r5 #1 PRIORITY: Dictionary[String, Array[Dictionary]], coastal-trade goods seeded hot/monsoon, reader iteration + availability-aware pick. Unblocks 3 recipes.",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 104
     },
     {
       "id": "TASK-048",
