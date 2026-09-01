@@ -2045,7 +2045,7 @@
     {
       "id": "TASK-319",
       "title": "Add fishing competition festival event",
-      "status": "proposed",
+      "status": "completed",
       "category": "gameplay",
       "owner": "narrative-lead",
       "files": [
@@ -2053,7 +2053,9 @@
         "scenes/core/Main.gd"
       ],
       "priority": "low",
-      "notes": "QA-auditor: Fishing system is now wired with skill progression, but no festival event uses it. Propose a fishing competition festival (hot season, similar to Songkran) that rewards rare fish catches."
+      "notes": "QA-auditor: Fishing system is now wired with skill progression, but no festival event uses it. Propose a fishing competition festival (hot season, similar to Songkran) that rewards rare fish catches.",
+      "completed_at": "2026-09-01",
+      "pr_number": 172
     },
     {
       "id": "TASK-320",
