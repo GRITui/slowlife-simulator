@@ -32,6 +32,12 @@ func chop() -> bool:
 		wood += 1
 	GameData.add_item("wood", wood)
 	SignalBus.show_dialogue.emit("Forest Tree", "+%d wood — the axe sings." % wood)
+	# TASK-310: Complete wood gathering quest objective.
+	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
+	if not quest_logs.is_empty():
+		var quest_log: Node = quest_logs[0] as Node
+		if quest_log != null and quest_log.has_method("complete_objective_everywhere"):
+			quest_log.complete_objective_everywhere("gather_reinforcement_wood")
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:
