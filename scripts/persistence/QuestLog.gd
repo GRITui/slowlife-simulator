@@ -118,7 +118,13 @@ func on_npc_talked(npc_id: String) -> void:
 	complete_objective_everywhere("enter_the_race" if npc_id == "handler" else "")
 
 func complete_objective_everywhere(objective_id: String) -> void:
+	if objective_id.is_empty():
+		return
 	for quest_id: String in GameData.active_quests.keys():
+		var chain: Dictionary = get_chain(quest_id)
+		var objectives: Array = chain.get("objectives", []) as Array
+		if not objectives.has(objective_id):
+			continue
 		GameData.complete_objective(quest_id, objective_id)
 		if GameData.is_quest_complete(quest_id):
 			_payout(quest_id)
