@@ -1972,7 +1972,7 @@
     {
       "id": "TASK-314",
       "title": "Trader NPC visual: idle sprite + cart prop (issue #161 art-lane piece)",
-      "status": "in_progress",
+      "status": "completed",
       "category": "art",
       "owner": "art-po",
       "files": [
@@ -1980,7 +1980,9 @@
         "assets/environment/props/merchant_cart.png"
       ],
       "github_issue_number": 161,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161",
+      "completed_at": "2026-09-01",
+      "owner_note": "Deliverable confirmed live: TraderNPC.tscn instanced under Main via TASK-310/PR#169. Bookkeeping close-out only, no new work."
     },
     {
       "id": "TASK-315",
