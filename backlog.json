@@ -1396,6 +1396,23 @@
         "VILLAGE_LORE.md"
       ],
       "notes": "User asked to assess/enhance art+design+gameplay+quest+story+more NPCs+dating; work art side, ticket engine side. Survey confirmed zero relationship/romance/quest-state infrastructure exists anywhere, no portrait art precedent, and y-sort budget nearly exhausted (34/36 at time of survey). DELIVERED (real engine touch, but presentational only, same precedent as the HUD icon-lookup fix): a Portrait TextureRect added to Main.tscn's DialogueLayer/Panel + a speaker-name->portrait lookup in Main.gd's _on_show_dialogue -- 6 portraits (elder/child/handler/monk/trader/buffalo), all existing speakers now show a face. DELIVERED (art+data only, NOT instanced -- see PO_INBOX): two new peer-age NPCs, Niran (farmer/rival archetype) and Fah (fisherfolk archetype, ties into the 20-fish roster) -- both are romance candidates per the survey's finding that no existing NPC fits that role by age/design. World sprite + portrait each, plus 4-tier affinity dialogue (stranger/friendly/close/romantic) added to DialogueDB.gd -- data-only, mirrors the existing seasonal-branch pattern exactly. DELIVERED: VILLAGE_LORE.md -- the game had zero story/backstory content before this (confirmed: PROJECT_VISION.md is principles-only). Gives the existing NPC roster, both festivals, and the two new NPCs an actual narrative frame without requiring any new engine system. NOT done (spec'd precisely for PO instead of guessed at): affinity tracking, gift-giving mechanic, NPC instancing for Niran/Fah (y-sort budget must be checked/raised first), quest-state system. Gates: content 100/100, engine 50/50, perf 6/6."
+    },
+    {
+      "id": "TASK-051",
+      "sprint": 12,
+      "category": "gameplay",
+      "title": "Affinity/dating MVP \u2014 affinity dict + gift rule + dialogue tiers",
+      "status": "completed",
+      "priority": "high",
+      "owner": "narrative-lead",
+      "files": [
+        "scripts/autoload/GameData.gd",
+        "scripts/narrative/DialogueDB.gd",
+        "tests/test_affinity.gd"
+      ],
+      "notes": "PO_INBOX r6 #2. Marriage/jealousy explicitly out of scope.",
+      "completed_at": "2026-09-01",
+      "pr_number": 108
     }
   ]
 }
