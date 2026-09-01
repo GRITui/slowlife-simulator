@@ -1433,6 +1433,23 @@
       "notes": "PO_INBOX r6 #1 PRIORITY. 4-tier dialogue live via affinity.",
       "completed_at": "2026-09-01",
       "pr_number": 109
+    },
+    {
+      "id": "TASK-053",
+      "sprint": 12,
+      "category": "architecture",
+      "title": "QuestData resource + GameData.active_quests primitive",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/resource_types/QuestData.gd",
+        "scripts/autoload/GameData.gd",
+        "tests/test_questdata.gd"
+      ],
+      "notes": "PO_INBOX r6 #3. Primitive only \u2014 chain content is a future ask.",
+      "completed_at": "2026-09-01",
+      "pr_number": 110
     }
   ]
 }
