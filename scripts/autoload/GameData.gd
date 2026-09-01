@@ -100,8 +100,7 @@ func _check_stamina_milestone() -> void:
 	while stamina_tier < new_tier:
 		stamina_tier += 1
 		max_stamina += 15.0
-		current_stamina += 15.0
-		SignalBus.stamina_changed.emit(current_stamina, max_stamina)
+		current_stamina += 15.0 # setter already clamps + emits stamina_changed
 
 # TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
 #   watering_can: watered plots also pre-advance growth (tier*30 effective
