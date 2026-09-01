@@ -1934,7 +1934,7 @@
     {
       "id": "TASK-312",
       "title": "upgrade_tool() unreachable \u2014 wire to Handler interact; mount = separate riding-tool tier",
-      "status": "todo",
+      "status": "completed",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1943,7 +1943,9 @@
       ],
       "github_issue_number": 160,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/160",
-      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
+      "completed_at": "2026-09-01",
+      "pr_number": 164
     },
     {
       "id": "TASK-313",
