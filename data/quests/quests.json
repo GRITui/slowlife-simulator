@@ -5,7 +5,11 @@
       "display_name": "First Catch",
       "description": "Fah thinks you should try the canal. A rod, a fish, and a story to trade.",
       "giver_npc_id": "fah",
-      "objectives": ["talk_to_fah", "catch_a_fish", "show_fah"],
+      "objectives": [
+        "talk_to_fah",
+        "catch_a_fish",
+        "show_fah"
+      ],
       "reward_item_id": "rice_grain",
       "reward_item_qty": 3,
       "reward_harmony": 10
@@ -15,10 +19,137 @@
       "display_name": "Morning Merit",
       "description": "The Elder reminds you the monks walk at dawn. Offer what you can spare.",
       "giver_npc_id": "elder",
-      "objectives": ["talk_to_elder", "make_offering"],
+      "objectives": [
+        "talk_to_elder",
+        "make_offering"
+      ],
       "reward_item_id": "banana_rice_cake",
       "reward_item_qty": 1,
       "reward_harmony": 8
+    },
+    {
+      "id": "traders_coastal_order",
+      "display_name": "Trader's Coastal Order",
+      "description": "The boats brought fish sauce this season. The trader wants it turned into something worth eating.",
+      "objectives": [
+        "acquire_fish_sauce",
+        "deliver_nam_prik_to_trader"
+      ],
+      "reward_item_id": "seed_chili",
+      "reward_item_qty": 1,
+      "reward_harmony": 6,
+      "giver_npc_id": "trader"
+    },
+    {
+      "id": "canal_breaks",
+      "display_name": "The Canal Breaks",
+      "description": "Monsoon rains have swollen the canal past what the sluice gate can hold. Handler needs wood and hands before the paddies flood \u2014 not a fight, a race against the water.",
+      "objectives": [
+        "gather_reinforcement_wood",
+        "report_to_handler",
+        "reinforce_the_banks"
+      ],
+      "reward_item_id": "flood_ward_charm",
+      "reward_item_qty": 1,
+      "reward_harmony": 12,
+      "giver_npc_id": "handler"
+    },
+    {
+      "id": "niran_harvest_challenge",
+      "display_name": "Niran's Harvest Challenge",
+      "description": "Niran bet you can't bring in a durian before the season turns. Prove it.",
+      "objectives": [
+        "harvest_two_crop_types",
+        "deliver_durian_to_niran"
+      ],
+      "reward_item_id": "seed_watermelon",
+      "reward_item_qty": 1,
+      "reward_harmony": 5,
+      "giver_npc_id": "niran"
+    },
+    {
+      "id": "phi_ta_khon",
+      "display_name": "The Phantom in the Palms",
+      "description": "Young Ton swears he saw a long-nosed monster by the forest edge. The elder asks you to look into it before the whole village locks its doors early.",
+      "objectives": [
+        "interview_ton",
+        "examine_forest_clues",
+        "confront_the_maskmaker",
+        "clear_up_the_misunderstanding"
+      ],
+      "reward_item_id": "phi_ta_khon_mask",
+      "reward_item_qty": 1,
+      "reward_harmony": 8,
+      "giver_npc_id": "elder"
+    },
+    {
+      "id": "lopburi_monkey_banquet",
+      "display_name": "The Great Banana Heist",
+      "description": "Your banana stock is gone by morning. The trail leads to the temple ruins, where the monk has an idea: instead of driving the hungry troop off, throw them a feast.",
+      "objectives": [
+        "find_the_empty_crate",
+        "speak_with_the_monk",
+        "donate_fruit_for_the_banquet",
+        "host_the_banquet"
+      ],
+      "reward_item_id": "three_wise_monkeys_figurine",
+      "reward_item_qty": 1,
+      "reward_harmony": 9,
+      "giver_npc_id": "monk"
+    },
+    {
+      "id": "monks_morning_merit",
+      "display_name": "Morning Merit",
+      "description": "The monk asks nothing directly. Three mornings of alms, offered without being asked twice.",
+      "objectives": [
+        "binthabat_day_1",
+        "binthabat_day_2",
+        "binthabat_day_3"
+      ],
+      "reward_item_id": "seed_lotus",
+      "reward_item_qty": 1,
+      "reward_harmony": 8,
+      "giver_npc_id": "monk"
+    },
+    {
+      "id": "elder_request",
+      "display_name": "The Elder's Request",
+      "description": "Grandmother Nim wants a proper cool-season offering \u2014 rice from the paddy, not the market.",
+      "objectives": [
+        "harvest_jasmine_rice",
+        "offer_binthabat"
+      ],
+      "reward_item_id": "seed_pandan",
+      "reward_item_qty": 1,
+      "reward_harmony": 6,
+      "giver_npc_id": "elder"
+    },
+    {
+      "id": "fah_elusive_catch",
+      "display_name": "Fah's Elusive Catch",
+      "description": "Fah won't say which fish she means. Just that you'll know it when the line goes still.",
+      "objectives": [
+        "catch_two_fish",
+        "catch_rare_tier_fish"
+      ],
+      "reward_item_id": "fishing_rod",
+      "reward_item_qty": 1,
+      "reward_harmony": 7,
+      "giver_npc_id": "fah"
+    },
+    {
+      "id": "wing_kwai",
+      "display_name": "The Mud and the Glory",
+      "description": "Uncle Preecha's boasting finally got to you. Enter the buffalo race at the Wing Kwai festival and prove your farming isn't just for show. Mid-autumn only.",
+      "objectives": [
+        "craft_stamina_mash",
+        "feed_buffalo_mash",
+        "enter_the_race"
+      ],
+      "reward_item_id": "champions_yoke",
+      "reward_item_qty": 1,
+      "reward_harmony": 10,
+      "giver_npc_id": "handler"
     }
   ]
 }

@@ -41,6 +41,14 @@ func offer_quest(quest_id: String) -> void:
 		GameData.complete_objective(quest_id, first)
 	SignalBus.show_dialogue.emit(String(chain.get("giver_npc_id", "npc")), "%s — will you help? (%s)" % [String(chain.get("display_name", quest_id)), "quest started"])
 
+## Offers the first available quest for a given giver NPC.
+func offer_quest_for_giver(giver_npc_id: String) -> void:
+	for quest_id in _chains.keys():
+		var chain: Dictionary = _chains[quest_id] as Dictionary
+		if String(chain.get("giver_npc_id", "")) == giver_npc_id and not GameData.active_quests.has(quest_id):
+			offer_quest(quest_id)
+			return
+
 ## Event-driven objective completion.
 func _on_craft_completed(item_id: String, _qty: int) -> void:
 	# Fish catches flow through craft_completed (TASK-050 reuses it).

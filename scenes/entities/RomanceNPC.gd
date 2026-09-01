@@ -94,6 +94,15 @@ func _talk() -> void:
 	var line: String = DialogueDBScript.get_line(npc_id, tier, _talk_count)
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)
+	_try_offer_quest()
+
+func _try_offer_quest() -> void:
+	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
+	if quest_logs.is_empty():
+		return
+	var quest_log: Node = quest_logs[0] as Node
+	if quest_log != null and quest_log.has_method("offer_quest_for_giver"):
+		quest_log.offer_quest_for_giver(npc_id)
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player") and body != self:
