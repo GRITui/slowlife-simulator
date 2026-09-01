@@ -179,17 +179,27 @@ case.
 **Ranked model order** (from Run 3's research pass, `ops/ai-eng-log.md`),
 tried in sequence when the current one reports a quota/rate-limit error:
 
-1. `opencode/glm-5.2` (OpenCode Zen) — primary, best agentic coding + context retention per Run 3
-2. `openrouter/z-ai/glm-5.2:free` (OpenRouter) — **same model, different provider/quota pool.** Try this before switching models at all — it preserves quality, just moves the quota bucket.
-3. `opencode/minimax-m3` or `openrouter/minimax/minimax-m3:free` — fastest, low tool-call error rate
-4. `opencode/nemotron-3-ultra` (or `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free`) — heavy fallback
-5. `opencode/nemotron-3-super` (or the `-120b` OpenRouter equivalent) — lightest, last resort
-6. **`cline -P cline -m minimax/minimax-m3:free`** (or `stealth/ox-alpha`) — a
+1. **`opencode-go/glm-5.3-flash` or `openrouter/z-ai/glm-5.3-flash`** — new
+   top pick, 2026-09-01: this is the model Cline's `stealth/ox-alpha`
+   ("early free access") turned out to be once un-obscured — same family
+   as the previous #1 (GLM-5.2), one version newer. Promoted ahead of
+   5.2 on the reasonable assumption a newer point release in the same
+   family isn't a regression; not yet independently re-benchmarked the
+   way Run 3 benchmarked 5.2 — treat the first few real tasks on it as
+   continued calibration, same spirit as any new model entering the chain.
+2. `opencode/glm-5.2` (OpenCode Zen) — previous primary, best agentic coding + context retention per Run 3
+3. `openrouter/z-ai/glm-5.2:free` (OpenRouter) — **same model, different provider/quota pool.** Try this before switching models at all — it preserves quality, just moves the quota bucket.
+4. `opencode/minimax-m3` or `openrouter/minimax/minimax-m3:free` — fastest, low tool-call error rate
+5. `opencode/nemotron-3-ultra` (or `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free`) — heavy fallback
+6. `opencode/nemotron-3-super` (or the `-120b` OpenRouter equivalent) — lightest, last resort
+7. **`cline -P cline -m minimax/minimax-m3:free`** (or `-m stealth/ox-alpha`,
+   now known to be GLM-5.3-Flash under Cline's own provider — a third
+   access path to the same model as tier 1, on a fourth quota pool) — a
    genuinely separate worker + separate cloud quota pool from everything
    above (different CLI, different account). Proven capable on a fair
-   like-for-like test (Run 9) when all five OpenCode options above are
-   quota-exhausted at once. Same isolation/mandatory-boundary rules as
-   OpenCode — see [Isolation](#isolation) and the prompt-boundary note.
+   like-for-like test (Run 9) when all options above are quota-exhausted
+   at once. Same isolation/mandatory-boundary rules as OpenCode — see
+   [Isolation](#isolation) and the prompt-boundary note.
 
 **Never fall back to:** `ling-3.0-flash-fin` (finance-tuned, not code) or
 `lfm-2.5-2.6b` (vendor-reported ~15.8% tool-call error rate) — flagged
