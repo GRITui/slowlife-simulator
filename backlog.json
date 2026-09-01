@@ -1488,14 +1488,16 @@
       "sprint": 13,
       "category": "gameplay",
       "title": "Goat farm animal (goat milk, Buffalo mirror)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/entities/Goat.gd, scenes/core/Main.gd",
       "notes": "#114: daily-limited goat_milk, no-harm contract.",
       "gate_audit": "PASS 2026-09-01 (issue-direct): requested enhancement on shipped system, zero-combat, assets/data ready. Order: effort ascending.",
       "github_issue_number": 114,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/114"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/114",
+      "completed_at": "2026-09-01",
+      "pr_number": 120
     },
     {
       "id": "TASK-057",
