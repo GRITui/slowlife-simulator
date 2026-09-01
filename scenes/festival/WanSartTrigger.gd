@@ -48,4 +48,4 @@ func release_offering() -> void:
 		return
 	GameData.remove_item("kra_yasat", 1)
 	GameData.add_harmony(8)
-	SignalBus.show_dialogue.emit("Elder", "The offering is laid. The ancestors remember. (+8 harmony)")
+	SignalBus.show_dialogue.emit("Elder", "The offering is brought to the temple monk. The ancestors remember. (+8 harmony)")
