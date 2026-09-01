@@ -8,10 +8,24 @@ extends Node
 # Per-season offer table. Single entry per season (TASK-025 spec).
 # `label` is a human-readable hint for any prompt UI; barter logic only
 # reads `have` and `want`.
-const OFFERS: Dictionary[String, Dictionary] = {
-	"cool": {"have": "sticky_rice", "want": "rice_grain",  "label": "Sticky rice <-> Rice grain"},
-	"hot": {"have": "mango",       "want": "lotus_root",  "label": "Mango <-> Lotus root"},
-	"monsoon": {"have": "lotus_root",  "want": "sticky_rice", "label": "Lotus root <-> Sticky rice"},
+# TASK-047: per-season OFFER LIST (was single dict). Coastal-trade goods
+# fish_sauce / shrimp_paste arrive with the boats (hot/monsoon) — they are
+# market-only by design (fermented, not farm-growable) and unblock
+# nam_prik / som_tam / tom_yum in recipes.json.
+const OFFERS: Dictionary[String, Array] = {
+	"cool": [
+		{"have": "sticky_rice", "want": "rice_grain", "label": "Sticky rice <-> Rice grain"},
+	],
+	"hot": [
+		{"have": "mango",       "want": "lotus_root",   "label": "Mango <-> Lotus root"},
+		{"have": "rice_grain",  "want": "fish_sauce",   "label": "Rice grain <-> Fish sauce (boats)"},
+		{"have": "mango",       "want": "shrimp_paste", "label": "Mango <-> Shrimp paste (boats)"},
+	],
+	"monsoon": [
+		{"have": "lotus_root",  "want": "sticky_rice",  "label": "Lotus root <-> Sticky rice"},
+		{"have": "rice_grain",  "want": "fish_sauce",   "label": "Rice grain <-> Fish sauce (boats)"},
+		{"have": "lotus_root",  "want": "shrimp_paste", "label": "Lotus root <-> Shrimp paste (boats)"},
+	],
 }
 
 # Cached offers for the season we last saw via SignalBus.season_changed.
@@ -29,7 +43,8 @@ func _on_season_changed(new_season: String) -> void:
 func _refresh_offers(season: String) -> void:
 	_current_offers.clear()
 	if OFFERS.has(season):
-		_current_offers.append(OFFERS[season])
+		for offer: Dictionary in OFFERS[season]:
+			_current_offers.append(offer)
 
 func get_offers(season: String) -> Array[Dictionary]:
 	# Per-call season lookup so callers can query any season without forcing
@@ -37,7 +52,8 @@ func get_offers(season: String) -> Array[Dictionary]:
 	# mutating the internal cache.
 	var out: Array[Dictionary] = []
 	if OFFERS.has(season):
-		out.append(OFFERS[season])
+		for offer: Dictionary in OFFERS[season]:
+			out.append(offer)
 	return out
 
 func get_current_season() -> String:

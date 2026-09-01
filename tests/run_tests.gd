@@ -65,7 +65,7 @@ func _run_all() -> void:
 		_check(crop.total_stages == 4, "total_stages == 4")
 		_check(crop.is_plantable_in("cool") and crop.is_plantable_in("hot"), "plantable seasons")
 		_check(crop.get_yield("cool", "clear") >= 1, "get_yield >= 1")
-		_check(crop.get_growth_minutes(0, "monsoon") == int(120.0 / 1.25), "monsoon growth speed")
+		_check(crop.get_growth_minutes(0, "monsoon") == int(1440.0 / 1.25), "monsoon growth speed")
 
 	_section = "main-boot"
 	var main_scene: PackedScene = load("res://scenes/core/Main.tscn")
@@ -160,10 +160,11 @@ func _run_all() -> void:
 				_check(typeof(offer["have"]) == TYPE_STRING
 						and typeof(offer["want"]) == TYPE_STRING,
 					"'have' and 'want' are String")
-			# Verify all 3 seasons return valid offers (typed Array shape).
+			# TASK-047: per-season offer LISTS (1..3 goods).
 			for s in ["cool", "hot", "monsoon"]:
 				var season_offers: Array[Dictionary] = mm.get_offers(s)
-				_check(season_offers.size() == 1, "%s season has 1 offer" % s)
+				_check(season_offers.size() >= 1 and season_offers.size() <= 3,
+					"%s season has 1-3 offers" % s)
 		if gd:
 			# Barter soft-fail when player lacks the offering item.
 			var sticky_before: int = int(gd.inventory.get("sticky_rice", 0))

@@ -46,6 +46,11 @@ const BARTER_PAIRS: Dictionary = {
 	"cool": ["sticky_rice", "rice_grain"],
 	"hot": ["mango", "lotus_root"],
 	"monsoon": ["lotus_root", "sticky_rice"],
+	# TASK-047 coastal trade (market-only goods, boats): unblocks
+	# nam_prik / som_tam / tom_yum in recipes.json.
+	"coastal_1": ["rice_grain", "fish_sauce"],
+	"coastal_2": ["mango", "shrimp_paste"],
+	"coastal_3": ["lotus_root", "shrimp_paste"],
 }
 
 # Village dialogue / seasonal quest state (TASK-012) — cozy, no heavy exposition
