@@ -4,9 +4,22 @@ extends Node2D
 
 @onready var dialogue_label: Label = $DialogueLayer/Panel/DialogueLabel if has_node("DialogueLayer/Panel/DialogueLabel") else null
 @onready var dialogue_panel: Panel = $DialogueLayer/Panel if has_node("DialogueLayer/Panel") else null
+@onready var dialogue_portrait: TextureRect = $DialogueLayer/Panel/Portrait if has_node("DialogueLayer/Panel/Portrait") else null
 @onready var tint_rect: ColorRect = $TintLayer/TintRect if has_node("TintLayer/TintRect") else null
 
 var _dialogue_tween: Tween
+
+# Speaker name -> portrait art. Keyed by the exact strings each script already
+# passes to SignalBus.show_dialogue (Elder/Child/Handler/Monk/Trader/Buffalo).
+# Speakers with no portrait (System, Camera, Farmer) just hide the slot.
+const PORTRAIT_PATHS: Dictionary = {
+	"Elder": "res://assets/ui/portraits/elder.png",
+	"Child": "res://assets/ui/portraits/child.png",
+	"Handler": "res://assets/ui/portraits/handler.png",
+	"Monk": "res://assets/ui/portraits/monk.png",
+	"Trader": "res://assets/ui/portraits/trader.png",
+	"Buffalo": "res://assets/ui/portraits/buffalo.png",
+}
 
 func _ready() -> void:
 	# world render first (TASK-007): builds layers/props/bounds into Main now that
@@ -45,6 +58,25 @@ func _ready() -> void:
 	_ensure_banana_tree()
 	# TASK-046: Songkran festival trigger (hot season day 3).
 	_ensure_songkran()
+	# TASK-048: cat companion follows the farmer.
+	_ensure_companion()
+
+func _ensure_companion() -> void:
+	if get_node_or_null("CompanionNPC") != null:
+		return
+	var scene: PackedScene = load("res://scenes/entities/CatCompanion.tscn")
+	if scene == null:
+		return
+	var cat: CharacterBody2D = scene.instantiate() as CharacterBody2D
+	if cat == null:
+		return
+	cat.name = "CompanionNPC"
+	cat.set("script", load("res://scenes/entities/CompanionNPC.gd"))
+	cat.position = Vector2(10 * 48 + 24, 9 * 48)
+	var wr: Node = get_node_or_null("WorldRender")
+	if wr != null:
+		cat.set("world_render", wr)
+	add_child(cat)
 
 func _ensure_songkran() -> void:
 	if get_node_or_null("SongkranTrigger") != null:
@@ -258,6 +290,13 @@ func _on_show_dialogue(speaker: String, text: String) -> void:
 		return
 	dialogue_label.text = "%s: %s" % [speaker, text]
 	dialogue_panel.visible = true
+	if dialogue_portrait:
+		var portrait_path: String = String(PORTRAIT_PATHS.get(speaker, ""))
+		if portrait_path != "" and ResourceLoader.exists(portrait_path):
+			dialogue_portrait.texture = load(portrait_path) as Texture2D
+			dialogue_portrait.visible = true
+		else:
+			dialogue_portrait.visible = false
 	if _dialogue_tween:
 		_dialogue_tween.kill()
 	_dialogue_tween = create_tween()
