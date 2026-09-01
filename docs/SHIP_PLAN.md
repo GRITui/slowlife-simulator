@@ -68,10 +68,14 @@ task-number order.
       Cline completed 2 of 4 files cleanly before failing; Claude
       completed the rest directly rather than re-dispatching. See
       `ops/ai-eng-log.md` run 11.
-- [ ] **Sprint 2 — TASK-325** (pets/mounts: dog training, horse
-      riding/racing). Self-contained, no dependency on the other two
-      remaining items. Lower priority per the original gap analysis but
-      well-scoped.
+- [x] **Sprint 2 — TASK-325** (redesigned: companion bond + race tie-in)
+      — `f5cb512`. Investigation found riding/racing (buffalo) and a
+      pet companion (cat) already shipped; real gap was companion
+      progression, not a literal dog/horse. 4th hit on the same
+      OpenRouter rate limit this session; Code Quality Review found 3
+      real bugs in the generated test file (unresolvable global,
+      tier-math error, unset `_player`), all fixed directly. See
+      `ops/ai-eng-log.md` run 12.
 - [ ] **Sprint 3 — TASK-324** (rivals + life progression: pregnancy,
       childbirth, toddler stages). Biggest and most narratively-sensitive
       remaining item — includes the rival-pressure design tension already

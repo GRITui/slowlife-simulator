@@ -114,10 +114,10 @@
 <task_item>
   <id>TASK-325</id>
   <source>AI-LOOP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>LOW</priority>
-  <title>Working pets/mounts (dog training, horse riding/racing)</title>
-  <description>Confirmed absent (rg found only an unrelated "pet via interact" verb usage in Buffalo.gd, not a pet/mount system). HM:BtN has a trainable dog (festival racing) and a horse (transport + racing).</description>
+  <title>Working pets/mounts (redesigned: companion bond + race tie-in)</title>
+  <description>Investigation found riding+racing already shipped (BuffaloRace.gd/TASK-270, buffalo mount/TASK-272) — a literal horse would re-skin an existing mechanic. Real gap: the existing cat companion (CompanionNPC.gd/TASK-048) had no progression. Added GameData.companion_bond mirroring buffalo_hearts, passive accrual via minute_ticked while nearby, and a bonus tie-in to the existing race system at bond tier 2+. Merged f5cb512, pushed.</description>
   <researcher_notes>Source: Gemini gap analysis, AI-ENG-001. Lowest priority on Gemini's own ranking; flagging for completeness.</researcher_notes>
 </task_item>
 
@@ -162,3 +162,5 @@ Recommended order if approved, best cost/impact ratio first:
 <!-- PO LEDGER: 2026-09-01 3-sprint plan set for remaining approved backlog (TASK-323 split B, 324, 325) — see docs/SHIP_PLAN.md "Remaining sprint plan". Order: Sprint 1 = TASK-323 split B (smallest, builds on shipped split A), Sprint 2 = TASK-325 (self-contained, lower priority), Sprint 3 = TASK-324 (biggest, most design-sensitive, saved for last deliberately). -->
 
 <!-- AI-LOOP: 2026-09-01 TASK-323 split B (breeding) merged to main, commit 9aa8f59. Sprint 1 of 3-sprint plan complete. Implemented by Cline (minimax-m3:free) for GameData.gd/ChickenCoop.gd before hitting the same OpenRouter rate limit seen in runs 7/10 — both files were clean on review, Claude completed Buffalo.gd (mirroring the reviewed pattern) and wrote the test file directly rather than re-running the task. Verified: test_livestock_breeding.gd 23/23 (new) + 4 existing regression-checked tests + run_tests 100/100 + run_engine_tests 50/50. Full record: ops/ai-eng-log.md run 11. Next: Sprint 2 (TASK-325, pets/mounts). -->
+
+<!-- AI-LOOP: 2026-09-01 TASK-325 (companion bond, redesigned from dog/horse) merged to main, commit f5cb512. Sprint 2 of 3-sprint plan complete. Implemented by Cline (minimax-m3:free) — 4th hit this session on the same OpenRouter rate limit (runs 7/10/11/12), this time right after finishing all 4 files mid final self-verification. Code Quality Review found the 3 implementation files clean; the new test file had 2 real authoring bugs (bare SignalBus identifier unresolvable in a standalone SceneTree script, a tier-math error expecting tier 1 after a single 60-tick grant when a tier needs 25 points) plus a force_finish()-bypasses-start_race() gap leaving _player unset — all fixed directly. Verified: test_companion_bond.gd 33/33 (new) + test_companion.gd 7/7 + test_race.gd 13/13 (regression) + run_tests 100/100 + run_engine_tests 50/50. Full record: ops/ai-eng-log.md run 12. Next: Sprint 3 (TASK-324, rivals + life progression) — final item, closes Phase 2. -->

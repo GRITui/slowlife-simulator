@@ -543,3 +543,66 @@ category from the role reassessment, discovered live.
 - **Stop reason:** goal met (Sprint 1 shipped; 2 of 4 files delegated,
   2 of 4 completed directly after a clean handoff from a rate-limited
   session rather than a wasted retry).
+
+---
+
+## 2026-09-01 — Run 12 (Sprint 2 of 3: TASK-325, companion bond)
+
+- **Scope:** investigation before any implementation found most of the
+  original ask ("dog trained for racing, horse for transport/racing")
+  already shipped under different animals — `BuffaloRace.gd` (TASK-270)
+  and buffalo riding (TASK-272) already cover riding+racing; `CompanionNPC.gd`
+  (TASK-048, a cat) already provides passive pet-following. Redesigned to
+  the one real gap: the companion has no progression. Added a bond system
+  mirroring `buffalo_affinity`/`buffalo_hearts` exactly, growing passively
+  via `minute_ticked` while nearby, with a small bonus tie-in to the
+  *existing* race rather than a duplicate one. Documented in
+  `docs/research/TASK-325-spec.md`.
+- **4th hit on the same OpenRouter rate limit this session** (runs
+  7/10/11/12) — at this point it's a confirmed, routine characteristic of
+  `minimax/minimax-m3:free` on the shared upstream pool today, not a
+  fluke worth re-diagnosing each time. This occurrence was the cleanest
+  yet: it hit right after all 4 files were written, mid a final
+  self-verification read — no corruption this time (contrast Run 11's
+  mid-repair corruption).
+- **Code Quality Review, implementation files:** `GameData.gd`,
+  `CompanionNPC.gd`, `BuffaloRace.gd` all clean — correct mirror of the
+  `buffalo_affinity` pattern, correct guard ordering in
+  `_companion_bonus_eligible()` (cheap tier check before the more
+  expensive node-group scan), proper `_exit_tree()` signal disconnect
+  (a convention this codebase uses but wasn't explicitly requested).
+  One trivial fix: `_find_player()` was called twice per tick where once
+  would do.
+- **The new test file had two real, distinct authoring bugs** — this is
+  a genuinely different failure shape than runs 10/11's rate-limit-mid-
+  edit corruption, both caught by actually running the test rather than
+  reading it and assuming correctness:
+  1. Used the bare `SignalBus` global identifier, which doesn't resolve
+     in a standalone `SceneTree`-extending test script — every other
+     test in this repo goes through `root.get_node("SignalBus")` first;
+     this one skipped that, causing a compile error on load.
+  2. A tier-math error: expected `companion_bond_tier() == 1` after a
+     single 60-tick nearby cycle, but 60 ticks only grants **+1 bond
+     point**, and a tier needs 25 points (mirrors `buffalo_hearts()`'s
+     `/25.0` math exactly, correctly implemented in the actual code —
+     the test's *expectation* was wrong, not the implementation). Fixed
+     by starting the tick sequence at bond=24 so it crosses the tier
+     boundary in one cycle, testing the real integration path without
+     1500 ticks.
+  3. `BuffaloRace.force_finish()` (a documented test/debug helper) skips
+     `start_race()`, so `_player` — which `_companion_bonus_eligible()`
+     reads — was never set, silently making every bonus-path assertion
+     pass or fail for the wrong reason. Fixed by setting `_player`
+     directly via `race.set("_player", player)` before use.
+- **Verification:** `test_companion_bond.gd` 33/33 (after fixes),
+  `test_companion.gd` 7/7, `test_race.gd` 13/13 (both regression-checked
+  per the spec), `run_tests.gd` 100/100, `run_engine_tests.gd` 50/50.
+- **Integration outcome:** committed (`f5cb512`) and merged directly,
+  pushed. Worktree/branch cleaned up.
+- **Process note carried forward from Run 11:** still worth trying
+  GLM-5.3-Flash via Cline's own provider (a different quota bucket than
+  `minimax-m3:free`) as the default for Sprint 3, given the rate limit is
+  now confirmed routine on this specific model/provider pair.
+- **Stop reason:** goal met (Sprint 2 shipped; all 4 files delegated
+  this time, 2 real test bugs found and fixed directly rather than
+  re-dispatching).
