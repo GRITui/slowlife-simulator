@@ -79,6 +79,36 @@ const FOOD_ITEMS: Array[String] = [
 	"nam_prik", "som_tam", "tom_yum",
 ]
 
+# TASK-053 quest-state primitive: quest_id -> {"stage": int, "objectives_done": Array[String]}
+var active_quests: Dictionary = {}
+
+func start_quest(quest_id: String, objective_count: int = 0) -> void:
+	if active_quests.has(quest_id):
+		return
+	active_quests[quest_id] = {"stage": 0, "objectives_done": [], "objective_count": objective_count}
+
+func advance_quest(quest_id: String) -> void:
+	if not active_quests.has(quest_id):
+		return
+	var q: Dictionary = active_quests[quest_id] as Dictionary
+	q["stage"] = int(q.get("stage", 0)) + 1
+
+func complete_objective(quest_id: String, objective_id: String) -> void:
+	if not active_quests.has(quest_id):
+		return
+	var q: Dictionary = active_quests[quest_id] as Dictionary
+	var done: Array = q.get("objectives_done", []) as Array
+	if not done.has(objective_id):
+		done.append(objective_id)
+	q["objectives_done"] = done
+
+func is_quest_complete(quest_id: String) -> bool:
+	if not active_quests.has(quest_id):
+		return false
+	var q: Dictionary = active_quests[quest_id] as Dictionary
+	var total: int = int(q.get("objective_count", 0))
+	return total > 0 and (q.get("objectives_done", []) as Array).size() >= total
+
 func add_affinity(npc_id: String, amount: int) -> void:
 	affinity[npc_id] = clampi(int(affinity.get(npc_id, 0)) + amount, 0, AFFINITY_CAP)
 
