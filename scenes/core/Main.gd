@@ -66,6 +66,18 @@ func _ready() -> void:
 	_ensure_fishing_spot()
 	# TASK-052: peer NPCs Niran + Fah (romance candidates).
 	_ensure_peer_npcs()
+	# TASK-055: Wan Sart ancestor-honoring trigger (cool day 5).
+	_ensure_wansart()
+
+func _ensure_wansart() -> void:
+	if get_node_or_null("WanSartTrigger") != null:
+		return
+	var script: GDScript = load("res://scenes/festival/WanSartTrigger.gd")
+	if script == null:
+		return
+	var trigger: Node = script.new()
+	trigger.name = "WanSartTrigger"
+	add_child(trigger)
 
 func _ensure_peer_npcs() -> void:
 	var spots: Dictionary = {

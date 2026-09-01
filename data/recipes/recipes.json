@@ -4,7 +4,10 @@
       "id": "pandan_sticky_rice",
       "display_name": "Pandan Sticky Rice",
       "description": "Mortar & pestle + clay stove. Monsoon harvest.",
-      "inputs": {"pandan_leaf": 2, "rice_grain": 3},
+      "inputs": {
+        "pandan_leaf": 2,
+        "rice_grain": 3
+      },
       "stamina_cost": 6,
       "harmony_reward": 6,
       "requires_infrastructure": "sluice_gate",
@@ -14,7 +17,10 @@
       "id": "thai_basil_stirfry",
       "display_name": "Thai Basil Stir-fry",
       "description": "Quick wok on clay stove, cool season aroma.",
-      "inputs": {"thai_basil": 3, "rice_grain": 2},
+      "inputs": {
+        "thai_basil": 3,
+        "rice_grain": 2
+      },
       "stamina_cost": 5,
       "harmony_reward": 5,
       "requires_infrastructure": "",
@@ -24,9 +30,27 @@
       "id": "mango_sticky_rice",
       "display_name": "Mango Sticky Rice",
       "description": "Hot season festival dessert.",
-      "inputs": {"mango": 2, "rice_grain": 2, "pandan_leaf": 1},
+      "inputs": {
+        "mango": 2,
+        "rice_grain": 2,
+        "pandan_leaf": 1
+      },
       "stamina_cost": 8,
       "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": "hot"
+    },
+    {
+      "id": "durian_sticky_rice",
+      "display_name": "Durian Sticky Rice",
+      "description": "King-of-fruits dessert \u2014 rich durian over sweet rice, hot season only.",
+      "inputs": {
+        "durian": 1,
+        "rice_grain": 2,
+        "pandan_leaf": 1
+      },
+      "stamina_cost": 9,
+      "harmony_reward": 9,
       "requires_infrastructure": "",
       "season": "hot"
     },
@@ -34,11 +58,402 @@
       "id": "lotus_soup",
       "display_name": "Lotus Root Soup",
       "description": "Mazes of the islet, mortar & clay stove slow cook.",
-      "inputs": {"lotus_root": 2, "thai_basil": 1},
+      "inputs": {
+        "lotus_root": 2,
+        "thai_basil": 1
+      },
       "stamina_cost": 7,
       "harmony_reward": 7,
       "requires_infrastructure": "sluice_gate",
       "season": "monsoon"
+    },
+    {
+      "id": "rice_flour",
+      "display_name": "Rice Flour",
+      "description": "Mortar & pestle mill jasmine rice into flour. Works any season.",
+      "inputs": {
+        "rice_grain": 4
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 3,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "sticky_rice_flour",
+      "display_name": "Glutinous Flour",
+      "description": "Milled from sticky rice \u2014 the base for sweet desserts. Works any season.",
+      "inputs": {
+        "sticky_rice": 4
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 3,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "banana_rice_cake",
+      "display_name": "Banana Rice Cake",
+      "description": "Khao tom mat \u2014 banana folded into glutinous flour, hot season treat.",
+      "inputs": {
+        "banana": 1,
+        "sticky_rice_flour": 2
+      },
+      "stamina_cost": 7,
+      "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": "hot"
+    },
+    {
+      "id": "coconut_milk",
+      "display_name": "Coconut Milk",
+      "description": "Kati \u2014 grated and pressed fresh coconut. Base for curries and sweets, any season.",
+      "inputs": {
+        "coconut": 1
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 3,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "palm_sugar",
+      "display_name": "Palm Sugar",
+      "description": "Nam tan pip \u2014 sugarcane boiled slow over the clay stove into dark, rounded sugar.",
+      "inputs": {
+        "sugarcane": 2
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 4,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "nam_prik",
+      "display_name": "Nam Prik",
+      "description": "Chili dip pounded with fish sauce, shrimp paste, and palm sugar \u2014 the village table staple.",
+      "inputs": {
+        "chili": 2,
+        "fish_sauce": 1,
+        "shrimp_paste": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 9,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "kluay_buat_chi",
+      "display_name": "Kluay Buat Chi",
+      "description": "Banana simmered in sweet coconut milk with palm sugar \u2014 a gentle cool-season dessert.",
+      "inputs": {
+        "banana": 1,
+        "coconut_milk": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "som_tam",
+      "display_name": "Som Tam",
+      "description": "Pounded green papaya salad \u2014 chili, tomato, fish sauce, palm sugar. The real thing, now that papaya grows here.",
+      "inputs": {
+        "papaya": 2,
+        "tomato": 1,
+        "chili": 1,
+        "fish_sauce": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 9,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "tom_yum",
+      "display_name": "Tom Yum",
+      "description": "Sour-spicy soup, village style \u2014 no lemongrass in the valley yet, so chili and tomato carry the sour-hot balance, shrimp paste for depth.",
+      "inputs": {
+        "chili": 2,
+        "tomato": 1,
+        "fish_sauce": 1,
+        "shrimp_paste": 1
+      },
+      "stamina_cost": 7,
+      "harmony_reward": 10,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "tom_kha",
+      "display_name": "Tom Kha (Coconut Soup)",
+      "description": "Gentle coconut-milk soup with taro and chili. No galangal grown here yet, but the coconut carries it.",
+      "inputs": {
+        "coconut_milk": 1,
+        "taro": 1,
+        "chili": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 7,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "gaeng_kua",
+      "display_name": "Gaeng Kua (Eggplant Curry)",
+      "description": "Eggplant simmered in coconut milk, chili, and palm sugar. No curry paste yet \u2014 this is the kitchen's simplest version.",
+      "inputs": {
+        "eggplant": 1,
+        "coconut_milk": 1,
+        "chili": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "larb_salad",
+      "display_name": "Larb-style Herb Salad",
+      "description": "The village keeps this one meat-free \u2014 thai basil, ginger, and lettuce tossed with chili and palm sugar, no fish sauce needed.",
+      "inputs": {
+        "thai_basil": 1,
+        "ginger": 1,
+        "lettuce": 1,
+        "chili": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 7,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "tofu",
+      "display_name": "Tofu",
+      "description": "Soybean pressed and set at the clay stove. Any season.",
+      "inputs": {
+        "soybean": 3
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 3,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "khai_jiao",
+      "display_name": "Khai Jiao (Thai Omelette)",
+      "description": "Fried egg over rice \u2014 the village's everyday comfort plate.",
+      "inputs": {
+        "egg": 1,
+        "rice_grain": 1
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 5,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "pad_tofu",
+      "display_name": "Pad Tofu",
+      "description": "Tofu stir-fried with basil and chili \u2014 the vegetarian table's favorite.",
+      "inputs": {
+        "tofu": 1,
+        "thai_basil": 1,
+        "chili": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 7,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "pla_pao",
+      "display_name": "Pla Pao (Grilled Fish)",
+      "description": "Salt-grilled tilapia over the clay stove \u2014 simple, smoky. Any freshly caught fish works; this is the classic.",
+      "inputs": {
+        "pla_nin_mid": 1,
+        "fish_sauce": 1
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "pad_pak_bung",
+      "display_name": "Pad Pak Bung Fai Daeng",
+      "description": "Water spinach flash-fried with garlic and chili \u2014 the fastest dish in the kitchen. Any season.",
+      "inputs": {
+        "water_spinach": 2,
+        "garlic": 1,
+        "chili": 1
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 5,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "yam_thua_fak_yao",
+      "display_name": "Yam Thua Fak Yao",
+      "description": "Yardlong bean salad with peanut, chili, and fish sauce \u2014 sharp and crunchy.",
+      "inputs": {
+        "yardlong_bean": 2,
+        "peanut": 1,
+        "chili": 1,
+        "fish_sauce": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 7,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "nam_jim_satay",
+      "display_name": "Nam Jim Satay",
+      "description": "Peanut dipping sauce \u2014 coconut milk, palm sugar, chili. Goes with almost anything.",
+      "inputs": {
+        "peanut": 2,
+        "coconut_milk": 1,
+        "palm_sugar": 1,
+        "chili": 1
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 5,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "taeng_mo_pan",
+      "display_name": "Taeng Mo Pan",
+      "description": "Watermelon cooler with a touch of palm sugar \u2014 the hot season's simplest relief.",
+      "inputs": {
+        "watermelon": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 2,
+      "harmony_reward": 4,
+      "requires_infrastructure": "",
+      "season": "hot"
+    },
+    {
+      "id": "tom_som",
+      "display_name": "Tom Som (Sour Soup)",
+      "description": "Tomato-sour broth with taro and chili \u2014 tom yum's gentler cousin, no shrimp paste needed.",
+      "inputs": {
+        "tomato": 1,
+        "taro": 1,
+        "chili": 1,
+        "fish_sauce": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 6,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "pad_cabbage",
+      "display_name": "Pad Kalam Plee",
+      "description": "Cabbage stir-fried with garlic and fish sauce \u2014 a plain, honest side dish.",
+      "inputs": {
+        "cabbage": 2,
+        "garlic": 1,
+        "fish_sauce": 1
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 5,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "khao_tan",
+      "display_name": "Khao Tan",
+      "description": "Sesame rice crackers glazed with palm sugar \u2014 the market stall's favorite snack.",
+      "inputs": {
+        "sticky_rice_flour": 2,
+        "sesame": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 6,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "khanom_krok",
+      "display_name": "Khanom Krok",
+      "description": "Coconut rice pancakes off the clay stove \u2014 finally a use for milled rice flour.",
+      "inputs": {
+        "rice_flour": 2,
+        "coconut_milk": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 7,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "sangkhaya",
+      "display_name": "Sangkhaya",
+      "description": "Coconut-egg custard sweetened with palm sugar and buffalo milk \u2014 a slow, gentle dessert.",
+      "inputs": {
+        "egg": 1,
+        "buffalo_milk": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 5,
+      "harmony_reward": 8,
+      "requires_infrastructure": "",
+      "season": ""
+    },
+    {
+      "id": "kra_yasat",
+      "display_name": "Kra Yasat",
+      "description": "Sticky rice, peanut, and sesame bound in palm sugar \u2014 the Wan Sart merit-offering, made once a year.",
+      "inputs": {
+        "sticky_rice": 2,
+        "peanut": 1,
+        "sesame": 1,
+        "palm_sugar": 1
+      },
+      "stamina_cost": 6,
+      "harmony_reward": 9,
+      "requires_infrastructure": "",
+      "season": "cool"
+    },
+    {
+      "id": "wan_sart_basket",
+      "display_name": "Wan Sart Basket",
+      "description": "Ancestor offering \u2014 banana leaf fold over rice, Wan Sart morning.",
+      "inputs": {
+        "banana_leaf": 1,
+        "rice_grain": 2
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 3,
+      "requires_infrastructure": "",
+      "season": "cool"
+    },
+    {
+      "id": "goat_cheese",
+      "display_name": "Goat Cheese",
+      "description": "Goat milk set and pressed at the clay stove \u2014 sharper than buffalo milk, any season.",
+      "inputs": {
+        "goat_milk": 2
+      },
+      "stamina_cost": 4,
+      "harmony_reward": 4,
+      "requires_infrastructure": "",
+      "season": ""
     }
   ]
 }
