@@ -84,6 +84,36 @@ func _ensure_buffalo_race() -> void:
 	_ensure_forest()
 	# ISSUE-134: Lopburi monkey raid + Crop Truce (hot day 9).
 	_ensure_lopburi()
+	# TASK-303: race official stand — in-game entry to the Wing Kwai race.
+	_ensure_race_starter()
+	# TASK-304 scaffold (art): checkpoint flag course (z=-6, below actors).
+	_ensure_race_course()
+
+func _ensure_race_starter() -> void:
+	if get_node_or_null("RaceStarter") != null:
+		return
+	var scene: PackedScene = load("res://scenes/festival/RaceStarter.tscn")
+	if scene == null:
+		return
+	var starter: Node2D = scene.instantiate() as Node2D
+	if starter == null:
+		return
+	starter.name = "RaceStarter"
+	starter.position = Vector2(216, 552) # beside checkpoint 1 flag (168,528)
+	add_child(starter)
+
+func _ensure_race_course() -> void:
+	if get_node_or_null("WingKwaiCourse") != null:
+		return
+	var scene: PackedScene = load("res://scenes/festival/WingKwaiCourse.tscn")
+	if scene == null:
+		return
+	var course: Node2D = scene.instantiate() as Node2D
+	if course == null:
+		return
+	course.name = "WingKwaiCourse"
+	course.z_index = -6
+	add_child(course)
 
 func _ensure_lopburi() -> void:
 	if get_node_or_null("LopburiRaid") != null:
