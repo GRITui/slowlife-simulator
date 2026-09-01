@@ -26,8 +26,14 @@ func collect_egg() -> bool:
 		SignalBus.show_dialogue.emit("Chickens", "Hens are resting — eggs come tomorrow.")
 		return false
 	_last_egg_day = day
-	GameData.add_item("egg", 1)
-	SignalBus.show_dialogue.emit("Chickens", "+1 egg — warm from the nest.")
+	GameData.add_chicken_affinity(5)
+	SignalBus.chicken_affinity_changed.emit(GameData.chicken_affinity, GameData.chicken_hearts())
+	var egg_id: String = "egg_gold" if GameData.chicken_hearts() >= 3 else "egg"
+	GameData.add_item(egg_id, 1)
+	if egg_id == "egg_gold":
+		SignalBus.show_dialogue.emit("Chickens", "+1 golden egg — the hens know your footsteps. Hearts: %d!" % GameData.chicken_hearts())
+	else:
+		SignalBus.show_dialogue.emit("Chickens", "+1 egg — warm from the nest.")
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:

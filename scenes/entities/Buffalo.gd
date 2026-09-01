@@ -29,12 +29,16 @@ func interact() -> bool:
 		SignalBus.show_dialogue.emit("Buffalo", "Already tended today — the buffalo grazes contentedly.")
 		return false
 	_last_milk_day = day
-	GameData.add_item("buffalo_milk", 1)
 	var hearts_before: int = GameData.buffalo_hearts()
 	GameData.add_buffalo_affinity(5)
 	SignalBus.buffalo_affinity_changed.emit(GameData.buffalo_affinity, GameData.buffalo_hearts())
+	var milk_id: String = "buffalo_milk_high" if GameData.buffalo_hearts() >= 3 else "buffalo_milk"
+	GameData.add_item(milk_id, 1)
 	if GameData.buffalo_hearts() > hearts_before:
-		SignalBus.show_dialogue.emit("Buffalo", "The buffalo trusts you more. +1 milk — hearts: %d!" % GameData.buffalo_hearts())
+		if milk_id == "buffalo_milk_high":
+			SignalBus.show_dialogue.emit("Buffalo", "The buffalo trusts you deeply — rich golden milk fills the pail. Hearts: %d!" % GameData.buffalo_hearts())
+		else:
+			SignalBus.show_dialogue.emit("Buffalo", "The buffalo trusts you more. +1 milk — hearts: %d!" % GameData.buffalo_hearts())
 	else:
 		SignalBus.show_dialogue.emit("Buffalo", "The buffalo nuzzles you. +1 milk (hearts %d)." % GameData.buffalo_hearts())
 	return true

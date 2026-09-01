@@ -75,6 +75,15 @@ func add_buffalo_affinity(amount: int) -> void:
 func buffalo_hearts() -> int:
 	return int(buffalo_affinity / 25.0)
 
+# TASK-323 chicken affinity ('hearts'): mirrors buffalo pattern, 0..100.
+var chicken_affinity: int = 0
+
+func add_chicken_affinity(amount: int) -> void:
+	chicken_affinity = clampi(chicken_affinity + amount, 0, 100)
+
+func chicken_hearts() -> int:
+	return int(chicken_affinity / 25.0)
+
 # TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
 #   watering_can: watered plots also pre-advance growth (tier*30 effective
 #   minutes) and watering costs no stamina above tier 1.
@@ -130,7 +139,7 @@ var silver: int = 0
 ## Sell prices (silver per unit). Items not listed are not sellable.
 const SELL_PRICES: Dictionary = {
 	"rice_grain": 2, "sticky_rice": 4, "mango": 5, "durian": 8, "banana": 4,
-	"egg": 4, "buffalo_milk": 5, "goat_milk": 6, "wood": 3, "banana_leaf": 2,
+	"egg": 4, "buffalo_milk": 5, "buffalo_milk_high": 9, "egg_gold": 7, "goat_milk": 6, "wood": 3, "banana_leaf": 2,
 	"lotus_root": 5, "thai_basil": 3, "pandan_leaf": 3, "banana_leaf_stem": 2,
 	"thai_basil_stirfry": 14, "pandan_sticky_rice": 15, "mango_sticky_rice": 14,
 	"durian_sticky_rice": 18, "lotus_soup": 16, "banana_rice_cake": 12,
