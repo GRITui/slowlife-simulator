@@ -82,6 +82,18 @@ func _ensure_buffalo_race() -> void:
 	_ensure_quest_log()
 	# ISSUE-133: forest trees — wood gathering (axe bonus).
 	_ensure_forest()
+	# ISSUE-134: Lopburi monkey raid + Crop Truce (hot day 9).
+	_ensure_lopburi()
+
+func _ensure_lopburi() -> void:
+	if get_node_or_null("LopburiRaid") != null:
+		return
+	var script: GDScript = load("res://scenes/festival/LopburiRaid.gd")
+	if script == null:
+		return
+	var raid: Node = script.new()
+	raid.name = "LopburiRaid"
+	add_child(raid)
 
 func _ensure_forest() -> void:
 	var scene: PackedScene = load("res://scenes/entities/ForestTree.tscn")
