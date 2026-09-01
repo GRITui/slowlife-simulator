@@ -1558,6 +1558,23 @@
       "gate_audit": "PASS 2026-09-01 (issue-direct): requested enhancement on shipped system, zero-combat, assets/data ready. Order: effort ascending.",
       "github_issue_number": 116,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/116"
+    },
+    {
+      "id": "TASK-059",
+      "sprint": 14,
+      "category": "gameplay",
+      "title": "Marriage/wedding event system (romance payoff)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "narrative-lead",
+      "files": [
+        "scripts/autoload/GameData.gd",
+        "scenes/entities/RomanceNPC.gd",
+        "tests/test_wedding.gd"
+      ],
+      "notes": "#117. Cozy proposal + wedding festival event; cutscenes/jealousy out of scope.",
+      "completed_at": "2026-09-01",
+      "pr_number": 123
     }
   ]
 }
