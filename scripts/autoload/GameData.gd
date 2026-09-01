@@ -51,6 +51,7 @@ const BARTER_PAIRS: Dictionary = {
 	"coastal_1": ["rice_grain", "fish_sauce"],
 	"coastal_2": ["mango", "shrimp_paste"],
 	"coastal_3": ["lotus_root", "shrimp_paste"],
+	"tools_1": ["rice_grain", "axe"],
 }
 
 # Village dialogue / seasonal quest state (TASK-012) — cozy, no heavy exposition
