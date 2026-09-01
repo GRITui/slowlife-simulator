@@ -30,7 +30,18 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Gift first, then proposal check (romantic + krathong held), else talk.
 func try_interact() -> bool:
 	if GameData.married and GameData.spouse == npc_id:
-		SignalBus.show_dialogue.emit(display_name, "Home is wherever the two of us stop working. Let's head in soon.")
+		# TASK-282: marriage ceiling payoff — annual anniversary, cozy loop.
+		var tm: Node = SignalBus.time_manager
+		var year: int = int(tm.year()) if tm != null and tm.has_method("year") else 1
+		var key: String = "anniversary_%d_%s" % [year, npc_id]
+		if not GameData.active_quests.has(key):
+			GameData.active_quests[key] = {"stage": 1, "objectives_done": []}
+			GameData.add_silver(30)
+			GameData.add_harmony(10)
+			SignalBus.festival_triggered.emit("anniversary_" + npc_id)
+			SignalBus.show_dialogue.emit(display_name, "Happy anniversary, year %d — I saved up for us. (+30 silver, +10 harmony)" % year)
+		else:
+			SignalBus.show_dialogue.emit(display_name, "Home is wherever the two of us stop working. Let's head in soon.")
 		return true
 	if _give_gift():
 		return true
