@@ -220,3 +220,29 @@ static func get_affinity_tier(affinity: int) -> String:
 	if affinity >= 25:
 		return "friendly"
 	return "stranger"
+
+## TASK-054: per-NPC liked gifts. loved = +20 affinity + special line,
+## liked = +10, anything else food = +5 (v1 fallback).
+const GIFT_PREFERENCES: Dictionary = {
+	"niran": {"loved": ["mango_sticky_rice", "mango"], "liked": ["rice_grain", "sticky_rice", "thai_basil"]},
+	"fah": {"loved": ["pla_nin_mid", "lotus_soup", "lotus_root"], "liked": ["fish_sauce", "egg", "som_tam"]},
+	"elder": {"loved": ["lotus_root", "banana_rice_cake"], "liked": ["rice_grain", "thai_basil"]},
+	"child": {"loved": ["mango_sticky_rice", "durian"], "liked": ["egg", "banana"]},
+	"handler": {"loved": ["tom_yum", "fish_sauce"], "liked": ["rice_grain", "egg"]},
+}
+
+## Returns "loved" | "liked" | "neutral" for a given NPC + item.
+static func gift_tier(npc_id: String, item_id: String) -> String:
+	var prefs: Dictionary = GIFT_PREFERENCES.get(npc_id, {})
+	if (prefs.get("loved", []) as Array).has(item_id):
+		return "loved"
+	if (prefs.get("liked", []) as Array).has(item_id):
+		return "liked"
+	return "neutral"
+
+## Affinity delta per tier.
+static func gift_affinity(tier: String) -> int:
+	match tier:
+		"loved": return 20
+		"liked": return 10
+		_: return 5
