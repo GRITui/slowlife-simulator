@@ -2000,7 +2000,7 @@
     {
       "id": "TASK-316",
       "title": "Add 2 more quests for Niran and Fah using the newly wired QuestLog",
-      "status": "todo",
+      "status": "completed",
       "category": "gameplay",
       "owner": "narrative-lead",
       "files": [
@@ -2008,7 +2008,9 @@
         "scripts/persistence/QuestLog.gd"
       ],
       "priority": "medium",
-      "notes": "QA-auditor: QuestLog now correctly loads .tres and quests.json (11 quests), and offer_quest is wired. Next step is to add 2 more quests that use the new system to validate it: niran_harvest_challenge and fah_elusive_catch are already migrated but need giver wiring verification via playtest."
+      "notes": "QA-auditor: QuestLog now correctly loads .tres and quests.json (11 quests), and offer_quest is wired. Next step is to add 2 more quests that use the new system to validate it: niran_harvest_challenge and fah_elusive_catch are already migrated but need giver wiring verification via playtest.",
+      "completed_at": "2026-09-01",
+      "pr_number": 163
     },
     {
       "id": "TASK-317",
