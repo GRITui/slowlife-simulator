@@ -381,3 +381,51 @@ category from the role reassessment, discovered live.
   neither one is optional even when the other passes clean.
 - **Stop reason:** goal met (feature shipped, both bugs found and fixed
   before/after merge respectively).
+
+---
+
+## 2026-09-01 — Run 9 (Cline capability calibration — local Ollama vs. Cline's own cloud tier)
+
+- **Trigger:** project owner asked to test how much Cline + local Ollama
+  (`qwen2.5-coder:3b`) could actually handle, and whether any task is
+  worth giving it, before adding Cline to the pipeline as proposed.
+- **Test:** identical scope/difficulty to Run 4's very first OpenCode
+  trial (one dialogue line, one file, mirrors an existing pattern) —
+  chosen specifically so results are directly comparable across workers.
+  Task: update `WanSartTrigger.gd`'s offering dialogue to mention the
+  temple monk (the unimplemented half of Run 2's cultural note).
+- **`qwen2.5-coder:3b` via `cline -P ollama`:** 2 attempts, **0 real
+  edits.** Both times it printed a JSON-looking blob as plain
+  conversational text instead of invoking Cline's actual tool-call
+  protocol — on the second attempt the "edit" it hallucinated wasn't
+  even valid GDScript (a literal diff-style `-`/`+` line). This is a
+  genuine tool-calling reliability failure at this model size, not a
+  fluke — confirmed on retry.
+- **`qwen3.5:9b` via `cline -P ollama`:** timed out completely (180s+)
+  without finishing even one response. Too slow for practical agentic
+  use on this hardware, independent of quality.
+- **Control: `minimax/minimax-m3:free` via Cline's own `cline` provider**
+  (not Ollama — a separate cloud account/quota from OpenCode's OpenRouter
+  usage): worked perfectly on the first attempt. Real tool calls (read,
+  edit, re-read to verify), a correct scoped one-line diff, no git
+  commands run, and it self-verified before reporting done. This isolates
+  the failure to the **local Ollama models specifically** — Cline's CLI
+  harness itself is fine.
+- **Verdict:**
+  - **Local Ollama (this hardware, these models): not viable as a coding
+    delegate right now.** `qwen2.5-coder:3b` fails to reliably format
+    tool calls; the next size up (`qwen3.5:9b`) is too slow to finish.
+    Zero quota risk doesn't matter if it can't produce a usable edit.
+  - **Cline's own cloud tier (`minimax-m3:free` / `stealth/ox-alpha`) is
+    a genuinely good addition** — a real, separate-quota fallback tier
+    behind OpenCode's two providers, proven capable on a fair like-for-
+    like test.
+  - Recommend updating `AI-ENG-001`'s fallback chain to a 4-tier
+    OpenCode chain unchanged, **then Cline (cloud) as tier 5**, and
+    dropping local Ollama from the plan entirely rather than adding it
+    as a last-resort tier — it isn't one; it just fails differently.
+- **Integration outcome:** the calibration edit itself was correct and
+  worth keeping (matches Gemini's original Run 2 note) — merged directly,
+  `9e982d2`, pushed. `run_tests.gd` 100/100.
+- **Stop reason:** goal met — capability question answered with real
+  evidence, one incidental real fix shipped.

@@ -137,10 +137,15 @@ Honest version:
 The corrected three-way split (Claude / Gemini / OpenCode, table at the top
 of this doc) supersedes the original two-role framing.
 
-## OpenCode worker
+## OpenCode worker (and Cline, its fallback-chain partner)
 `opencode` (CLI, installed at `~/.opencode/bin/opencode`) runs a real coding
 agent loop — file read/write, tool use — against whichever free model is
-configured, unlike Gemini which never sees this repo at all.
+configured, unlike Gemini which never sees this repo at all. `cline` (CLI,
+installed at `/opt/homebrew/bin/cline`) is a second, independent coding
+agent CLI with its own separate cloud quota (`cline` provider) — added to
+the fallback chain (tier 6, [below](#model-selection--fallback-on-quota-exhaustion))
+after Run 9 proved it capable on a fair test. Everything in this section
+(isolation, prompt boundary) applies identically to both.
 
 ### Isolation
 Always run OpenCode in a **separate git worktree**, never directly against
@@ -179,10 +184,22 @@ tried in sequence when the current one reports a quota/rate-limit error:
 3. `opencode/minimax-m3` or `openrouter/minimax/minimax-m3:free` — fastest, low tool-call error rate
 4. `opencode/nemotron-3-ultra` (or `openrouter/nvidia/nemotron-3-ultra-550b-a55b:free`) — heavy fallback
 5. `opencode/nemotron-3-super` (or the `-120b` OpenRouter equivalent) — lightest, last resort
+6. **`cline -P cline -m minimax/minimax-m3:free`** (or `stealth/ox-alpha`) — a
+   genuinely separate worker + separate cloud quota pool from everything
+   above (different CLI, different account). Proven capable on a fair
+   like-for-like test (Run 9) when all five OpenCode options above are
+   quota-exhausted at once. Same isolation/mandatory-boundary rules as
+   OpenCode — see [Isolation](#isolation) and the prompt-boundary note.
 
 **Never fall back to:** `ling-3.0-flash-fin` (finance-tuned, not code) or
 `lfm-2.5-2.6b` (vendor-reported ~15.8% tool-call error rate) — flagged
-unsuitable in Run 3, not just lower-ranked.
+unsuitable in Run 3, not just lower-ranked. **Local Ollama models on this
+hardware are also excluded, tested and rejected, not just untried**
+(Run 9): `qwen2.5-coder:3b` failed to reliably format tool calls at all
+(2/2 attempts produced no real edit, one hallucinated an invalid diff-style
+blob instead of GDScript); `qwen3.5:9b` was too slow to finish a single
+response within 180s. Zero quota risk is irrelevant if the worker can't
+produce a usable edit — this isn't a "last resort," it's not viable.
 
 **Switch procedure:**
 1. Detect a quota/rate-limit error from the current model's invocation (HTTP
@@ -348,7 +365,8 @@ concrete, checkable condition instead of running forever unsupervised.
   - The end-game goal above is met.
   - Two consecutive Gemini calls fail (selector miss, timeout, unexpected
     page state) — don't retry indefinitely against a changed WebUI.
-  - All ranked OpenCode models are quota-exhausted in one run (see
+  - All ranked options (OpenCode's five, then Cline) are quota-exhausted
+    in one run (see
     [Model selection & fallback on quota exhaustion](#model-selection--fallback-on-quota-exhaustion))
     — switch models on quota hit, but don't retry forever once the whole
     ranked list is exhausted.
@@ -364,7 +382,7 @@ concrete, checkable condition instead of running forever unsupervised.
   user (not silently swallowed) — "stopped: goal met" / "stopped: iteration
   cap" / "stopped: consecutive failures" / "stopped: suspicious content" /
   "stopped: iteration cap, N items escalated to NEEDS_OWNER_REVIEW" /
-  "stopped: all OpenCode models quota-exhausted."
+  "stopped: all OpenCode/Cline options quota-exhausted."
 
 ## Human decision escalation (`NEEDS_OWNER_REVIEW`)
 Not everything reduces to a checkable verification rule — genuine game-
