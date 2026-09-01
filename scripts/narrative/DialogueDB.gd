@@ -52,7 +52,7 @@ const DIALOGUE: Dictionary = {
 			"So hot! Can we get mango sticky rice?",
 			"The buffalo is sleeping under the tree.",
 			"Songkran! Can we throw water at everyone today?",
-			"I really did see it! Long nose, clanking noise, by the forest edge. Nobody believes me but you, maybe?",
+			"Nong Ton says he knows every ghost story there is. Bet I could scare HIM with what I saw by the forest edge.",
 		],
 		"monsoon": [
 			"Puddles everywhere! I found a lotus leaf boat.",

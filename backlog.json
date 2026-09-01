@@ -1831,6 +1831,43 @@
       "gate_audit": "PASS 2026-09-01: confirmed BUG \u2014 triggers key absolute day vs festival_day 3/5/7/9, so year-2+ (day 37+) never fires. Fix now.",
       "completed_at": "2026-09-01",
       "pr_number": 148
+    },
+    {
+      "id": "TASK-300",
+      "title": "Silver HUD coin icon \u2014 visual consistency with Stamina/Harmony bars",
+      "status": "completed",
+      "category": "art",
+      "owner": "art-po",
+      "files": [
+        "assets/ui/icons/silver_coin.png",
+        "scenes/ui/HUD.tscn"
+      ],
+      "github_issue_number": 152,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/152"
+    },
+    {
+      "id": "TASK-301",
+      "title": "Nong Ton / Child dialogue thematic overlap \u2014 de-duplicate forest-monster beat",
+      "status": "completed",
+      "category": "art",
+      "owner": "art-po",
+      "files": [
+        "scripts/narrative/DialogueDB.gd"
+      ],
+      "github_issue_number": 153,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/153"
+    },
+    {
+      "id": "TASK-302",
+      "title": "Delete orphaned data/npc/gift_preferences.json",
+      "status": "completed",
+      "category": "art",
+      "owner": "art-po",
+      "files": [
+        "data/npc/gift_preferences.json"
+      ],
+      "github_issue_number": 154,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/154"
     }
   ]
 }

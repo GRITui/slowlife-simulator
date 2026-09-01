@@ -1,25 +1,17 @@
-# PO Inbox — directive from Head of Art (2026-09-01, round 7)
+# PO Inbox — directive from Head of Art (2026-09-01, round 10)
 
-## URGENT — TASK-054..060 duplicate work already completed, please redirect before executing
+## 1. PRIORITY BUG — Issue #146 — all 4 festivals fire exactly once, ever
 
-Noticed your own backlog scan created TASK-054..060 from the same 7 GitHub issues (#111-117) I opened, independently of this file. **TASK-055 (Wan Sart), TASK-056 (Goat), TASK-057 (Quest chain content) are duplicates of my already-completed TASK-252/253/250** — full content for all three already shipped and closed (kra_yasat recipe + dialogue, GoatNPC.tscn + goat_milk/goat_cheese, 5 QuestData resources). Please don't re-author the content — if these fire, redirect them to ONLY the engine-side piece each is actually missing (see item 4 below: goat interactable script + spawn point, Wan Sart trigger wiring; quest content has no engine piece left to build yet, it's just waiting on an objective-trigger system that doesn't exist). TASK-054 (gift preferences) already executed on top of my TASK-251 — checked `data/npc/gift_preferences.json` and it's still intact (all 7 NPCs present), so no harm there, but flagging the pattern so 055-057 don't repeat it.
+Found reasoning through the calendar length change, not caused by it. `FestivalManager.gd`, `SongkranTrigger.gd`, `WanSartTrigger.gd`, `LopburiRaid.gd` all check their trigger day against the absolute day counter (`minute_ticked`'s `day`, never resets), instead of the within-season day (`TimeManager.gd`'s private `_days_in_season`). Every festival — Loy Krathong, Songkran, Wan Sart, the Lopburi raid — fires once total across the entire game, then silently never again, no matter how many years pass. `_triggered_seasons`'s own dict-key naming implies per-season recurrence was always the intent; the day-comparison just never matched that intent. This is higher priority than anything else in this round — a festival calendar that only ever happens once undermines the whole point of a seasonal game.
 
-Ran a full gap assessment and opened 7 real GitHub issues (#111-117) with matching backlog entries (TASK-250..256) so these are tracked the same way everything else is. Claimed and closed the 4 art-lane ones already (TASK-250..253). The 3 remaining are pure engine scope:
+## 2. Calendar length changed: `season_duration_days` 10 → 30 (90 days/year)
 
-## 1. Issue #115 / TASK-254 — NPC daily schedules / movement AI
-Every NPC is stationary except MonkNPC (hardcoded temple_position) and CompanionNPC (follows player). No time-of-day movement/scheduling precedent exists.
+Owner-insisted, grounded in genre comparison (Stardew-class games run ~112 days/year; ours was 30). Reassessed the ripple effects before touching anything else: crop growth times and quest pacing don't need rebalancing — they were tuned in absolute days already, so the longer season actually *improves* their proportion rather than requiring rework. `PLAYER_JOURNEY.md` fully rewritten with the new 90-day-year math.
 
-## 2. Issue #116 / TASK-255 — Tool upgrade tiers
-No tool progression exists — machete/fishing_rod are binary has_item() gates. Suggested shape: `GameData.tool_tiers: Dictionary`, int per tool, affecting stamina/yield.
+## 3. New content: monsoon disaster quest, "The Canal Breaks"
 
-## 3. Issue #117 / TASK-256 — Marriage/wedding event system
-Natural next step now that TASK-052's affinity/gift MVP is live. Suggested v1: proposal interact at max affinity tier + a `GameData.married_to: String` flag, no cutscene required.
+`data/quests/canal_breaks.tres` + `flood_ward_charm` item + Handler dialogue, all shipped. Built as a one-time scripted quest (matches the existing QuestData pattern) rather than a true randomized recurring event — the owner's ask mentioned both framings ("disaster quest/random event"); the scripted version is what's buildable within art-lane scope right now. If a genuinely randomized, repeatable monsoon weather-event system is wanted later, that's a separate, larger engine ask (RNG-gated triggering distinct from the deterministic festival-day pattern) — not requesting it yet, just naming the fork in case it comes up.
 
-## 4. Two more small asks from this round's art work
+## 4. Still open from prior rounds, unaddressed
 
-- **Goat interactable** (`scenes/entities/GoatNPC.tscn` ready, no script) — same shape as `Buffalo.gd`/`ChickenCoop.gd`: interact → `GameData.add_item("goat_milk", 1)`, cooldown-gated. Needs a `Main.tscn` spawn point too.
-- **Wan Sart trigger** — `kra_yasat` recipe + elder/monk dialogue are ready (cool season). Same `FestivalManager.gd`-pattern trigger as Songkran, just gated on cool season instead of hot.
-
-## 5. Not a request — a warning about data loss this round
-
-Found and fixed **two real regressions** while validating this batch, both concurrent-edit casualties, not caused by my own work: `data/crops/jasmine_rice.tres` + 4 other crops had silently reverted to pre-rebalance growth times (and for 3 of them, their placeholder art references), and `data/recipes/recipes.json` had reverted from 30 recipes to its original 4-recipe baseline. Both fully repaired (all underlying art/icon files were untouched on disk — only the data files' text reverted). Flagging in case this points at something in the sync/rebase flow worth a look — two separate JSON/tres data files losing uncommitted-adjacent content in one session is a pattern, not a one-off.
+`VillagerNPC.gd`'s double signal-connect (noisy, not gate-breaking). `data/npc/gift_preferences.json` still orphaned next to `DialogueDB.gd`'s own live `GIFT_PREFERENCES`. The Nong Ton dialogue-line overlap between the generic Child NPC and the now-instanced `NongTonNPC` (issue #132) — still unresolved, Child still speaks the line that's now also "owned" by a dedicated character.

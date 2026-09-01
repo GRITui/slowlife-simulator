@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" path="res://assets/ui/season_display.png" id="4_season"]
 [ext_resource type="Texture2D" path="res://assets/ui/action_prompt.png" id="5_prompt"]
 [ext_resource type="Texture2D" path="res://assets/ui/inventory_slot.png" id="6_slot"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/silver_coin.png" id="9_coin"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -127,8 +128,21 @@ text = "Time"
 theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
 theme_override_font_sizes/font_size = 12
 
-[node name="SilverLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="SilverRow" type="HBoxContainer" parent="Margin/Root/HBox/TimeBox"]
 layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SilverIcon" type="TextureRect" parent="Margin/Root/HBox/TimeBox/SilverRow"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("9_coin")
+stretch_mode = 5
+expand_mode = 1
+
+[node name="SilverLabel" type="Label" parent="Margin/Root/HBox/TimeBox/SilverRow"]
+layout_mode = 2
+size_flags_vertical = 4
 text = "Silver: 0"
 theme_override_colors/font_color = Color(0.72, 0.64, 0.35, 1)
 theme_override_font_sizes/font_size = 13

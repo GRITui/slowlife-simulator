@@ -1,87 +1,93 @@
 # PLAYER JOURNEY — Three Years in Ban Suan Chai
 
-**Revised 2026-09-01** after the calendar change (`season_duration_days` 10 → 30). A skeleton timeline of what a player experiences, grounded in the real calendar (`TimeManager.gd`: 30 days/season × 3 seasons = **90 days/year**, hot → monsoon → cool, repeating). Not a script — a shape. Festival day-numbers are real (`FestivalManager.gd`/`SongkranTrigger.gd`/`WanSartTrigger.gd`/`LopburiRaid.gd`); everything else is paced by feel.
+**Revised 2026-09-01, round 3** — this pass reflects what's actually shipped, not what's planned. Since the last revision, engine-lane closed out the entire Wing Kwai, Phi Ta Khon, and Lopburi arcs, fixed the festival-recurrence bug, added the silver currency economy, and shipped all three previously-deferred long-term-play payoffs (repetition, fishing ceiling, romance ceiling). The skeleton below is now mostly a map of real systems, not speculation.
 
----
-
-## Why the calendar changed
-
-The original 10-day season (30-day year) compressed everything into roughly a third of genre-standard pacing (Stardew-class games run ~28 days/season, ~112/year). At 30 days/season, "3 years" is now **270 days**, not 90 — three times the room for the same content to breathe.
-
-**Reassessed the ripple effects before touching anything else — most of it turned out fine:**
-- **Crop growth times unchanged, and don't need to be.** They were already tuned in absolute days (quick tier 3 days, up to durian's 6), which was ~30-60% of the old 10-day season — cramped. At 30 days/season, the same absolute times are now ~10-20% of a season, which is *closer* to genre norms, not further. The season length was the problem, not the crop timings.
-- **Quest pacing unaffected or improved** — nothing in `QuestData` is day-gated; Monk's "3 non-consecutive Binthabat days" gets easier to pace naturally, not harder.
-- **Fishing skill and affinity progression** — no day-gating either, just event-driven. Unaffected.
-
-**One real bug found while checking this, not caused by the calendar change:** all four festival triggers (`FestivalManager.gd` day 7, `SongkranTrigger.gd` day 3, `WanSartTrigger.gd` day 5, `LopburiRaid.gd` day 9) check against the **absolute day counter** (`minute_ticked`'s `day`, the one HUD shows as "Day 47" and never resets) instead of the within-season day. That means every festival fires **exactly once in the entire game**, on whatever absolute day it happens to land on, then silently never again — no matter how many years pass. This was always broken, just easy to miss without a multi-year playthrough. Flagged to `PO_INBOX.md`, not fixed here (control-flow logic, outside art-lane scope) — but it's the single most important fix for this timeline to actually hold up, since without it, a player's *second* Songkran never happens.
+Calendar: `TimeManager.gd` — 30 days/season × 3 seasons (hot → monsoon → cool) = **90 days/year**. `day_of_season()` and `year()` are the real APIs everything (festivals, veteran scaling) keys on now.
 
 ---
 
 ## Year 1 — Learning the valley (Days 1–90)
 
 **Hot (Days 1–30)**
-- Day 1: wake on the Title Screen, spawn at map center. Starting inventory: rice, seed_rice, a machete. Jasmine rice is the only default-plantable crop until a different seed is held (TASK-043's generalized planting).
-- **Day 3 — Songkran** (assuming the recurrence bug above is fixed; otherwise this is the *only* Songkran the player will ever see). First festival, whole village gets splashed.
-- Meet the core five: Elder, Child, Handler, Monk, Trader.
+- Day 1: wake at map center. Starting inventory: rice, seed_rice, a machete.
+- **Day 3 — Songkran.** Confirmed recurring now (see "The bug that's now fixed" below) — this is the first of many, not the only one.
+- Meet the core five: Elder, Child, Handler, Monk, Trader. Village Headman and Vet also live from the start now (instanced for Wing Kwai/animal care).
 - First Binthabat offering (05:00–07:30 window).
-- With 30 days now instead of 10, there's real room to plant, grow, and harvest jasmine rice multiple times before the season turns — the "farming" part of a farming sim finally has space to repeat and improve within a single season.
+- Barter economy active (`GameData.BARTER_PAIRS`) — **silver doesn't exist yet** narratively; the market stall handles both barter and, once a player has sellable surplus, silver sale (see Economy section).
 
 **Monsoon (Days 31–60)**
 - Lotus root, pandan, water spinach open up.
-- **New: "The Canal Breaks."** Handler warns the rising water is outpacing the sluice gate; gather wood, report to him, help reinforce the bank before it floods. Zero-combat "disaster" framing — a race against weather, not a fight. Reward: a flood-ward charm + solid harmony.
-- **Quest: "The Elder's Request"** reachable — harvest jasmine rice, offer it at Binthabat.
-- Buffalo care loop running (hearts, 0–100 in 25-point steps).
-- First market barter, first taste of the coastal-goods offers.
+- **"The Canal Breaks"** — Handler's disaster quest. Gather wood, report, reinforce the bank before it floods. Reward: flood-ward charm + harmony. Wood-gathering (the resource system, axe tool) is the same system Lopburi's raid economy will later use — this quest is effectively the tutorial for it.
+- **"The Elder's Request"** — harvest jasmine rice, offer at Binthabat.
+- Buffalo care loop running; affinity hearts (0–100, 25/heart, 4 hearts max) visible from day one now.
+- First silver sale at the market stall, once there's surplus to sell.
 
 **Cool (Days 61–90)**
 - Thai basil, garlic, lettuce, cabbage, tomato open up.
-- **Day 5 (Wan Sart)** and **Day 7 (Loy Krathong)** — both land early in the 30-day cool season now, leaving 20+ days of "aftermath" to actually feel the harmony payoff rather than immediately rushing into the next season.
+- **Wan Sart (day 5)** and **Loy Krathong (day 7)** — both early in the season, real breathing room afterward.
 - Fishing rod obtainable, skill starts at 1.
-- Meet Niran and Fah — "stranger" tier.
+- Meet Niran and Fah — "stranger" tier. Meet Nong Ton and Uncle Somchai (now fully instanced, speaking NPCs, not scaffolds).
 
-*End of Year 1: every core system introduced, one full quest and one new disaster-quest closed, both festivals experienced once (pending the bug fix, which is what makes "once" become "every year").*
+*End of Year 1: full core loop, one scripted quest, one disaster quest, two festivals experienced once — all four confirmed to fire again next year.*
 
 ---
 
-## Year 2 — Depth and relationships (Days 91–180)
+## Year 2 — Depth, economy, and Wing Kwai (Days 91–180)
 
 **Hot (Days 91–120)**
-- Full hot-season roster: chili, sesame, peanut, sugarcane, watermelon, mango, durian, papaya, banana, coconut.
-- **Quest: "Fah's Elusive Catch"** — needs fishing skill past 1, realistic by now with 90 extra days of practice behind the player.
-- **Quest: "Phi Ta Khon"** — Nong Ton and Uncle Somchai, both real NPCs now.
-- **Wing Kwai** — `stamina_mash`, the race itself, and the big payoff: mounted buffalo riding + instant 3×3 auto-plow. The single biggest quality-of-life jump in the game; farming speed changes from here on.
-- Niran/Fah likely at "friendly" tier with regular gifting (per-NPC preference tables now cover all 7 social NPCs).
+- Full hot-season crop roster live: chili, sesame, peanut, sugarcane, watermelon, mango, durian, papaya, banana, coconut.
+- **"Fah's Elusive Catch"** — realistic now with a season of fishing practice behind the player.
+- **Phi Ta Khon quest** — Nong Ton and Uncle Somchai are real NPCs with their own dialogue branches now, not placeholders.
+- **Wing Kwai, fully built:** stamina-mash race minigame, then the payoff — mounted buffalo riding with an instant 3×3 auto-plow. This is the single biggest farming-speed jump in the game, and it's live from here on, not a "someday" system.
+- Niran/Fah likely "friendly" tier, regular gifting against the real per-NPC preference table.
 
 **Monsoon (Days 121–150)**
 - Taro, ginger round out the wet-season set.
-- **Quest: "Niran's Harvest Challenge"** — durian's 6-day final stage is no longer a season-dominating commitment at this length; realistic to complete alongside everything else.
-- Second Canal Breaks-style monsoon should feel routine by now if the recurrence bug is fixed — competence, not crisis.
-- Tool tiers climbing (can/hoe/sickle).
+- **"Niran's Harvest Challenge"** — durian's 6-day final stage is a comfortable commitment at this calendar length.
+- Second Canal Breaks-style monsoon should read as competence, not crisis, by now.
+- Tool tiers climbing (can/hoe/sickle) — barter-priced in rice_grain, coexists with the silver economy.
 
 **Cool (Days 151–180)**
-- **Quest: "Trader's Coastal Order"** — fish_sauce now a routine market good.
-- **Quest: "Monk's Morning Merit"** — a patience quest that finally has the calendar room to feel like patience rather than a scramble.
-- Niran/Fah likely at "close" tier.
+- **"Trader's Coastal Order"** — fish_sauce now a routine sellable/market good.
+- **"Monk's Morning Merit"** — a patience quest with room to actually feel like patience.
+- **"Lopburi Monkey Banquet," fully built:** wood-gathering economy, the monkey raid event itself, and the "Crop Truce" buff that resolves the donation step peacefully — no combat, no chase, matches the zero-harm pillar exactly as designed.
+- Niran/Fah likely "close" tier.
 
 ---
 
-## Year 3 — Payoff and legacy (Days 181–270)
+## Year 3 — Systems designed to keep paying off (Days 181–270)
+
+This is the section that changed most. The three findings that used to live here as *deferred, low-priority, pending playtest* (issues #143–145 / TASK-280–282) are no longer deferred — they shipped, this round, as real systems:
+
+- **Repetition softening (TASK-280):** veteran-year scaling. Each completed year adds +1 flat harvest yield (cap +3 at Year 4+), plus a veteran-flavored dialogue branch. No new content chain needed — the existing loop quietly gets more generous the longer you've played.
+- **Fishing ceiling payoff (TASK-281):** at skill 4, catches get a big-fish bias (0.55) and a flat +5 silver "mastery tip" per catch. Maxing the skill now has a tangible payoff instead of just unlocking rarer entries in `fish.json`.
+- **Romance ceiling payoff (TASK-282):** married NPCs now trigger a yearly anniversary event — +30 silver, +10 harmony, a dedicated event line — once per year, with a cozy daily fallback line the rest of the year. Marriage was previously the ceiling; now it's a floor with its own repeating beat.
 
 **Hot (Days 181–210)**
-- **Quest: "Lopburi Monkey Banquet"** — the donation step is trivial by now given three years of crop surplus; "Crop Truce" buff resolves it peacefully.
-- Rare and legendary fish (Mekong Giant Catfish, Golden Mahseer) realistic targets at skill 3–4.
-- Third Songkran — "romantic" tier dialogue live if affinity's been maintained.
+- Third Songkran. Romantic-tier dialogue live if affinity's been maintained, now with the anniversary system layered on top if married.
+- Rare/legendary fish (Mekong Giant Catfish, Golden Mahseer) realistic at skill 3–4, with the mastery tip making the grind pay literal dividends.
 
 **Monsoon (Days 211–240)**
-- No new unlocks by design — this is where the loop should feel *complete*, not expanding. Full rotation: multi-crop farming with the mount, three animals, a fishing habit, a deepening relationship, a recipe book covering all 27 crops.
+- No new unlocks by design — full rotation: mount-assisted multi-crop farming, three animals, a fishing habit with a real payoff curve, a maturing relationship with its own yearly beat, a recipe book covering all 27 crops, a functioning dual economy (barter + silver).
 
 **Cool (Days 241–270)**
-- Third full festival cycle. Still the natural horizon for whatever's next — marriage payoff, a legendary-fish milestone, or nothing at all if the loop is meant to simply continue, genre-standard style.
+- Third full festival cycle — confirmed recurring, not a one-off anymore.
+- Veteran yield bonus at its cap. The natural horizon for whatever comes next.
 
 ---
 
-## What's still true, even at 3x the length
+## The bug that's now fixed
 
-The three low-priority findings from the original version of this document (issues #143–145: long-term repetition, fishing-skill ceiling, romance ceiling) are **not resolved by the calendar change alone** — they're just proportionally further away now (Day 270+ instead of Day 91+). The calendar fix bought real room, not a permanent answer. Still deferred, same reasoning as before: build them once there's actual play data, not guesses.
+Round 2 of this document flagged that all four festival triggers compared against the absolute day counter instead of the within-season day, so every festival could only ever fire once, total, across the whole game. That's fixed (`TASK-292`, PR #148): `TimeManager.day_of_season()` and `TimeManager.year()` are now the real APIs, each trigger keys its "already fired" dictionary on `year-season`, and all three festivals plus the Lopburi raid confirmed re-firing correctly year over year. Everything above that says "third Songkran" or "third festival cycle" is now something the game actually does, not something it should do.
 
-**New, higher-priority than any of those three:** the festival-recurrence bug. Everything in this document assumes festivals repeat every year — right now, in the actual codebase, they don't.
+## The bigger change: a currency economy exists now
+
+Earlier rounds of this document treated zero-currency as a fixed design pillar — the Lopburi quest's literal reward was deliberately reworked away from a currency payout for that reason. That decision has since been reversed at the owner's direct order (`ISSUE-135`, ["Owner decision reversal on #135 (no-currency → silver) per user order"]) — a silver wallet, sell prices, and a buy counter now sit alongside the original barter system rather than replacing it. Every quest/system reward above that lists silver is describing this new economy, not barter goods.
+
+## What's still genuinely open
+
+Two small items survive from prior rounds, both minor:
+- `data/npc/gift_preferences.json` is still an orphaned file — zero references anywhere in the codebase, superseded by `DialogueDB.GIFT_PREFERENCES`.
+- Nong Ton's forest-monster/ghost-story line and the generic Child NPC's forest-sighting line cover overlapping thematic ground now that Nong Ton is a real speaking NPC rather than a silent scaffold — not a bug, just a content-polish overlap.
+
+Both are covered in the gap discussion below.
