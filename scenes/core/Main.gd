@@ -80,6 +80,23 @@ func _ensure_buffalo_race() -> void:
 	_ensure_peer_npcs()
 	# TASK-057: quest chains (QuestLog listens for objective events).
 	_ensure_quest_log()
+	# ISSUE-133: forest trees — wood gathering (axe bonus).
+	_ensure_forest()
+
+func _ensure_forest() -> void:
+	var scene: PackedScene = load("res://scenes/entities/ForestTree.tscn")
+	if scene == null:
+		return
+	for cell: Vector2i in [Vector2i(18, 3), Vector2i(18, 5), Vector2i(19, 4)]:
+		var name: String = "ForestTree%d_%d" % [cell.x, cell.y]
+		if get_node_or_null(name) != null:
+			continue
+		var tree: Node2D = scene.instantiate() as Node2D
+		if tree == null:
+			continue
+		tree.name = name
+		tree.position = Vector2(cell.x * 48 + 24, (cell.y + 1) * 48)
+		add_child(tree)
 
 func _ensure_quest_log() -> void:
 	if get_node_or_null("QuestLog") != null:
