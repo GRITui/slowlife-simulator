@@ -55,6 +55,24 @@ time-elapsed.
       Code Quality Review caught a real editing-corruption bug and
       confirmed two established bug classes stayed clean this time.
       See `ops/ai-eng-log.md` run 10.
+
+### Remaining sprint plan (3 sprints to close out Phase 2)
+Ordered smallest/best-understood first, most design-sensitive last — not
+task-number order.
+
+- [ ] **Sprint 1 — TASK-323 split B** (breeding/incubator). Builds directly
+      on split A's already-shipped chicken/buffalo affinity work
+      (`76f922c`) — smallest remaining scope, natural continuation.
+- [ ] **Sprint 2 — TASK-325** (pets/mounts: dog training, horse
+      riding/racing). Self-contained, no dependency on the other two
+      remaining items. Lower priority per the original gap analysis but
+      well-scoped.
+- [ ] **Sprint 3 — TASK-324** (rivals + life progression: pregnancy,
+      childbirth, toddler stages). Biggest and most narratively-sensitive
+      remaining item — includes the rival-pressure design tension already
+      resolved (owner decision 2026-09-01, full scope approved). Saved for
+      last so it lands with the most accumulated context/momentum, not
+      because it's less important.
 - [ ] TASK-323 split B (breeding/incubator), 324, 325 —
       remaining approved backlog items
 - [ ] All MVP-scope systems implemented + headless-tested
