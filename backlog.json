@@ -2056,7 +2056,7 @@
     {
       "id": "TASK-320",
       "title": "Quest objective completion wiring (9 migrated quests, 22 IDs)",
-      "status": "todo",
+      "status": "completed",
       "category": "gameplay",
       "owner": "backend-automation",
       "files": [
@@ -2068,7 +2068,9 @@
       "priority": "high",
       "github_issue_number": 158,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158",
-      "notes": "PO_INBOX r14 reopen: offer_quest now wired but 22 objective IDs unwired. Wire each to real event/handler and ensure TraderNPC instanced. Approved for next step."
+      "notes": "PO_INBOX r14 reopen: offer_quest now wired but 22 objective IDs unwired. Wire each to real event/handler and ensure TraderNPC instanced. Approved for next step.",
+      "completed_at": "2026-09-01",
+      "pr_number": 170
     }
   ]
 }
