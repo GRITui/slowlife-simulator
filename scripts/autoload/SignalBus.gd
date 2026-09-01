@@ -41,3 +41,5 @@ signal craft_completed(item_id: String, qty: int)
 signal silver_changed(silver: int)
 # TASK-311: emitted on buffalo interact (affinity, hearts) — HUD hearts UI.
 signal buffalo_affinity_changed(affinity: int, hearts: int)
+# TASK-317: emitted on tool upgrade (tool_id, new_tier) — HUD tier display.
+signal tool_upgraded(tool_id: String, new_tier: int)
