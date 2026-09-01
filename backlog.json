@@ -1319,6 +1319,62 @@
       "notes": "Engine gap audit 2026-09-01: CI ran 2 of 16+ suites. Single source of truth.",
       "completed_at": "2026-09-01",
       "pr_number": 103
+    },
+    {
+      "id": "TASK-047",
+      "sprint": 11,
+      "category": "mechanics",
+      "title": "Market multi-offer: OFFERS -> per-season list (fish_sauce/shrimp_paste; unblocks nam_prik/som_tom/tom_yum)",
+      "status": "todo",
+      "priority": "high",
+      "owner": "narrative-lead",
+      "files": "scripts/market/MarketManager.gd, scenes/entities/MarketStallNPC.gd, tests/run_tests.gd",
+      "notes": "PO_INBOX r5 #1 PRIORITY: Dictionary[String, Array[Dictionary]], coastal-trade goods seeded hot/monsoon, reader iteration + availability-aware pick. Unblocks 3 recipes.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
+      "completed_at": "",
+      "pr_number": 0
+    },
+    {
+      "id": "TASK-048",
+      "sprint": 11,
+      "category": "gameplay",
+      "title": "CompanionNPC follow behavior \u2014 CatCompanion live (deferral brought back)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": "scenes/entities/CompanionNPC.gd, scenes/core/Main.gd",
+      "notes": "PO_INBOX r4/r5 #4 deferred twice by PO; CatCompanion.tscn + cat sprites now exist. Follow/leash: move toward player past leash, idle within, teleport when far; ground_at water avoid.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
+      "completed_at": "",
+      "pr_number": 0
+    },
+    {
+      "id": "TASK-049",
+      "sprint": 11,
+      "category": "mechanics",
+      "title": "ChickenCoop \u2014 daily egg interact (Buffalo mirror, no-harm protein)",
+      "status": "todo",
+      "priority": "medium",
+      "owner": "narrative-lead",
+      "files": "scenes/entities/ChickenCoop.gd, scenes/core/Main.gd",
+      "notes": "PO_INBOX r5 #5: ChickenCoop.gd mirror of Buffalo.gd; egg once/day (daily-limited, not unlimited); spawn in pasture.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
+      "completed_at": "",
+      "pr_number": 0
+    },
+    {
+      "id": "TASK-050",
+      "sprint": 11,
+      "category": "gameplay",
+      "title": "Fishing catch + skill/XP \u2014 20-species roster live",
+      "status": "todo",
+      "priority": "high",
+      "owner": "narrative-lead",
+      "files": "scripts/interactables/FishingSpot.gd, data/fish/fish.json, scripts/autoload/GameData.gd",
+      "notes": "PO_INBOX r5 #5/#6: water-adjacent detect via WorldRender.ground_at, rod-gated (starting inventory), season+skill-gated roll over fish.json (20 species x 3 sizes), GameData.fishing_skill 1-4.",
+      "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
+      "completed_at": "",
+      "pr_number": 0
     }
   ]
 }
