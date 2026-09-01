@@ -35,7 +35,14 @@ func _try_barter() -> void:
 	if offers.is_empty():
 		SignalBus.show_dialogue.emit("Trader", "No trade today. Come back another time.")
 		return
+	# TASK-047: multiple goods per season — trade the first offer the player
+	# can actually fulfill; fall back to the first offer for the soft-fail
+	# nudge (keeps the cozy guidance without arbitrary gating).
 	var offer: Dictionary = offers[0]
+	for candidate: Dictionary in offers:
+		if GameData.has_item(String(candidate.get("have", "")), 1):
+			offer = candidate
+			break
 	var have_id: String = String(offer.get("have", ""))
 	var want_id: String = String(offer.get("want", ""))
 	if have_id.is_empty() or want_id.is_empty():
