@@ -1413,6 +1413,26 @@
       "notes": "PO_INBOX r6 #2. Marriage/jealousy explicitly out of scope.",
       "completed_at": "2026-09-01",
       "pr_number": 108
+    },
+    {
+      "id": "TASK-052",
+      "sprint": 12,
+      "category": "gameplay",
+      "title": "Peer NPCs Niran + Fah instanced (RomanceNPC, y-sort 40)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/entities/RomanceNPC.gd",
+        "scenes/entities/NiranNPC.tscn",
+        "scenes/entities/FahNPC.tscn",
+        "scenes/core/Main.gd",
+        "tests/test_peer_npcs.gd",
+        "tests/perf/test_mobile_budget.gd"
+      ],
+      "notes": "PO_INBOX r6 #1 PRIORITY. 4-tier dialogue live via affinity.",
+      "completed_at": "2026-09-01",
+      "pr_number": 109
     }
   ]
 }
