@@ -1757,14 +1757,16 @@
       "sprint": 18,
       "category": "design",
       "title": "No payoff for maxing fishing skill (deferred pending playtest)",
-      "status": "todo",
+      "status": "completed",
       "priority": "low",
       "owner": "unclaimed",
       "files": [],
       "notes": "Not claimed by art-po or engine. Deferred by owner decision until human playtest data exists. Issue #144.",
       "github_issue_number": 144,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/144",
-      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix."
+      "gate_audit": "PASS 2026-09-01: small payoff systems on shipped primitives, ordered after the bug fix.",
+      "completed_at": "2026-09-01",
+      "pr_number": 149
     },
     {
       "id": "TASK-282",
