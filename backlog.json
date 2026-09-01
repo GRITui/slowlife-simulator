@@ -1916,7 +1916,7 @@
     {
       "id": "TASK-311",
       "title": "BUG: buffalo affinity/hearts fully disconnected from gameplay",
-      "status": "todo",
+      "status": "completed",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1925,7 +1925,9 @@
       ],
       "github_issue_number": 159,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/159",
-      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
+      "completed_at": "2026-09-01",
+      "pr_number": 162
     },
     {
       "id": "TASK-312",
