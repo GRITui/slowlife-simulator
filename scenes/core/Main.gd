@@ -64,6 +64,18 @@ func _ready() -> void:
 	_ensure_chicken_coop()
 	# TASK-050: fishing spot on the canal; rod ships in inventory (decision).
 	_ensure_fishing_spot()
+	# TASK-270: Wing Kwai buffalo race (mounted minigame).
+	_ensure_buffalo_race()
+
+func _ensure_buffalo_race() -> void:
+	if get_node_or_null("BuffaloRace") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/BuffaloRace.gd")
+	if script == null:
+		return
+	var race: Node = script.new()
+	race.name = "BuffaloRace"
+	add_child(race)
 	# TASK-052: peer NPCs Niran + Fah (romance candidates).
 	_ensure_peer_npcs()
 	# TASK-057: quest chains (QuestLog listens for objective events).
