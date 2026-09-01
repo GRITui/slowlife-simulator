@@ -41,6 +41,7 @@ func _on_minute_ticked(day: int, hour: int, _minute: int) -> void:
 	_spawn_splash()
 	SignalBus.festival_triggered.emit("songkran")
 	SignalBus.show_dialogue.emit("Child", "Songkran! Happy New Year — you're soaked!")
+	SignalBus.show_dialogue.emit("Elder", "Rod Nam Dum Hua — the scented water honors those who came before us.")
 
 func _spawn_splash() -> void:
 	if _splash != null:
