@@ -12,7 +12,7 @@ id = "jasmine_rice"
 display_name = "Jasmine Rice"
 description = "Staple Isan crop. Monsoon bonus 1.4x, Hot wilt if unwatered."
 stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
-growth_minutes_per_stage = Array[int]([120, 180, 240, 0])
+growth_minutes_per_stage = Array[int]([1440, 1440, 2880, 0])
 total_stages = 4
 season_yield_multiplier = {
 "hot": 0.8,

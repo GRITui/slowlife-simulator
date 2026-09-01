@@ -1,104 +1,25 @@
-this is owner ( Human )
-PO please apply these 3 quests to our game/ may adjust a bit to fit with game
+# PO Inbox — directive from Head of Art (2026-09-01, round 7)
 
-Quest Design Specifications: Thai Festival Quests
-Quest 1: Wing Kwai (Buffalo Racing Festival)
-Quest Title: The Mud and the Glory
+## URGENT — TASK-054..060 duplicate work already completed, please redirect before executing
 
-Festival: Wing Kwai (Buffalo Racing Festival)
+Noticed your own backlog scan created TASK-054..060 from the same 7 GitHub issues (#111-117) I opened, independently of this file. **TASK-055 (Wan Sart), TASK-056 (Goat), TASK-057 (Quest chain content) are duplicates of my already-completed TASK-252/253/250** — full content for all three already shipped and closed (kra_yasat recipe + dialogue, GoatNPC.tscn + goat_milk/goat_cheese, 5 QuestData resources). Please don't re-author the content — if these fire, redirect them to ONLY the engine-side piece each is actually missing (see item 4 below: goat interactable script + spawn point, Wan Sart trigger wiring; quest content has no engine piece left to build yet, it's just waiting on an objective-trigger system that doesn't exist). TASK-054 (gift preferences) already executed on top of my TASK-251 — checked `data/npc/gift_preferences.json` and it's still intact (all 7 NPCs present), so no harm there, but flagging the pattern so 055-057 don't repeat it.
 
-Season: Mid-Autumn (October)
+Ran a full gap assessment and opened 7 real GitHub issues (#111-117) with matching backlog entries (TASK-250..256) so these are tracked the same way everything else is. Claimed and closed the 4 art-lane ones already (TASK-250..253). The 3 remaining are pure engine scope:
 
-Prerequisites:
+## 1. Issue #115 / TASK-254 — NPC daily schedules / movement AI
+Every NPC is stationary except MonkNPC (hardcoded temple_position) and CompanionNPC (follows player). No time-of-day movement/scheduling precedent exists.
 
-Own at least one adult Water Buffalo.
+## 2. Issue #116 / TASK-255 — Tool upgrade tiers
+No tool progression exists — machete/fishing_rod are binary has_item() gates. Suggested shape: `GameData.tool_tiers: Dictionary`, int per tool, affecting stamina/yield.
 
-Buffalo must have minimum Level 3 Affection (3 Hearts).
+## 3. Issue #117 / TASK-256 — Marriage/wedding event system
+Natural next step now that TASK-052's affinity/gift MVP is live. Suggested v1: proposal interact at max affinity tier + a `GameData.married_to: String` flag, no cutscene required.
 
-Story & Lore: The local village holds a traditional buffalo race to celebrate the end of the hard plowing season. The reigning champion, a boastful veteran farmer named Uncle Preecha, teases you for being a novice and challenges you to enter your own buffalo to prove your farming prowess.
+## 4. Two more small asks from this round's art work
 
-Quest Steps:
+- **Goat interactable** (`scenes/entities/GoatNPC.tscn` ready, no script) — same shape as `Buffalo.gd`/`ChickenCoop.gd`: interact → `GameData.add_item("goat_milk", 1)`, cooldown-gated. Needs a `Main.tscn` spawn point too.
+- **Wan Sart trigger** — `kra_yasat` recipe + elder/monk dialogue are ready (cool season). Same `FestivalManager.gd`-pattern trigger as Songkran, just gated on cool season instead of hot.
 
-Registration: Talk to the Village Headman one week before the festival to register your buffalo.
+## 5. Not a request — a warning about data loss this round
 
-Special Diet: Speak to the local vet, who recommends crafting a "Stamina Mash" (Requires: 5x Rice, 2x Sugarcane, 1x Rare Herb) to feed your buffalo the night before the race.
-
-The Race (Minigame): Compete in a mud-track racing minigame where you balance speed and stamina while dodging mud pits and hay bales.
-
-Rewards:
-
-Champion's Yoke: Unlocks the ability to ride your buffalo and instantly plow a 3x3 grid of soil until the next year's festival.
-
-Affection Boost: +100 Affection points with your Water Buffalo (+50 if you don't win 1st place).
-
-Quest 2: Phi Ta Khon (Ghost Festival)
-Quest Title: The Phantom in the Palms
-
-Festival: Phi Ta Khon (Ghost Festival)
-
-Season: Early Summer (June/July)
-
-Prerequisites:
-
-Achieve Level 2 friendship with Nong Ton.
-
-Triggers automatically 3 days before the festival begins.
-
-Story & Lore: A terrified young boy, Nong Ton, claims he saw a long-nosed monster near the forest edge, causing panicking villagers to lock their doors early. The Elder asks you to investigate the sightings, calm down the village, and uncover the truth behind the "haunting."
-
-Quest Steps:
-
-Interview the Witness: Speak to Nong Ton at the playground to gather details about the creature's appearance and strange clanking noises.
-
-Examine the Scene: Inspect three clues at the forest boundary: human footprints, a dropped brass bell (Mak Krapruan), and a trail of coconut husk shavings and paint.
-
-Confront the "Ghost": Follow the trail to Uncle Somchai's shop, where you catch him secretly testing out his handcrafted festival mask made from sticky rice steamers.
-
-Solve the Mystery: Escort Uncle Somchai to Nong Ton to show him how the mask works and clear up the misunderstanding.
-
-Rewards:
-
-+200 Relationship Points with Nong Ton.
-
-Phi Ta Khon Mask (Wall Decoration): A handcrafted spirit mask replica to decorate your farmhouse wall.
-
-Village Morale Boost: Restores normal operating hours for all local shops leading up to the festival.
-
-Quest 3: Lopburi Monkey Banquet
-Quest Title: The Great Banana Heist
-
-Festival: Lopburi Monkey Banquet
-
-Season: Late Autumn (November)
-
-Prerequisites:
-
-Harvest at least 5x Bananas on your farm.
-
-Triggers automatically during the final week of Autumn.
-
-Story & Lore: You wake up to find your crop box emptied of bananas. Tracking the footprints leads to the ancient temple, where the Head Monk reveals that hungry local macaques were driven out of their habitat. Rather than punishing them, the Monk proposes hosting a massive public feast to restore harmony and turn the nuisance into a tradition.
-
-Quest Steps:
-
-Track & Trace: Examine your empty banana crate, then follow discarded peels and muddy tracks through the market to the temple ruins.
-
-The Monk's Wisdom: Speak with the Head Monk at the temple to learn about the hungry troop and receive the festival idea.
-
-Rally the Village: Obtain help from three locals:
-
-Merchant: Donate 10x additional fruits (Apples, Watermelons, or Mangoes) for the feast.
-
-Carpenter: Gather 15x Wood to craft banquet tables.
-
-Elder: Obtain official permission to host the event.
-
-Host the Banquet: Set up the fruit banquet at the temple on festival day to watch the monkeys enjoy the feast.
-
-Rewards:
-
-Three Wise Monkeys Figurine Set: A rare decorative item for indoor or outdoor placement.
-
-"Crop Truce" Buff: Prevents monkeys from raiding or destroying farm crops for the remainder of the year.
-
-Village Tourism Boost: Increases farm stand sell prices by 15% for 3 days following the festival.
+Found and fixed **two real regressions** while validating this batch, both concurrent-edit casualties, not caused by my own work: `data/crops/jasmine_rice.tres` + 4 other crops had silently reverted to pre-rebalance growth times (and for 3 of them, their placeholder art references), and `data/recipes/recipes.json` had reverted from 30 recipes to its original 4-recipe baseline. Both fully repaired (all underlying art/icon files were untouched on disk — only the data files' text reverted). Flagging in case this points at something in the sync/rebase flow worth a look — two separate JSON/tres data files losing uncommitted-adjacent content in one session is a pattern, not a one-off.

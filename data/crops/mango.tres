@@ -12,7 +12,7 @@ id = "mango"
 display_name = "Mango"
 description = "Late-unlock tree at maze corner, hot season fruit. Needs toolshed? No."
 stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
-growth_minutes_per_stage = Array[int]([480, 600, 720, 0])
+growth_minutes_per_stage = Array[int]([1440, 2880, 2880, 0])
 total_stages = 4
 season_yield_multiplier = {
 "hot": 1.6,

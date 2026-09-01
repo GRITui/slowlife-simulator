@@ -11,6 +11,7 @@ const DIALOGUE: Dictionary = {
 			"Cool morning — good for planting jasmine rice, child.",
 			"Monks walk at dawn. A small offering keeps the village in balance.",
 			"The buffalo are calm this season. Take it slow.",
+			"Wan Sart is coming — sticky rice, peanut, sesame, bound with palm sugar. For the ancestors.",
 		],
 		"hot": [
 			"Hot season — water early, rest at noon.",
@@ -91,6 +92,7 @@ const DIALOGUE: Dictionary = {
 		"cool": [
 			"May your morning be steady as still water.",
 			"Cool season alms — lightness for the days ahead.",
+			"Wan Sart honors those who came before. Bring kra yasat, if you've made it.",
 		],
 		"hot": [
 			"Heat tests patience. A small kindness cools the heart.",
