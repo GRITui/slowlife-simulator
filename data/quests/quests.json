@@ -1,0 +1,24 @@
+{
+  "quests": [
+    {
+      "id": "first_catch",
+      "display_name": "First Catch",
+      "description": "Fah thinks you should try the canal. A rod, a fish, and a story to trade.",
+      "giver_npc_id": "fah",
+      "objectives": ["talk_to_fah", "catch_a_fish", "show_fah"],
+      "reward_item_id": "rice_grain",
+      "reward_item_qty": 3,
+      "reward_harmony": 10
+    },
+    {
+      "id": "morning_merit",
+      "display_name": "Morning Merit",
+      "description": "The Elder reminds you the monks walk at dawn. Offer what you can spare.",
+      "giver_npc_id": "elder",
+      "objectives": ["talk_to_elder", "make_offering"],
+      "reward_item_id": "banana_rice_cake",
+      "reward_item_qty": 1,
+      "reward_harmony": 8
+    }
+  ]
+}
