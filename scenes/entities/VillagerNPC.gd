@@ -22,9 +22,12 @@ var _schedule_pos: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	add_to_group("villager_npc")
 	add_to_group(npc_id)
+	# TASK-313 Channel A: Trader evening visit (18:00-21:00 at farm).
+	if npc_id == "trader":
+		_update_trader_visibility()
 	# TASK-058: drift toward the schedule waypoint (only for scheduled NPCs).
 	if not ScheduleDBScript.SCHEDULES.has(npc_id):
-		set_physics_process(false)
+		set_physics_process(npc_id == "trader") # trader needs visibility updates even without schedule
 	else:
 		_schedule_pos = ScheduleDBScript.waypoint_for(npc_id, _current_hour()) * 48.0 + Vector2(24, 24)
 		global_position = _schedule_pos
@@ -35,9 +38,24 @@ func _current_hour() -> int:
 		return int(tm.hour)
 	return 6
 
+func _update_trader_visibility() -> void:
+	# TASK-313 Channel A: Trader at farm evenings 18:00-21:00.
+	var tm: Node = SignalBus.time_manager
+	var hour: int = int(tm.hour) if tm != null and "hour" in tm else 12
+	var available: bool = hour >= 18 and hour < 21
+	visible = available
+	if has_node("CollisionShape2D"):
+		($CollisionShape2D as CollisionShape2D).disabled = not available
+	if available:
+		# Farm position (near home, not using schedule)
+		global_position = Vector2(2 * 48 + 24, 4 * 48 + 24)
+
 ## TASK-058: cozy waypoint drift — called from _physics_process. Static
 ## NPCs (unscheduled) skip this entirely via set_physics_process(false).
 func _physics_process(_delta: float) -> void:
+	if npc_id == "trader":
+		_update_trader_visibility()
+		return
 	var tm: Node = SignalBus.time_manager
 	if tm != null:
 		var target: Vector2 = ScheduleDBScript.waypoint_for(npc_id, int(tm.hour)) * 48.0 + Vector2(24, 24)
@@ -82,8 +100,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func talk() -> void:
+	# TASK-313 Channel A: Cart Trader (evening farm visit 18:00-21:00, base price).
+	if npc_id == "trader":
+		if not _is_trader_available():
+			SignalBus.show_dialogue.emit(display_name, "Cart's gone for the day — catch me evenings at the farm (6-9pm).")
+			return
+		if _try_trader_sell():
+			return
 	# TASK-312: Handler offers tool upgrades (complementary to mount riding tool).
 	if npc_id == "handler" and _try_tool_upgrade():
+		return
+	# TASK-313 Channel C: Specialty Buyer (close tier, +45% premium, 3/week cap).
+	if (npc_id == "fah" or npc_id == "niran") and _try_specialty_sell():
 		return
 	var season: String = GameData.current_season if "current_season" in GameData else "cool"
 	var tm: Node = SignalBus.time_manager
@@ -126,6 +154,61 @@ func _try_tool_upgrade() -> bool:
 			else:
 				SignalBus.show_dialogue.emit(display_name, "Need %d rice for %s tier %d." % [cost, tool_id, tier + 1])
 				return true
+	return false
+
+func _is_trader_available() -> bool:
+	# TASK-313 Channel A: Cart Trader evening window 18:00-21:00.
+	var tm: Node = SignalBus.time_manager
+	if tm == null or not ("hour" in tm and "day" in tm):
+		return true # headless fallback: always available for tests
+	var hour: int = int(tm.hour)
+	return hour >= 18 and hour < 21
+
+func _try_trader_sell() -> bool:
+	# Channel A: base price, no premium, no affinity gate.
+	var sellable: String = GameData.cheapest_sellable()
+	if sellable.is_empty():
+		SignalBus.show_dialogue.emit(display_name, "Nothing to sell? Bring me something from the harvest.")
+		return true
+	var gained: int = GameData.sell_item(sellable)
+	if gained > 0:
+		SignalBus.show_dialogue.emit(display_name, "Cart deal: sold %s for %d silver. (base price)" % [sellable.replace("_", " "), gained])
+		return true
+	return false
+
+func _try_specialty_sell() -> bool:
+	# Channel C: Specialty Buyer — handled in RomanceNPC for Fah/Niran,
+	# but VillagerNPC also checks for those ids if somehow routed here.
+	if npc_id != "fah" and npc_id != "niran":
+		return false
+	var tm: Node = SignalBus.time_manager
+	var day: int = int(tm.day) if tm != null and "day" in tm else 1
+	if not GameData.can_specialty_sell(npc_id, day):
+		return false
+	# Thematic categories: Fah buys rare fish, Niran buys hot-season crops.
+	var want_item: String = ""
+	if npc_id == "fah":
+		for item_id in ["pla_nin_big", "pla_soi_big", "pla_chon_big", "mango_sticky_rice", "lotus_root"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
+		if want_item.is_empty():
+			for item_id in GameData.inventory.keys():
+				if String(item_id).begins_with("pla_") and GameData.has_item(item_id, 1):
+					want_item = item_id
+					break
+	elif npc_id == "niran":
+		for item_id in ["durian", "mango", "durian_sticky_rice", "mango_sticky_rice"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
+	if want_item.is_empty():
+		return false
+	var gained: int = GameData.sell_item_premium(want_item, "specialty")
+	if gained > 0:
+		GameData.record_specialty_sale(npc_id, day)
+		SignalBus.show_dialogue.emit(display_name, "Specialty buyer: %s for %d silver! (close-tier premium, %d/3 this week)" % [want_item.replace("_", " "), gained, int(GameData.specialty_sales_this_week.get(npc_id, 0))])
+		return true
 	return false
 
 func _try_offer_quest() -> void:
