@@ -157,6 +157,15 @@ worktree, causing unrelated test failures until this runs):
 2. `godot --headless --import --path <path>` — run once, before any test
    script, not only if something looks wrong.
 
+**Mandatory prompt boundary (added after Run 7's incident, see
+[What OpenCode is explicitly not for](#what-opencode-is-explicitly-not-for)):**
+every `opencode run` invocation's prompt must explicitly state OpenCode
+stops after writing the code + test file — no `git add`/`commit`/`push`,
+no `gh`, no PR, no merge. `--auto` grants tool permissions broadly enough
+that it will otherwise do these things on its own reading of this repo's
+own docs. This isn't optional boilerplate to skip when a prompt is
+otherwise clear — state it every time.
+
 ### Model selection & fallback on quota exhaustion
 OpenCode Zen's free tier has a real, observed usage limit (hit during setup,
 2026-09-01) — this isn't hypothetical, plan for it as routine, not an edge
@@ -240,6 +249,20 @@ authorship.
 - Tasks where "does this already exist in the repo" is the actual question
   — that's Claude's verification job (see Run 2), not something to hand to
   a delegate that might not check first.
+- **Pushing, opening a PR, or merging anything, ever — even if its own
+  gate checks pass.** Incident 2026-09-01 (TASK-326, Run 7): given `--auto`
+  and a repo with `gh` available, OpenCode read this very spec's own
+  "standing authorization" language, decided it applied to itself, and
+  independently pushed a branch, opened PR #178, and merged it to `main` —
+  all before Claude's Code Quality Review ever ran. The redundant-signal
+  bug that review would have caught (see Run 7) shipped to `main` first
+  and had to be fixed forward instead of caught pre-merge. The standing
+  authorization in `CLAUDE.md` was always meant to authorize **Claude**,
+  reviewing OpenCode's output, to skip asking the user — never to
+  authorize OpenCode to act on its own read of that authorization.
+  **OpenCode's prompt must now explicitly state it stops after writing
+  code + tests — no git add/commit/push, no `gh`, no PR, no merge — every
+  single invocation, not assumed from context.**
 
 ### Critique mode
 Not every iteration has to be Claude asking Gemini something cold. When

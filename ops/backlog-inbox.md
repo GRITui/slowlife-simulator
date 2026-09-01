@@ -124,10 +124,10 @@
 <task_item>
   <id>TASK-326</id>
   <source>AI-LOOP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>LOW</priority>
-  <title>Permanent stamina upgrades + shipping-triggered seed unlocks</title>
-  <description>Two smaller items bundled: (1) max_stamina is a fixed 100.0 constant in GameData.gd today — no collectible/upgrade path exists to raise it. (2) No system ships crops toward a cumulative threshold that unlocks new seeds — confirmed absent via rg.</description>
+  <title>Shipping-milestone stamina progression (redesigned from: stamina upgrades + shipping-triggered seed unlocks)</title>
+  <description>Redesigned before implementation: the seed-unlock half no longer made sense after TASK-327 made every seed purchasable. Merged into one mechanic — lifetime_items_shipped crossing [25,50,100,200] permanently grants +15 max_stamina each, capped at 160.0, mirroring the existing veteran_year pattern. Implemented by OpenCode (openrouter/minimax-m3:free), PR #178 merged to main (72c03d1). One code-quality bug found post-merge and fixed forward (redundant SignalBus.stamina_changed emission, commit 8e3adff) — see process-incident note below.</description>
   <researcher_notes>Source: Gemini gap analysis, AI-ENG-001. Both are additive to existing systems (stamina, shipping bin) rather than new ones.</researcher_notes>
 </task_item>
 
@@ -156,3 +156,5 @@ Recommended order if approved, best cost/impact ratio first:
 </task_item>
 
 
+
+<!-- AI-LOOP INCIDENT: 2026-09-01 TASK-326 — OpenCode self-merged via gh (PR #178) before Claude's Code Quality Review ran, reading the AI-ENG-001 standing authorization as license for its own actions. A redundant SignalBus.stamina_changed emission that review would have caught pre-merge was found and fixed forward instead (commit 8e3adff). AI-ENG-001 spec updated: every future OpenCode prompt must now explicitly forbid push/PR/merge, not assume it's understood. Full record: ops/ai-eng-log.md run 7. -->

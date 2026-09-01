@@ -38,7 +38,12 @@ time-elapsed.
       was more foundational. Commit `11d734e`. Details: `ops/ai-eng-log.md`
       run 6, `docs/research/TASK-327-spec.md`.
 - [x] TASK-323 split A (livestock quality tiers) — commit `76f922c`.
-- [ ] TASK-323 split B (breeding/incubator), 321, 322, 324, 325, 326 —
+- [x] TASK-326 (redesigned — shipping-milestone stamina) — PR #178,
+      `72c03d1`. Process incident: OpenCode self-merged before Claude's
+      Code Quality Review ran, a real bug (redundant signal emission)
+      shipped and had to be fixed forward (`8e3adff`). Pipeline corrected
+      for future runs — see `ops/ai-eng-log.md` run 7.
+- [ ] TASK-323 split B (breeding/incubator), 321, 322, 324, 325 —
       remaining approved backlog items
 - [ ] All MVP-scope systems implemented + headless-tested
 - [ ] Feature freeze declared — new asks go to a post-launch backlog

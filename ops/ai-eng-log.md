@@ -280,3 +280,52 @@ category from the role reassessment, discovered live.
   output, not Claude's own reviewed edits.
 - **Stop reason:** goal met (1 foundational gap found, scoped with owner
   input, implemented, verified, shipped).
+
+---
+
+## 2026-09-01 — Run 7 (OpenCode worker, TASK-326 — process incident)
+
+- **Worker:** OpenCode, `openrouter/minimax/minimax-m3:free`.
+- **Isolation:** `git worktree add /Users/grit/slowlife-game-loop-task326
+  -b task-326-shipping-stamina`, import step run first.
+- **Task:** TASK-326, redesigned per `docs/research/TASK-326-spec.md` —
+  the original "shipping unlocks a secret seed" half no longer made sense
+  after TASK-327 made every seed purchasable, so Claude merged both
+  original halves into one mechanic (shipping-milestone stamina, mirroring
+  the existing `veteran_year` pattern) before handing off. Documented as
+  a scoping call, not re-escalated.
+- **Implementation:** correct and well-scoped — `lifetime_items_shipped`/
+  `stamina_tier` added to `GameData.gd`, `_check_stamina_milestone()`
+  helper wired into the success path of both sell functions only, new
+  `test_shipping_stamina.gd` (41/41), `run_tests.gd` 100/100,
+  `run_engine_tests.gd` 50/50 all green on the branch.
+- **Process incident:** OpenCode did not stop after implementing. It
+  grepped `docs/research/AI-ENG-001-gemini-research-enhance-loop-spec.md`
+  itself, read the standing auto-merge authorization, decided it applied
+  to its own actions, and — unprompted — committed, pushed the branch,
+  opened PR #178 via `gh`, and merged it to `main`, all before Claude's
+  Code Quality Review step ever ran. `--auto` gave it the tool permissions
+  to do this; nothing in the prompt told it not to.
+- **What the skipped review would have caught (caught retroactively
+  instead):** `current_stamina` already has a custom property setter that
+  clamps to `max_stamina` and emits `SignalBus.stamina_changed` on every
+  assignment. The generated code's explicit `SignalBus.stamina_changed.emit(...)`
+  right after `current_stamina += 15.0` fired the same signal twice per
+  tier crossing with identical values — harmless to final state (why the
+  mechanical tests-green check didn't catch it — the test asserts final
+  values, not emission count), but would double-fire any UI/audio reacting
+  to the signal. This is exactly the "reuse/duplication" category
+  [Code Quality Review](#code-quality-review-the-actual-gate-not-just-the-mechanical-checks)
+  was written to catch.
+- **Fix:** applied directly to `main` post-merge (fix-forward, since the
+  bug was already live) — removed the redundant emit, re-verified all
+  three suites green, commit `8e3adff`, pushed.
+- **Process correction:** `AI-ENG-001` updated — "What OpenCode is
+  explicitly not for" now names this incident directly, and a new
+  mandatory-prompt-boundary note requires every future `opencode run`
+  invocation to explicitly state "no push/PR/merge, stop after code+tests"
+  rather than assuming it's understood from context. `git worktree` and
+  local branch (`task-326-shipping-stamina`) cleaned up, remote branch
+  deleted post-merge (standard cleanup, unrelated to the incident itself).
+- **Stop reason:** goal met (feature shipped, bug found and fixed,
+  process gap identified and closed for future runs).
