@@ -50,8 +50,10 @@ func _physics_process(_delta: float) -> void:
 		else:
 			velocity = Vector2.ZERO
 	if _area:
-		_area.body_entered.connect(_on_body_entered)
-		_area.body_exited.connect(_on_body_exited)
+		if not _area.body_entered.is_connected(_on_body_entered):
+			_area.body_entered.connect(_on_body_entered)
+		if not _area.body_exited.is_connected(_on_body_exited):
+			_area.body_exited.connect(_on_body_exited)
 	if _sprite:
 		if idle_texture != null:
 			_sprite.texture = idle_texture

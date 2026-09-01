@@ -148,6 +148,19 @@ const DIALOGUE: Dictionary = {
 			"I used to farm alone before you got here. I don't want to go back to that.",
 		],
 	},
+	"headman": {
+		"cool": [
+			"The village runs on small kindnesses. Keep it up.",
+			"Wing Kwai prep is underway — the buffalo earn their festival.",
+		],
+	},
+	"vet": {
+		"cool": [
+			"Buffalo look healthy. Whatever you are feeding them, keep at it.",
+			"Goat arrived last week — strong hooves, good sign.",
+		],
+	},
+
 	"fah": {
 		"stranger": [
 			"The canal's calm this morning. Good for thinking, if you like that sort of thing.",

@@ -24,6 +24,16 @@ const SCHEDULES: Dictionary = {
 		{"from": 12, "to": 18, "pos": Vector2(9, 6)},  # paddy core
 		{"from": 18, "to": 24, "pos": Vector2(13, 7)},
 	],
+	"headman": [
+		{"from": 6, "to": 12, "pos": Vector2(1, 3)},
+		{"from": 12, "to": 18, "pos": Vector2(17, 1)},
+		{"from": 18, "to": 24, "pos": Vector2(1, 4)},
+	],
+	"vet": [
+		{"from": 6, "to": 12, "pos": Vector2(2, 14)},
+		{"from": 12, "to": 18, "pos": Vector2(3, 14)},
+		{"from": 18, "to": 24, "pos": Vector2(2, 13)},
+	],
 	"fah": [
 		{"from": 6, "to": 12, "pos": Vector2(10, 12)}, # canal mornings
 		{"from": 12, "to": 18, "pos": Vector2(2, 1)},  # lotus pond
