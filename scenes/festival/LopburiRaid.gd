@@ -20,13 +20,18 @@ func _exit_tree() -> void:
 func _on_minute_ticked(day: int, hour: int, _minute: int) -> void:
 	var tm: Node = SignalBus.time_manager
 	var season: String = "hot"
+	var dos: int = festival_day
 	if tm != null and "current_season" in tm:
 		season = String(tm.current_season)
+		if tm.has_method("day_of_season"):
+			dos = int(tm.day_of_season())
 	elif "current_season" in GameData:
 		season = String(GameData.current_season)
-	if season != "hot" or day != festival_day or hour < 12:
+	if season != "hot" or dos != festival_day or hour < 12:
 		return
-	var key: String = "%d-%s" % [day, season]
+	var tm_local: Node = SignalBus.time_manager
+	var year: int = tm_local.year() if tm_local != null and tm_local.has_method("year") else 1
+	var key: String = "%d-%s" % [year, season]
 	if _triggered_keys.has(key):
 		return
 	_triggered_keys[key] = true

@@ -7,7 +7,7 @@ extends Node
 @export var minutes_per_real_second: float = 6.0  # 10 real sec = 1 game hour
 @export var start_hour: int = 6  # 06:00 dawn
 @export var start_day: int = 1
-@export var season_duration_days: int = 10
+@export var season_duration_days: int = 30 # 90 days/year, genre-standard pacing (Stardew-class: ~112/year)
 @export var auto_tick: bool = true
 
 ## Time state
@@ -130,6 +130,17 @@ func is_morning_bin_thabat_window() -> bool:
 
 func get_stamina_multiplier() -> float:
 	return stamina_drain_multiplier
+
+## TASK-292: day within the current season (1..season_duration_days).
+## Festivals must key on this, not the absolute day, or they fire exactly
+## once per save game.
+func day_of_season() -> int:
+	return ((day - 1) % maxi(season_duration_days, 1)) + 1
+
+## TASK-292: current year (1-based), derived from absolute day.
+func year() -> int:
+	var season_length: int = maxi(season_duration_days, 1) * maxi(seasons.size(), 1)
+	return int((day - 1) / float(season_length)) + 1
 
 func get_day_fraction() -> float:
 	return (hour * 60.0 + minute) / 1440.0
