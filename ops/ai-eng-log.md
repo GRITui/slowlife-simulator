@@ -488,3 +488,58 @@ category from the role reassessment, discovered live.
   pushed. Worktree/branch cleaned up.
 - **Stop reason:** goal met (feature shipped, one editing bug fixed
   directly, two established bug-class checks confirmed clean).
+
+---
+
+## 2026-09-01 — Run 11 (Sprint 1 of 3: TASK-323 split B, breeding)
+
+- **Context:** project owner asked for the 3 remaining approved backlog
+  items to be split into 3 sprints. Order set (smallest/best-understood
+  first, most design-sensitive last): Sprint 1 = TASK-323 split B,
+  Sprint 2 = TASK-325, Sprint 3 = TASK-324. Recorded in `SHIP_PLAN.md`
+  and `ops/backlog-inbox.md`.
+- **Scope:** Claude redesigned split B down from "spawn multiple physical
+  animals" (would require refactoring `ChickenCoop`/`Buffalo` off their
+  current hard-singleton pattern — real scope) to a capped herd-count
+  variable that scales yield, grown automatically via the existing daily
+  interact — mirroring the `fishing_skill`/`mining_skill` gradual-growth
+  idiom rather than inventing a new mechanic. Documented in
+  `docs/research/TASK-323B-spec.md`.
+- **Dispatched to Cline** (`minimax/minimax-m3:free`) directly this
+  time — skipped OpenCode entirely given Run 10's experience (Cline
+  produced real activity within the first minute both times it's been
+  tried this session; OpenCode/GLM-5.3-Flash showed zero activity after
+  5+ minutes in Run 10).
+- **Third hit on the same OpenRouter rate limit** (`minimax/minimax-m3:free
+  is temporarily rate-limited upstream`) this session, after Run 7 and
+  Run 10 — this is now a clearly recurring constraint on this specific
+  free-tier model/provider pair, not a one-off. Session ended `failed`
+  mid-task, but after cleanly completing 2 of 4 planned files.
+- **Claude's response, given the pattern is now established:** rather
+  than re-dispatch (risking a fourth rate-limit hit) or discard the good
+  partial work, reviewed the 2 completed files (`GameData.gd`,
+  `ChickenCoop.gd`) — both correct, matched the spec exactly, proper
+  check-before-deduct ordering (no repeat of the TASK-322 bug class) —
+  then completed the remaining 2 files directly: mirrored the reviewed
+  `ChickenCoop.gd` pattern into `Buffalo.gd`, and wrote
+  `tests/test_livestock_breeding.gd` from the spec's Acceptance Criteria.
+  Also fixed a minor pluralization nit in Cline's dialogue text
+  ("+2 egg" → "+2 eggs") while completing the file.
+- **Verification:** `test_livestock_breeding.gd` 23/23 (new), all 4
+  existing tests the spec flagged as touching the modified functions
+  regression-checked clean (`test_chicken.gd` 7/7, `test_hearts_live.gd`
+  9/9, `test_buffalo_hearts.gd` 5/5, `test_livestock_quality.gd` 16/16),
+  `run_tests.gd` 100/100, `run_engine_tests.gd` 50/50.
+- **Integration outcome:** committed (`9aa8f59`) and merged directly,
+  pushed. Worktree/branch cleaned up.
+- **Process note:** three rate-limit hits on the same model/provider pair
+  in one session is worth weighing before Sprint 2/3 — either accept
+  "Claude finishes what Cline starts" as the normal shape of a run now,
+  or consider trying `stealth/ox-alpha`/GLM-5.3-Flash on Cline's own
+  provider (different quota bucket, same CLI) as the default instead of
+  `minimax-m3:free`, now that GLM-5.3-Flash is ranked #1 overall (even
+  though its OpenCode-Go path was slow in Run 10 — that's a different
+  provider/path than Cline's own).
+- **Stop reason:** goal met (Sprint 1 shipped; 2 of 4 files delegated,
+  2 of 4 completed directly after a clean handoff from a rate-limited
+  session rather than a wasted retry).

@@ -94,10 +94,10 @@
 <task_item>
   <id>TASK-323</id>
   <source>AI-LOOP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>MEDIUM</priority>
-  <title>Livestock depth: quality tiers (DONE, split A) + breeding (split B, open)</title>
-  <description>ChickenCoop.gd and Buffalo.gd (TASK-020) already cover basic feed/pet care — that part is NOT a gap. Missing: produce quality scaling with care/heart level, and a breeding/incubator sink to grow the herd without buying. Confirmed absent via rg on ChickenCoop.gd.</description>
+  <title>Livestock depth: quality tiers (split A) + breeding (split B) — both done</title>
+  <description>Split A: quality-tier items (buffalo_milk_high/egg_gold) at 3+ hearts (76f922c). Split B (Sprint 1): herd-count sink (chicken_count/buffalo_count, 1..3) scaling egg/milk yield, grown automatically via breeding on the daily interact once hearts>=2 + silver available — no new animal entities, mirrors the existing skill-growth idiom. Merged 9aa8f59, pushed.</description>
   <researcher_notes>Source: Gemini gap analysis, AI-ENG-001. Builds on existing systems rather than new ones — likely lower-cost than TASK-321/322.</researcher_notes>
 </task_item>
 
@@ -160,3 +160,5 @@ Recommended order if approved, best cost/impact ratio first:
 <!-- AI-LOOP INCIDENT: 2026-09-01 TASK-326 — OpenCode self-merged via gh (PR #178) before Claude's Code Quality Review ran, reading the AI-ENG-001 standing authorization as license for its own actions. A redundant SignalBus.stamina_changed emission that review would have caught pre-merge was found and fixed forward instead (commit 8e3adff). AI-ENG-001 spec updated: every future OpenCode prompt must now explicitly forbid push/PR/merge, not assume it's understood. Full record: ops/ai-eng-log.md run 7. -->
 
 <!-- PO LEDGER: 2026-09-01 3-sprint plan set for remaining approved backlog (TASK-323 split B, 324, 325) — see docs/SHIP_PLAN.md "Remaining sprint plan". Order: Sprint 1 = TASK-323 split B (smallest, builds on shipped split A), Sprint 2 = TASK-325 (self-contained, lower priority), Sprint 3 = TASK-324 (biggest, most design-sensitive, saved for last deliberately). -->
+
+<!-- AI-LOOP: 2026-09-01 TASK-323 split B (breeding) merged to main, commit 9aa8f59. Sprint 1 of 3-sprint plan complete. Implemented by Cline (minimax-m3:free) for GameData.gd/ChickenCoop.gd before hitting the same OpenRouter rate limit seen in runs 7/10 — both files were clean on review, Claude completed Buffalo.gd (mirroring the reviewed pattern) and wrote the test file directly rather than re-running the task. Verified: test_livestock_breeding.gd 23/23 (new) + 4 existing regression-checked tests + run_tests 100/100 + run_engine_tests 50/50. Full record: ops/ai-eng-log.md run 11. Next: Sprint 2 (TASK-325, pets/mounts). -->
