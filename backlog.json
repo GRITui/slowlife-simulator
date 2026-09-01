@@ -1981,6 +1981,45 @@
       ],
       "github_issue_number": 161,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161"
+    },
+    {
+      "id": "TASK-315",
+      "title": "Trader cart evening visit trigger and animation",
+      "status": "proposed",
+      "category": "gameplay",
+      "owner": "backend-automation",
+      "files": [
+        "scenes/entities/TraderNPC.gd",
+        "scenes/core/Main.gd"
+      ],
+      "priority": "medium",
+      "notes": "Follow-up to TASK-313/314: Trader NPC visual is in_progress art-lane, but evening visit logic (18:00-21:00) and cart prop animation not yet wired. Scout: expected behavior is Trader appears at farm in evening, leaves at night, cart prop moves with trader."
+    },
+    {
+      "id": "TASK-316",
+      "title": "Add 2 more quests for Niran and Fah using the newly wired QuestLog",
+      "status": "proposed",
+      "category": "gameplay",
+      "owner": "narrative-lead",
+      "files": [
+        "data/quests/quests.json",
+        "scripts/persistence/QuestLog.gd"
+      ],
+      "priority": "medium",
+      "notes": "QA-auditor: QuestLog now correctly loads .tres and quests.json (11 quests), and offer_quest is wired. Next step is to add 2 more quests that use the new system to validate it: niran_harvest_challenge and fah_elusive_catch are already migrated but need giver wiring verification via playtest."
+    },
+    {
+      "id": "TASK-317",
+      "title": "Tool tier HUD display and Handler upgrade shop UI",
+      "status": "proposed",
+      "category": "ui",
+      "owner": "visual-inspector",
+      "files": [
+        "scenes/ui/HUD.gd",
+        "scenes/ui/HUD.tscn"
+      ],
+      "priority": "low",
+      "notes": "QA-auditor: tool_tiers are now wired to Handler but have no HUD display. Add tier icons to HUD or Handler dialogue that shows current tier and cost for next upgrade. Low priority, polish."
     }
   ]
 }
