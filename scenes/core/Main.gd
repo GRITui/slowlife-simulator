@@ -136,6 +136,38 @@ func _wire_pause_buttons(pause: CanvasLayer) -> void:
 	var quit_btn: BaseButton = pause.find_child("Quit", true, false) as BaseButton
 	if quit_btn != null:
 		quit_btn.pressed.connect(_on_quit_to_title)
+	# ENGINE-013: save/load entry points (SaveManager instanced lazily).
+	var save_btn: BaseButton = pause.find_child("Save", true, false) as BaseButton
+	if save_btn != null:
+		save_btn.pressed.connect(_on_save_game)
+	var load_btn: BaseButton = pause.find_child("Load", true, false) as BaseButton
+	if load_btn != null:
+		load_btn.pressed.connect(_on_load_game)
+
+func _ensure_save_manager() -> Node:
+	if get_node_or_null("SaveManager") != null:
+		return get_node("SaveManager")
+	var script: GDScript = load("res://scripts/persistence/SaveManager.gd")
+	if script == null:
+		return null
+	var manager: Node = script.new()
+	manager.name = "SaveManager"
+	add_child(manager)
+	return manager
+
+func _on_save_game() -> void:
+	var sm: Node = _ensure_save_manager()
+	if sm != null and sm.save_game():
+		SignalBus.show_dialogue.emit("System", "Progress saved.")
+	else:
+		SignalBus.show_dialogue.emit("System", "Could not save right now.")
+
+func _on_load_game() -> void:
+	var sm: Node = _ensure_save_manager()
+	if sm != null and sm.load_game():
+		SignalBus.show_dialogue.emit("System", "Progress loaded.")
+	else:
+		SignalBus.show_dialogue.emit("System", "No save found.")
 
 func _is_title_up() -> bool:
 	var title: CanvasLayer = get_node_or_null("TitleScreen") as CanvasLayer
