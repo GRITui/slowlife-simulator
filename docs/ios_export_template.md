@@ -45,19 +45,27 @@ permanently at that point:
 ## Startup parse budget (TASK-033)
 
 Every `res://` script is parsed at iOS launch. Prune dead weight via the
-export preset's **Exclude** filter (Patterns):
+export preset's **Exclude** filter (Patterns) — there is no `scripts/_dormant/`
+directory today, so a real exclude pattern has to name actual dead files
+directly rather than a folder convention that was never adopted:
 
 ```text
-scripts/_dormant/*
+scripts/autoload/GameStateManager.gd
 ```
 
-Currently dormant (audit 2026-08-31, `docs/research/QA-AUDIT-2026-08-31.md`):
-- `scripts/autoload/GameStateManager.gd`, `scripts/autoload/AudioManager.gd`
-  — unregistered autoloads (not in `project.godot`)
-- `scripts/core/ProfilerOverlay.gd`, `scripts/resource_types/RecipeData.gd`
-  — no production consumer
+Re-audited 2026-09-01 (issue #175) — most of the 2026-08-31 dormant list has
+since gained real consumers and is no longer safe to exclude:
+- `scripts/autoload/AudioManager.gd` — now a registered autoload
+  (`project.godot [autoload]`)
+- `scripts/core/ProfilerOverlay.gd` — now wired via `Main._ensure_profiler_overlay()`
+  (TASK-041)
+- `scripts/resource_types/RecipeData.gd` — now consumed by
+  `scripts/interactables/CookingStation.gd`
 
-Re-register or delete these when their wiring tasks land; do not ship them.
+Only `scripts/autoload/GameStateManager.gd` is still genuinely dead (zero
+consumers anywhere, unregistered autoload). Re-register or delete it when its
+wiring task lands; do not ship it. Re-verify this list before relying on it —
+dormant status changes as tasks land.
 
 ## Build steps (local)
 
