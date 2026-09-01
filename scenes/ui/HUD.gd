@@ -62,6 +62,11 @@ func set_high_contrast(v: bool) -> void:
 		_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 		_on_harmony_changed(GameData.harmony)
 
+func _on_buffalo_hearts(affinity: int, hearts: int) -> void:
+	var lbl: Label = find_child("HeartsLabel", true, false) as Label
+	if lbl:
+		lbl.text = "Buffalo: %s (%d)" % ["♥".repeat(hearts) if hearts > 0 else "—", affinity]
+
 func _on_silver_changed(silver: int) -> void:
 	var lbl: Label = find_child("SilverLabel", true, false) as Label
 	if lbl:
@@ -114,11 +119,13 @@ func _ready() -> void:
 	SignalBus.crop_growth_progress.connect(_on_crop_progress)
 	SignalBus.settings_changed.connect(_on_settings_changed)
 	SignalBus.silver_changed.connect(_on_silver_changed)
+	SignalBus.buffalo_affinity_changed.connect(_on_buffalo_hearts)
 	# TASK-027: restore persisted a11y prefs (defaults keep legacy behavior).
 	set_font_scale(GameData.font_scale)
 	set_high_contrast(GameData.high_contrast)
 	# init from GameData
 	_on_silver_changed(GameData.silver)
+	_on_buffalo_hearts(GameData.buffalo_affinity, GameData.buffalo_hearts())
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)
