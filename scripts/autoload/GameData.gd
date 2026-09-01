@@ -84,6 +84,25 @@ func add_chicken_affinity(amount: int) -> void:
 func chicken_hearts() -> int:
 	return int(chicken_affinity / 25.0)
 
+# TASK-326 shipping-milestone stamina progression. Every item shipped via
+# sell_item / sell_item_premium counts toward lifetime_items_shipped; crossing
+# each threshold [25, 50, 100, 200] permanently grants +15 max_stamina and
+# +15 current_stamina, capped at tier 4 (160.0 max).
+var lifetime_items_shipped: int = 0
+var stamina_tier: int = 0
+
+func _check_stamina_milestone() -> void:
+	const THRESHOLDS: Array[int] = [25, 50, 100, 200]
+	var new_tier: int = 0
+	for t: int in THRESHOLDS:
+		if lifetime_items_shipped >= t:
+			new_tier += 1
+	while stamina_tier < new_tier:
+		stamina_tier += 1
+		max_stamina += 15.0
+		current_stamina += 15.0
+		SignalBus.stamina_changed.emit(current_stamina, max_stamina)
+
 # TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
 #   watering_can: watered plots also pre-advance growth (tier*30 effective
 #   minutes) and watering costs no stamina above tier 1.
@@ -165,6 +184,8 @@ func sell_item(item_id: String) -> int:
 	if not remove_item(item_id, 1):
 		return 0
 	add_silver(price)
+	lifetime_items_shipped += 1
+	_check_stamina_milestone()
 	return price
 
 ## Cheapest sellable item currently held (market sells lowest-value first).
@@ -222,6 +243,8 @@ func sell_item_premium(item_id: String, channel: String) -> int:
 	if not remove_item(item_id, 1):
 		return 0
 	add_silver(price)
+	lifetime_items_shipped += 1
+	_check_stamina_milestone()
 	return price
 
 # TASK-059 romance payoff: spouse npc_id ("" until wed). Proposal requires
