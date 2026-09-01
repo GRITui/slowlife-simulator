@@ -1913,7 +1913,9 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158",
       "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
       "completed_at": "2026-09-01",
-      "pr_number": 163
+      "pr_number": 163,
+      "priority": "high",
+      "owner_note": "P0 \u2014 biggest wasted content investment: 9 quests + baseline quest flow all unreachable, zero player-facing quest content works at all."
     },
     {
       "id": "TASK-311",
@@ -1945,7 +1947,9 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/160",
       "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
       "completed_at": "2026-09-01",
-      "pr_number": 164
+      "pr_number": 164,
+      "priority": "high",
+      "owner_note": "P1 \u2014 smaller, self-contained fix (wire upgrade_tool() to Handler), same proven pattern as the buffalo-hearts fix (PR #162). High value/effort."
     },
     {
       "id": "TASK-313",
@@ -1959,7 +1963,9 @@
       ],
       "github_issue_number": 161,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161",
-      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
+      "priority": "medium",
+      "owner_note": "P2 \u2014 additive new feature, sequence after P0/P1: a third sell channel matters less than making the two already-built progression systems (quests, tools) real first."
     },
     {
       "id": "TASK-314",
