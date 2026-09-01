@@ -128,6 +128,15 @@ func _talk() -> void:
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)
 	_try_offer_quest()
+	_try_complete_talk_objective()
+
+func _try_complete_talk_objective() -> void:
+	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
+	if quest_logs.is_empty():
+		return
+	var quest_log: Node = quest_logs[0] as Node
+	if quest_log != null and quest_log.has_method("on_npc_talked"):
+		quest_log.on_npc_talked(npc_id)
 
 func _try_offer_quest() -> void:
 	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")

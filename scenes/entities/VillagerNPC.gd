@@ -134,8 +134,9 @@ func talk() -> void:
 		# GameData.villager_talked_days is Dictionary npc_id -> last_day
 		var d: Dictionary = GameData.villager_talked_days as Dictionary
 		d[npc_id] = day
-	# TASK-310: Offer quest for this giver if available.
+	# TASK-310: Offer quest for this giver if available and track talk for objectives.
 	_try_offer_quest()
+	_try_complete_talk_objective()
 
 func _try_tool_upgrade() -> bool:
 	# TASK-312: Handler offers tool upgrades for rice. Tries tools in order:
@@ -227,6 +228,14 @@ func _try_offer_quest() -> void:
 	var quest_log: Node = quest_logs[0] as Node
 	if quest_log != null and quest_log.has_method("offer_quest_for_giver"):
 		quest_log.offer_quest_for_giver(npc_id)
+
+func _try_complete_talk_objective() -> void:
+	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
+	if quest_logs.is_empty():
+		return
+	var quest_log: Node = quest_logs[0] as Node
+	if quest_log != null and quest_log.has_method("on_npc_talked"):
+		quest_log.on_npc_talked(npc_id)
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player") or body.name == "Player" or body is CharacterBody2D:

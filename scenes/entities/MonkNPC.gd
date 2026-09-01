@@ -65,6 +65,14 @@ func _try_offer_quest() -> void:
 	if quest_log != null and quest_log.has_method("offer_quest_for_giver"):
 		quest_log.offer_quest_for_giver("monk")
 
+func _try_complete_talk_objective() -> void:
+	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
+	if quest_logs.is_empty():
+		return
+	var quest_log: Node = quest_logs[0] as Node
+	if quest_log != null and quest_log.has_method("on_npc_talked"):
+		quest_log.on_npc_talked("monk")
+
 # --- Time window ---
 
 func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
