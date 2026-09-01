@@ -1472,14 +1472,16 @@
       "sprint": 13,
       "category": "gameplay",
       "title": "Wan Sart festival (ancestor-honoring, cool season)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/festival/WanSartTrigger.gd, data/recipes/recipes.json",
       "notes": "#113: FestivalManager-pattern trigger + offering recipe (cool season).",
       "gate_audit": "PASS 2026-09-01 (issue-direct): requested enhancement on shipped system, zero-combat, assets/data ready. Order: effort ascending.",
       "github_issue_number": 113,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/113"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/113",
+      "completed_at": "2026-09-01",
+      "pr_number": 119
     },
     {
       "id": "TASK-056",
