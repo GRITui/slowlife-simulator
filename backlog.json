@@ -2030,7 +2030,7 @@
     {
       "id": "TASK-318",
       "title": "Seasonal crop growth balancing and stamina tuning",
-      "status": "proposed",
+      "status": "todo",
       "category": "gameplay",
       "owner": "backend-automation",
       "files": [
