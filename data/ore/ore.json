@@ -1,0 +1,28 @@
+{
+  "ore": [
+    {
+      "id": "copper_ore",
+      "display_name": "Copper Ore",
+      "rarity": "common",
+      "item_id": "copper_ore",
+      "harmony_value": 2,
+      "skill_required": 1
+    },
+    {
+      "id": "iron_ore",
+      "display_name": "Iron Ore",
+      "rarity": "uncommon",
+      "item_id": "iron_ore",
+      "harmony_value": 4,
+      "skill_required": 2
+    },
+    {
+      "id": "silver_ore",
+      "display_name": "Silver Ore",
+      "rarity": "rare",
+      "item_id": "silver_ore",
+      "harmony_value": 9,
+      "skill_required": 3
+    }
+  ]
+}

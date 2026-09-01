@@ -66,6 +66,9 @@ var high_contrast: bool = false
 # TASK-050 fishing skill — 1..4, gates fish.json skill_required tiers.
 var fishing_skill: int = 1
 
+# TASK-321 mining skill — 1..3, gates ore.json skill_required tiers.
+var mining_skill: int = 1
+
 # ISSUE-129 buffalo affinity ('hearts'): 0..100, 25 per heart, max 4 hearts.
 var buffalo_affinity: int = 0
 
@@ -119,7 +122,14 @@ func upgrade_tool(tool_id: String) -> bool:
 	var cost: int = tier * 8 # rice-grain barter price: 8, 16
 	if not has_item("rice_grain", cost):
 		return false
+	# TASK-321: ore material sink. tier 1->2 needs 2x copper_ore; tier 2->3
+	# needs 2x iron_ore. Additive on top of the rice_grain cost (unchanged).
+	var ore_id: String = "copper_ore" if tier == 1 else "iron_ore"
+	var ore_cost: int = 2
+	if not has_item(ore_id, ore_cost):
+		return false
 	remove_item("rice_grain", cost)
+	remove_item(ore_id, ore_cost)
 	tool_tiers[tool_id] = tier + 1
 	SignalBus.tool_upgraded.emit(tool_id, tier + 1)
 	return true

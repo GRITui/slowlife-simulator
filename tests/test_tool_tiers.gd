@@ -24,6 +24,10 @@ func _initialize() -> void:
 	_check(int(gd.tool_tier("watering_can")) == 1, "can starts tier 1")
 	_check(gd.upgrade_tool("watering_can") == false, "upgrade blocked without rice")
 	gd.add_item("rice_grain", 40)
+	# TASK-321: upgrade_tool now also requires ore — 2x copper_ore for
+	# tier 1->2, 2x iron_ore for tier 2->3. Fund both before the 2 upgrades.
+	gd.add_item("copper_ore", 2)
+	gd.add_item("iron_ore", 2)
 	_check(gd.upgrade_tool("watering_can"), "can upgrade to tier 2")
 	_check(gd.upgrade_tool("watering_can"), "can upgrade to tier 3")
 	_check(gd.upgrade_tool("watering_can") == false, "tier 3 is cap")
@@ -38,6 +42,10 @@ func _initialize() -> void:
 		"tier-3 watering pre-advances >= 90 minutes")
 	# Hoe discount: plant stamina cost reduced 40% at hoe tier 3.
 	gd.add_item("rice_grain", 60) # fund tier-2/3 purchases (8 + 16 each)
+	# TASK-321: ore material sink — 2x copper_ore + 2x iron_ore for the 2
+	# hoe upgrades below.
+	gd.add_item("copper_ore", 2)
+	gd.add_item("iron_ore", 2)
 	gd.upgrade_tool("hoe")
 	gd.upgrade_tool("hoe")
 	gd.current_stamina = gd.max_stamina
@@ -47,6 +55,10 @@ func _initialize() -> void:
 	var full: float = float(crop.stamina_cost_plant)
 	_check(cost <= full * 0.65, "hoe tier 3 discount >= 40%% (cost %.1f vs %.1f)" % [cost, full])
 	# Sickle bonus: tier 3 -> +2 yield.
+	# TASK-321: ore material sink — 2x copper_ore + 2x iron_ore for the 2
+	# sickle upgrades below.
+	gd.add_item("copper_ore", 2)
+	gd.add_item("iron_ore", 2)
 	gd.upgrade_tool("sickle")
 	gd.upgrade_tool("sickle")
 	ps.stage = crop.total_stages - 1

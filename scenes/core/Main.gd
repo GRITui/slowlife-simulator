@@ -67,6 +67,8 @@ func _ready() -> void:
 	_ensure_chicken_coop()
 	# TASK-050: fishing spot on the canal; rod ships in inventory (decision).
 	_ensure_fishing_spot()
+	# TASK-321: mining spot — stamina-gated, no tool requirement, always-on.
+	_ensure_mining_spot()
 	# TASK-270: Wing Kwai buffalo race (mounted minigame).
 	_ensure_buffalo_race()
 
@@ -235,6 +237,22 @@ func _ensure_fishing_spot() -> void:
 	add_child(spot)
 	if GameData.inventory.is_empty() or not GameData.has_item("fishing_rod", 1):
 		GameData.add_item("fishing_rod", 1)
+
+func _ensure_mining_spot() -> void:
+	if get_node_or_null("MiningSpot") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/MiningSpot.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "MiningSpot"
+	# Tile (1, 3) — top-left corner, away from canal/fishing (col 11), pasture
+	# (rows 12-15), temple (840, 168), and player spawn (480, 384). No sprite
+	# for MVP — invisible interact zone, mirroring FishingSpot's own precedent.
+	spot.position = Vector2(1 * 48 + 24, 3 * 48 + 24)
+	add_child(spot)
 
 func _ensure_chicken_coop() -> void:
 	if get_node_or_null("ChickenCoop") != null:
