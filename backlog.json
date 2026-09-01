@@ -1901,7 +1901,7 @@
     {
       "id": "TASK-310",
       "title": "BUG: quest system unreachable \u2014 wrong content pipeline + offer_quest() never called",
-      "status": "proposed",
+      "status": "todo",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1910,12 +1910,13 @@
         "data/quests/*.tres"
       ],
       "github_issue_number": 158,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158",
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
     },
     {
       "id": "TASK-311",
       "title": "BUG: buffalo affinity/hearts fully disconnected from gameplay",
-      "status": "proposed",
+      "status": "todo",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1923,12 +1924,13 @@
         "scenes/entities/Buffalo.gd"
       ],
       "github_issue_number": 159,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/159"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/159",
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
     },
     {
       "id": "TASK-312",
       "title": "upgrade_tool() unreachable \u2014 wire to Handler interact; mount = separate riding-tool tier",
-      "status": "proposed",
+      "status": "todo",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1936,12 +1938,13 @@
         "scenes/entities/HandlerNPC.tscn"
       ],
       "github_issue_number": 160,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/160"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/160",
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
     },
     {
       "id": "TASK-313",
       "title": "3-channel sell economy: Cart Trader / Market Stall premium / Specialty Buyer",
-      "status": "proposed",
+      "status": "todo",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1949,7 +1952,8 @@
         "scenes/entities/MarketStallNPC.gd"
       ],
       "github_issue_number": 161,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161",
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
     },
     {
       "id": "TASK-314",
