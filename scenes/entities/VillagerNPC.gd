@@ -82,6 +82,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func talk() -> void:
+	# TASK-312: Handler offers tool upgrades (complementary to mount riding tool).
+	if npc_id == "handler" and _try_tool_upgrade():
+		return
 	var season: String = GameData.current_season if "current_season" in GameData else "cool"
 	var tm: Node = SignalBus.time_manager
 	var day: int = 1
@@ -105,6 +108,25 @@ func talk() -> void:
 		d[npc_id] = day
 	# TASK-310: Offer quest for this giver if available.
 	_try_offer_quest()
+
+func _try_tool_upgrade() -> bool:
+	# TASK-312: Handler offers tool upgrades for rice. Tries tools in order:
+	# hoe -> watering_can -> sickle. Each upgrade costs tier*8 rice.
+	# Complementary track: mount's 3x3 auto-plow is situational riding tool,
+	# while these tiers are permanent solo-farming upgrades.
+	for tool_id in ["hoe", "watering_can", "sickle"]:
+		var tier: int = GameData.tool_tier(tool_id)
+		if tier >= 3:
+			continue
+		var cost: int = tier * 8
+		if GameData.has_item("rice_grain", cost):
+			if GameData.upgrade_tool(tool_id):
+				SignalBus.show_dialogue.emit(display_name, "Upgraded %s to tier %d for %d rice! (Riding plow is separate — works only while mounted.)" % [tool_id, tier + 1, cost])
+				return true
+			else:
+				SignalBus.show_dialogue.emit(display_name, "Need %d rice for %s tier %d." % [cost, tool_id, tier + 1])
+				return true
+	return false
 
 func _try_offer_quest() -> void:
 	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")
