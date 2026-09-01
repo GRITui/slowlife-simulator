@@ -9,9 +9,11 @@ jobs:
         uses: chickensoft-games/setup-godot@v1
         with:
           version: 4.7.2
-      - name: Import
-        run: godot --headless --import --path .
-      - name: Content gate
-        run: godot --headless --path . --script res://tests/run_tests.gd
-      - name: Engine gate
-        run: godot --headless --path . --script res://tests/run_engine_tests.gd
+      # ENGINE-015: single source of truth — run_gate.sh 'all' executes the
+      # mandatory import pass, gdlint advisory, and every gate added since
+      # ENGINE-009 (content, engine, save-compat, perf-budget, shaders,
+      # touch-targets, profiler, frame-cap, memory, crafting, game-flow,
+      # festival, buffalo, planting, banana, stage-render, songkran, audio,
+      # save-ui). Keep adding suites to run_gate.sh, not here.
+      - name: Full gate sweep
+        run: bash scripts/ci/run_gate.sh all
