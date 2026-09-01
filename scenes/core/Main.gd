@@ -64,6 +64,26 @@ func _ready() -> void:
 	_ensure_chicken_coop()
 	# TASK-050: fishing spot on the canal; rod ships in inventory (decision).
 	_ensure_fishing_spot()
+	# TASK-052: peer NPCs Niran + Fah (romance candidates).
+	_ensure_peer_npcs()
+
+func _ensure_peer_npcs() -> void:
+	var spots: Dictionary = {
+		"NiranNPC": {"scene": "res://scenes/entities/NiranNPC.tscn", "pos": Vector2(13 * 48 + 24, 5 * 48)},
+		"FahNPC": {"scene": "res://scenes/entities/FahNPC.tscn", "pos": Vector2(10 * 48 + 24, 12 * 48)},
+	}
+	for npc_name: String in spots.keys():
+		if get_node_or_null(npc_name) != null:
+			continue
+		var scene: PackedScene = load(String(spots[npc_name]["scene"]))
+		if scene == null:
+			continue
+		var npc: Node2D = scene.instantiate() as Node2D
+		if npc == null:
+			continue
+		npc.name = npc_name
+		npc.position = spots[npc_name]["pos"]
+		add_child(npc)
 
 func _ensure_fishing_spot() -> void:
 	if get_node_or_null("FishingSpot") != null:

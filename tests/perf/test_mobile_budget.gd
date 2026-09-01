@@ -33,7 +33,8 @@ func _initialize() -> void:
 			_check(ring != null and ring.get_child_count() == 0,
 				"BambooRing is a single baked sprite (0 children)")
 			# Y-sort budget: visible actors/props (z>=0) <= 36, excluding
-# (raised from 32 in TASK-029: +Buffalo, +CookingStation, +MarketStall)
+# (32->36 in TASK-029: +Buffalo/+CookingStation/+MarketStall; 36->40 in
+# TASK-052: peer NPCs Niran + Fah)
 			# ground dressing (z<0) and logic containers.
 			var sorted_kids: int = 0
 			for c in main.get_children():
@@ -42,7 +43,7 @@ func _initialize() -> void:
 					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 36, "y-sorted participants <= 36 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 40, "y-sorted participants <= 40 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)
