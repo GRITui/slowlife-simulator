@@ -1901,7 +1901,7 @@
     {
       "id": "TASK-310",
       "title": "BUG: quest system unreachable \u2014 wrong content pipeline + offer_quest() never called",
-      "status": "todo",
+      "status": "completed",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1911,7 +1911,9 @@
       ],
       "github_issue_number": 158,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158",
-      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress)."
+      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
+      "completed_at": "2026-09-01",
+      "pr_number": 163
     },
     {
       "id": "TASK-311",
