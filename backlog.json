@@ -1901,7 +1901,7 @@
     {
       "id": "TASK-310",
       "title": "BUG: quest system unreachable \u2014 wrong content pipeline + offer_quest() never called",
-      "status": "in_progress",
+      "status": "completed",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1913,7 +1913,7 @@
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158",
       "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
       "completed_at": "2026-09-01",
-      "pr_number": 163,
+      "pr_number": 169,
       "priority": "high",
       "owner_note": "REOPENED after end-to-end verification: offer_quest() is wired (fixed), but all 22 objective strings from the 9 migrated quests are unwired to any real game event \u2014 only the original 2 baseline quests (first_catch, morning_merit) can actually complete. See issue #158 reopen comment for the full objective list and traders_coastal_order giver-not-instanced blocker."
     },
