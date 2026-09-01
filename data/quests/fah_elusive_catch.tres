@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_fah001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "fah_elusive_catch"
+display_name = "Fah's Elusive Catch"
+description = "Fah won't say which fish she means. Just that you'll know it when the line goes still."
+objectives = Array[String](["catch_two_fish", "catch_rare_tier_fish"])
+reward_item_id = "fishing_rod"
+reward_harmony = 7
+giver_npc_id = "fah"

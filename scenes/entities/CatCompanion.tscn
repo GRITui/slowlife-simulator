@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://cat_companion001"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/cat_idle_01.png" id="1_idle"]
+[ext_resource type="Texture2D" path="res://assets/characters/cat_walk_01.png" id="2_w1"]
+[ext_resource type="Texture2D" path="res://assets/characters/cat_walk_02.png" id="3_w2"]
+[ext_resource type="Texture2D" path="res://assets/characters/cat_walk_03.png" id="4_w3"]
+[ext_resource type="Texture2D" path="res://assets/characters/cat_walk_04.png" id="5_w4"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cat"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_idle")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_w1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_w2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_w3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_w4")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 6.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pet"]
+radius = 20.0
+
+[node name="CatCompanion" type="CharacterBody2D" groups=["cat_companion"]]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_cat")
+animation = &"idle"
+autoplay = "idle"
+centered = true
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_pet")

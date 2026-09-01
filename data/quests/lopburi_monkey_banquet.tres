@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_lopburi001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "lopburi_monkey_banquet"
+display_name = "The Great Banana Heist"
+description = "Your banana stock is gone by morning. The trail leads to the temple ruins, where the monk has an idea: instead of driving the hungry troop off, throw them a feast."
+objectives = Array[String](["find_the_empty_crate", "speak_with_the_monk", "donate_fruit_for_the_banquet", "host_the_banquet"])
+reward_item_id = "three_wise_monkeys_figurine"
+reward_harmony = 9
+giver_npc_id = "monk"

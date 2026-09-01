@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/pond_glow.gdshader" id="1_glow"]
+
+[resource]
+shader = ExtResource("1_glow")
+shader_parameter/pulse_speed = 0.8
+shader_parameter/strength = 0.16

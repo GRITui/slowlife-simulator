@@ -1,0 +1,46 @@
+{
+  "gift_preferences": {
+    "niran": {
+      "loved": ["durian", "watermelon", "sugarcane"],
+      "liked": ["rice_grain", "mango", "chili", "peanut"],
+      "disliked": ["banana_rice_cake", "khanom_krok"],
+      "note": "Wants what you grew, not what you cooked -- the rivalry is about the harvest itself."
+    },
+    "fah": {
+      "loved": ["pla_ngon_big", "pla_buk_mid", "coconut_milk"],
+      "liked": ["coconut", "lotus_root", "fish_tapian_mid"],
+      "disliked": ["durian"],
+      "note": "Rare catches mean more to her than anything from the fields."
+    },
+    "elder": {
+      "loved": ["jasmine_rice", "seed_pandan"],
+      "liked": ["sticky_rice", "tofu", "lotus_soup"],
+      "disliked": ["chili"],
+      "note": "Respects a proper offering; finds the hot season's chili a bit much."
+    },
+    "child": {
+      "loved": ["mango_sticky_rice", "banana_rice_cake", "khao_tan"],
+      "liked": ["watermelon", "taeng_mo_pan"],
+      "disliked": ["ginger", "garlic"],
+      "note": "Sweets over everything. Strong flavors are a hard no."
+    },
+    "handler": {
+      "loved": ["tofu", "egg", "khai_jiao"],
+      "liked": ["rice_grain", "soybean"],
+      "disliked": ["papaya"],
+      "note": "Practical, hearty food. No stated reason for the papaya thing. There never is."
+    },
+    "monk": {
+      "loved": ["jasmine_rice", "lotus_root"],
+      "liked": ["banana", "mango", "sticky_rice"],
+      "disliked": ["durian"],
+      "note": "Durian's smell isn't welcome in the temple, same as in most enclosed spaces -- a real, well-known custom, not a joke."
+    },
+    "trader": {
+      "loved": ["pla_kraben_big", "pla_buk_big"],
+      "liked": ["durian", "coconut", "palm_sugar"],
+      "disliked": ["rice_grain"],
+      "note": "Sees rice constantly at the stall -- a gift of it lands flat. Rare goods impress."
+    }
+  }
+}

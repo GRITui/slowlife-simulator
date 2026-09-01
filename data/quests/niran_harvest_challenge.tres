@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_niran001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "niran_harvest_challenge"
+display_name = "Niran's Harvest Challenge"
+description = "Niran bet you can't bring in a durian before the season turns. Prove it."
+objectives = Array[String](["harvest_two_crop_types", "deliver_durian_to_niran"])
+reward_item_id = "seed_watermelon"
+reward_harmony = 5
+giver_npc_id = "niran"

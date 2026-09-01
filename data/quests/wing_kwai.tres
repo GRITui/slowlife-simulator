@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_wingkwai001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "wing_kwai"
+display_name = "The Mud and the Glory"
+description = "Uncle Preecha's boasting finally got to you. Enter the buffalo race at the Wing Kwai festival and prove your farming isn't just for show. Mid-autumn only."
+objectives = Array[String](["craft_stamina_mash", "feed_buffalo_mash", "enter_the_race"])
+reward_item_id = "champions_yoke"
+reward_harmony = 10
+giver_npc_id = "handler"

@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/heat_haze.gdshader" id="1_haze"]
+
+[resource]
+shader = ExtResource("1_haze")
+shader_parameter/shimmer_speed = 1.4
+shader_parameter/band_height = 0.22
+shader_parameter/strength = 0.08

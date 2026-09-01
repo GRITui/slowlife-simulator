@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_elder001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "elder_request"
+display_name = "The Elder's Request"
+description = "Grandmother Nim wants a proper cool-season offering — rice from the paddy, not the market."
+objectives = Array[String](["harvest_jasmine_rice", "offer_binthabat"])
+reward_item_id = "seed_pandan"
+reward_harmony = 6
+giver_npc_id = "elder"

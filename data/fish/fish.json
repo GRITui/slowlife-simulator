@@ -1,0 +1,499 @@
+{
+  "fish": [
+    {
+      "id": "pla_nin",
+      "display_name": "Nile Tilapia",
+      "thai_name": "ปลานิล",
+      "seasons": [
+        "hot",
+        "monsoon",
+        "cool"
+      ],
+      "rarity": "common",
+      "skill_required": 1,
+      "sizes": {
+        "small": {
+          "item_id": "pla_nin_small",
+          "harmony_value": 2
+        },
+        "mid": {
+          "item_id": "pla_nin_mid",
+          "harmony_value": 3
+        },
+        "big": {
+          "item_id": "pla_nin_big",
+          "harmony_value": 5
+        }
+      }
+    },
+    {
+      "id": "pla_duk",
+      "display_name": "Walking Catfish",
+      "thai_name": "ปลาดุก",
+      "seasons": [
+        "hot",
+        "monsoon",
+        "cool"
+      ],
+      "rarity": "common",
+      "skill_required": 1,
+      "sizes": {
+        "small": {
+          "item_id": "pla_duk_small",
+          "harmony_value": 2
+        },
+        "mid": {
+          "item_id": "pla_duk_mid",
+          "harmony_value": 3
+        },
+        "big": {
+          "item_id": "pla_duk_big",
+          "harmony_value": 5
+        }
+      }
+    },
+    {
+      "id": "pla_tapian",
+      "display_name": "Silver Barb",
+      "thai_name": "ปลาตะเพียน",
+      "seasons": [
+        "hot",
+        "monsoon",
+        "cool"
+      ],
+      "rarity": "common",
+      "skill_required": 1,
+      "sizes": {
+        "small": {
+          "item_id": "pla_tapian_small",
+          "harmony_value": 1
+        },
+        "mid": {
+          "item_id": "pla_tapian_mid",
+          "harmony_value": 2
+        },
+        "big": {
+          "item_id": "pla_tapian_big",
+          "harmony_value": 3
+        }
+      }
+    },
+    {
+      "id": "pla_mor",
+      "display_name": "Climbing Perch",
+      "thai_name": "ปลาหมอ",
+      "seasons": [
+        "hot",
+        "monsoon",
+        "cool"
+      ],
+      "rarity": "common",
+      "skill_required": 1,
+      "sizes": {
+        "small": {
+          "item_id": "pla_mor_small",
+          "harmony_value": 2
+        },
+        "mid": {
+          "item_id": "pla_mor_mid",
+          "harmony_value": 3
+        },
+        "big": {
+          "item_id": "pla_mor_big",
+          "harmony_value": 5
+        }
+      }
+    },
+    {
+      "id": "pla_hang_nok_yung",
+      "display_name": "Blue Panchax",
+      "thai_name": "ปลาหางนกยูง",
+      "seasons": [
+        "monsoon"
+      ],
+      "rarity": "common",
+      "skill_required": 1,
+      "sizes": {
+        "small": {
+          "item_id": "pla_hang_nok_yung_small",
+          "harmony_value": 1
+        },
+        "mid": {
+          "item_id": "pla_hang_nok_yung_mid",
+          "harmony_value": 2
+        },
+        "big": {
+          "item_id": "pla_hang_nok_yung_big",
+          "harmony_value": 3
+        }
+      }
+    },
+    {
+      "id": "pla_soi",
+      "display_name": "Java Barb",
+      "thai_name": "ปลาซิว",
+      "seasons": [
+        "cool"
+      ],
+      "rarity": "common",
+      "skill_required": 1,
+      "sizes": {
+        "small": {
+          "item_id": "pla_soi_small",
+          "harmony_value": 1
+        },
+        "mid": {
+          "item_id": "pla_soi_mid",
+          "harmony_value": 2
+        },
+        "big": {
+          "item_id": "pla_soi_big",
+          "harmony_value": 3
+        }
+      }
+    },
+    {
+      "id": "pla_chon",
+      "display_name": "Snakehead",
+      "thai_name": "ปลาช่อน",
+      "seasons": [
+        "hot"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "pla_chon_small",
+          "harmony_value": 3
+        },
+        "mid": {
+          "item_id": "pla_chon_mid",
+          "harmony_value": 5
+        },
+        "big": {
+          "item_id": "pla_chon_big",
+          "harmony_value": 8
+        }
+      }
+    },
+    {
+      "id": "pla_nuea_on",
+      "display_name": "Giant Gourami",
+      "thai_name": "ปลาสลิดยักษ์",
+      "seasons": [
+        "monsoon"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "pla_nuea_on_small",
+          "harmony_value": 3
+        },
+        "mid": {
+          "item_id": "pla_nuea_on_mid",
+          "harmony_value": 5
+        },
+        "big": {
+          "item_id": "pla_nuea_on_big",
+          "harmony_value": 8
+        }
+      }
+    },
+    {
+      "id": "pla_bu",
+      "display_name": "Marbled Goby",
+      "thai_name": "ปลาบู่",
+      "seasons": [
+        "cool"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "pla_bu_small",
+          "harmony_value": 3
+        },
+        "mid": {
+          "item_id": "pla_bu_mid",
+          "harmony_value": 5
+        },
+        "big": {
+          "item_id": "pla_bu_big",
+          "harmony_value": 8
+        }
+      }
+    },
+    {
+      "id": "pla_kad",
+      "display_name": "Siamese Fighting Fish",
+      "thai_name": "ปลากัด",
+      "seasons": [
+        "cool"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "pla_kad_small",
+          "harmony_value": 2
+        },
+        "mid": {
+          "item_id": "pla_kad_mid",
+          "harmony_value": 4
+        },
+        "big": {
+          "item_id": "pla_kad_big",
+          "harmony_value": 6
+        }
+      }
+    },
+    {
+      "id": "pla_krai",
+      "display_name": "Spotted Featherback",
+      "thai_name": "ปลากราย",
+      "seasons": [
+        "monsoon"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "pla_krai_small",
+          "harmony_value": 3
+        },
+        "mid": {
+          "item_id": "pla_krai_mid",
+          "harmony_value": 5
+        },
+        "big": {
+          "item_id": "pla_krai_big",
+          "harmony_value": 8
+        }
+      }
+    },
+    {
+      "id": "goong_mae_nam",
+      "display_name": "Giant River Prawn",
+      "thai_name": "กุ้งแม่น้ำ",
+      "seasons": [
+        "hot"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "goong_mae_nam_small",
+          "harmony_value": 4
+        },
+        "mid": {
+          "item_id": "goong_mae_nam_mid",
+          "harmony_value": 6
+        },
+        "big": {
+          "item_id": "goong_mae_nam_big",
+          "harmony_value": 10
+        }
+      }
+    },
+    {
+      "id": "pla_kadi",
+      "display_name": "Croaking Gourami",
+      "thai_name": "ปลาแรด",
+      "seasons": [
+        "cool"
+      ],
+      "rarity": "uncommon",
+      "skill_required": 2,
+      "sizes": {
+        "small": {
+          "item_id": "pla_kadi_small",
+          "harmony_value": 2
+        },
+        "mid": {
+          "item_id": "pla_kadi_mid",
+          "harmony_value": 4
+        },
+        "big": {
+          "item_id": "pla_kadi_big",
+          "harmony_value": 6
+        }
+      }
+    },
+    {
+      "id": "pla_lai",
+      "display_name": "Freshwater Eel",
+      "thai_name": "ปลาไหล",
+      "seasons": [
+        "monsoon"
+      ],
+      "rarity": "rare",
+      "skill_required": 3,
+      "sizes": {
+        "small": {
+          "item_id": "pla_lai_small",
+          "harmony_value": 5
+        },
+        "mid": {
+          "item_id": "pla_lai_mid",
+          "harmony_value": 8
+        },
+        "big": {
+          "item_id": "pla_lai_big",
+          "harmony_value": 13
+        }
+      },
+      "elder_hint": "The eels hide in the canal mud after heavy rain — feel for them, don't look."
+    },
+    {
+      "id": "pla_salit",
+      "display_name": "Climbing Gourami",
+      "thai_name": "ปลาสลิด",
+      "seasons": [
+        "hot"
+      ],
+      "rarity": "rare",
+      "skill_required": 3,
+      "sizes": {
+        "small": {
+          "item_id": "pla_salit_small",
+          "harmony_value": 4
+        },
+        "mid": {
+          "item_id": "pla_salit_mid",
+          "harmony_value": 7
+        },
+        "big": {
+          "item_id": "pla_salit_big",
+          "harmony_value": 11
+        }
+      },
+      "elder_hint": "Salit surface at the hottest part of the afternoon, when the paddy water's low."
+    },
+    {
+      "id": "pla_kot",
+      "display_name": "Long-whiskered Catfish",
+      "thai_name": "ปลาคด",
+      "seasons": [
+        "monsoon"
+      ],
+      "rarity": "rare",
+      "skill_required": 3,
+      "sizes": {
+        "small": {
+          "item_id": "pla_kot_small",
+          "harmony_value": 5
+        },
+        "mid": {
+          "item_id": "pla_kot_mid",
+          "harmony_value": 8
+        },
+        "big": {
+          "item_id": "pla_kot_big",
+          "harmony_value": 13
+        }
+      },
+      "elder_hint": "Deep canal bends, monsoon only — the whiskered one doesn't come to shallow water."
+    },
+    {
+      "id": "pla_kraben",
+      "display_name": "Freshwater Stingray",
+      "thai_name": "ปลากระเบน",
+      "seasons": [
+        "hot"
+      ],
+      "rarity": "rare",
+      "skill_required": 3,
+      "sizes": {
+        "small": {
+          "item_id": "pla_kraben_small",
+          "harmony_value": 5
+        },
+        "mid": {
+          "item_id": "pla_kraben_mid",
+          "harmony_value": 9
+        },
+        "big": {
+          "item_id": "pla_kraben_big",
+          "harmony_value": 14
+        }
+      },
+      "elder_hint": "Careful with that one's tail. It rests flat on the sandy bottom, hot season only."
+    },
+    {
+      "id": "pla_ngon",
+      "display_name": "Golden Mahseer",
+      "thai_name": "ปลาพลวง",
+      "seasons": [
+        "cool"
+      ],
+      "rarity": "rare",
+      "skill_required": 3,
+      "sizes": {
+        "small": {
+          "item_id": "pla_ngon_small",
+          "harmony_value": 5
+        },
+        "mid": {
+          "item_id": "pla_ngon_mid",
+          "harmony_value": 9
+        },
+        "big": {
+          "item_id": "pla_ngon_big",
+          "harmony_value": 14
+        }
+      },
+      "elder_hint": "The golden one runs upriver when the water cools — patience, not strength, catches it."
+    },
+    {
+      "id": "pla_buk",
+      "display_name": "Mekong Giant Catfish",
+      "thai_name": "ปลาบึก",
+      "seasons": [
+        "monsoon"
+      ],
+      "rarity": "legendary",
+      "skill_required": 4,
+      "sizes": {
+        "small": {
+          "item_id": "pla_buk_small",
+          "harmony_value": 9
+        },
+        "mid": {
+          "item_id": "pla_buk_mid",
+          "harmony_value": 15
+        },
+        "big": {
+          "item_id": "pla_buk_big",
+          "harmony_value": 24
+        }
+      },
+      "elder_hint": "My grandmother spoke of a giant in the deep canal bend — once a generation, monsoon only. Few believe her. I do."
+    },
+    {
+      "id": "pla_sai_rung",
+      "display_name": "Rainbow Boesemani",
+      "thai_name": "ปลาสายรุ้ง",
+      "seasons": [
+        "hot"
+      ],
+      "rarity": "legendary",
+      "skill_required": 4,
+      "sizes": {
+        "small": {
+          "item_id": "pla_sai_rung_small",
+          "harmony_value": 7
+        },
+        "mid": {
+          "item_id": "pla_sai_rung_mid",
+          "harmony_value": 12
+        },
+        "big": {
+          "item_id": "pla_sai_rung_big",
+          "harmony_value": 19
+        }
+      },
+      "elder_hint": "At high noon in the hot season, something flashes every color in the sun near the lotus maze. I've only seen it once."
+    }
+  ]
+}

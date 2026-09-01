@@ -1,0 +1,16 @@
+[gd_resource type="ParticleProcessMaterial" load_steps=2 format=3]
+
+[sub_resource type="Gradient" id="Gradient_lantern"]
+colors = PackedColorArray(0.878, 0.635, 0.227, 0.7, 0.788, 0.384, 0.184, 0.0)
+
+[resource]
+direction = Vector3(0, -1, 0)
+spread = 15.0
+gravity = Vector3(0, -18, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 22.0
+scale_min = 0.9
+scale_max = 1.4
+color_ramp = SubResource("Gradient_lantern")
+emission_shape = 3
+emission_box_extents = Vector3(70, 30, 1)

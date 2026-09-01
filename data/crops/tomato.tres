@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_tomato"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/tomato_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/tomato_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/tomato_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/tomato_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "tomato"
+display_name = "Tomato"
+description = "Makhuea thet — vine fruit, cool nights bring out the best color."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([1440, 1440, 2880, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 0.7,
+"monsoon": 0.9,
+"cool": 1.5
+}
+season_growth_speed = {
+"hot": 0.8,
+"monsoon": 0.9,
+"cool": 1.25
+}
+allowed_seasons = Array[String](["cool"])
+requires_water = true
+yield_item_id = "tomato"
+yield_amount = 5
+harmony_value = 3
+stamina_cost_plant = 4.5
+stamina_cost_harvest = 3.5
+seed_item_id = "seed_tomato"
+regrow_after_harvest = false
+required_infrastructure = ""

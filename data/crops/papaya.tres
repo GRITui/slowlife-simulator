@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_papaya018"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/papaya_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/papaya_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/papaya_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/papaya_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "papaya"
+display_name = "Papaya Tree"
+description = "Malakor — harvested green for som tam, the way the village likes it best. Perennial, like mango and durian."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([1440, 2880, 2880, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 1.3,
+"monsoon": 1.0,
+"cool": 0.9
+}
+season_growth_speed = {
+"hot": 1.15,
+"monsoon": 1.0,
+"cool": 0.9
+}
+allowed_seasons = Array[String](["hot", "monsoon", "cool"])
+requires_water = false
+yield_item_id = "papaya"
+yield_amount = 3
+harmony_value = 4
+stamina_cost_plant = 7.0
+stamina_cost_harvest = 4.0
+seed_item_id = "seed_papaya"
+regrow_after_harvest = true
+required_infrastructure = ""

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_trader001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "traders_coastal_order"
+display_name = "Trader's Coastal Order"
+description = "The boats brought fish sauce this season. The trader wants it turned into something worth eating."
+objectives = Array[String](["acquire_fish_sauce", "deliver_nam_prik_to_trader"])
+reward_item_id = "seed_chili"
+reward_harmony = 6
+giver_npc_id = "trader"

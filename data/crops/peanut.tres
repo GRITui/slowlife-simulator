@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_peanut"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/peanut_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/peanut_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/peanut_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/peanut_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "peanut"
+display_name = "Peanut"
+description = "Thua lisong — groundnut, needs loose dry soil and patience."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([1440, 1440, 2880, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 1.5,
+"monsoon": 0.7,
+"cool": 0.9
+}
+season_growth_speed = {
+"hot": 1.25,
+"monsoon": 0.75,
+"cool": 0.9
+}
+allowed_seasons = Array[String](["hot"])
+requires_water = false
+yield_item_id = "peanut"
+yield_amount = 5
+harmony_value = 3
+stamina_cost_plant = 5.0
+stamina_cost_harvest = 4.0
+seed_item_id = "seed_peanut"
+regrow_after_harvest = false
+required_infrastructure = ""

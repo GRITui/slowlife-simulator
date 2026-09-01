@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_yardlong_bean"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/yardlong_bean_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/yardlong_bean_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/yardlong_bean_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/yardlong_bean_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "yardlong_bean"
+display_name = "Yardlong Bean"
+description = "Thua fak yao — resilient climbing bean, reliable in every season."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([1440, 1440, 1440, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 1.0,
+"monsoon": 1.0,
+"cool": 1.0
+}
+season_growth_speed = {
+"hot": 1.0,
+"monsoon": 1.0,
+"cool": 1.0
+}
+allowed_seasons = Array[String](["hot", "monsoon", "cool"])
+requires_water = true
+yield_item_id = "yardlong_bean"
+yield_amount = 6
+harmony_value = 2
+stamina_cost_plant = 3.5
+stamina_cost_harvest = 2.5
+seed_item_id = "seed_yardlong_bean"
+regrow_after_harvest = false
+required_infrastructure = ""

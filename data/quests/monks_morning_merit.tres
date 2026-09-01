@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_monk001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "monks_morning_merit"
+display_name = "Morning Merit"
+description = "The monk asks nothing directly. Three mornings of alms, offered without being asked twice."
+objectives = Array[String](["binthabat_day_1", "binthabat_day_2", "binthabat_day_3"])
+reward_item_id = "seed_lotus"
+reward_harmony = 8
+giver_npc_id = "monk"

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_phitakhon001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "phi_ta_khon"
+display_name = "The Phantom in the Palms"
+description = "Young Ton swears he saw a long-nosed monster by the forest edge. The elder asks you to look into it before the whole village locks its doors early."
+objectives = Array[String](["interview_ton", "examine_forest_clues", "confront_the_maskmaker", "clear_up_the_misunderstanding"])
+reward_item_id = "phi_ta_khon_mask"
+reward_harmony = 8
+giver_npc_id = "elder"

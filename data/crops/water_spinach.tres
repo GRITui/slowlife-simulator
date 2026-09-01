@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_water_spinach"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/water_spinach_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/water_spinach_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/water_spinach_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/water_spinach_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "water_spinach"
+display_name = "Water Spinach"
+description = "Phak bung — grows fast in flooded soil, a monsoon staple stir-fry green."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([1440, 1440, 1440, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 0.6,
+"monsoon": 1.5,
+"cool": 0.9
+}
+season_growth_speed = {
+"hot": 0.7,
+"monsoon": 1.25,
+"cool": 0.9
+}
+allowed_seasons = Array[String](["monsoon"])
+requires_water = true
+yield_item_id = "water_spinach"
+yield_amount = 6
+harmony_value = 2
+stamina_cost_plant = 3.0
+stamina_cost_harvest = 2.0
+seed_item_id = "seed_water_spinach"
+regrow_after_harvest = false
+required_infrastructure = ""

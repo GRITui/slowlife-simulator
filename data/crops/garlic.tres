@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="CropData" load_steps=6 format=3 uid="uid://crop_garlic"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/CropData.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/garlic_stage1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/garlic_stage2.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/garlic_stage3.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/environment/crops/garlic_stage4.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+id = "garlic"
+display_name = "Garlic"
+description = "Kratiam — bulb crop, dry cool soil, the long-game pantry staple."
+stage_textures = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5")])
+growth_minutes_per_stage = Array[int]([1440, 2880, 2880, 0])
+total_stages = 4
+season_yield_multiplier = {
+"hot": 0.7,
+"monsoon": 0.9,
+"cool": 1.5
+}
+season_growth_speed = {
+"hot": 0.8,
+"monsoon": 0.9,
+"cool": 1.25
+}
+allowed_seasons = Array[String](["cool"])
+requires_water = false
+yield_item_id = "garlic"
+yield_amount = 4
+harmony_value = 3
+stamina_cost_plant = 5.0
+stamina_cost_harvest = 4.0
+seed_item_id = "seed_garlic"
+regrow_after_harvest = false
+required_infrastructure = ""

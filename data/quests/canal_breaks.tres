@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3 uid="uid://quest_canalbreaks001"]
+
+[ext_resource type="Script" path="res://scripts/resource_types/QuestData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = "canal_breaks"
+display_name = "The Canal Breaks"
+description = "Monsoon rains have swollen the canal past what the sluice gate can hold. Handler needs wood and hands before the paddies flood — not a fight, a race against the water."
+objectives = Array[String](["gather_reinforcement_wood", "report_to_handler", "reinforce_the_banks"])
+reward_item_id = "flood_ward_charm"
+reward_harmony = 12
+giver_npc_id = "handler"
