@@ -1456,14 +1456,16 @@
       "sprint": 13,
       "category": "gameplay",
       "title": "Per-NPC gift preference tables (romance deepening)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scripts/narrative/DialogueDB.gd, scenes/entities/RomanceNPC.gd",
       "notes": "#112: per-NPC liked-items table replaces any-food v1; affinity bonus scales by preference match.",
       "gate_audit": "PASS 2026-09-01 (issue-direct): requested enhancement on shipped system, zero-combat, assets/data ready. Order: effort ascending.",
       "github_issue_number": 112,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/112"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/112",
+      "completed_at": "2026-09-01",
+      "pr_number": 118
     },
     {
       "id": "TASK-055",
