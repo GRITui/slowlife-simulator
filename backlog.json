@@ -1353,14 +1353,14 @@
       "sprint": 11,
       "category": "mechanics",
       "title": "ChickenCoop \u2014 daily egg interact (Buffalo mirror, no-harm protein)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "scenes/entities/ChickenCoop.gd, scenes/core/Main.gd",
       "notes": "PO_INBOX r5 #5: ChickenCoop.gd mirror of Buffalo.gd; egg once/day (daily-limited, not unlimited); spawn in pasture.",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 106
     },
     {
       "id": "TASK-050",
