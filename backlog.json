@@ -1618,13 +1618,15 @@
       "sprint": 17,
       "category": "engine",
       "title": "Wing Kwai: buffalo racing minigame",
-      "status": "proposed",
+      "status": "completed",
       "priority": "low",
       "owner": "backend-automation",
       "files": [],
       "notes": "Pure engine scope, not claimed by art-po. Issue #128.",
       "github_issue_number": 128,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/128"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/128",
+      "completed_at": "2026-09-01",
+      "pr_number": 137
     },
     {
       "id": "TASK-271",
