@@ -24,6 +24,7 @@ name="Thai Rural Countryside Sim"
 SignalBus="*res://scripts/autoload/SignalBus.gd"
 GameData="*res://scripts/autoload/GameData.gd"
 FrameCap="*res://scripts/core/FrameCap.gd"
+AudioManager="*res://scripts/autoload/AudioManager.gd"
 
 [config]
 
