@@ -1985,7 +1985,7 @@
     {
       "id": "TASK-315",
       "title": "Trader cart evening visit trigger and animation",
-      "status": "todo",
+      "status": "completed",
       "category": "gameplay",
       "owner": "backend-automation",
       "files": [
@@ -1993,7 +1993,9 @@
         "scenes/core/Main.gd"
       ],
       "priority": "medium",
-      "notes": "Follow-up to TASK-313/314: Trader NPC visual is in_progress art-lane, but evening visit logic (18:00-21:00) and cart prop animation not yet wired. Scout: expected behavior is Trader appears at farm in evening, leaves at night, cart prop moves with trader."
+      "notes": "Follow-up to TASK-313/314: Trader NPC visual is in_progress art-lane, but evening visit logic (18:00-21:00) and cart prop animation not yet wired. Scout: expected behavior is Trader appears at farm in evening, leaves at night, cart prop moves with trader.",
+      "completed_at": "2026-09-01",
+      "pr_number": 165
     },
     {
       "id": "TASK-316",
