@@ -43,9 +43,18 @@ func _give_gift() -> bool:
 	if gift_id.is_empty():
 		return false
 	GameData.remove_item(gift_id, 1)
-	GameData.add_affinity(npc_id, 10)
+	# TASK-054: per-NPC preference table scales the affinity delta.
+	var tier: String = DialogueDBScript.gift_tier(npc_id, gift_id)
+	var delta: int = DialogueDBScript.gift_affinity(tier)
+	GameData.add_affinity(npc_id, delta)
 	var affinity: int = GameData.get_affinity(npc_id)
-	SignalBus.show_dialogue.emit(display_name, "A gift? %s — thank you. (affinity %d)" % [gift_id.replace("_", " "), affinity])
+	match tier:
+		"loved":
+			SignalBus.show_dialogue.emit(display_name, "%s — you remembered! (affinity %d)" % [gift_id.replace("_", " "), affinity])
+		"liked":
+			SignalBus.show_dialogue.emit(display_name, "%s is nice of you. (affinity %d)" % [gift_id.replace("_", " "), affinity])
+		_:
+			SignalBus.show_dialogue.emit(display_name, "%s — thank you. (affinity %d)" % [gift_id.replace("_", " "), affinity])
 	return true
 
 func _talk() -> void:
