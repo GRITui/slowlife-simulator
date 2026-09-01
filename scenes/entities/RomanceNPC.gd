@@ -27,7 +27,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		try_interact()
 		get_viewport().set_input_as_handled()
 
-## Gift first, then proposal check (romantic + krathong held), else talk.
+## Gift first, then specialty sell (close tier, +45% premium, 3/week), then proposal check (romantic + krathong held), else talk.
 func try_interact() -> bool:
 	if GameData.married and GameData.spouse == npc_id:
 		# TASK-282: marriage ceiling payoff — annual anniversary, cozy loop.
@@ -43,11 +43,44 @@ func try_interact() -> bool:
 		else:
 			SignalBus.show_dialogue.emit(display_name, "Home is wherever the two of us stop working. Let's head in soon.")
 		return true
+	if _try_specialty_sell():
+		return true
 	if _give_gift():
 		return true
 	if _check_proposal():
 		return true
 	_talk()
+	return false
+
+func _try_specialty_sell() -> bool:
+	# TASK-313 Channel C: Specialty Buyer — close tier (60+), +45% premium, 3/week cap.
+	var tm: Node = SignalBus.time_manager
+	var day: int = int(tm.day) if tm != null and "day" in tm else 1
+	if not GameData.can_specialty_sell(npc_id, day):
+		return false
+	var want_item: String = ""
+	if npc_id == "fah":
+		for item_id in ["pla_nin_big", "pla_soi_big", "pla_chon_big", "mango_sticky_rice", "lotus_root"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
+		if want_item.is_empty():
+			for item_id in GameData.inventory.keys():
+				if String(item_id).begins_with("pla_") and GameData.has_item(item_id, 1):
+					want_item = item_id
+					break
+	elif npc_id == "niran":
+		for item_id in ["durian", "mango", "durian_sticky_rice", "mango_sticky_rice"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
+	if want_item.is_empty():
+		return false
+	var gained: int = GameData.sell_item_premium(want_item, "specialty")
+	if gained > 0:
+		GameData.record_specialty_sale(npc_id, day)
+		SignalBus.show_dialogue.emit(display_name, "Specialty buyer: %s for %d silver! (close-tier premium, %d/3 this week)" % [want_item.replace("_", " "), gained, int(GameData.specialty_sales_this_week.get(npc_id, 0))])
+		return true
 	return false
 
 ## TASK-059: proposal — romantic tier (>=90) + krathong held. Cozy, mutual:

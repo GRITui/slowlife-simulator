@@ -27,9 +27,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _barter_step() -> void:
-	# ISSUE-135 silver economy: full counter flow is
-	# 1) barter (if fulfillable) -> 2) sell cheapest held -> 3) buy offer.
-	_barter_step()
 	if _market == null:
 		SignalBus.show_dialogue.emit("Trader", "The stall is closed. Come back at dusk.")
 		return
@@ -98,12 +95,12 @@ func _try_barter() -> void:
 		if not have_id.is_empty() and GameData.has_item(have_id, 1):
 			_barter_step()
 			return
-	# 2) Sell step: cheapest sellable held item -> silver.
+	# 2) Sell step: cheapest sellable held item -> silver at Market premium (+15%).
 	var sellable: String = GameData.cheapest_sellable()
 	if not sellable.is_empty():
-		var gained: int = GameData.sell_item(sellable)
+		var gained: int = GameData.sell_item_premium(sellable, "market")
 		if gained > 0:
-			SignalBus.show_dialogue.emit("Trader", "Sold %s for %d silver. (wallet %d)" % [sellable.replace("_", " "), gained, GameData.silver])
+			SignalBus.show_dialogue.emit("Trader", "Sold %s for %d silver at Market premium! (wallet %d)" % [sellable.replace("_", " "), gained, GameData.silver])
 			return
 	# 3) Buy step: first affordable silver offer.
 	var buy_offers: Array[Dictionary] = _market.get_buy_offers(season)

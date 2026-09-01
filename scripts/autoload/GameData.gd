@@ -169,6 +169,51 @@ func cheapest_sellable() -> String:
 				best_price = price
 	return best
 
+# TASK-313 3-channel sell economy: Channel A (Cart, base), B (Market +15%), C (Specialty +45% gated).
+# Specialty weekly cap tracking (Binthabat-style daily reset, but 7-day window).
+var specialty_sales_this_week: Dictionary = {} # npc_id -> count this week
+var last_specialty_week: int = -1
+
+func _get_specialty_week(day: int) -> int:
+	return int(day / 7)
+
+func _reset_specialty_if_new_week(day: int) -> void:
+	var week: int = _get_specialty_week(day)
+	if week != last_specialty_week:
+		specialty_sales_this_week.clear()
+		last_specialty_week = week
+
+func can_specialty_sell(npc_id: String, day: int) -> bool:
+	_reset_specialty_if_new_week(day)
+	if get_affinity(npc_id) < 60:
+		return false
+	return int(specialty_sales_this_week.get(npc_id, 0)) < 3
+
+func record_specialty_sale(npc_id: String, day: int) -> void:
+	_reset_specialty_if_new_week(day)
+	specialty_sales_this_week[npc_id] = int(specialty_sales_this_week.get(npc_id, 0)) + 1
+
+func get_sell_price(item_id: String, channel: String) -> int:
+	var base: int = int(SELL_PRICES.get(item_id, 0))
+	if base <= 0:
+		return 0
+	match channel:
+		"market":
+			return int(ceil(base * 1.15))
+		"specialty":
+			return int(ceil(base * 1.45))
+		_:
+			return base
+
+func sell_item_premium(item_id: String, channel: String) -> int:
+	var price: int = get_sell_price(item_id, channel)
+	if price <= 0 or not has_item(item_id, 1):
+		return 0
+	if not remove_item(item_id, 1):
+		return 0
+	add_silver(price)
+	return price
+
 # TASK-059 romance payoff: spouse npc_id ("" until wed). Proposal requires
 # romantic tier (affinity >= 90) + a krathong as the offering. One spouse.
 var spouse: String = ""
