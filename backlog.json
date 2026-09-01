@@ -1868,6 +1868,31 @@
       ],
       "github_issue_number": 154,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/154"
+    },
+    {
+      "id": "TASK-303",
+      "title": "BUG: Wing Kwai race unreachable \u2014 start_race() never called outside tests",
+      "status": "proposed",
+      "category": "engine",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/interactables/BuffaloRace.gd"
+      ],
+      "github_issue_number": 155,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/155"
+    },
+    {
+      "id": "TASK-304",
+      "title": "Wing Kwai checkpoint flag markers (visual scaffold, ready to instance)",
+      "status": "completed",
+      "category": "art",
+      "owner": "art-po",
+      "files": [
+        "assets/environment/festival/wing_kwai_flag.png",
+        "scenes/festival/WingKwaiCourse.tscn"
+      ],
+      "github_issue_number": 156,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/156"
     }
   ]
 }

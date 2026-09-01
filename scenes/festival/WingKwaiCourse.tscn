@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://wingkwai_course001"]
+
+[ext_resource type="Texture2D" path="res://assets/environment/festival/wing_kwai_flag.png" id="1_flag"]
+
+[node name="WingKwaiCourse" type="Node2D"]
+## Script-less visual scaffold — positions mirror BuffaloRace.CHECKPOINTS
+## exactly (scripts/interactables/BuffaloRace.gd) so the flags mark the
+## real distance-check targets, not just approximate scenery. Engine-lane:
+## instance under Main alongside BuffaloRace/Buffalo (see issue #156).
+
+[node name="Checkpoint1" type="Sprite2D" parent="."]
+position = Vector2(168, 528)
+offset = Vector2(0, -20)
+texture = ExtResource("1_flag")
+
+[node name="Checkpoint2" type="Sprite2D" parent="."]
+position = Vector2(408, 672)
+offset = Vector2(0, -20)
+texture = ExtResource("1_flag")
+
+[node name="Checkpoint3" type="Sprite2D" parent="."]
+position = Vector2(600, 576)
+offset = Vector2(0, -20)
+texture = ExtResource("1_flag")
+
+[node name="Checkpoint4" type="Sprite2D" parent="."]
+position = Vector2(312, 528)
+offset = Vector2(0, -20)
+texture = ExtResource("1_flag")

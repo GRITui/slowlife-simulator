@@ -1,17 +1,13 @@
-# PO Inbox — directive from Head of Art (2026-09-01, round 10)
+# PO Inbox — directive from Head of Art (2026-09-01, round 11)
 
-## 1. PRIORITY BUG — Issue #146 — all 4 festivals fire exactly once, ever
+## 1. PRIORITY BUG — Issue #155 — Wing Kwai race has no player-facing trigger
 
-Found reasoning through the calendar length change, not caused by it. `FestivalManager.gd`, `SongkranTrigger.gd`, `WanSartTrigger.gd`, `LopburiRaid.gd` all check their trigger day against the absolute day counter (`minute_ticked`'s `day`, never resets), instead of the within-season day (`TimeManager.gd`'s private `_days_in_season`). Every festival — Loy Krathong, Songkran, Wan Sart, the Lopburi raid — fires once total across the entire game, then silently never again, no matter how many years pass. `_triggered_seasons`'s own dict-key naming implies per-season recurrence was always the intent; the day-comparison just never matched that intent. This is higher priority than anything else in this round — a festival calendar that only ever happens once undermines the whole point of a seasonal game.
+`BuffaloRace.gd`'s `start_race(player)` is called from nowhere in the actual game — only from `tests/test_race.gd`. Mounting works (TASK-272), but there's no NPC interact prompt, no festival-day trigger scene, no UI entry point that ever calls `start_race()`. Every other festival (Songkran, Wan Sart, Loy Krathong, the Lopburi raid) has a dedicated trigger scene keyed to a festival day; Wing Kwai doesn't. 13/13 tests pass while the feature is unreachable by an actual player — the same "green gates, dead content" pattern as the festival-recurrence bug from last round, just at the trigger layer instead of the day-math layer. Village Headman already has flavor dialogue about Wing Kwai ("Wing Kwai's coming — Uncle Preecha's already bragging about his buffalo") that reads like it's supposed to lead somewhere. Suggest a trigger scene analogous to the other four, gated on a festival day + Headman interact, or a dedicated interact-area at the race start. Not claiming — control-flow/trigger wiring, outside art-lane scope.
 
-## 2. Calendar length changed: `season_duration_days` 10 → 30 (90 days/year)
+## 2. Shipped, ready for you to wire in: `WingKwaiCourse.tscn` (issue #156)
 
-Owner-insisted, grounded in genre comparison (Stardew-class games run ~112 days/year; ours was 30). Reassessed the ripple effects before touching anything else: crop growth times and quest pacing don't need rebalancing — they were tuned in absolute days already, so the longer season actually *improves* their proportion rather than requiring rework. `PLAYER_JOURNEY.md` fully rewritten with the new 90-day-year math.
+Built the missing piece on my side of the fence: the 4 race checkpoints (`BuffaloRace.CHECKPOINTS`) had zero visual markers — a player who *did* reach them would see nothing to aim for. `scenes/festival/WingKwaiCourse.tscn` is a script-less `Node2D` scaffold with 4 `Sprite2D` flag markers (`assets/environment/festival/wing_kwai_flag.png`) positioned at the exact same coordinates as `BuffaloRace.CHECKPOINTS` — cross-check the numbers if you touch the checkpoint array, they need to move together. Same pattern as the NPC visual scaffolds from earlier rounds: I build the scaffold, you instance it under `Main` the way `Buffalo`/`BuffaloRace` already get instanced (`_ensure_buffalo_race()` in `Main.gd`). Whenever #1 above gets a trigger, this is ready to go alongside it.
 
-## 3. New content: monsoon disaster quest, "The Canal Breaks"
+## 3. Prior-round items — all resolved, closed this round
 
-`data/quests/canal_breaks.tres` + `flood_ward_charm` item + Handler dialogue, all shipped. Built as a one-time scripted quest (matches the existing QuestData pattern) rather than a true randomized recurring event — the owner's ask mentioned both framings ("disaster quest/random event"); the scripted version is what's buildable within art-lane scope right now. If a genuinely randomized, repeatable monsoon weather-event system is wanted later, that's a separate, larger engine ask (RNG-gated triggering distinct from the deterministic festival-day pattern) — not requesting it yet, just naming the fork in case it comes up.
-
-## 4. Still open from prior rounds, unaddressed
-
-`VillagerNPC.gd`'s double signal-connect (noisy, not gate-breaking). `data/npc/gift_preferences.json` still orphaned next to `DialogueDB.gd`'s own live `GIFT_PREFERENCES`. The Nong Ton dialogue-line overlap between the generic Child NPC and the now-instanced `NongTonNPC` (issue #132) — still unresolved, Child still speaks the line that's now also "owned" by a dedicated character.
+Issues #152 (silver HUD coin icon), #153 (Nong Ton/Child dialogue overlap), #154 (orphaned `gift_preferences.json`) — all built, gated green, and closed. Nothing outstanding from round 10.
