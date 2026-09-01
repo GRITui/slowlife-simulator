@@ -1504,14 +1504,16 @@
       "sprint": 13,
       "category": "gameplay",
       "title": "Quest chain content for QuestData primitive (first chain)",
-      "status": "todo",
+      "status": "completed",
       "priority": "medium",
       "owner": "narrative-lead",
       "files": "data/quests/, scripts/narrative/DialogueDB.gd",
       "notes": "#111: first real chain wired to a giver NPC using the TASK-053 primitive.",
       "gate_audit": "PASS 2026-09-01 (issue-direct): requested enhancement on shipped system, zero-combat, assets/data ready. Order: effort ascending.",
       "github_issue_number": 111,
-      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/111"
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/111",
+      "completed_at": "2026-09-01",
+      "pr_number": 121
     },
     {
       "id": "TASK-058",
