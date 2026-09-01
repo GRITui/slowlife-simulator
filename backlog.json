@@ -1564,6 +1564,175 @@
       "notes": "#116. Rice-barter purchases; effects on water/plant/harvest.",
       "completed_at": "2026-09-01",
       "pr_number": 124
+    },
+    {
+      "id": "TASK-260",
+      "sprint": 16,
+      "category": "art",
+      "title": "Wing Kwai quest content (adapted: stat-check not minigame, mount/plow flagged separately)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/quests/wing_kwai.tres"
+      ],
+      "notes": "wing_kwai.tres + stamina_mash recipe (rice/sugarcane/ginger, substitutes the non-existent 'Rare Herb') + champions_yoke trophy item + Handler dialogue line. Racing minigame and mount/auto-plow ability explicitly NOT built -- flagged as separate engine asks in issue #125, not faked as a stat-check hack without the user's sign-off on that substitution first. Gates: content 100/100, engine 50/50, perf 6/6 (all green despite a new unrelated VillagerNPC.gd double-signal-connect warning, likely from TASK-058, not this work).",
+      "github_issue_number": 125,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/125",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-261",
+      "sprint": 16,
+      "category": "art",
+      "title": "Phi Ta Khon quest content (fully buildable, no engine gap)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/quests/phi_ta_khon.tres"
+      ],
+      "notes": "phi_ta_khon.tres (4-step investigation, fully matches existing objective-string model) + phi_ta_khon_mask item + Elder/Child dialogue (Child canonically named 'Ton' in-line, no new NPC added). Cast Handler as the mask-maker per the adaptation plan rather than adding a new 'Uncle Somchai' character -- open to reassignment. No engine gap beyond the existing quest system. Gates: content 100/100, engine 50/50, perf 6/6 (all green despite a new unrelated VillagerNPC.gd double-signal-connect warning, likely from TASK-058, not this work).",
+      "github_issue_number": 126,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/126",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-262",
+      "sprint": 16,
+      "category": "art",
+      "title": "Lopburi Monkey Banquet quest content (adapted: no sell-price/wood/pest mechanics)",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "data/quests/lopburi_monkey_banquet.tres"
+      ],
+      "notes": "lopburi_monkey_banquet.tres + three_wise_monkeys_figurine item + Monk dialogue. Sell-price reward replaced with harmony (game has no currency economy by design), wood-gathering step dropped (no lumber system), Crop Truce buff left as flavor only (no crop-raiding mechanic exists to attach it to). Donation step uses existing banana/mango/watermelon items directly. Gates: content 100/100, engine 50/50, perf 6/6 (all green despite a new unrelated VillagerNPC.gd double-signal-connect warning, likely from TASK-058, not this work).",
+      "github_issue_number": 127,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/127",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-270",
+      "sprint": 17,
+      "category": "engine",
+      "title": "Wing Kwai: buffalo racing minigame",
+      "status": "proposed",
+      "priority": "low",
+      "owner": "backend-automation",
+      "files": [],
+      "notes": "Pure engine scope, not claimed by art-po. Issue #128.",
+      "github_issue_number": 128,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/128"
+    },
+    {
+      "id": "TASK-271",
+      "sprint": 17,
+      "category": "art",
+      "title": "Wing Kwai: buffalo affinity 'hearts' UI icon set",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "assets/ui/hearts/"
+      ],
+      "notes": "heart_full.png/heart_empty.png (24x24) authored. Animal-affinity Dictionary + UI placement stay engine. Gates: content 100/100, engine 50/50, perf 6/6.",
+      "github_issue_number": 129,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/129",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-272",
+      "sprint": 17,
+      "category": "engine",
+      "title": "Wing Kwai: mounted riding + instant 3x3 auto-plow",
+      "status": "completed",
+      "priority": "low",
+      "owner": "backend-automation",
+      "files": [],
+      "notes": "Pure engine scope, not claimed by art-po. Issue #130.",
+      "github_issue_number": 130,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/130",
+      "completed_at": "2026-09-01",
+      "pr_number": 136
+    },
+    {
+      "id": "TASK-273",
+      "sprint": 17,
+      "category": "art",
+      "title": "Wing Kwai: Village Headman + Vet NPCs",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "scenes/entities/"
+      ],
+      "notes": "HeadmanNPC + VetNPC: world sprite + portrait each, visual scaffold (no script, not instanced). y-sort budget was 39-40/40 last checked -- do not instance without a fresh check. Gates: content 100/100, engine 50/50, perf 6/6.",
+      "github_issue_number": 131,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/131",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-274",
+      "sprint": 17,
+      "category": "art",
+      "title": "Phi Ta Khon: Nong Ton + Uncle Somchai as real NPCs",
+      "status": "completed",
+      "priority": "medium",
+      "owner": "art-po",
+      "files": [
+        "scenes/entities/"
+      ],
+      "notes": "NongTonNPC + SomchaiNPC: world sprite + portrait each, visual scaffold. NOTE: the shipped Phi Ta Khon quest (#126/TASK-261) already canonically named the existing Child NPC 'Ton' in dialogue -- if this literal NongTonNPC gets instanced, that Child line should move here to avoid two characters both being 'Ton'. Flagged, not resolved unilaterally. Gates: content 100/100, engine 50/50, perf 6/6.",
+      "github_issue_number": 132,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/132",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-275",
+      "sprint": 17,
+      "category": "art",
+      "title": "Lopburi: wood item + axe tool icons",
+      "status": "completed",
+      "priority": "low",
+      "owner": "art-po",
+      "files": [
+        "assets/items/"
+      ],
+      "notes": "wood.png + axe.png authored. Gathering mechanic stays engine. Gates: content 100/100, engine 50/50, perf 6/6.",
+      "github_issue_number": 133,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/133",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-276",
+      "sprint": 17,
+      "category": "art",
+      "title": "Lopburi: monkey character sprite (for future raid event)",
+      "status": "completed",
+      "priority": "low",
+      "owner": "art-po",
+      "files": [
+        "scenes/entities/"
+      ],
+      "notes": "monkey_idle_01.png (32x32, smaller than human canon) + portrait authored, MonkeyNPC.tscn scaffold. Raid mechanic + truce buff stay engine. Gates: content 100/100, engine 50/50, perf 6/6.",
+      "github_issue_number": 134,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/134",
+      "completed_at": "2026-09-01"
+    },
+    {
+      "id": "TASK-277",
+      "sprint": 17,
+      "category": "decision",
+      "title": "DECISION NEEDED: Lopburi sell-price implies a currency economy",
+      "status": "proposed",
+      "priority": "low",
+      "owner": "owner",
+      "files": [],
+      "notes": "Not claimed by art-po or engine -- needs explicit owner sign-off before any work in either direction. Issue #135.",
+      "github_issue_number": 135,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/135"
     }
   ]
 }
