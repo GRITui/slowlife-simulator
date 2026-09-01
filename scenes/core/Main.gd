@@ -60,6 +60,21 @@ func _ready() -> void:
 	_ensure_songkran()
 	# TASK-048: cat companion follows the farmer.
 	_ensure_companion()
+	# TASK-049: chicken coop — daily egg (pasture edge).
+	_ensure_chicken_coop()
+
+func _ensure_chicken_coop() -> void:
+	if get_node_or_null("ChickenCoop") != null:
+		return
+	var scene: PackedScene = load("res://scenes/entities/ChickenCoop.tscn")
+	if scene == null:
+		return
+	var coop: Node2D = scene.instantiate() as Node2D
+	if coop == null:
+		return
+	coop.name = "ChickenCoop"
+	coop.position = Vector2(2 * 48 + 24, 14 * 48) # pasture SW corner
+	add_child(coop)
 
 func _ensure_companion() -> void:
 	if get_node_or_null("CompanionNPC") != null:
