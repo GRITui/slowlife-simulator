@@ -2026,6 +2026,32 @@
       "notes": "QA-auditor: tool_tiers are now wired to Handler but have no HUD display. Add tier icons to HUD or Handler dialogue that shows current tier and cost for next upgrade. Low priority, polish.",
       "completed_at": "2026-09-01",
       "pr_number": 168
+    },
+    {
+      "id": "TASK-318",
+      "title": "Seasonal crop growth balancing and stamina tuning",
+      "status": "proposed",
+      "category": "gameplay",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/resource_types/CropData.gd",
+        "scenes/core/GridManager.gd"
+      ],
+      "priority": "medium",
+      "notes": "Scout: After 22 crops unlocked, growth times may need balancing. Some crops grow too fast/slow relative to season lengths. Propose tuning growth_minutes_per_stage for balanced progression."
+    },
+    {
+      "id": "TASK-319",
+      "title": "Add fishing competition festival event",
+      "status": "proposed",
+      "category": "gameplay",
+      "owner": "narrative-lead",
+      "files": [
+        "scenes/festival/FishingFestival.gd",
+        "scenes/core/Main.gd"
+      ],
+      "priority": "low",
+      "notes": "QA-auditor: Fishing system is now wired with skill progression, but no festival event uses it. Propose a fishing competition festival (hot season, similar to Songkran) that rewards rare fish catches."
     }
   ]
 }
