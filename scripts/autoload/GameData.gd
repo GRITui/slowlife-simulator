@@ -66,6 +66,15 @@ var high_contrast: bool = false
 # TASK-050 fishing skill — 1..4, gates fish.json skill_required tiers.
 var fishing_skill: int = 1
 
+# ISSUE-129 buffalo affinity ('hearts'): 0..100, 25 per heart, max 4 hearts.
+var buffalo_affinity: int = 0
+
+func add_buffalo_affinity(amount: int) -> void:
+	buffalo_affinity = clampi(buffalo_affinity + amount, 0, 100)
+
+func buffalo_hearts() -> int:
+	return int(buffalo_affinity / 25.0)
+
 # TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
 #   watering_can: watered plots also pre-advance growth (tier*30 effective
 #   minutes) and watering costs no stamina above tier 1.
