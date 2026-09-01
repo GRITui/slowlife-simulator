@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://trader_npc001"]
+
+[ext_resource type="Texture2D" path="res://assets/characters/trader_idle_01.png" id="1_idle"]
+[ext_resource type="Script" path="res://scenes/entities/VillagerNPC.gd" id="9_vnpc"]
+[ext_resource type="Texture2D" path="res://assets/environment/props/merchant_cart.png" id="2_cart"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
+radius = 48.0
+
+[node name="TraderNPC" type="CharacterBody2D" groups=["villager_npc"]]
+## Visual scaffold — script-less content beyond the shared VillagerNPC.gd
+## behavior all other generic NPCs use. Cart is a sibling prop sprite, not
+## a separate node, so it moves with the Trader if a schedule is added.
+## Ready for engine-lane to wire the evening farm-visit trigger (issue #161).
+script = ExtResource("9_vnpc")
+npc_id = "trader"
+display_name = "Trader"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+texture = ExtResource("1_idle")
+centered = true
+
+[node name="CartProp" type="Sprite2D" parent="."]
+position = Vector2(-40, 12)
+texture = ExtResource("2_cart")
+centered = true
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_interact")

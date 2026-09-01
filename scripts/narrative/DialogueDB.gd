@@ -170,6 +170,24 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
+	## New: Trader's cart (Head-of-Art round, 2026-09-01) — the coastal-goods
+	## trader referenced in GIFT_PREFERENCES since early in the project,
+	## finally getting a face and a cart. Cozy, no gold/fail keywords.
+	"trader": {
+		"hot": [
+			"The coast road's dusty this time of year — good thing the cart has wheels, not legs.",
+			"Durian and mango, I'll take all you can spare. The coast pays it forward in shrimp paste.",
+		],
+		"monsoon": [
+			"Mud slows the cart, not the trading. Lotus root still moves well downriver.",
+			"Careful on the canal path — I nearly lost a sack of rice flour to the current last week.",
+		],
+		"cool": [
+			"Cool season, good roads — I make it round to every farm before dusk.",
+			"Sticky rice and palm sugar, always welcome. The coast has a sweet tooth.",
+		],
+	},
+
 	"nong_ton": {
 		"cool": [
 			"Uncle Somchai says the ghosts wore their masks all wrong this year!",

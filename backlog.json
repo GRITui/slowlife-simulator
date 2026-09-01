@@ -1897,6 +1897,72 @@
       ],
       "github_issue_number": 156,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/156"
+    },
+    {
+      "id": "TASK-310",
+      "title": "BUG: quest system unreachable \u2014 wrong content pipeline + offer_quest() never called",
+      "status": "proposed",
+      "category": "engine",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/persistence/QuestLog.gd",
+        "data/quests/quests.json",
+        "data/quests/*.tres"
+      ],
+      "github_issue_number": 158,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/158"
+    },
+    {
+      "id": "TASK-311",
+      "title": "BUG: buffalo affinity/hearts fully disconnected from gameplay",
+      "status": "proposed",
+      "category": "engine",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/GameData.gd",
+        "scenes/entities/Buffalo.gd"
+      ],
+      "github_issue_number": 159,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/159"
+    },
+    {
+      "id": "TASK-312",
+      "title": "upgrade_tool() unreachable \u2014 wire to Handler interact; mount = separate riding-tool tier",
+      "status": "proposed",
+      "category": "engine",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/GameData.gd",
+        "scenes/entities/HandlerNPC.tscn"
+      ],
+      "github_issue_number": 160,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/160"
+    },
+    {
+      "id": "TASK-313",
+      "title": "3-channel sell economy: Cart Trader / Market Stall premium / Specialty Buyer",
+      "status": "proposed",
+      "category": "engine",
+      "owner": "backend-automation",
+      "files": [
+        "scripts/autoload/GameData.gd",
+        "scenes/entities/MarketStallNPC.gd"
+      ],
+      "github_issue_number": 161,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161"
+    },
+    {
+      "id": "TASK-314",
+      "title": "Trader NPC visual: idle sprite + cart prop (issue #161 art-lane piece)",
+      "status": "in_progress",
+      "category": "art",
+      "owner": "art-po",
+      "files": [
+        "assets/characters/trader_idle_01.png",
+        "assets/environment/props/merchant_cart.png"
+      ],
+      "github_issue_number": 161,
+      "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161"
     }
   ]
 }
