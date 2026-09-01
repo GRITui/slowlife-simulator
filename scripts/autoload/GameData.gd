@@ -65,6 +65,27 @@ var high_contrast: bool = false
 # TASK-050 fishing skill — 1..4, gates fish.json skill_required tiers.
 var fishing_skill: int = 1
 
+# TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
+#   watering_can: watered plots also pre-advance growth (tier*30 effective
+#   minutes) and watering costs no stamina above tier 1.
+#   hoe: planting stamina cost -20% per tier above 1.
+#   sickle: harvest yield +1 per tier above 1.
+var tool_tiers: Dictionary = {"watering_can": 1, "hoe": 1, "sickle": 1}
+
+func tool_tier(tool_id: String) -> int:
+	return int(tool_tiers.get(tool_id, 1))
+
+func upgrade_tool(tool_id: String) -> bool:
+	var tier: int = tool_tier(tool_id)
+	if tier >= 3:
+		return false
+	var cost: int = tier * 8 # rice-grain barter price: 8, 16
+	if not has_item("rice_grain", cost):
+		return false
+	remove_item("rice_grain", cost)
+	tool_tiers[tool_id] = tier + 1
+	return true
+
 # TASK-051 affinity/dating MVP — npc_id -> 0..100. Tiers (25/60/90) map to
 # DialogueDB's stranger/friendly/close/romantic branches. No marriage/
 # jealousy systems (explicitly out of scope per PO_INBOX r6).
