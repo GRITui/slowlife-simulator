@@ -61,8 +61,32 @@ func _finish(won: bool) -> void:
 		GameData.add_harmony(15)
 		GameData.add_item("sticky_rice", 3)
 		SignalBus.show_dialogue.emit("Wing Kwai", "Champion of the mud! +15 harmony, +3 sticky rice.")
+		# TASK-325 companion tie-in: bonus sticky_rice when the companion is
+		# both nearby (within ~200px of the player) AND bonded enough
+		# (tier >= 2). Mirrors the spec's "present + bonded" guard; absent
+		# or unbonded -> identical payout, no regression.
+		if _companion_bonus_eligible():
+			GameData.add_item("sticky_rice", 1)
+			SignalBus.show_dialogue.emit("Companion", "Your companion cheered you on! +1 extra sticky rice.")
 	else:
 		SignalBus.show_dialogue.emit("Wing Kwai", "Out of time — the buffalo grazes on. No shame in the mud.")
+
+## TASK-325: returns true only when the companion is within ~200px of the
+## player AND companion_bond_tier() >= 2. Radius is comfortably larger
+## than CompanionNPC.COMFORT (56.0) so the cat doesn't need to be glued
+## to the player, but still "present" during the race.
+func _companion_bonus_eligible() -> bool:
+	if GameData.companion_bond_tier() < 2:
+		return false
+	if _player == null:
+		return false
+	var companions: Array = get_tree().get_nodes_in_group("companion") if is_inside_tree() else []
+	for c in companions:
+		if c is Node2D:
+			var nd: Node2D = c as Node2D
+			if nd.global_position.distance_to(_player.global_position) <= 200.0:
+				return true
+	return false
 
 ## Test/debug helper: force-finish with a result.
 func force_finish(won: bool) -> void:

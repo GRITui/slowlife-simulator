@@ -4,12 +4,21 @@ extends CharacterBody2D
 ## within, teleports when left far behind (offscreen catch-up). Avoids
 ## water tiles via WorldRender.ground_at (canal/pond/deep_pond blocked).
 ## Zero-combat, no schedules, no fail state.
+##
+## TASK-325: also accumulates a passive "bond" with the player. Each
+## SignalBus.minute_ticked while within COMFORT of the player counts as a
+## "nearby-minute". Every 60 nearby-minutes (~1 in-game hour of
+## togetherness) grants +1 GameData.companion_bond. Dialogue is only
+## emitted when the bond tier actually increases.
 
 const FOLLOW_LEASH: float = 96.0    # start following beyond this
 const COMFORT: float = 56.0         # stop within this of the player
 const TELEPORT: float = 640.0       # catch-up threshold
 const WALK_SPEED: float = 140.0
 const _WATER := ["canal", "water_lotuspond", "deep_pond"]
+## TASK-325: ticks of minute_ticked needed for +1 companion_bond. Mirrors
+## "1 in-game hour of togetherness" stated in the design.
+const BOND_MINUTES_PER_POINT: int = 60
 
 @export var follow_enabled: bool = true
 ## Dependency injected by Main._ensure_companion (ENGINE-006 hygiene —
@@ -18,8 +27,35 @@ var world_render: Node = null
 
 @onready var _anim: AnimatedSprite2D = $AnimatedSprite2D if has_node("AnimatedSprite2D") else null
 
+## TASK-325: minutes spent within COMFORT of the player since last bond grant.
+var _nearby_minutes: int = 0
+
 func _ready() -> void:
 	add_to_group("companion")
+	SignalBus.minute_ticked.connect(_on_minute_ticked)
+
+func _exit_tree() -> void:
+	if SignalBus.minute_ticked.is_connected(_on_minute_ticked):
+		SignalBus.minute_ticked.disconnect(_on_minute_ticked)
+
+## TASK-325: bond accrues only while the companion is within COMFORT of the
+## player. Counter resets after each +1 grant; dialogue only fires when the
+## tier (companion_bond / 25) actually increases, never per tick.
+func _on_minute_ticked(_day: int, _hour: int, _minute: int) -> void:
+	var player: Node2D = _find_player()
+	if player == null:
+		return
+	var dist: float = global_position.distance_to(player.global_position)
+	if dist > COMFORT:
+		return
+	_nearby_minutes += 1
+	if _nearby_minutes >= BOND_MINUTES_PER_POINT:
+		_nearby_minutes = 0
+		var tier_before: int = GameData.companion_bond_tier()
+		GameData.add_companion_bond(1)
+		var tier_after: int = GameData.companion_bond_tier()
+		if tier_after > tier_before:
+			SignalBus.show_dialogue.emit("Companion", _tier_line(tier_after))
 
 func _physics_process(delta: float) -> void:
 	var player: Node2D = _find_player()
@@ -71,3 +107,14 @@ func _is_water(pos: Vector2) -> bool:
 func _find_player() -> Node2D:
 	var nodes: Array = get_tree().get_nodes_in_group("player")
 	return nodes[0] as Node2D if not nodes.is_empty() else null
+
+## TASK-325: cozy tier-up dialogue. Index matches companion_bond_tier()
+## (0 = new acquaintance, 1..4 = ascending closeness). Cap-safe: any
+## out-of-range tier falls back to the highest line.
+func _tier_line(tier: int) -> String:
+	match tier:
+		1: return "Your cat rubs against your leg. (Companion bond: 1)"
+		2: return "Your cat follows at your heel. (Companion bond: 2)"
+		3: return "Your cat purrs on your lap. (Companion bond: 3)"
+		4: return "Your cat is your true companion. (Companion bond: 4)"
+		_: return "Your cat purrs. (Companion bond: %d)" % tier

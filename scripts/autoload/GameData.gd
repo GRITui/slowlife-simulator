@@ -87,6 +87,15 @@ func add_chicken_affinity(amount: int) -> void:
 func chicken_hearts() -> int:
 	return int(chicken_affinity / 25.0)
 
+# TASK-325 companion bond: 0..100, tier per /25.0 (mirrors buffalo_hearts()).
+var companion_bond: int = 0
+
+func add_companion_bond(amount: int) -> void:
+	companion_bond = clampi(companion_bond + amount, 0, 100)
+
+func companion_bond_tier() -> int:
+	return int(companion_bond / 25.0)
+
 # TASK-323B herd-size counter. Starts at 1 (a single chicken / a single
 # buffalo), grown by breeding on each daily interact once hearts >= 2.
 # Cap of 3 is enforced at the breeding call site in
