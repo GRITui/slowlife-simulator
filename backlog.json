@@ -1367,14 +1367,14 @@
       "sprint": 11,
       "category": "gameplay",
       "title": "Fishing catch + skill/XP \u2014 20-species roster live",
-      "status": "todo",
+      "status": "completed",
       "priority": "high",
       "owner": "narrative-lead",
       "files": "scripts/interactables/FishingSpot.gd, data/fish/fish.json, scripts/autoload/GameData.gd",
       "notes": "PO_INBOX r5 #5/#6: water-adjacent detect via WorldRender.ground_at, rod-gated (starting inventory), season+skill-gated roll over fish.json (20 species x 3 sizes), GameData.fishing_skill 1-4.",
       "gate_audit": "PASS 2026-09-01 (PO_INBOX r5 directive + user order: bring back deferred, complete roadmap): new systems with authored art/data ready.",
-      "completed_at": "",
-      "pr_number": 0
+      "completed_at": "2026-09-01",
+      "pr_number": 107
     },
     {
       "id": "TASK-240",
