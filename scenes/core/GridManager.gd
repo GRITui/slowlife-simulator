@@ -117,6 +117,7 @@ func harvest(cell: Vector2i) -> int:
 	if not ps.watered and current_season == "hot":
 		y = max(1, int(y * 0.5)) # wilt penalty
 	y += (GameData.tool_tier("sickle") - 1) # TASK-060 sickle: +1 yield per tier
+	y += GameData.veteran_yield_bonus() # TASK-280: veteran-year harvest bonus
 	GameData.add_item(ps.crop.yield_item_id, y)
 	GameData.add_harmony(ps.crop.harmony_value)
 	SignalBus.crop_harvested.emit(int(cell.x + cell.y * 100))
