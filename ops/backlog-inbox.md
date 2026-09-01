@@ -74,11 +74,11 @@
 <task_item>
   <id>TASK-321</id>
   <source>AI-LOOP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>HIGH</priority>
-  <title>Mining/ore resource loop</title>
-  <description>Zero presence in codebase today (confirmed via rg, no mine/ore/mining matches anywhere). HM:BtN-genre games commonly use a mine as a secondary resource + tool-upgrade-material loop. Would need: node/floor generation, stamina cost, ore drop table, and a sink (tool upgrades) to matter.</description>
-  <researcher_notes>Source: Gemini gap analysis, AI-ENG-001. Owner call: is a mining subsystem in MVP scope or stretch (SHIP_PLAN.md Phase 1)? Largest single addition on this list.</researcher_notes>
+  <title>Mining/ore resource loop (MVP scope, redesigned from floor-gen concept)</title>
+  <description>Deliberately smaller than the original "multi-floor mines with ladder digging" idea (that's a full traversal/floor-gen subsystem — highest scope-creep risk on the list). Mirrors FishingSpot.gd's existing pattern instead: single interactable, rarity-weighted roll against data/ore/ore.json (copper/iron/silver), skill gating that grows with use, stamina-gated. GameData.upgrade_tool() now requires ore per tier as the tool-upgrade sink. No new .tscn — dynamically instanced like FishingSpot. Merged f1b9f87, pushed.</description>
+  <researcher_notes>Implemented by Cline (minimax-m3:free) after switching from slow OpenCode/GLM-5.3-Flash mid-task. Code Quality Review caught and fixed a line-offset editing corruption in test_mining.gd (session then hit an OpenRouter rate-limit mid-self-repair) — GameData.gd/MiningSpot.gd themselves were clean. Also fixed a latent FishingSpot.gd bug (proximity Area2D never wired) in MiningSpot.gd without touching FishingSpot itself. Full record: ops/ai-eng-log.md run 10. Spec: docs/research/TASK-321-spec.md.</researcher_notes>
 </task_item>
 
 <task_item>

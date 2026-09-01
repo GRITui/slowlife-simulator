@@ -49,7 +49,13 @@ time-elapsed.
       pattern-mismatch double-emission, not a leftover duplicate) plus
       an unrelated Claude-authored regression in `test_silver.gd` from
       TASK-327. See `ops/ai-eng-log.md` run 8.
-- [ ] TASK-323 split B (breeding/incubator), 321, 324, 325 —
+- [x] TASK-321 (mining/ore, MVP scope) — `f1b9f87`. Redesigned down from
+      the original floor-gen concept to mirror `FishingSpot.gd`'s pattern.
+      Mid-task provider switch (slow OpenCode/GLM-5.3-Flash → Cline);
+      Code Quality Review caught a real editing-corruption bug and
+      confirmed two established bug classes stayed clean this time.
+      See `ops/ai-eng-log.md` run 10.
+- [ ] TASK-323 split B (breeding/incubator), 324, 325 —
       remaining approved backlog items
 - [ ] All MVP-scope systems implemented + headless-tested
 - [ ] Feature freeze declared — new asks go to a post-launch backlog

@@ -429,3 +429,62 @@ category from the role reassessment, discovered live.
   `9e982d2`, pushed. `run_tests.gd` 100/100.
 - **Stop reason:** goal met — capability question answered with real
   evidence, one incidental real fix shipped.
+
+---
+
+## 2026-09-01 — Run 10 (TASK-321, mid-task provider switch: OpenCode → Cline)
+
+- **Scope:** Claude redesigned TASK-321 down from Gemini's original
+  "multi-floor mines, ladder digging" concept (the single highest scope-
+  creep risk item on the approved list) to mirror `FishingSpot.gd`'s
+  existing pattern exactly — documented as a Designer-tier scoping call
+  in `docs/research/TASK-321-spec.md`, not re-escalated.
+- **Provider switch, mid-flight:** dispatched to `opencode-go/glm-5.3-flash`
+  (the new top-ranked model per the same-day ranking update) first. After
+  5+ minutes with zero tool-call activity in the log (vs. Cline/MiniMax
+  typically showing activity within the first minute), the project owner
+  asked to switch to Cline. Killed the OpenCode process (confirmed zero
+  partial file changes — clean kill) and re-dispatched the identical
+  prompt to `cline -P cline -m minimax/minimax-m3:free`.
+  - **Process note for next time:** GLM-5.3-Flash's slowness here is one
+    data point, not yet a verdict — Run 9's calibration didn't test it
+    directly (that was local Ollama vs. Cline's cloud tier). Worth a
+    controlled retry before demoting it in the ranking.
+- **Cline's own run hit two issues**, both surfaced through Claude's
+  Code Quality Review rather than blind trust of "it reported success":
+  1. **Editing mistake**: a line-offset error while writing
+     `test_mining.gd` left ~3 lines of duplicated/orphaned content
+     (a stray `_check(...)` fragment mid-function and another after the
+     function's closing brace) — would have been a GDScript parse error.
+     Cline's own log showed it noticing and attempting self-repair.
+  2. **Rate limit mid-repair**: the same OpenRouter
+     `minimax/minimax-m3:free is temporarily rate-limited upstream` error
+     seen in Run 7/8 hit while Cline was mid-self-repair, ending the
+     session in `failed` status before the fix completed.
+  - Claude fixed the corruption directly (removed the two orphaned
+    fragments) rather than re-running the whole task — the rest of the
+    diff (`GameData.gd`, `MiningSpot.gd`, `Main.gd`, `test_tool_tiers.gd`,
+    `ore.json`) was clean on inspection, no reason to discard good work
+    over one file's mechanical error.
+- **Code Quality Review, substantive checks (beyond the corruption fix):**
+  `GameData.upgrade_tool()`'s new ore requirement uses check-both-before-
+  deduct-either — no repeat of TASK-322's speculative-deduct-then-refund
+  bug class. `MiningSpot.gd` deducts stamina via the existing property
+  setter (which already clamps + emits) rather than a redundant manual
+  emit — no repeat of TASK-326's double-emission bug class either. Two
+  bug classes now have a second clean instance each, suggesting the
+  written-down categories in the Code Quality Review section are
+  generalizing, not just describing one-off incidents.
+- **Operational note on Cline's daemon architecture:** the foreground
+  `cline` CLI process exits/detaches almost immediately; the actual work
+  happens inside a persistent hub daemon (`cline hub`). `ps` won't show a
+  task-specific process — use `cline history --json` (session status
+  field) to poll instead. Also: `status` is a read-only variable name in
+  zsh — don't use it as a shell variable in monitor scripts (broke the
+  first monitor attempt this run).
+- **Verification:** `test_mining.gd` 24/24, `test_tool_tiers.gd` 8/8,
+  `run_tests.gd` 100/100, `run_engine_tests.gd` 50/50.
+- **Integration outcome:** committed (`f1b9f87`) and merged directly,
+  pushed. Worktree/branch cleaned up.
+- **Stop reason:** goal met (feature shipped, one editing bug fixed
+  directly, two established bug-class checks confirmed clean).
