@@ -1248,6 +1248,23 @@
         "data/recipes/recipes.json"
       ],
       "notes": "User follow-up on the fishing assessment: needed size tiers (small/mid/big), season-gated species, skill-gated rarity, 20 species total, elder hints for hard catches. Designed data/fish/fish.json (new data file, mirrors recipes.json's pattern): 20 real Thai freshwater species (6 common/skill 1, 7 uncommon/skill 2, 5 rare/skill 3, 2 legendary/skill 4 -- pla_buk the Mekong giant catfish and pla_sai_rung a rainbow fish), each with seasons[], rarity, skill_required, and 3 size variants (small/mid/big, harmony_value scaled 0.6x/1.0x/1.6x) = 60 distinct catchable items, all with real programmatically-varied art (5 body shapes: sleek/round/eel/flat/whiskered/prawn). Added a new 'fishing_hint' branch to DialogueDB.gd's existing elder entry (data-only, same safe pattern as the Songkran lines) with all 7 rare+legendary hints. Consolidated the two placeholder fish from the prior round (fish_tilapia/fish_catfish) into pla_nin/pla_duk properly, updated pla_pao's recipe input to match. IMPORTANT: this is pure data + art. The fishing catch mechanic AND a fishing-skill/XP system are both still completely absent from the codebase (confirmed: zero 'skill' references anywhere) -- this compounds the existing PO_INBOX fishing-mechanic ask with a second new system (skill progression) rather than resolving it. Spec'd precisely in PO_INBOX, not guessed at. Gates: content 100/100, engine 50/50."
+    },
+    {
+      "id": "ENGINE-013",
+      "lane": "engine",
+      "category": "persistence",
+      "title": "Save/load UI hookup (PauseMenu Save/Load -> SaveManager)",
+      "status": "completed",
+      "priority": "high",
+      "owner": "data-persistence",
+      "files": [
+        "scenes/ui/PauseMenu.tscn",
+        "scenes/core/Main.gd",
+        "tests/test_save_ui.gd"
+      ],
+      "notes": "Engine gap audit 2026-09-01: SaveManager orphaned from UI. Gate 7/7.",
+      "completed_at": "2026-09-01",
+      "pr_number": 101
     }
   ]
 }
