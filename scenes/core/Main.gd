@@ -66,6 +66,22 @@ func _ready() -> void:
 	_ensure_fishing_spot()
 	# TASK-052: peer NPCs Niran + Fah (romance candidates).
 	_ensure_peer_npcs()
+	# TASK-057: quest chains (QuestLog listens for objective events).
+	_ensure_quest_log()
+
+func _ensure_quest_log() -> void:
+	if get_node_or_null("QuestLog") != null:
+		return
+	var script: GDScript = load("res://scripts/persistence/QuestLog.gd")
+	if script == null:
+		return
+	var log: Node = script.new()
+	log.name = "QuestLog"
+	add_child(log)
+	# Fah offers 'first_catch', Elder offers 'morning_merit' on first talk.
+	var fah: Node = get_node_or_null("FahNPC")
+	if fah != null and fah.has_signal("interacted"):
+		pass # RomanceNPC talks via SignalBus; QuestLog exposes offer API.
 	# TASK-055: Wan Sart ancestor-honoring trigger (cool day 5).
 	_ensure_wansart()
 	# TASK-056: goat — daily goat_milk (pasture, beside the coop).
