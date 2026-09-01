@@ -29,11 +29,25 @@ func collect_egg() -> bool:
 	GameData.add_chicken_affinity(5)
 	SignalBus.chicken_affinity_changed.emit(GameData.chicken_affinity, GameData.chicken_hearts())
 	var egg_id: String = "egg_gold" if GameData.chicken_hearts() >= 3 else "egg"
-	GameData.add_item(egg_id, 1)
+	# TASK-323B: yield scales with herd size — one egg per hen (count 1..3).
+	GameData.add_item(egg_id, GameData.chicken_count)
+	var egg_word: String = "egg" if GameData.chicken_count == 1 else "eggs"
 	if egg_id == "egg_gold":
-		SignalBus.show_dialogue.emit("Chickens", "+1 golden egg — the hens know your footsteps. Hearts: %d!" % GameData.chicken_hearts())
+		SignalBus.show_dialogue.emit("Chickens", "+%d golden %s — the hens know your footsteps. Hearts: %d!" % [GameData.chicken_count, egg_word, GameData.chicken_hearts()])
 	else:
-		SignalBus.show_dialogue.emit("Chickens", "+1 egg — warm from the nest.")
+		SignalBus.show_dialogue.emit("Chickens", "+%d %s — warm from the nest." % [GameData.chicken_count, egg_word])
+	# TASK-323B: breeding attempt — automatic side effect of the daily
+	# interact. Conditions, in spec order: hearts >= 2, count < cap, then
+	# spend_silver. Never spend speculatively (mirrors CarpenterUpgrade.gd
+	# check-before-deduct, not the old deduct-then-refund mistake). Cap
+	# (chicken_count < 3) is enforced at the call site per the spec, not
+	# on the var itself in GameData.gd. On insufficient silver: silent
+	# skip, no dialogue nag — breeding is a cozy bonus on top of the
+	# normal daily collection, not a requirement.
+	if GameData.chicken_hearts() >= 2 and GameData.chicken_count < 3:
+		if GameData.spend_silver(40):
+			GameData.chicken_count += 1
+			SignalBus.show_dialogue.emit("Chickens", "A new chick hatched! The coop swells to %d hens." % GameData.chicken_count)
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:

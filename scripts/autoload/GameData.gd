@@ -87,6 +87,15 @@ func add_chicken_affinity(amount: int) -> void:
 func chicken_hearts() -> int:
 	return int(chicken_affinity / 25.0)
 
+# TASK-323B herd-size counter. Starts at 1 (a single chicken / a single
+# buffalo), grown by breeding on each daily interact once hearts >= 2.
+# Cap of 3 is enforced at the breeding call site in
+# scenes/entities/ChickenCoop.gd / Buffalo.gd, not here — this var is
+# just storage the breed step mutates and the yield step reads (egg
+# grant scales with chicken_count, milk grant with buffalo_count).
+var chicken_count: int = 1
+var buffalo_count: int = 1
+
 # TASK-326 shipping-milestone stamina progression. Every item shipped via
 # sell_item / sell_item_premium counts toward lifetime_items_shipped; crossing
 # each threshold [25, 50, 100, 200] permanently grants +15 max_stamina and

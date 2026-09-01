@@ -33,14 +33,24 @@ func interact() -> bool:
 	GameData.add_buffalo_affinity(5)
 	SignalBus.buffalo_affinity_changed.emit(GameData.buffalo_affinity, GameData.buffalo_hearts())
 	var milk_id: String = "buffalo_milk_high" if GameData.buffalo_hearts() >= 3 else "buffalo_milk"
-	GameData.add_item(milk_id, 1)
+	# TASK-323B: yield scales with herd size — one milk per buffalo (count 1..3).
+	GameData.add_item(milk_id, GameData.buffalo_count)
 	if GameData.buffalo_hearts() > hearts_before:
 		if milk_id == "buffalo_milk_high":
 			SignalBus.show_dialogue.emit("Buffalo", "The buffalo trusts you deeply — rich golden milk fills the pail. Hearts: %d!" % GameData.buffalo_hearts())
 		else:
-			SignalBus.show_dialogue.emit("Buffalo", "The buffalo trusts you more. +1 milk — hearts: %d!" % GameData.buffalo_hearts())
+			SignalBus.show_dialogue.emit("Buffalo", "The buffalo trusts you more. +%d milk — hearts: %d!" % [GameData.buffalo_count, GameData.buffalo_hearts()])
 	else:
-		SignalBus.show_dialogue.emit("Buffalo", "The buffalo nuzzles you. +1 milk (hearts %d)." % GameData.buffalo_hearts())
+		SignalBus.show_dialogue.emit("Buffalo", "The buffalo nuzzles you. +%d milk (hearts %d)." % [GameData.buffalo_count, GameData.buffalo_hearts()])
+	# TASK-323B: breeding attempt — automatic side effect of the daily
+	# interact, mirrors ChickenCoop.gd's breeding block exactly. Never
+	# spend silver speculatively — check hearts/cap first, spend only on
+	# success. Silent skip on insufficient silver (cozy bonus, not a
+	# requirement).
+	if GameData.buffalo_hearts() >= 2 and GameData.buffalo_count < 3:
+		if GameData.spend_silver(60):
+			GameData.buffalo_count += 1
+			SignalBus.show_dialogue.emit("Buffalo", "A new calf joined the herd! Now %d buffalo strong." % GameData.buffalo_count)
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:
