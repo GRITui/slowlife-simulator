@@ -25,6 +25,8 @@ func save_game() -> bool:
 		# TASK-027 a11y prefs (additive v2 fields, tolerate absence on old saves)
 		"font_scale": gd.font_scale,
 		"high_contrast": gd.high_contrast,
+		# ISSUE-135 silver wallet (additive v2 field)
+		"silver": gd.silver,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -73,6 +75,7 @@ func load_game() -> bool:
 		# TASK-027: restore a11y prefs when present (old saves keep defaults).
 		gd.font_scale = float(data.get("font_scale", 1.0))
 		gd.high_contrast = bool(data.get("high_contrast", false))
+		gd.silver = int(data.get("silver", 0))
 		sb.show_dialogue.emit("System", "Game loaded.")
 		return true
 	return false

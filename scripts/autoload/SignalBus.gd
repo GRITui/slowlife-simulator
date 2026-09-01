@@ -37,3 +37,5 @@ signal settings_changed(font_scale: float, high_contrast: bool)
 signal game_paused_changed(paused: bool)
 # TASK-029: emitted by CookingStation after a recipe craft (item_id, qty).
 signal craft_completed(item_id: String, qty: int)
+# ISSUE-135: emitted whenever the silver wallet changes.
+signal silver_changed(silver: int)

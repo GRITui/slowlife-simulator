@@ -28,6 +28,34 @@ const OFFERS: Dictionary[String, Array] = {
 	],
 }
 
+# ISSUE-135 silver economy: goods purchasable with silver. Prices scale
+# gently by season (coastal goods cheaper in monsoon, boats in port).
+const BUY_OFFERS: Dictionary[String, Array] = {
+	"cool": [
+		{"item": "fish_sauce", "price": 18},
+		{"item": "shrimp_paste", "price": 20},
+		{"item": "axe", "price": 30},
+	],
+	"hot": [
+		{"item": "fish_sauce", "price": 14},
+		{"item": "shrimp_paste", "price": 16},
+		{"item": "fishing_rod", "price": 40},
+	],
+	"monsoon": [
+		{"item": "fish_sauce", "price": 12},
+		{"item": "shrimp_paste", "price": 14},
+		{"item": "machete", "price": 45},
+	],
+}
+
+## Silver buy offers for a season (fresh array per call).
+func get_buy_offers(season: String) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if BUY_OFFERS.has(season):
+		for offer: Dictionary in BUY_OFFERS[season]:
+			out.append(offer)
+	return out
+
 # Cached offers for the season we last saw via SignalBus.season_changed.
 # Updated by the listener; read by any prompt/HUD code that wants the
 # current season's offering without re-querying OFFERS.
