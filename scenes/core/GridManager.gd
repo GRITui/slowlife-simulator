@@ -63,7 +63,8 @@ func plant(cell: Vector2i, crop: Resource) -> bool:
 		return false
 	if crop.seed_item_id != "" and GameData.has_item(crop.seed_item_id, 1):
 		GameData.remove_item(crop.seed_item_id, 1)
-	GameData.current_stamina -= crop.stamina_cost_plant
+	var hoe_discount: float = 0.2 * float(GameData.tool_tier("hoe") - 1)
+	GameData.current_stamina -= crop.stamina_cost_plant * (1.0 - hoe_discount)
 	var ps := PlotState.new()
 	ps.crop = crop
 	ps.stage = 0
@@ -97,6 +98,10 @@ func water(cell: Vector2i) -> bool:
 		return false
 	plots[cell].watered = true
 	plots[cell].wilt_minutes = 0
+	# TASK-060 watering-can tiers: tier 2+ pre-advances growth (rain bar effect).
+	var tier: int = GameData.tool_tier("watering_can")
+	if tier >= 2 and plots[cell].crop != null:
+		plots[cell].minutes_in_stage += tier * 30
 	return true
 
 func harvest(cell: Vector2i) -> int:
@@ -111,6 +116,7 @@ func harvest(cell: Vector2i) -> int:
 	var y: int = ps.crop.get_yield(current_season, current_weather)
 	if not ps.watered and current_season == "hot":
 		y = max(1, int(y * 0.5)) # wilt penalty
+	y += (GameData.tool_tier("sickle") - 1) # TASK-060 sickle: +1 yield per tier
 	GameData.add_item(ps.crop.yield_item_id, y)
 	GameData.add_harmony(ps.crop.harmony_value)
 	SignalBus.crop_harvested.emit(int(cell.x + cell.y * 100))
