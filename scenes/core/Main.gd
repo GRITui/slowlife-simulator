@@ -126,6 +126,9 @@ func _ensure_peer_npcs() -> void:
 	var spots: Dictionary = {
 		"NiranNPC": {"scene": "res://scenes/entities/NiranNPC.tscn", "pos": Vector2(13 * 48 + 24, 5 * 48)},
 		"FahNPC": {"scene": "res://scenes/entities/FahNPC.tscn", "pos": Vector2(10 * 48 + 24, 12 * 48)},
+		# TASK-058 schedules cover headman/vet movement; SCHEDULES keys match.
+		"HeadmanNPC": {"scene": "res://scenes/entities/HeadmanNPC.tscn", "pos": Vector2(1 * 48 + 24, 3 * 48)},
+		"VetNPC": {"scene": "res://scenes/entities/VetNPC.tscn", "pos": Vector2(2 * 48 + 24, 14 * 48)},
 	}
 	for npc_name: String in spots.keys():
 		if get_node_or_null(npc_name) != null:
