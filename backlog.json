@@ -1901,7 +1901,7 @@
     {
       "id": "TASK-310",
       "title": "BUG: quest system unreachable \u2014 wrong content pipeline + offer_quest() never called",
-      "status": "completed",
+      "status": "in_progress",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1915,7 +1915,7 @@
       "completed_at": "2026-09-01",
       "pr_number": 163,
       "priority": "high",
-      "owner_note": "P0 \u2014 biggest wasted content investment: 9 quests + baseline quest flow all unreachable, zero player-facing quest content works at all."
+      "owner_note": "REOPENED after end-to-end verification: offer_quest() is wired (fixed), but all 22 objective strings from the 9 migrated quests are unwired to any real game event \u2014 only the original 2 baseline quests (first_catch, morning_merit) can actually complete. See issue #158 reopen comment for the full objective list and traders_coastal_order giver-not-instanced blocker."
     },
     {
       "id": "TASK-311",
@@ -1985,7 +1985,7 @@
     {
       "id": "TASK-315",
       "title": "Trader cart evening visit trigger and animation",
-      "status": "proposed",
+      "status": "completed",
       "category": "gameplay",
       "owner": "backend-automation",
       "files": [
@@ -1993,12 +1993,14 @@
         "scenes/core/Main.gd"
       ],
       "priority": "medium",
-      "notes": "Follow-up to TASK-313/314: Trader NPC visual is in_progress art-lane, but evening visit logic (18:00-21:00) and cart prop animation not yet wired. Scout: expected behavior is Trader appears at farm in evening, leaves at night, cart prop moves with trader."
+      "notes": "Follow-up to TASK-313/314: Trader NPC visual is in_progress art-lane, but evening visit logic (18:00-21:00) and cart prop animation not yet wired. Scout: expected behavior is Trader appears at farm in evening, leaves at night, cart prop moves with trader.",
+      "completed_at": "2026-09-01",
+      "pr_number": 165
     },
     {
       "id": "TASK-316",
       "title": "Add 2 more quests for Niran and Fah using the newly wired QuestLog",
-      "status": "proposed",
+      "status": "todo",
       "category": "gameplay",
       "owner": "narrative-lead",
       "files": [
@@ -2011,7 +2013,7 @@
     {
       "id": "TASK-317",
       "title": "Tool tier HUD display and Handler upgrade shop UI",
-      "status": "proposed",
+      "status": "todo",
       "category": "ui",
       "owner": "visual-inspector",
       "files": [
