@@ -35,27 +35,38 @@ func _initialize() -> void:
 	# Market buy offers exist per season.
 	var mm: Node = main.get_node_or_null("MarketStall/MarketManager")
 	_check(mm != null and mm.get_buy_offers("hot").size() >= 2, "hot buy offers available")
-	# NPC counter flow (COOL season: no barter pair conflicts with mango).
+	# TASK-327: MarketStallNPC._try_barter() was removed — interact() now
+	# opens the MarketShop panel instead of auto-cascading barter/sell/buy.
+	# Exercise the same economics through MarketShop.gd directly.
 	var npc: Node = main.get_node_or_null("MarketStall")
-	_check(npc != null and npc.has_method("_try_barter"), "market counter flow present")
+	_check(npc != null and npc.has_method("_open_shop"), "market stall interaction present")
 	gd.current_season = "cool"
 	if mm != null:
 		mm._refresh_offers("cool")
-	# Sell remaining mango (cheapest held sellable), then hit the hint path.
+	var shop: Node = sb.market_shop
+	_check(shop != null, "MarketShop registered on SignalBus (TASK-327)")
+	# Sell remaining mango (cheapest held sellable) via the shop's sell
+	# button — this uses sell_item_premium(.., "market") (+15% over base),
+	# same as MarketStallNPC's removed sell step did: ceil(5 * 1.15) = 6.
 	gd.inventory.erase("rice_grain") # isolate mango (boot-seeded rice is cheaper)
-	npc._try_barter()
-	_check(int(gd.silver) == 10 and int(gd.inventory.get("mango", 0)) == 0, "counter sold second mango (+5)")
-	npc._try_barter() # nothing sellable; fish_sauce costs 18 > wallet 5 -> hint
-	_check(not gd.has_item("fish_sauce", 1), "cannot afford buy -> cozy hint")
-	gd.add_silver(15) # wallet 20
-	npc._try_barter()
-	_check(gd.has_item("fish_sauce", 1) and int(gd.silver) == 7, "bought fish_sauce for 18 (wallet 25 -> 7)")
+	if shop != null:
+		shop.open(mm, "cool")
+		shop._on_sell_pressed()
+	_check(int(gd.silver) == 11 and int(gd.inventory.get("mango", 0)) == 0, "shop sold second mango at market premium (+6, wallet 5 -> 11)")
+	# Explicit buy above wallet -> soft no-op, no item granted, no charge.
+	if shop != null:
+		shop._on_buy_pressed("fish_sauce", 18)
+	_check(not gd.has_item("fish_sauce", 1) and int(gd.silver) == 11, "cannot afford buy -> no-op")
+	gd.add_silver(15) # wallet 26
+	if shop != null:
+		shop._on_buy_pressed("fish_sauce", 18)
+	_check(gd.has_item("fish_sauce", 1) and int(gd.silver) == 8, "bought fish_sauce for 18 (wallet 26 -> 8)")
 	# HUD label contract.
 	var hud: Node = main.get_node_or_null("HUD")
 	var lbl: Label = hud.find_child("SilverLabel", true, false) as Label if hud else null
 	_check(lbl != null and lbl.text == "Silver: %d" % int(gd.silver), "HUD silver label displays wallet")
 	# Save round-trip includes silver.
-	gd.add_silver(34) # wallet 7 -> 41
+	gd.add_silver(34) # wallet 8 -> 42
 	var sm: Node = load("res://scripts/persistence/SaveManager.gd").new()
 	_check(sm.save_game(), "save with silver")
 	gd.silver = 0
