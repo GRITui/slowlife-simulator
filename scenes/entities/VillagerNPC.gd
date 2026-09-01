@@ -4,6 +4,7 @@ extends CharacterBody2D
 ## Decoupled via SignalBus.show_dialogue. Y-sort friendly, cozy ambient only.
 
 const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.gd")
+const ScheduleDBScript: GDScript = preload("res://scripts/narrative/ScheduleDB.gd")
 
 @export var npc_id: String = "elder" ## elder | child | handler
 @export var display_name: String = "Elder"
@@ -16,9 +17,38 @@ var _last_talk_day: int = -1
 @onready var _sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
 @onready var _area: Area2D = $InteractArea if has_node("InteractArea") else null
 
+var _schedule_pos: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
 	add_to_group("villager_npc")
 	add_to_group(npc_id)
+	# TASK-058: drift toward the schedule waypoint (only for scheduled NPCs).
+	if not ScheduleDBScript.SCHEDULES.has(npc_id):
+		set_physics_process(false)
+	else:
+		_schedule_pos = ScheduleDBScript.waypoint_for(npc_id, _current_hour()) * 48.0 + Vector2(24, 24)
+		global_position = _schedule_pos
+
+func _current_hour() -> int:
+	var tm: Node = SignalBus.time_manager
+	if tm != null and "hour" in tm:
+		return int(tm.hour)
+	return 6
+
+## TASK-058: cozy waypoint drift — called from _physics_process. Static
+## NPCs (unscheduled) skip this entirely via set_physics_process(false).
+func _physics_process(_delta: float) -> void:
+	var tm: Node = SignalBus.time_manager
+	if tm != null:
+		var target: Vector2 = ScheduleDBScript.waypoint_for(npc_id, int(tm.hour)) * 48.0 + Vector2(24, 24)
+		if target != _schedule_pos:
+			_schedule_pos = target
+		var dist: float = global_position.distance_to(_schedule_pos)
+		if dist > 8.0:
+			velocity = (_schedule_pos - global_position).normalized() * 40.0
+			move_and_slide()
+		else:
+			velocity = Vector2.ZERO
 	if _area:
 		_area.body_entered.connect(_on_body_entered)
 		_area.body_exited.connect(_on_body_exited)
