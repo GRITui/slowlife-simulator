@@ -2030,7 +2030,7 @@
     {
       "id": "TASK-318",
       "title": "Seasonal crop growth balancing and stamina tuning",
-      "status": "todo",
+      "status": "completed",
       "category": "gameplay",
       "owner": "backend-automation",
       "files": [
@@ -2038,7 +2038,9 @@
         "scenes/core/GridManager.gd"
       ],
       "priority": "medium",
-      "notes": "Scout: After 22 crops unlocked, growth times may need balancing. Some crops grow too fast/slow relative to season lengths. Propose tuning growth_minutes_per_stage for balanced progression."
+      "notes": "Scout: After 22 crops unlocked, growth times may need balancing. Some crops grow too fast/slow relative to season lengths. Propose tuning growth_minutes_per_stage for balanced progression.",
+      "completed_at": "2026-09-01",
+      "pr_number": 171
     },
     {
       "id": "TASK-319",
