@@ -35,11 +35,11 @@ func _initialize() -> void:
 	gd.add_item("mango", 1)
 	_check(niran.try_interact(), "gift interact consumes food")
 	_check(int(gd.inventory.get("mango", 0)) == 0, "gift item consumed")
-	_check(int(gd.get_affinity("niran")) == 10, "affinity +10 after gift")
+	_check(int(gd.get_affinity("niran")) == 20, "loved gift (mango) grants +20 (TASK-054 prefs)")
 	# Tier talk: at 10 affinity -> stranger tier line emitted (no crash).
 	gd.inventory.clear()
 	niran.try_interact()
-	_check(int(gd.get_affinity("niran")) == 10, "talk adds no affinity (v1)")
+	_check(int(gd.get_affinity("niran")) == 20, "talk adds no affinity")
 	# Cross-tier: push Fah to friendly threshold -> friendly line (not stranger).
 	gd.add_affinity("fah", 25)
 	fah.try_interact()
