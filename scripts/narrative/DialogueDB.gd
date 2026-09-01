@@ -81,6 +81,7 @@ const DIALOGUE: Dictionary = {
 		"monsoon": [
 			"Gate is working hard this season. Listen to the water.",
 			"Repair the gate and pandan seed will come with the flow.",
+			"Canal's rising faster than I like. If it breaks the bank, bring me wood — we reinforce before it floods, not after.",
 		],
 		"binthabat_done": [
 			"Merit morning — water feels lighter on days you offer.",
@@ -148,6 +149,14 @@ const DIALOGUE: Dictionary = {
 			"I used to farm alone before you got here. I don't want to go back to that.",
 		],
 	},
+	"veteran": {
+		"any": [
+			"Second year on the land — the rows know your footsteps now.",
+			"Third year: neighbors bring you seeds without asking.",
+			"Fourth year: the village calls you when the sluice misbehaves.",
+		],
+	},
+
 	"headman": {
 		"cool": [
 			"The village runs on small kindnesses. Keep it up.",

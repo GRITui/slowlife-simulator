@@ -113,6 +113,14 @@ const FOOD_ITEMS: Array[String] = [
 # TASK-053 quest-state primitive: quest_id -> {"stage": int, "objectives_done": Array[String]}
 var active_quests: Dictionary = {}
 
+# TASK-280 long-term play: veteran-year scaling. Each completed year
+# grants +1 flat bonus yield on harvests (Year 2 = +1, Year 3 = +2, cap 3)
+# and a veteran dialogue flavor line — repetition softening without new chains.
+var veteran_year: int = 1
+
+func veteran_yield_bonus() -> int:
+	return clampi(veteran_year - 1, 0, 3)
+
 # ISSUE-135 (owner-reversed decision): SILVER currency economy. Wallet +
 # sell prices; barter system coexists (1:1 trades remain valid). Market
 # stall handles sell (items -> silver) and buy (silver -> goods).

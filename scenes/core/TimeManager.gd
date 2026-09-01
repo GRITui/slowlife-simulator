@@ -59,6 +59,8 @@ func _advance_minute() -> void:
 		if hour >= 24:
 			hour = 0
 			day += 1
+			# TASK-280: veteran year rolls over (GameData synced lazily).
+			GameData.veteran_year = year()
 			_days_in_season += 1
 			if _days_in_season >= season_duration_days:
 				_rotate_season()
