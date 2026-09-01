@@ -62,6 +62,11 @@ func set_high_contrast(v: bool) -> void:
 		_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 		_on_harmony_changed(GameData.harmony)
 
+func _on_silver_changed(silver: int) -> void:
+	var lbl: Label = find_child("SilverLabel", true, false) as Label
+	if lbl:
+		lbl.text = "Silver: %d" % silver
+
 func _on_settings_changed(s: float, hc: bool) -> void:
 	set_font_scale(s)
 	set_high_contrast(hc)
@@ -108,10 +113,12 @@ func _ready() -> void:
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
 	SignalBus.crop_growth_progress.connect(_on_crop_progress)
 	SignalBus.settings_changed.connect(_on_settings_changed)
+	SignalBus.silver_changed.connect(_on_silver_changed)
 	# TASK-027: restore persisted a11y prefs (defaults keep legacy behavior).
 	set_font_scale(GameData.font_scale)
 	set_high_contrast(GameData.high_contrast)
 	# init from GameData
+	_on_silver_changed(GameData.silver)
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)

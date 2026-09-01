@@ -113,6 +113,54 @@ const FOOD_ITEMS: Array[String] = [
 # TASK-053 quest-state primitive: quest_id -> {"stage": int, "objectives_done": Array[String]}
 var active_quests: Dictionary = {}
 
+# ISSUE-135 (owner-reversed decision): SILVER currency economy. Wallet +
+# sell prices; barter system coexists (1:1 trades remain valid). Market
+# stall handles sell (items -> silver) and buy (silver -> goods).
+var silver: int = 0
+
+## Sell prices (silver per unit). Items not listed are not sellable.
+const SELL_PRICES: Dictionary = {
+	"rice_grain": 2, "sticky_rice": 4, "mango": 5, "durian": 8, "banana": 4,
+	"egg": 4, "buffalo_milk": 5, "goat_milk": 6, "wood": 3, "banana_leaf": 2,
+	"lotus_root": 5, "thai_basil": 3, "pandan_leaf": 3, "banana_leaf_stem": 2,
+	"thai_basil_stirfry": 14, "pandan_sticky_rice": 15, "mango_sticky_rice": 14,
+	"durian_sticky_rice": 18, "lotus_soup": 16, "banana_rice_cake": 12,
+	"nam_prik": 16, "som_tam": 15, "tom_yum": 18, "wan_sart_basket": 10,
+}
+
+func add_silver(amount: int) -> void:
+	silver = maxi(0, silver + amount)
+	SignalBus.silver_changed.emit(silver)
+
+func spend_silver(amount: int) -> bool:
+	if silver < amount:
+		return false
+	silver -= amount
+	SignalBus.silver_changed.emit(silver)
+	return true
+
+## Sell one unit of an item; returns silver gained (0 if unsellable/not held).
+func sell_item(item_id: String) -> int:
+	var price: int = int(SELL_PRICES.get(item_id, 0))
+	if price <= 0 or not has_item(item_id, 1):
+		return 0
+	if not remove_item(item_id, 1):
+		return 0
+	add_silver(price)
+	return price
+
+## Cheapest sellable item currently held (market sells lowest-value first).
+func cheapest_sellable() -> String:
+	var best: String = ""
+	var best_price: int = 0
+	for item_id: String in inventory.keys():
+		var price: int = int(SELL_PRICES.get(item_id, 0))
+		if price > 0 and int(inventory[item_id]) > 0:
+			if best == "" or price < best_price:
+				best = item_id
+				best_price = price
+	return best
+
 # TASK-059 romance payoff: spouse npc_id ("" until wed). Proposal requires
 # romantic tier (affinity >= 90) + a krathong as the offering. One spouse.
 var spouse: String = ""
