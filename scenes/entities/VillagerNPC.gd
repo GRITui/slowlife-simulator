@@ -142,6 +142,18 @@ func _try_tool_upgrade() -> bool:
 	# hoe -> watering_can -> sickle. Each upgrade costs tier*8 rice.
 	# Complementary track: mount's 3x3 auto-plow is situational riding tool,
 	# while these tiers are permanent solo-farming upgrades.
+	# TASK-317: Show shop UI with current tiers and costs.
+	var shop_text: String = "Tools: "
+	for tool_id in ["hoe", "watering_can", "sickle"]:
+		var tier: int = GameData.tool_tier(tool_id)
+		shop_text += "%s T%d" % [tool_id.capitalize(), tier]
+		if tier < 3:
+			shop_text += " (next: %d rice)" % (tier * 8)
+		else:
+			shop_text += " (MAX)"
+		if tool_id != "sickle":
+			shop_text += " | "
+	SignalBus.show_dialogue.emit(display_name, shop_text)
 	for tool_id in ["hoe", "watering_can", "sickle"]:
 		var tier: int = GameData.tool_tier(tool_id)
 		if tier >= 3:
@@ -150,9 +162,6 @@ func _try_tool_upgrade() -> bool:
 		if GameData.has_item("rice_grain", cost):
 			if GameData.upgrade_tool(tool_id):
 				SignalBus.show_dialogue.emit(display_name, "Upgraded %s to tier %d for %d rice! (Riding plow is separate — works only while mounted.)" % [tool_id, tier + 1, cost])
-				return true
-			else:
-				SignalBus.show_dialogue.emit(display_name, "Need %d rice for %s tier %d." % [cost, tool_id, tier + 1])
 				return true
 	return false
 

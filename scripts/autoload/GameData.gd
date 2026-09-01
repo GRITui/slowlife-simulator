@@ -94,6 +94,7 @@ func upgrade_tool(tool_id: String) -> bool:
 		return false
 	remove_item("rice_grain", cost)
 	tool_tiers[tool_id] = tier + 1
+	SignalBus.tool_upgraded.emit(tool_id, tier + 1)
 	return true
 
 # TASK-051 affinity/dating MVP — npc_id -> 0..100. Tiers (25/60/90) map to
