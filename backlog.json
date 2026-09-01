@@ -1954,7 +1954,7 @@
     {
       "id": "TASK-313",
       "title": "3-channel sell economy: Cart Trader / Market Stall premium / Specialty Buyer",
-      "status": "todo",
+      "status": "completed",
       "category": "engine",
       "owner": "backend-automation",
       "files": [
@@ -1963,9 +1963,11 @@
       ],
       "github_issue_number": 161,
       "github_issue_url": "https://github.com/GRITui/slowlife-simulator/issues/161",
-      "gate_audit": "PASS 2026-09-01: QA-confirmed reachable-state bugs/feature on shipped systems. Order: hearts(311) -> tools(312) -> quests(310) -> 3-channel(313). Art lane owns TASK-314 visual (in progress).",
+      "gate_audit": "PASS: Gate audit passed, merged PR#165, 3-channel economy verified",
       "priority": "medium",
-      "owner_note": "P2 \u2014 additive new feature, sequence after P0/P1: a third sell channel matters less than making the two already-built progression systems (quests, tools) real first."
+      "owner_note": "P2 \u2014 additive new feature, sequence after P0/P1: a third sell channel matters less than making the two already-built progression systems (quests, tools) real first.",
+      "completed_at": "2026-09-01",
+      "pr_number": 165
     },
     {
       "id": "TASK-314",
