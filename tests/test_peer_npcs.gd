@@ -20,9 +20,11 @@ func _initialize() -> void:
 	await process_frame
 	var niran: Node = main.get_node_or_null("NiranNPC")
 	var fah: Node = main.get_node_or_null("FahNPC")
+	var ploy: Node = main.get_node_or_null("PloyNPC")
 	_check(niran != null, "NiranNPC instanced")
 	_check(fah != null, "FahNPC instanced")
-	if niran == null or fah == null:
+	_check(ploy != null, "PloyNPC instanced (TASK-335 third romance candidate)")
+	if niran == null or fah == null or ploy == null:
 		await process_frame
 		quit(1)
 		return
@@ -44,6 +46,24 @@ func _initialize() -> void:
 	gd.add_affinity("fah", 25)
 	fah.try_interact()
 	_check(int(gd.get_affinity("fah")) == 25, "fah affinity 25")
+	# TASK-335: Ploy — same gift/tier flow, distinct npc_id and group tags.
+	_check(ploy.is_in_group("romance_candidate"), "Ploy tagged romance_candidate")
+	_check(String(ploy.npc_id) == "ploy", "Ploy npc_id set")
+	_check(String(ploy.display_name) == "Ploy", "Ploy display_name set")
+	gd.inventory.clear()
+	gd.add_item("banana_rice_cake", 1)
+	_check(ploy.try_interact(), "Ploy gift interact consumes food")
+	_check(int(gd.inventory.get("banana_rice_cake", 0)) == 0, "Ploy gift item consumed")
+	_check(int(gd.get_affinity("ploy")) == 20, "Ploy loved gift (banana_rice_cake) grants +20")
+	# TASK-335: Ploy's specialty-sell channel — cooked desserts at premium,
+	# close-tier gated (60+), takes priority over the gift branch.
+	gd.affinity["ploy"] = 60
+	gd.inventory.clear()
+	gd.add_item("banana_rice_cake", 1)
+	var silver_before: int = gd.silver
+	_check(ploy.try_interact(), "Ploy specialty-sell interact succeeds at close tier")
+	_check(int(gd.inventory.get("banana_rice_cake", 0)) == 0, "specialty item consumed")
+	_check(gd.silver > silver_before, "specialty sell grants silver premium")
 	main.queue_free()
 	print("\n=== PEER-NPC TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:

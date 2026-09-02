@@ -43,6 +43,8 @@ func _initialize() -> void:
 			# inflating the budget for a node with nothing to sort).
 			# TASK-332: Noticeboard joins the same exclusion list for the same
 			# reason (logic-only interactable, invisible interact zone).
+			# 49->50 (TASK-335: Ploy, third romance candidate, has a real
+			# Sprite2D and legitimately counts, same as CarpenterUpgrade).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
@@ -50,7 +52,7 @@ func _initialize() -> void:
 					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 49, "y-sorted participants <= 49 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 50, "y-sorted participants <= 50 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)

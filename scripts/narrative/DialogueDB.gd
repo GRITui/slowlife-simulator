@@ -246,6 +246,35 @@ const DIALOGUE: Dictionary = {
 			"I've started saving the best catches to cook for you. Didn't plan that. Just happened.",
 		],
 	},
+
+	# TASK-335: third romance candidate. Warm, sociable market dessert-maker
+	# near the temple lane — contrasts Niran's competitive edge and Fah's
+	# quiet introspection with an extroverted, community-glue personality.
+	# Same 5-tier structure (stranger/friendly/close/rival/romantic).
+	"ploy": {
+		"stranger": [
+			"New to the village? Have a taste — first one's always free.",
+			"Careful, the mango sticky rice sells out by midday. Ask the market why.",
+		],
+		"friendly": [
+			"I saved you the last piece. Don't tell the headman, he'll want it too.",
+			"You've got flour on your sleeve again. Here, hold still —",
+		],
+		"close": [
+			"Everyone gets my sweets. You get the ones I actually make for myself.",
+			"I talk to the whole village every day. Somehow you're the one I think about after.",
+		],
+		# TASK-324 pattern: occasional light rival pressure on the close-tier
+		# courtship path. Flavor-only, no name, no mechanical effect.
+		"rival": [
+			"Someone from the coast road asked about you at the stall. Wanted to know if you were spoken for.",
+			"The trader keeps asking if I've 'said anything yet.' Told him it's none of his business. It isn't, right?",
+		],
+		"romantic": [
+			"Come by after the stall closes tonight? Just us, no customers, no sweets to sell.",
+			"I used to give my best to everyone equally. Not anymore. Not since you.",
+		],
+	},
 }
 
 static func get_line(npc_id: String, season: String, idx: int) -> String:
@@ -319,6 +348,10 @@ static func get_affinity_tier(affinity: int) -> String:
 ## liked = +10, anything else food = +5 (v1 fallback).
 const GIFT_PREFERENCES: Dictionary = {
 	"niran": {"loved": ["mango_sticky_rice", "mango"], "liked": ["rice_grain", "sticky_rice", "thai_basil"]},
+	# TASK-335: Ploy is a dessert-maker — she loves being brought the finer
+	# cooked sweets rather than raw ingredients (distinct from Niran/Fah's
+	# raw-produce/fish preferences).
+	"ploy": {"loved": ["mango_sticky_rice", "banana_rice_cake"], "liked": ["banana", "coconut", "palm_sugar"]},
 	"fah": {"loved": ["pla_nin_mid", "lotus_soup", "lotus_root"], "liked": ["fish_sauce", "egg", "som_tam"]},
 	"elder": {"loved": ["lotus_root", "banana_rice_cake"], "liked": ["rice_grain", "thai_basil"]},
 	"child": {"loved": ["mango_sticky_rice", "durian"], "liked": ["egg", "banana"]},

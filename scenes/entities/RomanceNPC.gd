@@ -118,6 +118,16 @@ func _try_specialty_sell() -> bool:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id
 				break
+	elif npc_id == "ploy":
+		# TASK-335: Ploy buys cooked desserts at specialty premium — ties her
+		# into the recipe tree rather than raw produce like Niran/Fah. Only
+		# items with a GameData.SELL_PRICES entry are usable here (khanom_krok/
+		# sangkhaya are valid recipes but have no sell price registered yet —
+		# a pre-existing, separate gap, not one to silently patch here).
+		for item_id in ["banana_rice_cake", "pandan_sticky_rice"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
 	if want_item.is_empty():
 		return false
 	var gained: int = GameData.sell_item_premium(want_item, "specialty")
