@@ -79,6 +79,15 @@ func _ready() -> void:
 	# from the minute_ticked handler so a freshly-earned cap also unlocks
 	# it without needing a reload.
 	_ensure_mountain_cave()
+	# TASK-343: deep canal bend (fishing) and sacred grove (wood) — the
+	# other two unlockable areas. Same pattern as TASK-337: each gated on
+	# an already-persisted stat (fishing_skill / companion_bond_tier),
+	# checked at boot AND from the same minute_ticked handler so a loaded
+	# save with the stat already met shows the spot immediately, and a
+	# freshly-earned cap unlocks it without a reload. Do NOT add a second
+	# minute_ticked subscription — extend the existing handler instead.
+	_ensure_deep_canal()
+	_ensure_sacred_grove()
 	SignalBus.minute_ticked.connect(_on_minute_ticked_unlocks)
 	# TASK-332: repeatable side-quest noticeboard (separate from QuestLog).
 	_ensure_noticeboard()
@@ -324,12 +333,66 @@ func _ensure_mountain_cave() -> void:
 	add_child(spot)
 
 func _on_minute_ticked_unlocks(_day: int, _hour: int, _minute: int) -> void:
-	# TASK-337: lazy unlock poll. Cheap (one int compare + get_node_or_null
-	# per tick); runs even after the spot already exists so it stays
-	# idempotent. Main has no other minute_ticked subscription of its own
-	# — every other system owns its own — so this is intentionally the only
-	# one in this file.
+	# TASK-337 + TASK-343: lazy unlock poll. Cheap (one int compare +
+	# get_node_or_null per spot per tick); runs even after the spot
+	# already exists so it stays idempotent. Main has no other
+	# minute_ticked subscription of its own — every other system owns
+	# its own — so this is intentionally the only one in this file.
 	_ensure_mountain_cave()
+	_ensure_deep_canal()
+	_ensure_sacred_grove()
+
+func _ensure_deep_canal() -> void:
+	# TASK-343: gated on GameData.fishing_skill >= 4 (the cap, the same
+	# threshold as the master_angler milestone). Derive the unlock state
+	# live each call so a save from before this task ships unlocks
+	# correctly the moment it loads — no persisted flag, no schema bump.
+	# Called once from _ready() (covers loaded-save boot) and again from
+	# the minute_ticked handler (covers freshly-earned cap in-session).
+	if GameData.fishing_skill < 4:
+		return
+	if get_node_or_null("DeepCanalSpot") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/DeepCanalSpot.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "DeepCanalSpot"
+	# Tile (12, 14) — verified via headless ground_at() probe: tile
+	# (12,14) is ground_grass (walkable) and its north neighbor (12,13)
+	# is canal, satisfying _water_adjacent(). Clear of every other node's
+	# position in Main.gd / Main.tscn. No sprite for MVP — invisible
+	# interact zone, mirroring MiningSpot/Noticeboard/MountainCaveSpot's
+	# precedent.
+	spot.position = Vector2(12 * 48 + 24, 14 * 48)
+	add_child(spot)
+
+func _ensure_sacred_grove() -> void:
+	# TASK-343: gated on GameData.companion_bond_tier() >= 4 (the cap, the
+	# same threshold as the inseparable milestone). Thematically: the cat
+	# leads you to a grove it trusts you enough to show. Derive the
+	# unlock state live each call — no persisted flag, no schema bump.
+	# Called once from _ready() and again from the minute_ticked handler.
+	if GameData.companion_bond_tier() < 4:
+		return
+	if get_node_or_null("SacredGroveSpot") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/SacredGroveSpot.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "SacredGroveSpot"
+	# Tile (19, 6) — verified via headless ground_at() probe: tile
+	# (19,6) is ground_grass, near the existing ForestTree cluster
+	# (18,3)/(18,5)/(19,4) for thematic proximity, one tile clear of
+	# ForestTree19_4. No sprite for MVP — invisible interact zone,
+	# mirroring MiningSpot/Noticeboard/MountainCaveSpot's precedent.
+	spot.position = Vector2(19 * 48 + 24, 6 * 48)
+	add_child(spot)
 
 func _ensure_noticeboard() -> void:
 	if get_node_or_null("Noticeboard") != null:
