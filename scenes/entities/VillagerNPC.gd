@@ -173,7 +173,7 @@ func talk() -> void:
 	var binthabat_done: bool = false
 	if "last_offering_day" in GameData and "daily_offerings" in GameData:
 		binthabat_done = int(GameData.last_offering_day) == day and int(GameData.daily_offerings) > 0
-	var line: String = DialogueDBScript.get_seasonal_line(npc_id, season, binthabat_done, _talk_count, _current_weather())
+	var line: String = DialogueDBScript.get_seasonal_line(npc_id, season, binthabat_done, _talk_count, _current_weather(), GameData.level_for(int(GameData.affinity.get(npc_id, 0))))
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)
 	# Track per-NPC talk for quests (no reward loop — cozy only).
