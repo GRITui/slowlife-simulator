@@ -371,7 +371,7 @@ Recommended order if approved, best cost/impact ratio first:
 <task_item>
   <id>TASK-350</id>
   <source>OWNER</source>
-  <status>NEEDS_OWNER_REVIEW</status>
+  <status>READY_FOR_PM</status>
   <priority>P1 (blocks meaningful crop variety the moment a player owns 2+ seed types)</priority>
   <title>Active-seed selection for planting — first real gap in the "no menu UI" philosophy</title>
   <description>Owner found via actual play (first human playthrough this project has had): pressing interact on an empty tile always plants rice, with no way to choose a different crop. Root cause confirmed in code: `Player._find_crop_for_held_seed()` auto-picks "the first seed_* item found in GameData.inventory" (Dictionary iteration order, not player-controlled), falling back to jasmine_rice if no seeds held at all. This is the SAME "auto-pick first matching held item" pattern this whole game deliberately uses everywhere (gift-giving, specialty-selling) to avoid any menu/choice UI — it just breaks down specifically for planting once a player owns more than one seed type, since there's no way to express "no, THIS one."</description>
@@ -381,6 +381,8 @@ Recommended order if approved, best cost/impact ratio first:
   - Keyboard: `Q` (or `Tab`) — fits the existing minimal WASD+E scheme, no mouse dependency.
   - Gamepad (future): `L1`/`LB` shoulder button — exact HM:BtN precedent (their R1 tool-cycle), doesn't compete with the movement stick.
   - Mobile touch: tap the HUD seed-indicator widget directly — the only real option on touch (no spare physical button); matches this project's existing on-screen-control precedent (`VirtualJoystick`/`InteractTap` already in `HUD.tscn`), and must meet the project's 44x44pt minimum touch-target rule.
+
+  **NO-SEED FALLBACK DECIDED (owner, 2026-09-02):** when no seed is primed (owns none), planting still falls back to jasmine_rice (preserves the no-fail-state guarantee — interact always does something) but emits a distinct dialogue line ("No seed selected — planted rice instead.") instead of silently planting rice with no signal. Both open questions now resolved — ready to spec/build.
 
   Still open: whether "no seed primed" (owns none) should fall back to jasmine_rice (current behavior, no-fail-state-consistent) or block planting with a dialogue prompt — pending a follow-up owner decision.</researcher_notes>
 </task_item>
