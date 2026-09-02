@@ -643,6 +643,16 @@ const GIFT_PREFERENCES: Dictionary = {
 	"chang": {"loved": ["thai_basil_stirfry", "som_tam"], "liked": ["rice_grain", "egg"]},
 	"klong": {"loved": ["mango_sticky_rice", "pandan_sticky_rice"], "liked": ["banana", "egg"]},
 	"yaa": {"loved": ["thai_basil", "lotus_root"], "liked": ["pandan_leaf", "banana_leaf"]},
+	# TASK-342: the 6 rivals' gift preferences reuse their paired candidate's
+	# OWN loved items (minus any item not actually reachable via FOOD_ITEMS,
+	# e.g. Fah's "pla_nin_mid" is skipped for Ohm) -- a rival would know what
+	# their candidate likes too. All items re-verified against FOOD_ITEMS.
+	"yai": {"loved": ["mango_sticky_rice", "mango"], "liked": ["rice_grain", "sticky_rice"]},
+	"ohm": {"loved": ["lotus_soup", "lotus_root"], "liked": ["egg", "som_tam"]},
+	"rung": {"loved": ["mango_sticky_rice", "banana_rice_cake"], "liked": ["banana", "sticky_rice"]},
+	"note": {"loved": ["thai_basil_stirfry", "som_tam"], "liked": ["rice_grain", "egg"]},
+	"fon": {"loved": ["mango_sticky_rice", "pandan_sticky_rice"], "liked": ["banana", "egg"]},
+	"boon": {"loved": ["thai_basil", "lotus_root"], "liked": ["pandan_leaf", "banana_leaf"]},
 }
 
 ## Returns "loved" | "liked" | "neutral" for a given NPC + item.
@@ -660,3 +670,70 @@ static func gift_affinity(tier: String) -> int:
 		"loved": return 20
 		"liked": return 10
 		_: return 5
+
+## TASK-342: rival dialogue, tier-keyed by RivalClock.WARNING_FRACTIONS
+## progress (0-3, matching GameData.rival_warning_shown) plus a "won" pool
+## once GameData.lost_to_rival is true for that rival's candidate.
+##
+## TASK-345 fix baked in from the start: tier 0 already establishes the
+## competing interest plainly (not "casual, no pressure yet" as originally
+## drafted) — a disengaged player gets SOME signal even before any warning
+## has fired, closing the other half of the fairness gap (the candidate's
+## own "1_warned" pool from TASK-341 is the first half).
+const RIVAL_DIALOGUE: Dictionary = {
+	"yai": {
+		"0": ["Ek's been talking about you nonstop lately. Can't say I love hearing that.", "You're the one from the paddies? Ek won't shut up about you."],
+		"1": ["Ek and I have been talking a lot lately. More than you'd think.", "Funny how often Ek's name comes up when people mention you. Funny how often mine comes up when people mention Ek."],
+		"2": ["Ek and I understand each other pretty well by now, if you catch my meaning.", "I don't lose. Not at farming, not at this."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Ek.", "May the better rival win. I intend for that to be me."],
+		"won": ["Ek and I are happy. I hope you understand.", "No hard feelings. Well — some. But mostly happy ones."],
+	},
+	"ohm": {
+		"0": ["Fah and I talk more than people realize. Quietly, mostly.", "I've been meaning to spend more time with Fah myself."],
+		"1": ["Fah and I have been talking a lot lately. Patience has its rewards.", "I don't rush these things. Fah appreciates that, I think."],
+		"2": ["Fah and I understand each other pretty well by now.", "Some people chase. I wait. It tends to work out."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Fah.", "I've waited this long. I can wait a little longer, if I have to."],
+		"won": ["Fah and I are happy. I hope you understand.", "Patience, in the end, was the whole strategy."],
+	},
+	"rung": {
+		"0": ["Ploy and I go way back, actually. Small village, big charm.", "I've been meaning to spend more time at Ploy's stall myself."],
+		"1": ["Ploy and I have been talking a lot lately. Everyone likes talking to me, though — ask around.", "Ploy laughs at my jokes. That's a good sign, right?"],
+		"2": ["Ploy and I understand each other pretty well by now.", "Charm only gets you so far. Lucky for me, so far is pretty far."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Ploy.", "Everyone in this village likes me. I'd like it if Ploy liked me best."],
+		"won": ["Ploy and I are happy. I hope you understand.", "Turns out charm gets you all the way, actually."],
+	},
+	"note": {
+		"0": ["Chang and I both carve. I finish faster. Chang finishes better. We talk about it.", "I've been meaning to spend more time at Chang's bench myself."],
+		"1": ["Chang and I have been talking a lot lately. About more than wood, lately.", "Chang says I rush my pieces. Maybe. I don't rush this, though."],
+		"2": ["Chang and I understand each other pretty well by now.", "Careful craft, showy craft — different approaches. Same goal, this time."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Chang.", "Chang's patient with wood. I'm hoping for patience with me, too."],
+		"won": ["Chang and I are happy. I hope you understand.", "Turns out speed wasn't the whole story after all."],
+	},
+	"fon": {
+		"0": ["Klong and I share the festival stage. And, lately, more than the stage.", "I've been meaning to spend more time near Klong's drums myself."],
+		"1": ["Klong and I have been talking a lot lately. Rehearsals run long these days.", "I don't share the spotlight easily. Klong's the exception."],
+		"2": ["Klong and I understand each other pretty well by now.", "Everyone watches the flashiest performer. Lately I'd rather Klong watch me."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Klong.", "I've never wanted the spotlight less than I want this."],
+		"won": ["Klong and I are happy. I hope you understand.", "Turns out the best performance wasn't on stage at all."],
+	},
+	"boon": {
+		"0": ["Yaa and I trade notes on herbs. And, lately, a bit more than notes.", "I've been meaning to spend more time at Yaa's garden myself."],
+		"1": ["Yaa and I have been talking a lot lately. There's a lot to learn from each other.", "Yaa knows more about healing than I ever will. I'm hoping to learn more, one way or another."],
+		"2": ["Yaa and I understand each other pretty well by now.", "Expertise earns respect. I'm hoping respect earns something more."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Yaa.", "I've studied plenty. This is the one thing I can't just read about."],
+		"won": ["Yaa and I are happy. I hope you understand.", "Turns out some things you can't learn from a book after all."],
+	},
+}
+
+## Returns a rival dialogue line. tier is 0-3 (GameData.rival_warning_shown),
+## ignored once has_won is true (routes to the "won" pool instead). idx
+## rotates through the pool, same convention as get_line().
+static func get_rival_line(npc_id: String, tier: int, has_won: bool, idx: int = 0) -> String:
+	var npc: Dictionary = RIVAL_DIALOGUE.get(npc_id, {})
+	if npc.is_empty():
+		return "..."
+	var key: String = "won" if has_won else str(clampi(tier, 0, 3))
+	var pool: Array = npc.get(key, [])
+	if pool.is_empty():
+		return "..."
+	return String(pool[idx % pool.size()])
