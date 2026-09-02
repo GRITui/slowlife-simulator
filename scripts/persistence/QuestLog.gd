@@ -117,10 +117,20 @@ func on_npc_talked(npc_id: String) -> void:
 	complete_objective_everywhere("feed_buffalo_mash" if npc_id == "handler" else "")
 	complete_objective_everywhere("enter_the_race" if npc_id == "handler" else "")
 
+## Phase 3 audit (2026-09-02): a quest never leaves GameData.active_quests on
+## completion (no remove/claim step exists), so without the is_quest_complete
+## skip below, any later unrelated event that shares an already-satisfied
+## objective_id (e.g. catching a second fish after "first_catch" already
+## paid out) would re-run _payout on every trigger — an unbounded
+## silver/harmony/item duplication exploit. Confirmed via manual repro
+## before this fix: repeating _check_objective_by_item("pla_nin_small")
+## doubled harmony on the second call alone.
 func complete_objective_everywhere(objective_id: String) -> void:
 	if objective_id.is_empty():
 		return
 	for quest_id: String in GameData.active_quests.keys():
+		if GameData.is_quest_complete(quest_id):
+			continue
 		var chain: Dictionary = get_chain(quest_id)
 		var objectives: Array = chain.get("objectives", []) as Array
 		if not objectives.has(objective_id):
@@ -141,8 +151,11 @@ func _payout(quest_id: String) -> void:
 	SignalBus.show_dialogue.emit("Quest", "%s complete! +%d %s, +%d harmony." % [
 		String(chain.get("display_name", quest_id)), qty, item.replace("_", " "), int(chain.get("reward_harmony", 0))])
 
-## Manual completion for non-event objectives (tests / NPC hooks).
+## Manual completion for non-event objectives (tests / NPC hooks). Same
+## already-complete guard as complete_objective_everywhere() above.
 func complete_objective(quest_id: String, objective_id: String) -> void:
+	if GameData.is_quest_complete(quest_id):
+		return
 	GameData.complete_objective(quest_id, objective_id)
 	if GameData.is_quest_complete(quest_id):
 		_payout(quest_id)

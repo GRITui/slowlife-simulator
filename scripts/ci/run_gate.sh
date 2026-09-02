@@ -46,11 +46,17 @@ run_perf() {
 	godot --headless --path . --script res://tests/perf/test_mobile_budget.gd
 }
 
+run_touch() {
+	echo "== touch-target gate: tests/ui/test_touch_targets.gd =="
+	godot --headless --path . --script res://tests/ui/test_touch_targets.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
 	save) run_save_compat ;;
 	perf) run_perf ;;
-	all) run_engine && run_content && run_save_compat && run_perf ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|all)" >&2; exit 2 ;;
+	touch) run_touch ;;
+	all) run_engine && run_content && run_save_compat && run_perf && run_touch ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|touch|all)" >&2; exit 2 ;;
 esac

@@ -729,3 +729,43 @@ category from the role reassessment, discovered live.
 - **Integration outcome:** self-executed, no delegate gate to pass —
   committed and pushed directly per the standing push-immediately rule.
 - **Stop reason:** task complete; continuing Phase 3 digging next.
+
+## 2026-09-02 — Run 15 (Phase 3 polish: quest duplicate-payout exploit, self-executed)
+
+- **Worker:** Claude (Sonnet, self-executed — bug hunting, not a delegate task).
+- **Trigger:** "Keep digging." Read `QuestLog.gd`/`GameData.gd`'s quest
+  primitive end to end. `GameData.start_quest`/`complete_objective`/
+  `is_quest_complete` never remove a quest from `active_quests` on
+  completion — there is no claim/remove step anywhere in the codebase.
+- **Bug found (economy-breaking, confirmed via manual repro before
+  fixing):** `QuestLog.complete_objective_everywhere(objective_id)` loops
+  every entry in `GameData.active_quests` and re-checks
+  `is_quest_complete()` → `_payout()` on **every** matching event, with
+  no guard against a quest that already paid out. Since completed quests
+  stay in `active_quests` forever, any later unrelated action sharing an
+  objective id (e.g. catching a second fish after the "first_catch"
+  quest already completed and paid its reward) silently re-triggers
+  `_payout()` again — unbounded, repeatable silver/harmony/item
+  duplication for the lifetime of a save. Manually repro'd: two calls to
+  `_check_objective_by_item("pla_nin_small")` after a quest completed on
+  the first doubled `gd.harmony`.
+- **Fix:** added an `is_quest_complete(quest_id)` skip at the top of the
+  loop in `complete_objective_everywhere()`, and the same guard in the
+  manual `complete_objective()` entry point — a completed quest is now
+  permanently skipped rather than re-evaluated. Minimal, matches the
+  session's established check-before-mutate pattern; no new state, no
+  schema change (so no save-compat implication).
+- **Verification:** new `tests/test_quest_no_dupe_payout.gd` (6/6) —
+  confirms single payout on completion and zero further mutation on
+  repeated same-objective triggers and on the manual entry point.
+  Existing `test_quest_chain.gd` (27/27) and `test_questdata.gd` (8/8)
+  unaffected. Full gate green: `run_gate.sh all` (content 100/100,
+  engine 50/50, save-compat 35/35, perf 6/6, touch 10/10 — see below).
+- **Process note:** also wired the pre-existing but orphaned
+  `tests/ui/test_touch_targets.gd` (10/10, unrelated to this bug) into
+  `scripts/ci/run_gate.sh`'s `all` target — it existed and passed but
+  wasn't part of the standard gate, so a future UI regression there
+  would have gone unnoticed.
+- **Integration outcome:** self-executed, committed and pushed directly
+  per the standing push-immediately rule.
+- **Stop reason:** task complete; continuing Phase 3 digging next.

@@ -115,6 +115,16 @@ task-number order.
       `SignalBus.companion_bond_changed` (parity with the existing
       buffalo/chicken pattern) and two new combined-stat labels
       (`FarmHeartsLabel`, `SkillsLabel`). See `ops/ai-eng-log.md` run 14.
+- [x] **Fixed a real economy-exploit:** completed quests never left
+      `GameData.active_quests`, so any later unrelated action sharing an
+      already-satisfied objective id re-triggered that quest's payout —
+      unbounded silver/harmony/item duplication for the rest of a save.
+      Guarded both `QuestLog.complete_objective_everywhere()` and the
+      manual `complete_objective()` entry point against re-paying an
+      already-complete quest. See `ops/ai-eng-log.md` run 15.
+- [x] Wired the pre-existing `tests/ui/test_touch_targets.gd` (was
+      orphaned — passing but not part of `run_gate.sh`) into the `all`
+      gate so future UI changes can't silently regress touch-target size.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)
