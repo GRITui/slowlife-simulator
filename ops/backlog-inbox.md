@@ -166,3 +166,75 @@ Recommended order if approved, best cost/impact ratio first:
 <!-- AI-LOOP: 2026-09-01 TASK-325 (companion bond, redesigned from dog/horse) merged to main, commit f5cb512. Sprint 2 of 3-sprint plan complete. Implemented by Cline (minimax-m3:free) — 4th hit this session on the same OpenRouter rate limit (runs 7/10/11/12), this time right after finishing all 4 files mid final self-verification. Code Quality Review found the 3 implementation files clean; the new test file had 2 real authoring bugs (bare SignalBus identifier unresolvable in a standalone SceneTree script, a tier-math error expecting tier 1 after a single 60-tick grant when a tier needs 25 points) plus a force_finish()-bypasses-start_race() gap leaving _player unset — all fixed directly. Verified: test_companion_bond.gd 33/33 (new) + test_companion.gd 7/7 + test_race.gd 13/13 (regression) + run_tests 100/100 + run_engine_tests 50/50. Full record: ops/ai-eng-log.md run 12. Next: Sprint 3 (TASK-324, rivals + life progression) — final item, closes Phase 2. -->
 
 <!-- AI-LOOP: 2026-09-01 TASK-324 (rival flavor + life progression) merged to main, commit 1cd8088. Sprint 3 of 3-sprint plan complete — PHASE 2 CLOSED, all 6 approved backlog items (321/322/323A+B/324/325/326) done. Cline hit its 5th and 6th rate-limit-class failures of the session on this one task (stealth/ox-alpha: out of credits; minimax-m3:free: OpenRouter rate limit, but only after ~5min unusual pure-reasoning then rapid correct progress including self-detected recovery from a benign concurrent-edit race). All 3 implementation files clean on review; Claude wrote the test file directly and fixed 2 of its own authoring bugs (year-sequencing math, active_quests key reuse) before merge. Verified: test_life_progression.gd 26/26 + test_anniversary.gd 6/6 + test_wedding.gd 6/6 (regression) + run_tests 100/100 + run_engine_tests 50/50. Full record: ops/ai-eng-log.md run 13. Next: Phase 3 (Polish/QA/Performance) per SHIP_PLAN.md, or address remaining SHIP_PLAN gaps (monetization, analytics, Apple Developer [HOLD] items). -->
+
+<!-- AI-LOOP: 2026-09-02 AI-ENG-001 run — Gemini QA/Balance role, follow-up to run 1's broad checklist. Question this time: deep gap analysis on 3 dimensions HM:BtN is known for — gameplay depth, content range, NPC engagement/social balance — with concrete, effort-ranked mechanics rather than a feature checklist. Gemini's raw list cross-checked against actual code (rg over scripts/, scenes/, data/) before proposing anything below, per the loop's integrate-don't-trust-blindly rule. Two of Gemini's claimed gaps were WRONG (already implemented): monsoon-season auto-watering + hot-season wilt tracking already exist (GridManager.gd _on_minute_ticked); gift-giving with per-NPC preference tiers (loved/liked/neutral) already exists (DialogueDB.gd GIFT_PREFERENCES + RomanceNPC.gd) — though verifying that one surfaced a REAL gap Gemini didn't even ask about: the preference table already listed elder/child/handler/trader, but only the two romance candidates ever called the gifting mechanic. Fixed directly (see run 16, ai-eng-log.md) rather than filed as a ticket, along with a real pre-existing bug the fix surfaced: quest talk-tracking only ran inside each NPC's dialogue-fallback branch, so holding any food item (near-universal in a farming sim) silently skipped talk_to_<npc_id> quest objectives on that interact. Confirmed real gaps below, filed NEEDS_OWNER_REVIEW with priority labels per the user's explicit instruction (2026-09-02: "may label as non P0/P1 to prioritize... to do later" — labels are a sequencing recommendation, scope inclusion is still an owner call per SHIP_PLAN.md Phase 1 precedent). Full run record: ops/ai-eng-log.md run 16. -->
+
+<task_item>
+  <id>TASK-328</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P1</priority>
+  <title>Weather-reactive NPC schedules (rain routes NPCs indoors)</title>
+  <description>ScheduleDB.gd already drives 7 NPCs' hour-based waypoints, polled every physics frame with SignalBus.time_manager already available; GameData.current_weather already varies (clear/rain/fog/overcast) via TimeManager but nothing consumes it for NPC positioning — Main.gd's own weather_changed handler is a no-op (`pass`). Add a rain-variant waypoint per NPC (reusing each NPC's existing "home" slot where one exists) so villagers visibly react to weather, matching HM:BtN's rain-reroutes-schedules pattern. Confirmed real gap.</description>
+  <researcher_notes>Impact: high (town "feels alive") / Effort: low — infra exists, this is data + one weather param threaded through waypoint_for(). Owner: TBD.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-329</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P1</priority>
+  <title>Weather/festival-aware dialogue priority tier</title>
+  <description>DialogueDB.get_seasonal_line() already has a priority-branch structure (binthabat_done > binthabat_hint > season pool) — extend it with a weather branch (e.g. a "rain" pool per NPC) ahead of the season fallback, so daily dialogue occasionally reacts to current weather without a large new line count. Confirmed real gap: current_weather is tracked but never read by any dialogue path.</description>
+  <researcher_notes>Impact: high / Effort: low — same data-driven pattern already used for season/binthabat branches, just one more Dictionary key per NPC. Owner: TBD.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-330</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P2</priority>
+  <title>Festival density expansion (2-4 more lightweight festivals)</title>
+  <description>Confirmed: exactly 4 festival triggers exist (Loy Krathong, Songkran, Wan Sart, Fishing Competition) across a 90-day year (30 days/season x 3 seasons) — HM:BtN-class density is closer to 1 every 1-2 weeks. FestivalManager.gd's pattern (minute_ticked subscription, year-season dedupe key, dialogue + optional mechanic) is proven and cheap to replicate. Candidates: a second cool-season event, a second hot-season event beyond Songkran/fishing comp, a monsoon-season event (currently zero monsoon festivals).</description>
+  <researcher_notes>Impact: high (breaks up the daily grind across ~112 in-game days) / Effort: low-medium per festival — reuses an existing, well-tested pattern; scope is "how many, which flavor" not "build the system." Owner: TBD.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-331</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P2</priority>
+  <title>Milestone collectibles across varied activities (not just shipping)</title>
+  <description>TASK-326 already added permanent stamina-tier progression, but it's gated on a single axis (lifetime_items_shipped). Gemini's "Sacred Amulet" idea — 8-10 permanent milestones tied to varied achievements (max companion bond, storm-day fishing catch, deep mining tier, festival attendance streak) — would be a genuine expansion of an existing single-axis system into completionist breadth, reusing stamina_tier's existing plumbing rather than inventing a new one. Correct against Gemini's framing: this is an EXTENSION of an existing mechanic, not a net-new gap.</description>
+  <researcher_notes>Impact: high (completionist depth without new gameplay loops) / Effort: medium — needs a milestone-tracking registry distinct from active_quests (these are permanent, not repeatable/removable). Owner: TBD.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-332</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P2</priority>
+  <title>Repeatable side-quest noticeboard</title>
+  <description>Confirmed: no repeatable/cycling quest source exists anywhere — the 22-objective quest chain (QuestLog.gd) is entirely one-shot narrative content. A noticeboard cycling simple fetch/delivery requests (e.g. "3 herbs for the monk") would give the item economy an ongoing sink and NPC affinity an outlet outside daily gifting, complementing rather than replacing the main chain.</description>
+  <researcher_notes>Impact: medium-high (content range, repeat-play value) / Effort: medium — needs a new lightweight repeatable-quest data shape distinct from QuestData's one-shot objectives array. Owner: TBD.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-333</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P3 (design-philosophy conflict — explicit owner call required, do not default-implement)</priority>
+  <title>Affinity decay for ignored NPCs</title>
+  <description>Confirmed: no decay mechanic exists on any affinity value — hearts only ever go up. Gemini proposed a light decay for ignored NPCs (HM:BtN-standard). Flagging this the same way TASK-324's rival system was flagged: it tensions with this project's established no-fail-state cozy precedent (docs/research/TASK-319-spec.md explicitly rejected a strict deadline/evaluation score on this basis) — a value that can only ever go down on player inaction is punish-adjacent in a way this codebase has consistently avoided. Do not implement without an explicit owner decision on which side of that line this falls.</description>
+  <researcher_notes>Impact: medium / Effort: low if approved — but scope inclusion itself is the open question, not the implementation cost. Owner: TBD — needs explicit sign-off, precedent: TASK-324 PO LEDGER 2026-09-01.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-334</id>
+  <source>AI_LOOP_GEMINI</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P3</priority>
+  <title>Tool tier AoE/charge mechanic (multi-tile clear at max tier)</title>
+  <description>Confirmed: GridManager.plant/water/harvest all take a single Vector2i cell — no multi-tile operation exists at any tool tier. HM:BtN's charged AoE swings (1x3, 3x3 at max tier) are a real strategic-depth gap for the late game. Larger scope than the other items here: touches the core 1:1-tile interaction model GridManager and the player controller are both built around, plus input handling for a "hold to charge" gesture on iOS touch — needs its own design pass, not a quick data addition like TASK-328/329.</description>
+  <researcher_notes>Impact: high (real late-game depth) / Effort: medium-high — foundational interaction model change, not additive. Owner: TBD.</researcher_notes>
+</task_item>

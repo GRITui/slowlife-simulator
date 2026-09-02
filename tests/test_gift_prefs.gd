@@ -32,6 +32,20 @@ func _initialize() -> void:
 	gd.add_item("mango", 1)
 	niran.try_interact()
 	_check(int(gd.get_affinity("niran")) == 20, "loved gift grants +20 via NPC flow")
+
+	# Phase 3 audit (2026-09-02): gifting was RomanceNPC-only even though
+	# GIFT_PREFERENCES already covered elder/child/handler — extended
+	# VillagerNPC.talk() to call the same _give_gift() mechanic.
+	var elder: Node = main.get_node_or_null("ElderNPC")
+	_check(elder != null, "ElderNPC present")
+	if elder != null:
+		gd.inventory.clear()
+		gd.add_item("lotus_root", 1)
+		var affinity_before: int = int(gd.get_affinity("elder"))
+		elder.talk()
+		_check(int(gd.get_affinity("elder")) == affinity_before + 20,
+			"elder (villager, not romance) gains +20 from a loved gift via talk()")
+		_check(int(gd.inventory.get("lotus_root", 0)) == 0, "gifted lotus_root consumed from inventory")
 	main.queue_free()
 	print("\n=== GIFT-PREFS TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:

@@ -29,6 +29,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Gift first, then specialty sell (close tier, +45% premium, 3/week), then proposal check (romantic + krathong held), else talk.
 func try_interact() -> bool:
+	# Phase 3 audit (2026-09-02): quest talk-tracking previously ran only
+	# inside the _talk() fallback at the bottom of this method, so any
+	# earlier branch that returned first — _give_gift() especially, which
+	# fires on ANY interact while holding food (extremely common in a
+	# farming sim) — silently skipped talk_to_<npc_id> quest objectives
+	# for that click. Moved here, unconditional, before every branch
+	# below (anniversary/specialty-sell/gift/proposal/talk), none of
+	# which are otherwise touched.
+	_try_offer_quest()
+	_try_complete_talk_objective()
 	if GameData.married and GameData.spouse == npc_id:
 		# TASK-282: marriage ceiling payoff — annual anniversary, cozy loop.
 		var tm: Node = SignalBus.time_manager
@@ -162,8 +172,6 @@ func _talk() -> void:
 	var line: String = DialogueDBScript.get_line(npc_id, tier, _talk_count)
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)
-	_try_offer_quest()
-	_try_complete_talk_objective()
 
 func _try_complete_talk_objective() -> void:
 	var quest_logs: Array = get_tree().get_nodes_in_group("quest_log")

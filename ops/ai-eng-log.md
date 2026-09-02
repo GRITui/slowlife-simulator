@@ -769,3 +769,88 @@ category from the role reassessment, discovered live.
 - **Integration outcome:** self-executed, committed and pushed directly
   per the standing push-immediately rule.
 - **Stop reason:** task complete; continuing Phase 3 digging next.
+
+## 2026-09-02 — Run 16 (Gemini research: HM:BtN gap analysis v2 + 2 shipped fixes)
+
+- **Role:** QA / Balance (Gemini), Claude for verification + implementation.
+- **Question source:** User request — deep dive on gameplay depth, content
+  range, and NPC engagement/social balance vs HM:BtN, explicitly "do not
+  defer if that can help us, but may label as non P0/P1... to do later."
+- **Process note:** Gemini (3.6 Thinking, via claude-in-chrome) stalled
+  twice before producing a real answer — one silent "you stopped this
+  response" on the first submit, then a ~90s stuck "thinking" state on
+  the retry with no visible progress. Closed the tab and started a fresh
+  chat with a shorter single-line prompt (no embedded newlines, which may
+  have been what confused the multiline input box) — that one completed
+  normally. Documented here since it cost real wall-clock time; worth
+  trying a fresh chat early if a Thinking-model response looks stuck
+  rather than repeatedly waiting on the same one.
+- **Answer summary:** Gemini returned 9 mechanics across the 3
+  dimensions, each tagged impact/effort.
+- **Verification performed (per the loop's integrate-don't-trust-blindly
+  rule):** cross-checked every claim against actual code (`rg` over
+  `scripts/`, `scenes/`, `data/`) before proposing or acting on anything.
+- **Findings:**
+  - Already implemented, Gemini was WRONG: (1) monsoon-season auto-water
+    + hot-season wilt tracking already exist in `GridManager.gd`'s
+    `_on_minute_ticked()` — Gemini's "Monsoonal Hydrology" pitch was a
+    real mechanic already shipped. (2) Gift-giving with per-NPC
+    preference tiers (loved/liked/neutral) already exists
+    (`DialogueDB.gd` `GIFT_PREFERENCES`, `gift_tier()`/`gift_affinity()`)
+    — but checking this surfaced a REAL gap Gemini never asked about:
+    the preference table already listed `elder`/`child`/`handler`/
+    `trader`, yet only `RomanceNPC.gd` (the 2 marriage candidates) ever
+    called the gifting mechanic. Villagers had the data but no path to
+    it.
+  - **Shipped immediately (not deferred, per the user's instruction):**
+    (a) Extended gift-giving to `VillagerNPC.gd` for elder/child/
+    handler/headman/vet (trader stays transactional, no gifting) —
+    mirrors `RomanceNPC._give_gift()` exactly, reusing the existing
+    preference data with zero new content authored. (b) While verifying
+    this end-to-end, found a real pre-existing bug shared by BOTH NPC
+    scripts: quest talk-tracking (`_try_offer_quest`/
+    `_try_complete_talk_objective`) only ran inside each script's
+    dialogue-fallback branch — any earlier early-return (the gift branch
+    especially, which fires on ANY interact while holding food, a state
+    that's near-universal in a farming sim) silently skipped
+    `talk_to_<npc_id>` quest objectives for that click. This predates
+    today's gift extension (RomanceNPC.gd had the identical structure
+    already) — fixed in both files by moving quest talk-tracking to run
+    unconditionally at the top of `talk()`/`try_interact()`, before any
+    branch. Verified with a new regression test proving a quest
+    completes even while the same interact also fires a gift.
+  - Confirmed real gaps, filed `NEEDS_OWNER_REVIEW` with priority labels
+    per the user's sequencing instruction: TASK-328 (weather-reactive
+    NPC schedules, P1 — infra exists via `ScheduleDB.gd`, low effort),
+    TASK-329 (weather-aware dialogue branch, P1 — same low-effort
+    pattern as the existing season branch), TASK-330 (festival density,
+    P2 — only 4 exist across a 90-day year), TASK-331 (milestone
+    collectibles beyond the single shipping-axis TASK-326 gave us, P2),
+    TASK-332 (repeatable side-quest noticeboard, P2 — zero repeatable
+    quest content exists today), TASK-333 (affinity decay, P3 —
+    explicitly flagged as a no-fail-state design-philosophy conflict,
+    same category as TASK-324's rival decision; do not implement without
+    an owner call), TASK-334 (tool AoE/charge tiers, P3 — real depth gap
+    but touches the foundational 1:1-tile interaction model, needs its
+    own design pass).
+  - Deliberately not filed as a new task: TASK-333's decay mechanic
+    could also apply to the newly-extended villager gifting relationship
+    — noted in the ticket rather than silently assumed either way.
+- **Verification:** `tests/test_gift_prefs.gd` extended 8→11 checks
+  (villager gifting end-to-end). New
+  `tests/test_talk_objective_not_skipped_by_gift.gd` (6/6) locks in the
+  quest-skip fix for both NPC scripts. Full gate green: `run_gate.sh
+  all` (content 100/100, engine 50/50, save-compat 35/35, perf 6/6,
+  touch 10/10). Regression-checked `test_quest_chain.gd` (27/27),
+  `test_anniversary.gd` (6/6), `test_wedding.gd` (6/6) — the anniversary/
+  wedding silver-and-event-count constraints from TASK-324 were not
+  touched by either fix.
+- **Integration outcome:** the two fixes (villager gifting extension,
+  quest-talk-skip guard) self-executed and committed/pushed directly —
+  small, low-risk, purely additive/corrective changes, not a scope
+  decision. The 7 filed tasks are `NEEDS_OWNER_REVIEW` per the existing
+  MVP-vs-stretch precedent (`SHIP_PLAN.md` Phase 1) — priority labels
+  are a sequencing recommendation, not a scope decision made on the
+  owner's behalf.
+- **Stop reason:** goal met (research delivered, verified, 2 items
+  shipped, rest triaged and filed with priority labels per instruction).

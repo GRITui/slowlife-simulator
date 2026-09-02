@@ -100,6 +100,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func talk() -> void:
+	# Phase 3 audit (2026-09-02): quest talk-tracking must fire on every
+	# interact regardless of which flavor branch below handles it (trader
+	# sale, tool upgrade, specialty sell, or the new villager gifting) —
+	# previously this ran only after falling through to the seasonal
+	# dialogue line, so any early return (the gift branch especially,
+	# which now fires on ANY interact while holding food — extremely
+	# common in a farming sim) silently skipped talk_to_<npc_id> quest
+	# objectives for that click. Moved here, unconditional, before any
+	# early return.
+	_try_offer_quest()
+	_try_complete_talk_objective()
 	# TASK-313 Channel A: Cart Trader (evening farm visit 18:00-21:00, base price).
 	if npc_id == "trader":
 		if not _is_trader_available():
@@ -112,6 +123,14 @@ func talk() -> void:
 		return
 	# TASK-313 Channel C: Specialty Buyer (close tier, +45% premium, 3/week cap).
 	if (npc_id == "fah" or npc_id == "niran") and _try_specialty_sell():
+		return
+	# Phase 3 audit (2026-09-02): GIFT_PREFERENCES already covered elder/
+	# child/handler (and headman/vet fall back to "neutral"), but only
+	# RomanceNPC._give_gift() ever called it — general villagers had no
+	# gifting path at all despite the data existing. Mirrors RomanceNPC's
+	# exact gift mechanic (auto-consumes the first held food item);
+	# trader stays transactional, no gifting.
+	if npc_id != "trader" and _give_gift():
 		return
 	var season: String = GameData.current_season if "current_season" in GameData else "cool"
 	var tm: Node = SignalBus.time_manager
@@ -134,9 +153,6 @@ func talk() -> void:
 		# GameData.villager_talked_days is Dictionary npc_id -> last_day
 		var d: Dictionary = GameData.villager_talked_days as Dictionary
 		d[npc_id] = day
-	# TASK-310: Offer quest for this giver if available and track talk for objectives.
-	_try_offer_quest()
-	_try_complete_talk_objective()
 
 func _try_tool_upgrade() -> bool:
 	# TASK-312: Handler offers tool upgrades for rice. Tries tools in order:
@@ -165,6 +181,31 @@ func _try_tool_upgrade() -> bool:
 				SignalBus.show_dialogue.emit(display_name, "Upgraded %s to tier %d for %d rice! (Riding plow is separate — works only while mounted.)" % [tool_id, tier + 1, cost])
 				return true
 	return false
+
+## Phase 3 audit (2026-09-02): ported from RomanceNPC._give_gift() —
+## same mechanic, same GIFT_PREFERENCES table, extended to non-romance
+## villagers so gifting isn't limited to the two marriage candidates.
+func _give_gift() -> bool:
+	var gift_id: String = ""
+	for item_id: String in GameData.inventory.keys():
+		if item_id in GameData.FOOD_ITEMS and int(GameData.inventory[item_id]) > 0:
+			gift_id = item_id
+			break
+	if gift_id.is_empty():
+		return false
+	GameData.remove_item(gift_id, 1)
+	var tier: String = DialogueDBScript.gift_tier(npc_id, gift_id)
+	var delta: int = DialogueDBScript.gift_affinity(tier)
+	GameData.add_affinity(npc_id, delta)
+	var affinity: int = GameData.get_affinity(npc_id)
+	match tier:
+		"loved":
+			SignalBus.show_dialogue.emit(display_name, "%s — you remembered! (affinity %d)" % [gift_id.replace("_", " "), affinity])
+		"liked":
+			SignalBus.show_dialogue.emit(display_name, "%s is nice of you. (affinity %d)" % [gift_id.replace("_", " "), affinity])
+		_:
+			SignalBus.show_dialogue.emit(display_name, "Thanks for the %s. (affinity %d)" % [gift_id.replace("_", " "), affinity])
+	return true
 
 func _is_trader_available() -> bool:
 	# TASK-313 Channel A: Cart Trader evening window 18:00-21:00.

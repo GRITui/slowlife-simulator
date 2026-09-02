@@ -125,6 +125,20 @@ task-number order.
 - [x] Wired the pre-existing `tests/ui/test_touch_targets.gd` (was
       orphaned — passing but not part of `run_gate.sh`) into the `all`
       gate so future UI changes can't silently regress touch-target size.
+- [x] **Gemini-loop round 2** — deep gap analysis vs HM:BtN on gameplay
+      depth / content range / NPC engagement (not just a feature
+      checklist this time). Two quick wins shipped immediately: villager
+      gift-giving (data already existed, only romance candidates could
+      use it) and a real pre-existing bug the fix surfaced — quest
+      talk-objectives were silently skipped on any interact where the
+      player also happened to hold a giftable item. 7 larger items filed
+      to `ops/backlog-inbox.md` as TASK-328..334 with priority labels
+      (P1: weather-reactive schedules/dialogue — infra exists, low
+      effort; P2: festival density, milestone collectibles, side-quest
+      noticeboard; P3: affinity decay — flagged as a no-fail-state
+      design conflict needing explicit owner sign-off, and tool AoE/
+      charge tiers — real depth gap but touches the core interaction
+      model). See `ops/ai-eng-log.md` run 16.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)
