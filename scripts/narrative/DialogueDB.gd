@@ -107,7 +107,7 @@ const DIALOGUE: Dictionary = {
 	},
 
 	# TASK-338: Nok, semi-retired veteran farmer — warm, instructive,
-	# mentoring tone. Contrasts Niran's competitive rivalry with
+	# mentoring tone. Contrasts Ek's competitive rivalry with
 	# cooperative, patient wisdom.
 	"nok": {
 		"cool": [
@@ -179,7 +179,7 @@ const DIALOGUE: Dictionary = {
 	# The 8 original lines are preserved as anchors (2 per old tier,
 	# redistributed to their nearest new level) with new lines filling the
 	# expanded resolution in between.
-	"niran": {
+	"ek": {
 		"1": [
 			"You're new to the paddies. Mind the eastern bund, it floods first.",
 			"Elder says you're doing fine for a first season. High praise, from her.",
@@ -221,7 +221,7 @@ const DIALOGUE: Dictionary = {
 			"You're not my rival anymore. Haven't been for a long time.",
 		],
 		# TASK-345/341: the early-warning fairness fix — once a rival warning
-		# has fired (RivalClock at 25/50/75%), Niran's OWN level-1 dialogue
+		# has fired (RivalClock at 25/50/75%), Ek's OWN level-1 dialogue
 		# surfaces the threat directly, instead of leaving it to a rival NPC
 		# the player may never approach. Checked in RomanceNPC._talk() only
 		# at level 1, before the level 6-8 "rival" override below.
@@ -290,7 +290,7 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
-	# TASK-346: retrofitted to 10 numbered levels (see the "niran" comment
+	# TASK-346: retrofitted to 10 numbered levels (see the "ek" comment
 	# above for the general approach).
 	"fah": {
 		"1": [
@@ -333,7 +333,7 @@ const DIALOGUE: Dictionary = {
 			"I used to think I preferred the water to people. That was before you.",
 			"Wherever you are is quieter and better than anywhere I'd be without you.",
 		],
-		# TASK-345/341: early-warning fairness fix (see the "niran" comment
+		# TASK-345/341: early-warning fairness fix (see the "ek" comment
 		# above for the general approach).
 		"1_warned": [
 			"Someone left a note asking if I'd 'said anything' to you yet. I haven't decided what there is to say.",
@@ -348,10 +348,10 @@ const DIALOGUE: Dictionary = {
 	},
 
 	# TASK-335: third romance candidate. Warm, sociable market dessert-maker
-	# near the temple lane — contrasts Niran's competitive edge and Fah's
+	# near the temple lane — contrasts Ek's competitive edge and Fah's
 	# quiet introspection with an extroverted, community-glue personality.
 	# Same 5-tier structure (stranger/friendly/close/rival/romantic).
-	# TASK-346: retrofitted to 10 numbered levels (see the "niran" comment
+	# TASK-346: retrofitted to 10 numbered levels (see the "ek" comment
 	# above for the general approach).
 	"ploy": {
 		"1": [
@@ -394,7 +394,7 @@ const DIALOGUE: Dictionary = {
 			"The stall was never the sweetest thing about this place. You are.",
 			"I don't want to imagine closing up shop each night without you waiting for me.",
 		],
-		# TASK-345/341: early-warning fairness fix (see the "niran" comment
+		# TASK-345/341: early-warning fairness fix (see the "ek" comment
 		# in this file for the general approach).
 		"1_warned": [
 			"The trader asked if I've 'said anything yet.' I keep changing the subject. Maybe I shouldn't.",
@@ -411,7 +411,7 @@ const DIALOGUE: Dictionary = {
 	# TASK-341: 3 more romance candidates, authored directly in TASK-346's
 	# 10-level shape (no old 4-tier draft ever existed for these). Also
 	# folds in TASK-345's early-warning fix from the start via "1_warned".
-	"kiet": {
+	"chang": {
 		"1": [
 			"You're here for a mask? Uncle Somchai handles those. I just... hold the chisel steady.",
 			"Careful where you step — wood shavings everywhere. Occupational hazard.",
@@ -461,7 +461,7 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
-	"malee": {
+	"klong": {
 		"1": [
 			"Come to see the drumming? Stick around, it gets louder.",
 			"New face! Careful, I might drag you into the dance circle.",
@@ -511,7 +511,7 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
-	"kanya": {
+	"yaa": {
 		"1": [
 			"Looking for herbs? I keep the good ones past the reeds, not on display.",
 			"Careful with the lotus stems, they bruise easy. Like most gentle things.",
@@ -622,9 +622,9 @@ static func get_market_line(season: String, have_id: String, want_id: String) ->
 ## TASK-054: per-NPC liked gifts. loved = +20 affinity + special line,
 ## liked = +10, anything else food = +5 (v1 fallback).
 const GIFT_PREFERENCES: Dictionary = {
-	"niran": {"loved": ["mango_sticky_rice", "mango"], "liked": ["rice_grain", "sticky_rice", "thai_basil"]},
+	"ek": {"loved": ["mango_sticky_rice", "mango"], "liked": ["rice_grain", "sticky_rice", "thai_basil"]},
 	# TASK-335: Ploy is a dessert-maker — she loves being brought the finer
-	# cooked sweets rather than raw ingredients (distinct from Niran/Fah's
+	# cooked sweets rather than raw ingredients (distinct from Ek/Fah's
 	# raw-produce/fish preferences).
 	"ploy": {"loved": ["mango_sticky_rice", "banana_rice_cake"], "liked": ["banana", "coconut", "palm_sugar"]},
 	"fah": {"loved": ["pla_nin_mid", "lotus_soup", "lotus_root"], "liked": ["fish_sauce", "egg", "som_tam"]},
@@ -640,9 +640,9 @@ const GIFT_PREFERENCES: Dictionary = {
 	"trader": {"loved": ["pla_kraben_big", "pla_buk_big"], "liked": ["durian", "coconut", "palm_sugar"]},
 	# TASK-341: 3 more romance candidates. All loved/liked items confirmed
 	# present in GameData.FOOD_ITEMS (the auto-gift picker's only source).
-	"kiet": {"loved": ["thai_basil_stirfry", "som_tam"], "liked": ["rice_grain", "egg"]},
-	"malee": {"loved": ["mango_sticky_rice", "pandan_sticky_rice"], "liked": ["banana", "egg"]},
-	"kanya": {"loved": ["thai_basil", "lotus_root"], "liked": ["pandan_leaf", "banana_leaf"]},
+	"chang": {"loved": ["thai_basil_stirfry", "som_tam"], "liked": ["rice_grain", "egg"]},
+	"klong": {"loved": ["mango_sticky_rice", "pandan_sticky_rice"], "liked": ["banana", "egg"]},
+	"yaa": {"loved": ["thai_basil", "lotus_root"], "liked": ["pandan_leaf", "banana_leaf"]},
 }
 
 ## Returns "loved" | "liked" | "neutral" for a given NPC + item.

@@ -75,17 +75,17 @@ func _initialize() -> void:
 
 	# --- migrate(): a v3 payload (no v4 fields yet) advances to v4 with defaults ---
 	var v3: Dictionary = {"version": 3, "inventory": {"mango": 2}, "harmony": 5, "season": "hot",
-		"fishing_skill": 3, "married": true, "spouse": "niran"}
+		"fishing_skill": 3, "married": true, "spouse": "ek"}
 	var m3: Dictionary = sm.migrate(v3)
 	_check(int(m3.get("version", 0)) == 4, "migrate advances v3 payload to version 4")
 	_check(int(m3.get("fishing_skill", 0)) == 3, "v3 fishing_skill preserved, not reset to default")
-	_check(bool(m3.get("married", false)) == true and String(m3.get("spouse", "")) == "niran",
+	_check(bool(m3.get("married", false)) == true and String(m3.get("spouse", "")) == "ek",
 		"v3 marriage state preserved, not reset to default")
 	_check((m3.get("npc_first_met_day", {"x": 1}) as Dictionary).is_empty(), "v3->v4 default-adds npc_first_met_day={}")
 
 	# --- migrate(): already-v4 payload is a no-op pass-through ---
 	var v4: Dictionary = {"version": 4, "inventory": {"mango": 2}, "harmony": 5, "season": "hot",
-		"fishing_skill": 3, "married": true, "spouse": "niran",
+		"fishing_skill": 3, "married": true, "spouse": "ek",
 		"lost_to_rival": {"fah": true}, "milestones_earned": {"deep_miner": true}}
 	var m4: Dictionary = sm.migrate(v4)
 	_check(int(m4.get("version", 0)) == 4, "migrate keeps version 4 payload")
@@ -110,16 +110,16 @@ func _initialize() -> void:
 	gd0.buffalo_affinity = 55
 	gd0.chicken_count = 2
 	gd0.tool_tiers["hoe"] = 3
-	gd0.affinity["niran"] = 90
+	gd0.affinity["ek"] = 90
 	gd0.active_quests["harvest_two_crop_types"] = {"stage": 1, "objectives_done": ["harvest_a"]}
 	gd0.infrastructure["sluice_gate"] = true
 	gd0.veteran_year = 2
 	gd0.married = true
-	gd0.spouse = "niran"
+	gd0.spouse = "ek"
 	gd0.married_year = 1
 	gd0.child_stage = 2
 	gd0.npc_first_met_day["fah"] = 5
-	gd0.lost_to_rival["kiet"] = true
+	gd0.lost_to_rival["chang"] = true
 	gd0.rival_warning_shown["fah"] = 2
 	gd0.milestones_earned["deep_miner"] = true
 	var saved: bool = sm.save_game()
@@ -159,14 +159,14 @@ func _initialize() -> void:
 	_check(int(gd.buffalo_affinity) == 55, "round-trip restores buffalo_affinity=55")
 	_check(int(gd.chicken_count) == 2, "round-trip restores chicken_count=2")
 	_check(int(gd.tool_tiers.get("hoe", 0)) == 3, "round-trip restores tool_tiers.hoe=3")
-	_check(int(gd.affinity.get("niran", 0)) == 90, "round-trip restores NPC affinity")
+	_check(int(gd.affinity.get("ek", 0)) == 90, "round-trip restores NPC affinity")
 	_check(gd.active_quests.has("harvest_two_crop_types"), "round-trip restores active_quests")
 	_check(bool(gd.infrastructure.get("sluice_gate", false)), "round-trip restores infrastructure repairs")
 	_check(int(gd.veteran_year) == 2, "round-trip restores veteran_year=2")
-	_check(gd.married and gd.spouse == "niran" and int(gd.married_year) == 1 and int(gd.child_stage) == 2,
+	_check(gd.married and gd.spouse == "ek" and int(gd.married_year) == 1 and int(gd.child_stage) == 2,
 		"round-trip restores full marriage/family state")
 	_check(int(gd.npc_first_met_day.get("fah", -1)) == 5, "round-trip restores npc_first_met_day")
-	_check(bool(gd.lost_to_rival.get("kiet", false)), "round-trip restores lost_to_rival")
+	_check(bool(gd.lost_to_rival.get("chang", false)), "round-trip restores lost_to_rival")
 	_check(int(gd.rival_warning_shown.get("fah", -1)) == 2, "round-trip restores rival_warning_shown")
 	_check(bool(gd.milestones_earned.get("deep_miner", false)), "round-trip restores milestones_earned")
 

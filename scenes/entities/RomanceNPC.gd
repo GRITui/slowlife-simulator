@@ -1,12 +1,12 @@
 extends CharacterBody2D
-## RomanceNPC — TASK-052. Peer NPCs (Niran/Fah) with affinity-driven
+## RomanceNPC — TASK-052. Peer NPCs (Ek/Fah) with affinity-driven
 ## dialogue tiers + v1 gift-giving (any FOOD_ITEMS item, +10 affinity).
 ## VillagerNPC contract mirror (Area2D proximity + interact), SignalBus-only.
 
 const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.gd")
 
-@export var npc_id: String = "niran"
-@export var display_name: String = "Niran"
+@export var npc_id: String = "ek"
+@export var display_name: String = "Ek"
 
 var _player_in_range: bool = false
 var _talk_count: int = 0
@@ -119,14 +119,14 @@ func _try_specialty_sell() -> bool:
 				if String(item_id).begins_with("pla_") and GameData.has_item(item_id, 1):
 					want_item = item_id
 					break
-	elif npc_id == "niran":
+	elif npc_id == "ek":
 		for item_id in ["durian", "mango", "durian_sticky_rice", "mango_sticky_rice"]:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id
 				break
 	elif npc_id == "ploy":
 		# TASK-335: Ploy buys cooked desserts at specialty premium — ties her
-		# into the recipe tree rather than raw produce like Niran/Fah. Only
+		# into the recipe tree rather than raw produce like Ek/Fah. Only
 		# items with a GameData.SELL_PRICES entry are usable here (khanom_krok/
 		# sangkhaya are valid recipes but have no sell price registered yet —
 		# a pre-existing, separate gap, not one to silently patch here).
@@ -134,20 +134,20 @@ func _try_specialty_sell() -> bool:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id
 				break
-	elif npc_id == "kiet":
-		# TASK-341: Kiet buys raw craft materials at specialty premium.
+	elif npc_id == "chang":
+		# TASK-341: Chang buys raw craft materials at specialty premium.
 		for item_id in ["wood", "banana_leaf_stem"]:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id
 				break
-	elif npc_id == "malee":
-		# TASK-341: Malee buys festival-food specialties.
+	elif npc_id == "klong":
+		# TASK-341: Klong buys festival-food specialties.
 		for item_id in ["wan_sart_basket", "durian_sticky_rice"]:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id
 				break
-	elif npc_id == "kanya":
-		# TASK-341: Kanya buys herbal cooked goods.
+	elif npc_id == "yaa":
+		# TASK-341: Yaa buys herbal cooked goods.
 		for item_id in ["thai_basil_stirfry", "lotus_soup"]:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id

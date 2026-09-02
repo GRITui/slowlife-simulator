@@ -22,30 +22,30 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	var niran: Node = main.get_node_or_null("NiranNPC")
+	var ek: Node = main.get_node_or_null("EkNPC")
 	var fah: Node = main.get_node_or_null("FahNPC")
 	var ploy: Node = main.get_node_or_null("PloyNPC")
-	_check(niran != null, "NiranNPC instanced")
+	_check(ek != null, "EkNPC instanced")
 	_check(fah != null, "FahNPC instanced")
 	_check(ploy != null, "PloyNPC instanced (TASK-335 third romance candidate)")
-	if niran == null or fah == null or ploy == null:
+	if ek == null or fah == null or ploy == null:
 		await process_frame
 		quit(1)
 		return
-	_check(niran.is_in_group("romance_candidate"), "Niran tagged romance_candidate")
-	_check(niran.has_method("try_interact"), "RomanceNPC script attached")
-	_check(String(niran.npc_id) == "niran", "Niran npc_id set")
+	_check(ek.is_in_group("romance_candidate"), "Ek tagged romance_candidate")
+	_check(ek.has_method("try_interact"), "RomanceNPC script attached")
+	_check(String(ek.npc_id) == "ek", "Ek npc_id set")
 	# Gift flow: mango -> +10 affinity, item consumed. (Picker takes the
 	# FIRST held food — clear boot-seeded rice_grain to isolate mango.)
 	gd.inventory.erase("rice_grain")
 	gd.add_item("mango", 1)
-	_check(niran.try_interact(), "gift interact consumes food")
+	_check(ek.try_interact(), "gift interact consumes food")
 	_check(int(gd.inventory.get("mango", 0)) == 0, "gift item consumed")
-	_check(int(gd.get_affinity("niran")) == 20, "loved gift (mango) grants +20 (TASK-054 prefs)")
+	_check(int(gd.get_affinity("ek")) == 20, "loved gift (mango) grants +20 (TASK-054 prefs)")
 	# Tier talk: at 10 affinity -> stranger tier line emitted (no crash).
 	gd.inventory.clear()
-	niran.try_interact()
-	_check(int(gd.get_affinity("niran")) == 20, "talk adds no affinity")
+	ek.try_interact()
+	_check(int(gd.get_affinity("ek")) == 20, "talk adds no affinity")
 	# Cross-tier: push Fah to friendly threshold -> friendly line (not stranger).
 	gd.add_affinity("fah", 25)
 	fah.try_interact()
@@ -70,11 +70,11 @@ func _initialize() -> void:
 	_check(gd.silver > silver_before, "specialty sell grants silver premium")
 
 	# TASK-340: rival win/loss clock — npc_first_met_day set on first
-	# interact (niran was already interacted with above, at boot day 1).
-	_check(int(gd.npc_first_met_day.get("niran", -1)) == 1, "npc_first_met_day set on first interact")
-	var met_before: int = int(gd.npc_first_met_day.get("niran", -1))
-	niran.try_interact()
-	_check(int(gd.npc_first_met_day.get("niran", -1)) == met_before,
+	# interact (ek was already interacted with above, at boot day 1).
+	_check(int(gd.npc_first_met_day.get("ek", -1)) == 1, "npc_first_met_day set on first interact")
+	var met_before: int = int(gd.npc_first_met_day.get("ek", -1))
+	ek.try_interact()
+	_check(int(gd.npc_first_met_day.get("ek", -1)) == met_before,
 		"npc_first_met_day is not overwritten on later interacts")
 	# _check_proposal() hard-blocks a candidate lost to their rival, at any
 	# affinity, with a krathong held — the permanent enforcement point.
@@ -86,18 +86,18 @@ func _initialize() -> void:
 	gd.lost_to_rival.erase("fah")
 	_check(fah.call("_check_proposal") == true, "proposal succeeds normally once not lost_to_rival")
 
-	# TASK-341: 3 more romance candidates (Kiet, Malee, Kanya), authored
+	# TASK-341: 3 more romance candidates (Chang, Klong, Yaa), authored
 	# directly in TASK-346's 10-level shape.
-	var kiet: Node = main.get_node_or_null("KietNPC")
-	var malee: Node = main.get_node_or_null("MaleeNPC")
-	var kanya: Node = main.get_node_or_null("KanyaNPC")
-	_check(kiet != null, "KietNPC instanced")
-	_check(malee != null, "MaleeNPC instanced")
-	_check(kanya != null, "KanyaNPC instanced")
+	var chang: Node = main.get_node_or_null("ChangNPC")
+	var klong: Node = main.get_node_or_null("KlongNPC")
+	var yaa: Node = main.get_node_or_null("YaaNPC")
+	_check(chang != null, "ChangNPC instanced")
+	_check(klong != null, "KlongNPC instanced")
+	_check(yaa != null, "YaaNPC instanced")
 	var trio: Array = [
-		{"node": kiet, "id": "kiet", "name": "Kiet", "loved_gift": "thai_basil_stirfry", "specialty": "wood"},
-		{"node": malee, "id": "malee", "name": "Malee", "loved_gift": "mango_sticky_rice", "specialty": "wan_sart_basket"},
-		{"node": kanya, "id": "kanya", "name": "Kanya", "loved_gift": "thai_basil", "specialty": "thai_basil_stirfry"},
+		{"node": chang, "id": "chang", "name": "Chang", "loved_gift": "thai_basil_stirfry", "specialty": "wood"},
+		{"node": klong, "id": "klong", "name": "Klong", "loved_gift": "mango_sticky_rice", "specialty": "wan_sart_basket"},
+		{"node": yaa, "id": "yaa", "name": "Yaa", "loved_gift": "thai_basil", "specialty": "thai_basil_stirfry"},
 	]
 	for c: Dictionary in trio:
 		var npc: Node = c["node"]
@@ -128,8 +128,8 @@ func _initialize() -> void:
 	sb.show_dialogue.connect(_on_show_dialogue)
 	var db: GDScript = load("res://scripts/narrative/DialogueDB.gd")
 	for c2: Dictionary in [
-		{"node": kiet, "id": "kiet"}, {"node": malee, "id": "malee"}, {"node": kanya, "id": "kanya"},
-		{"node": niran, "id": "niran"}, {"node": fah, "id": "fah"}, {"node": ploy, "id": "ploy"},
+		{"node": chang, "id": "chang"}, {"node": klong, "id": "klong"}, {"node": yaa, "id": "yaa"},
+		{"node": ek, "id": "ek"}, {"node": fah, "id": "fah"}, {"node": ploy, "id": "ploy"},
 	]:
 		var npc2: Node = c2["node"]
 		if npc2 == null:

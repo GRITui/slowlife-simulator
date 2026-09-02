@@ -15,11 +15,11 @@ func _check(cond: bool, label: String) -> void:
 
 func _initialize() -> void:
 	var gd: Node = root.get_node("GameData")
-	_check(int(gd.get_affinity("niran")) == 0, "affinity defaults to 0")
-	gd.add_affinity("niran", 10)
-	_check(int(gd.get_affinity("niran")) == 10, "add_affinity +10")
-	gd.add_affinity("niran", 500)
-	_check(int(gd.get_affinity("niran")) == 100, "affinity caps at 100")
+	_check(int(gd.get_affinity("ek")) == 0, "affinity defaults to 0")
+	gd.add_affinity("ek", 10)
+	_check(int(gd.get_affinity("ek")) == 10, "add_affinity +10")
+	gd.add_affinity("ek", 500)
+	_check(int(gd.get_affinity("ek")) == 100, "affinity caps at 100")
 	_check(int(gd.level_for(0)) == 0, "level_for(0) == 0")
 	_check(int(gd.level_for(9)) == 0, "level_for(9) == 0")
 	_check(int(gd.level_for(10)) == 1, "level_for(10) == 1")
@@ -30,7 +30,7 @@ func _initialize() -> void:
 	var db: GDScript = load("res://scripts/narrative/DialogueDB.gd")
 	# Level pools 1-10 (plus the "rival" flavor pool) exist for every
 	# romance candidate.
-	for npc in ["niran", "fah", "ploy"]:
+	for npc in ["ek", "fah", "ploy"]:
 		for level in range(1, 11):
 			_check(not String(db.get_line(npc, str(level), 0)).is_empty(),
 				"%s has level %d dialogue" % [npc, level])

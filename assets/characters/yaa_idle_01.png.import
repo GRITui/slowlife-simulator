@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b26hroseilohq"
-path="res://.godot/imported/malee_idle_01.png-aeae1131072d7a1e51a2b8c67fd5f232.ctex"
+uid="uid://doqtmk7qisdfr"
+path="res://.godot/imported/yaa_idle_01.png-57d499cfaa151937d4257786e18c71c0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/malee_idle_01.png"
-dest_files=["res://.godot/imported/malee_idle_01.png-aeae1131072d7a1e51a2b8c67fd5f232.ctex"]
+source_file="res://assets/characters/yaa_idle_01.png"
+dest_files=["res://.godot/imported/yaa_idle_01.png-57d499cfaa151937d4257786e18c71c0.ctex"]
 
 [params]
 

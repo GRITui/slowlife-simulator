@@ -108,7 +108,7 @@ func _ensure_buffalo_race() -> void:
 	var race: Node = script.new()
 	race.name = "BuffaloRace"
 	add_child(race)
-	# TASK-052: peer NPCs Niran + Fah (romance candidates).
+	# TASK-052: peer NPCs Ek + Fah (romance candidates).
 	_ensure_peer_npcs()
 	# TASK-057: quest chains (QuestLog listens for objective events).
 	_ensure_quest_log()
@@ -228,7 +228,7 @@ func _ensure_wansart() -> void:
 
 func _ensure_peer_npcs() -> void:
 	var spots: Dictionary = {
-		"NiranNPC": {"scene": "res://scenes/entities/NiranNPC.tscn", "pos": Vector2(13 * 48 + 24, 5 * 48)},
+		"EkNPC": {"scene": "res://scenes/entities/EkNPC.tscn", "pos": Vector2(13 * 48 + 24, 5 * 48)},
 		"FahNPC": {"scene": "res://scenes/entities/FahNPC.tscn", "pos": Vector2(10 * 48 + 24, 12 * 48)},
 		# TASK-335: third romance candidate — temple-lane market stall, clear
 		# of NongTonNPC/SomchaiNPC at (2,2)/(3,2).
@@ -236,9 +236,9 @@ func _ensure_peer_npcs() -> void:
 		# TASK-341: 3 more romance candidates, bringing the total to 6.
 		# Positions re-verified clear of every spot in this dict as of
 		# this task (see docs/research/TASK-341-spec.md).
-		"KietNPC": {"scene": "res://scenes/entities/KietNPC.tscn", "pos": Vector2(8 * 48 + 24, 2 * 48)},
-		"MaleeNPC": {"scene": "res://scenes/entities/MaleeNPC.tscn", "pos": Vector2(3 * 48 + 24, 9 * 48)},
-		"KanyaNPC": {"scene": "res://scenes/entities/KanyaNPC.tscn", "pos": Vector2(17 * 48 + 24, 7 * 48)},
+		"ChangNPC": {"scene": "res://scenes/entities/ChangNPC.tscn", "pos": Vector2(8 * 48 + 24, 2 * 48)},
+		"KlongNPC": {"scene": "res://scenes/entities/KlongNPC.tscn", "pos": Vector2(3 * 48 + 24, 9 * 48)},
+		"YaaNPC": {"scene": "res://scenes/entities/YaaNPC.tscn", "pos": Vector2(17 * 48 + 24, 7 * 48)},
 		# TASK-058 schedules cover headman/vet movement; SCHEDULES keys match.
 		"HeadmanNPC": {"scene": "res://scenes/entities/HeadmanNPC.tscn", "pos": Vector2(1 * 48 + 24, 3 * 48)},
 		"VetNPC": {"scene": "res://scenes/entities/VetNPC.tscn", "pos": Vector2(2 * 48 + 24, 14 * 48)},

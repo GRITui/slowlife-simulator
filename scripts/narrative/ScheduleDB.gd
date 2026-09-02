@@ -26,7 +26,7 @@ const SCHEDULES: Dictionary = {
 		{"from": 12, "to": 18, "pos": Vector2(3, 14)}, # pasture
 		{"from": 18, "to": 24, "pos": Vector2(11, 13)},
 	],
-	"niran": [
+	"ek": [
 		{"from": 6, "to": 12, "pos": Vector2(13, 5)},  # paddy rivalry
 		{"from": 12, "to": 18, "pos": Vector2(9, 6)},  # paddy core
 		{"from": 18, "to": 24, "pos": Vector2(13, 7)},

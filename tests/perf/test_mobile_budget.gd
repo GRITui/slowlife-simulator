@@ -35,7 +35,7 @@ func _initialize() -> void:
 			# Y-sort budget: visible actors/props (z>=0) <= 49, excluding
 			# ground dressing (z<0) and logic containers.
 			# History: 32->36 (TASK-029: +Buffalo/+CookingStation/+MarketStall);
-			# 36->40 (TASK-052: peer NPCs Niran + Fah); 40->44 (#131: Headman +
+			# 36->40 (TASK-052: peer NPCs Ek + Fah); 40->44 (#131: Headman +
 			# Vet); 44->49 (Phase 3 audit, 2026-09-02: TASK-322's
 			# CarpenterUpgrade has a Sprite2D and legitimately counts. TASK-321's
 			# MiningSpot does NOT — it's a logic-only interactable with no
@@ -49,7 +49,7 @@ func _initialize() -> void:
 			# TASK-337: MountainCaveSpot joins the same exclusion list for the
 			# same reason (logic-only interactable, no visible sprite, same
 			# treatment as MiningSpot/Noticeboard).
-			# 51->54 (TASK-341: Kiet/Malee/Kanya, 3 more romance candidates,
+			# 51->54 (TASK-341: Chang/Klong/Yaa, 3 more romance candidates,
 			# each with a real Sprite2D — same treatment as Ploy/Nok).
 			var sorted_kids: int = 0
 			for c in main.get_children():
