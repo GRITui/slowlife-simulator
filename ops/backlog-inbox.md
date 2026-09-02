@@ -240,3 +240,25 @@ Recommended order if approved, best cost/impact ratio first:
 </task_item>
 
 <!-- AI-LOOP: 2026-09-02 3-sprint autonomous run (ops/ai-eng-log.md run 17) closed TASK-328/329/330/331/332/334 -> COMPLETED. TASK-333 (affinity decay) deliberately excluded per owner instruction — it was filed as a no-fail-state design-philosophy conflict needing an explicit decision, and a blanket "complete all pending backlog" instruction didn't clearly cover that specific tension; still NEEDS_OWNER_REVIEW, not silently dropped. Commits: TASK-328/329 ada73e3, TASK-330 7c7f637, TASK-332 5e155b6, TASK-331 136b04e, TASK-334 31f10d4. All pushed to origin/main. GitHub issues #179/#180/#181/#182/#183/#185 can be closed; #184 (TASK-333) stays open pending the owner decision. -->
+
+<task_item>
+  <id>TASK-335</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P1</priority>
+  <title>Third romance candidate (Ploy)</title>
+  <description>Part of the "broaden to compete with HM:BtN" plan (2026-09-02 quality/stickiness verdict) — only 2 marriage candidates existed against HM:BtN's 5. Added Ploy, a warm sociable market dessert-maker filling the personality gap between Niran (competitive) and Fah (introspective), tying the cooking recipe tree into romance content via her specialty-sell channel. Self-executed (narrative content). Commit 6ed128e.</description>
+  <researcher_notes>tests/test_peer_npcs.gd 11->20 checks. Placeholder portrait pending a real art pass. Full record: ops/ai-eng-log.md run 19.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-336</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P1</priority>
+  <title>Real scored Fishing Competition (first competitive mini-game)</title>
+  <description>Part of the "broaden to compete with HM:BtN" plan — confirmed zero scored competitions existed anywhere in the game. Extended FishingCompetitionTrigger.gd: catches during the window score points, a rival score is rolled at window close, placement grants a strictly-positive reward every tier (no fail state). Delegated to OpenCode (minimax-m3:free). Commit 6606a1f.</description>
+  <researcher_notes>New tests/test_fishing_competition_scoring.gd 26/26 — tie tier tested via an extracted pure _placement_for() helper. Full record: ops/ai-eng-log.md run 19.</researcher_notes>
+</task_item>
+
+<!-- AI-LOOP: 2026-09-02 "Broaden to compete with HM:BtN" plan, Sprint 1 (TASK-335, TASK-336) complete per ops/ai-eng-log.md run 19. Sprint 2 (secondary unlockable area, additional named NPCs) and Sprint 3 (second scored mini-game) queued next. -->

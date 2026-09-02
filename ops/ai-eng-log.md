@@ -999,3 +999,51 @@ category from the role reassessment, discovered live.
   `COMPLETED` in `ops/backlog-inbox.md`; GitHub issue #184 closed.
 - **Stop reason:** goal met — the one remaining filed item from the
   Gemini research pass is resolved.
+
+## 2026-09-02 — Run 19 (broaden-to-compete plan, Sprint 1: cast & stakes)
+
+- **Trigger:** asked for a real quality/stickiness verdict vs HM:BtN.
+  Gave a candid, evidence-based one (verified via grep, not vibes):
+  2 romance candidates vs HM:BtN's 5, ~9 named NPCs vs ~20-30, single
+  static 20x16 map with no expansion, zero scored competitions anywhere
+  (confirmed via a repo-wide grep for score/placement/leaderboard —
+  BuffaloRace is a solo time-trial, Fishing Competition was pure
+  flavor), and — the single highest-leverage gap — no human has ever
+  played this game end-to-end. User asked for a draft sprint plan to
+  close the gap; approved running all 3 sprints, gave creative freedom
+  on the new romance candidate concept.
+- **TASK-335 (third romance candidate, self-executed):** designed
+  Ploy — a warm, sociable market dessert-maker, deliberately filling
+  the personality gap Niran (competitive) and Fah (introspective)
+  leave open, and tying the underused 36-recipe cooking system into
+  romance content for the first time via her specialty-sell channel.
+  `RomanceNPC.gd`/`DialogueDB.gd`'s tier system and
+  `GIFT_PREFERENCES` are already generic per npc_id — this was mostly
+  content, not engineering. Two things caught before shipping: (1) her
+  first specialty-item list (khanom_krok, sangkhaya) had no
+  `GameData.SELL_PRICES` entry — a real, separate, pre-existing gap
+  found by the test failing, not by inspection; swapped to
+  banana_rice_cake/pandan_sticky_rice which are actually sellable.
+  (2) her `Sprite2D` pushed the Y-sort perf budget from 49→50 — raised
+  the cap, exact same treatment as every prior legitimate-sprite
+  addition this session. Portrait is a documented placeholder (hue-
+  shifted from Fah's sprite, not original art). `tests/test_peer_npcs.gd`
+  11→20 checks. Merged `6ed128e`, pushed.
+- **TASK-336 (scored Fishing Competition, delegated to OpenCode
+  `minimax-m3:free` directly — skipped the top-tier retry ladder this
+  time since the pattern of exhaustion/rate-limiting across all 3
+  higher tiers was already established twice in run 17):** extended
+  the existing flavor-only trigger into the game's first real
+  competitive mini-game — fish caught during the window score points,
+  a rival score is rolled at window close, placement (1st/tie/
+  participation) grants a strictly-positive reward every time, no fail
+  state. Delegate extracted `_placement_for()` as a pure function
+  specifically so the tie tier (not forceable via `randi_range`) could
+  still be tested deterministically — good judgment call not spelled
+  out verbatim in the spec. Code Quality Review: clean, one trailing-
+  newline nit fixed. `tests/test_fishing_competition_scoring.gd`
+  26/26. Merged `6606a1f`, pushed.
+- **Sprint 2 (TASK-337 secondary area, TASK-338 more NPCs) queued
+  next.**
+- **Stop reason:** Sprint 1 of 3 complete, both items shipped, gate
+  green, continuing to Sprint 2.
