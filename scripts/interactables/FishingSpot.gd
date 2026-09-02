@@ -154,11 +154,18 @@ func cast_line() -> bool:
 	if level > _skill():
 		GameData.fishing_skill = level
 		SignalBus.show_dialogue.emit(spot_name, "Fishing skill up! Now level %d." % level)
+		# TASK-331 master_angler milestone — first time fishing_skill hits cap.
+		if level >= 4 and GameData.earn_milestone("master_angler"):
+			SignalBus.show_dialogue.emit("System", "Milestone: Master Angler! (+10 harmony)")
 	var species: Dictionary = catch_data["species"] as Dictionary
 	var size: Dictionary = (species.get("sizes", {}) as Dictionary).get(catch_data["size"], {}) as Dictionary
 	SignalBus.craft_completed.emit(item, 1) # reuse item-gained signal (no new orphan)
 	SignalBus.show_dialogue.emit(spot_name, "Caught a %s %s! (+%d harmony)" % [
 		String(catch_data["size"]), String(species.get("display_name", "fish")), int(size.get("harmony_value", 1))])
+	# TASK-331 storm_catch milestone — monsoon + rain + catch in one cast.
+	if String(GameData.current_season) == "monsoon" and String(GameData.current_weather) == "rain":
+		if GameData.earn_milestone("storm_catch"):
+			SignalBus.show_dialogue.emit("System", "Milestone: Storm Catch! (+10 harmony)")
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:

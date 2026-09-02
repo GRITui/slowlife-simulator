@@ -57,6 +57,9 @@ func _on_minute_ticked(_day: int, _hour: int, _minute: int) -> void:
 		SignalBus.companion_bond_changed.emit(GameData.companion_bond, tier_after)
 		if tier_after > tier_before:
 			SignalBus.show_dialogue.emit("Companion", _tier_line(tier_after))
+			# TASK-331 inseparable milestone — first time companion_bond_tier hits 4.
+			if tier_after >= 4 and GameData.earn_milestone("inseparable"):
+				SignalBus.show_dialogue.emit("System", "Milestone: Inseparable! (+10 harmony)")
 
 func _physics_process(delta: float) -> void:
 	var player: Node2D = _find_player()

@@ -48,6 +48,10 @@ func collect_egg() -> bool:
 		if GameData.spend_silver(40):
 			GameData.chicken_count += 1
 			SignalBus.show_dialogue.emit("Chickens", "A new chick hatched! The coop swells to %d hens." % GameData.chicken_count)
+			# TASK-331 herd_keeper milestone — first time chicken AND buffalo herds both reach 3.
+			if GameData.chicken_count >= 3 and GameData.buffalo_count >= 3:
+				if GameData.earn_milestone("herd_keeper"):
+					SignalBus.show_dialogue.emit("System", "Milestone: Herd Keeper! (+10 harmony)")
 	return true
 
 func _unhandled_input(event: InputEvent) -> void:
