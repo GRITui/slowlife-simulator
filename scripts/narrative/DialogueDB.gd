@@ -105,6 +105,36 @@ const DIALOGUE: Dictionary = {
 			"Sticky rice also counts for alms, if you have it.",
 		],
 	},
+
+	# TASK-338: Nok, semi-retired veteran farmer — warm, instructive,
+	# mentoring tone. Contrasts Niran's competitive rivalry with
+	# cooperative, patient wisdom.
+	"nok": {
+		"cool": [
+			"Cool season is for patience — the rice knows its own time.",
+			"Sixty years on this land, and still something new each season.",
+		],
+		"hot": [
+			"Heat like this, water at dawn or not at all.",
+			"The mango trees remember every drought. Be gentle with them.",
+		],
+		"monsoon": [
+			"Let the rain do the work it knows how to do.",
+			"Watch the bunds — a small leak becomes a big one overnight.",
+		],
+		"rain": [
+			"Come sit under the eave a while. The fields can wait an hour.",
+			"Rain like this, I just watch it fall. Nothing wrong with that.",
+		],
+		"binthabat_done": [
+			"Merit given freely comes back the same way. Always has.",
+			"Good on you for offering. The old ways still hold.",
+		],
+		"binthabat_hint": [
+			"Temple lane, before the heat sets in — the monk's there most mornings.",
+			"Rice, sticky rice, whatever you can spare. It's the offering that matters, not the size.",
+		],
+	},
 	"monk": {
 		"cool": [
 			"May your morning be steady as still water.",
@@ -356,6 +386,11 @@ const GIFT_PREFERENCES: Dictionary = {
 	"elder": {"loved": ["lotus_root", "banana_rice_cake"], "liked": ["rice_grain", "thai_basil"]},
 	"child": {"loved": ["mango_sticky_rice", "durian"], "liked": ["egg", "banana"]},
 	"handler": {"loved": ["tom_yum", "fish_sauce"], "liked": ["rice_grain", "egg"]},
+	# TASK-338: Nok, veteran farmer — simple staple crops, no fuss.
+	# "ginger" was the first draft here but isn't in GameData.FOOD_ITEMS
+	# (the auto-gift picker's source list), so it would never actually be
+	# reachable via _give_gift() — swapped for thai_basil, which is.
+	"nok": {"loved": ["sticky_rice", "thai_basil"], "liked": ["rice_grain", "banana"]},
 	"monk": {"loved": ["jasmine_rice", "lotus_root"], "liked": ["banana", "mango", "sticky_rice"]},
 	"trader": {"loved": ["pla_kraben_big", "pla_buk_big"], "liked": ["durian", "coconut", "palm_sugar"]},
 }

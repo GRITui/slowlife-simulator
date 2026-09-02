@@ -46,6 +46,17 @@ func _initialize() -> void:
 		_check(int(gd.get_affinity("elder")) == affinity_before + 20,
 			"elder (villager, not romance) gains +20 from a loved gift via talk()")
 		_check(int(gd.inventory.get("lotus_root", 0)) == 0, "gifted lotus_root consumed from inventory")
+
+	# TASK-338: Nok, the new veteran-farmer villager.
+	var nok: Node = main.get_node_or_null("NokNPC")
+	_check(nok != null, "NokNPC present")
+	if nok != null:
+		gd.inventory.clear()
+		gd.add_item("sticky_rice", 1)
+		var nok_before: int = int(gd.get_affinity("nok"))
+		nok.talk()
+		_check(int(gd.get_affinity("nok")) == nok_before + 20,
+			"nok gains +20 from a loved gift (sticky_rice) via talk()")
 	main.queue_free()
 	print("\n=== GIFT-PREFS TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:

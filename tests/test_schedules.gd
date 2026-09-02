@@ -32,6 +32,11 @@ func _initialize() -> void:
 		"elder keeps normal 07:00 waypoint when weather is clear")
 	_check(sdb.waypoint_for("fah", 7, "rain") == Vector2i(10, 12),
 		"fah (no RAIN_HOME entry) is unaffected by rain")
+	# TASK-338: Nok extends weather-reactive scheduling to a 3rd NPC.
+	_check(sdb.waypoint_for("nok", 8, "rain") == Vector2i(4, 8),
+		"nok routes home at 08:00 when raining (normally paddy check)")
+	_check(sdb.waypoint_for("nok", 8, "clear") == Vector2i(4, 7),
+		"nok keeps normal 08:00 waypoint when weather is clear")
 
 	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
 	root.add_child(main)

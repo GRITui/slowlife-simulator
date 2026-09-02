@@ -26,6 +26,7 @@ func _initialize() -> void:
 		"HandlerNPC": "res://assets/characters/npc_handler_idle_01.png",
 		"HeadmanNPC": "res://assets/characters/headman_idle_01.png",
 		"VetNPC": "res://assets/characters/vet_idle_01.png",
+		"NokNPC": "res://assets/characters/nok_idle_01.png",
 	}
 	for node_name: String in expectations.keys():
 		var npc: Node = main.get_node_or_null(node_name)

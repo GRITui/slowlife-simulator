@@ -46,6 +46,11 @@ const SCHEDULES: Dictionary = {
 		{"from": 12, "to": 18, "pos": Vector2(2, 1)},  # lotus pond
 		{"from": 18, "to": 24, "pos": Vector2(10, 11)},
 	],
+	# TASK-338: Nok, veteran farmer.
+	"nok": [
+		{"from": 6, "to": 12, "pos": Vector2(4, 7)},   # paddy check, morning
+		{"from": 12, "to": 24, "pos": Vector2(4, 8)},  # home porch
+	],
 }
 
 ## TASK-328: home waypoint used for the full day when it's raining, for
@@ -54,6 +59,8 @@ const SCHEDULES: Dictionary = {
 const RAIN_HOME: Dictionary = {
 	"elder": Vector2(1, 5),
 	"child": Vector2(1, 6),
+	# TASK-338: Nok's "home porch" slot, same treatment.
+	"nok": Vector2(4, 8),
 }
 
 ## Active waypoint cell for npc_id at the given hour (first window match).
