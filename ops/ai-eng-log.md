@@ -1303,3 +1303,41 @@ category from the role reassessment, discovered live.
   (schema v5: `rival_progress`/`rival_friendship`/`rival_confessed`)
   is next — a save-schema change, same risk class as TASK-340, self-
   executed with the same care (write the migration test first).
+
+## 2026-09-02 — Run 23 (Thai nickname rename, out-of-sequence owner request)
+
+- Owner asked to rename all romance/rival candidates to authentic Thai
+  nicknames instead of the formal-sounding names originally drafted
+  (Niran/Kiet/Malee/Kanya read as proper first names, not the casual
+  nickname culture Thai people actually use day-to-day). Verified 3
+  options per NPC via AskUserQuestion before touching anything, across
+  all 12 (6 already-built romance candidates + 6 planned rivals).
+- **Result:** Niran→Ek, Kiet→Chang (ช่าง, literal "craftsman" pun),
+  Malee→Klong (กลอง, literal "drum" pun), Kanya→Yaa (ยา, "herb/
+  medicine"). Fah and Ploy confirmed unchanged — already authentic
+  nicknames. For the 6 not-yet-built rivals: Decha→Yai, Chai→Ohm,
+  Anon→Note, Siri→Fon; Rung and Boon unchanged.
+- **Applied to code** (the 4 already-shipped candidates): npc_id,
+  display_name, node names, `.tscn` files, and portrait assets renamed
+  throughout `DialogueDB.gd`/`ScheduleDB.gd`/`Main.gd`/`RomanceNPC.gd`/
+  `VillagerNPC.gd` and every affected test. Plain rename, not a schema
+  migration — the game hasn't shipped, no real save data exists to
+  preserve compatibility for.
+- **Real gotcha hit while scripting the rename**: BSD `sed` (macOS) does
+  not support `\b` word-boundary — `s/\bniran\b/ek/g` silently matches
+  nothing (no error, just a no-op), which meant a first rename pass
+  looked complete but had only touched capitalized/compound forms
+  (`Niran`, `NiranNPC`) while every lowercase `npc_id` string literal
+  was untouched. Caught by grepping for the old names after the "done"
+  pass rather than trusting it — worth remembering for any future
+  cross-file rename on this Mac.
+- **Applied to specs**: TASK-342/347/349 (not yet built) and
+  `docs/SHIP_PLAN.md` updated so whoever builds TASK-342 next does so
+  with the final names, not the drafted ones.
+- **Verification:** `run_gate.sh all` green; `test_affinity.gd` (43/43),
+  `test_peer_npcs.gd` (73/73), `test_anniversary.gd` (6/6),
+  `test_wedding.gd` (6/6), `test_life_progression.gd` (26/26),
+  `test_gift_prefs.gd` (13/13) all green post-rename. Merged `15b69ca`
+  (code) + `ad8cddf` (specs), pushed.
+- **Stop reason:** Rename complete. Resuming the sequenced plan at
+  TASK-347 next.
