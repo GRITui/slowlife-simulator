@@ -233,6 +233,12 @@ func _ensure_peer_npcs() -> void:
 		# TASK-335: third romance candidate — temple-lane market stall, clear
 		# of NongTonNPC/SomchaiNPC at (2,2)/(3,2).
 		"PloyNPC": {"scene": "res://scenes/entities/PloyNPC.tscn", "pos": Vector2(6 * 48 + 24, 2 * 48)},
+		# TASK-341: 3 more romance candidates, bringing the total to 6.
+		# Positions re-verified clear of every spot in this dict as of
+		# this task (see docs/research/TASK-341-spec.md).
+		"KietNPC": {"scene": "res://scenes/entities/KietNPC.tscn", "pos": Vector2(8 * 48 + 24, 2 * 48)},
+		"MaleeNPC": {"scene": "res://scenes/entities/MaleeNPC.tscn", "pos": Vector2(3 * 48 + 24, 9 * 48)},
+		"KanyaNPC": {"scene": "res://scenes/entities/KanyaNPC.tscn", "pos": Vector2(17 * 48 + 24, 7 * 48)},
 		# TASK-058 schedules cover headman/vet movement; SCHEDULES keys match.
 		"HeadmanNPC": {"scene": "res://scenes/entities/HeadmanNPC.tscn", "pos": Vector2(1 * 48 + 24, 3 * 48)},
 		"VetNPC": {"scene": "res://scenes/entities/VetNPC.tscn", "pos": Vector2(2 * 48 + 24, 14 * 48)},

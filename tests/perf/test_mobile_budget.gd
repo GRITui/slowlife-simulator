@@ -48,7 +48,9 @@ func _initialize() -> void:
 			# 50->51 (TASK-338: Nok, new villager, same treatment).
 			# TASK-337: MountainCaveSpot joins the same exclusion list for the
 			# same reason (logic-only interactable, no visible sprite, same
-			# treatment as MiningSpot/Noticeboard). Y-sort budget stays at 51.
+			# treatment as MiningSpot/Noticeboard).
+			# 51->54 (TASK-341: Kiet/Malee/Kanya, 3 more romance candidates,
+			# each with a real Sprite2D — same treatment as Ploy/Nok).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
@@ -56,7 +58,7 @@ func _initialize() -> void:
 					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 51, "y-sorted participants <= 51 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 54, "y-sorted participants <= 54 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)

@@ -134,6 +134,24 @@ func _try_specialty_sell() -> bool:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id
 				break
+	elif npc_id == "kiet":
+		# TASK-341: Kiet buys raw craft materials at specialty premium.
+		for item_id in ["wood", "banana_leaf_stem"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
+	elif npc_id == "malee":
+		# TASK-341: Malee buys festival-food specialties.
+		for item_id in ["wan_sart_basket", "durian_sticky_rice"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
+	elif npc_id == "kanya":
+		# TASK-341: Kanya buys herbal cooked goods.
+		for item_id in ["thai_basil_stirfry", "lotus_soup"]:
+			if GameData.has_item(item_id, 1):
+				want_item = item_id
+				break
 	if want_item.is_empty():
 		return false
 	var gained: int = GameData.sell_item_premium(want_item, "specialty")
@@ -200,6 +218,13 @@ func _talk() -> void:
 	# already covered by level 1's lines.
 	var level: int = maxi(GameData.level_for(GameData.get_affinity(npc_id)), 1)
 	var pool_key: String = str(level)
+	# TASK-345/341: early-warning fairness fix — once a rival warning has
+	# fired (RivalClock at 25/50/75%), the candidate's OWN level-1 dialogue
+	# surfaces the threat directly, instead of leaving it to a rival NPC the
+	# player may never approach. Checked before the level 6-8 override below
+	# since the ranges don't overlap (level 1 vs. 6-8).
+	if level == 1 and int(GameData.rival_warning_shown.get(npc_id, 0)) >= 1:
+		pool_key = "1_warned"
 	# TASK-324: occasional light rival pressure on the close-equivalent
 	# courtship band (levels 6-8, matching the old "close" tier's 60-89
 	# affinity range under floor(affinity/10)) — every 5th talk only, and

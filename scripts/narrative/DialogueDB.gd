@@ -220,6 +220,14 @@ const DIALOGUE: Dictionary = {
 			"There's no version of this farm, or this life, I want without you in it.",
 			"You're not my rival anymore. Haven't been for a long time.",
 		],
+		# TASK-345/341: the early-warning fairness fix — once a rival warning
+		# has fired (RivalClock at 25/50/75%), Niran's OWN level-1 dialogue
+		# surfaces the threat directly, instead of leaving it to a rival NPC
+		# the player may never approach. Checked in RomanceNPC._talk() only
+		# at level 1, before the level 6-8 "rival" override below.
+		"1_warned": [
+			"Someone's been asking whether I've... noticed you. I said I hadn't decided what I noticed yet.",
+		],
 		# TASK-324: occasional light rival pressure on the close-equivalent
 		# courtship band (levels 6-8, matching the old 60-89 affinity range
 		# exactly under floor(affinity/10)) — someone else has been asking
@@ -325,6 +333,11 @@ const DIALOGUE: Dictionary = {
 			"I used to think I preferred the water to people. That was before you.",
 			"Wherever you are is quieter and better than anywhere I'd be without you.",
 		],
+		# TASK-345/341: early-warning fairness fix (see the "niran" comment
+		# above for the general approach).
+		"1_warned": [
+			"Someone left a note asking if I'd 'said anything' to you yet. I haven't decided what there is to say.",
+		],
 		# TASK-324: occasional light rival pressure on the close-equivalent
 		# courtship band (levels 6-8). Flavor-only, no name, no mechanical
 		# effect. Surfaced only on every 5th talk.
@@ -381,12 +394,170 @@ const DIALOGUE: Dictionary = {
 			"The stall was never the sweetest thing about this place. You are.",
 			"I don't want to imagine closing up shop each night without you waiting for me.",
 		],
+		# TASK-345/341: early-warning fairness fix (see the "niran" comment
+		# in this file for the general approach).
+		"1_warned": [
+			"The trader asked if I've 'said anything yet.' I keep changing the subject. Maybe I shouldn't.",
+		],
 		# TASK-324 pattern: occasional light rival pressure on the
 		# close-equivalent courtship band (levels 6-8). Flavor-only, no
 		# name, no mechanical effect.
 		"rival": [
 			"Someone from the coast road asked about you at the stall. Wanted to know if you were spoken for.",
 			"The trader keeps asking if I've 'said anything yet.' Told him it's none of his business. It isn't, right?",
+		],
+	},
+
+	# TASK-341: 3 more romance candidates, authored directly in TASK-346's
+	# 10-level shape (no old 4-tier draft ever existed for these). Also
+	# folds in TASK-345's early-warning fix from the start via "1_warned".
+	"kiet": {
+		"1": [
+			"You're here for a mask? Uncle Somchai handles those. I just... hold the chisel steady.",
+			"Careful where you step — wood shavings everywhere. Occupational hazard.",
+		],
+		"2": [
+			"You came back. Most people watch for a minute and wander off.",
+			"I don't talk much while I carve. Hope that's alright.",
+		],
+		"3": [
+			"This one's for the festival. Takes weeks to get the eyes right.",
+			"You noticed the grain pattern? Not many do.",
+		],
+		"4": [
+			"I don't show unfinished work to just anyone.",
+			"Somchai says I'm too particular. I'd rather be too particular than sloppy.",
+		],
+		"5": [
+			"I kept a scrap piece aside. Small carving, not much, but — here.",
+			"You ask good questions about the wood. Better than most.",
+		],
+		"6": [
+			"I don't usually let people watch this part. You're the exception.",
+			"Some evenings I look forward to just... you being nearby while I work.",
+		],
+		"7": [
+			"I've started carving little details I think you'd like, not just what the mask needs.",
+			"Quiet company suits me. Yours especially.",
+		],
+		"8": [
+			"I think about what you'd think of a piece before I even finish it.",
+			"Somchai asked why I've been smiling at my work bench. I didn't have a good answer. Or — I did, I just didn't say it.",
+		],
+		"9": [
+			"Stay while I finish this one? I'd like you here when it's done.",
+			"I carved something for you. Not for the festival. Just for you.",
+		],
+		"10": [
+			"I used to think the wood was the only thing that needed my full attention. That's not true anymore.",
+			"Every piece I make now, some part of it is for you, whether I mean to or not.",
+		],
+		"1_warned": [
+			"Someone's been asking whether I've... noticed you. I said I hadn't decided what I noticed yet.",
+		],
+		"rival": [
+			"Another woodcarver's apprentice asked about you at the market. Said you had a good eye for craft.",
+			"Someone left word at Somchai's stall asking when you'd stop by again.",
+		],
+	},
+
+	"malee": {
+		"1": [
+			"Come to see the drumming? Stick around, it gets louder.",
+			"New face! Careful, I might drag you into the dance circle.",
+		],
+		"2": [
+			"You clapped along last time. I saw that.",
+			"Most people just watch. You looked like you wanted to join.",
+		],
+		"3": [
+			"I'm teaching the festival rhythm to the kids this week. Want to learn too?",
+			"You've got good timing, for someone who claims they can't dance.",
+		],
+		"4": [
+			"I don't perform for just anyone up close like this. Consider it a preview.",
+			"You ask what the rhythms mean. Nobody asks that. I like that you did.",
+		],
+		"5": [
+			"Saved you a spot up front for the next festival. Best seat, honestly.",
+			"I catch myself performing a little harder when I know you're watching.",
+		],
+		"6": [
+			"I don't let just anyone see me practice the hard parts, the mistakes and all.",
+			"Some nights I'd rather sit and talk with you than run the set one more time.",
+		],
+		"7": [
+			"I've started timing rehearsals around when you usually show up.",
+			"Loud is easy. Being this honest with someone is harder. Worth it, though.",
+		],
+		"8": [
+			"I think about your face in the crowd before I even step up to drum.",
+			"Everyone else gets the performance. You get whatever this is underneath it.",
+		],
+		"9": [
+			"Stay after the crowd clears tonight? Just the two of us and the drums going quiet.",
+			"I've started writing a rhythm that's just for you. Haven't played it for anyone else.",
+		],
+		"10": [
+			"I used to think the crowd was the only thing that made me feel alive. That was before you.",
+			"Every festival from here on, I want you exactly where you were tonight — right next to me.",
+		],
+		"1_warned": [
+			"Someone asked if I'd 'made a move' on you yet. Told them it's none of their business. Is it, though?",
+		],
+		"rival": [
+			"Someone from the coast asked about you after the last festival. Wanted to know if you were 'spoken for.'",
+			"A drummer from another village keeps asking when you'll be back for the next show.",
+		],
+	},
+
+	"kanya": {
+		"1": [
+			"Looking for herbs? I keep the good ones past the reeds, not on display.",
+			"Careful with the lotus stems, they bruise easy. Like most gentle things.",
+		],
+		"2": [
+			"You came back for more than just herbs, I think.",
+			"Most people rush past the garden. You actually looked at it.",
+		],
+		"3": [
+			"This one calms fever, that one settles the stomach. Ask, I don't mind explaining.",
+			"You have a gentle hand with the plants. Not everyone does.",
+		],
+		"4": [
+			"I don't usually share what I'm growing until it's ready. I might, for you.",
+			"You remembered what I told you about the basil. That matters more than you'd think.",
+		],
+		"5": [
+			"I set aside a cutting for you. Didn't plan to, just did.",
+			"There's a calm about you that matches the garden. I like having you here.",
+		],
+		"6": [
+			"I don't tell many people about the rare plants past the tree line. You're one of the few.",
+			"Some afternoons I'd rather sit with you among the herbs than tend them alone.",
+		],
+		"7": [
+			"I've started timing my harvest around when you usually visit.",
+			"Quiet company suits this garden. And you suit the quiet.",
+		],
+		"8": [
+			"I think about what you'd say about a new plant before I even show anyone else.",
+			"You've made this garden feel less like the only company I need.",
+		],
+		"9": [
+			"Stay past sunset? The herbs smell different once the day cools.",
+			"I've started growing things I think you'd like, not just what's useful. Didn't plan that. Just happened.",
+		],
+		"10": [
+			"I used to think I preferred the garden to people. That was before you.",
+			"Wherever you are is gentler and better than anywhere I'd be without you.",
+		],
+		"1_warned": [
+			"Someone's been asking after you at the herb stall. Said you two should talk sometime. I didn't love hearing that, if I'm honest.",
+		],
+		"rival": [
+			"Another herbalist passing through asked about you. Said your name came up more than once on the road.",
+			"Someone left a note asking when you'd be back this way. Didn't sign it.",
 		],
 	},
 }
@@ -467,6 +638,11 @@ const GIFT_PREFERENCES: Dictionary = {
 	"nok": {"loved": ["sticky_rice", "thai_basil"], "liked": ["rice_grain", "banana"]},
 	"monk": {"loved": ["jasmine_rice", "lotus_root"], "liked": ["banana", "mango", "sticky_rice"]},
 	"trader": {"loved": ["pla_kraben_big", "pla_buk_big"], "liked": ["durian", "coconut", "palm_sugar"]},
+	# TASK-341: 3 more romance candidates. All loved/liked items confirmed
+	# present in GameData.FOOD_ITEMS (the auto-gift picker's only source).
+	"kiet": {"loved": ["thai_basil_stirfry", "som_tam"], "liked": ["rice_grain", "egg"]},
+	"malee": {"loved": ["mango_sticky_rice", "pandan_sticky_rice"], "liked": ["banana", "egg"]},
+	"kanya": {"loved": ["thai_basil", "lotus_root"], "liked": ["pandan_leaf", "banana_leaf"]},
 }
 
 ## Returns "loved" | "liked" | "neutral" for a given NPC + item.
