@@ -85,17 +85,40 @@ func toggle_mount() -> bool:
 	SignalBus.show_dialogue.emit("Farmer", "Mounted — Wing Kwai style. Interact to auto-plant 3x3.")
 	return true
 
-## Mounted interact: plant held seed in a 3x3 patch around the facing cell.
-func _mounted_plant_3x3(gm: Node, center: Vector2i) -> void:
+## TASK-334: mounted interact — plant/water/harvest a 3x3 patch around the
+## facing cell. Per-cell branch mirrors the single-cell logic in
+## _try_grid_interact()'s unmounted path: null plot -> plant (held seed or
+## jasmine fallback), harvest-ready -> harvest, else -> water. One summary
+## dialogue line at the end omits any zero-count category.
+func _mounted_interact_3x3(gm: Node, center: Vector2i) -> void:
 	var crop: Resource = _find_crop_for_held_seed()
 	if crop == null:
 		crop = load("res://data/crops/jasmine_rice.tres")
 	var planted: int = 0
+	var watered: int = 0
+	var harvested: int = 0
 	for dx: int in [-1, 0, 1]:
 		for dy: int in [-1, 0, 1]:
-			if gm.plant(center + Vector2i(dx, dy), crop):
-				planted += 1
-	SignalBus.show_dialogue.emit("Farmer", "Buffalo plow: %d/9 plots planted." % planted)
+			var cell: Vector2i = center + Vector2i(dx, dy)
+			var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
+			if plot == null:
+				if crop != null and gm.plant(cell, crop):
+					planted += 1
+			elif plot.stage >= plot.crop.total_stages - 1:
+				if gm.harvest(cell) > 0:
+					harvested += 1
+			else:
+				if gm.water(cell):
+					watered += 1
+	var parts: Array[String] = []
+	if planted > 0:
+		parts.append("%d planted" % planted)
+	if harvested > 0:
+		parts.append("%d harvested" % harvested)
+	if watered > 0:
+		parts.append("%d watered" % watered)
+	var summary: String = ", ".join(parts) if not parts.is_empty() else "nothing to do"
+	SignalBus.show_dialogue.emit("Farmer", "Buffalo plow: %s." % summary)
 
 func _try_grid_interact() -> void:
 	# Attempt plant/water/harvest at nearest cell via SignalBus.grid_manager registry
@@ -104,7 +127,7 @@ func _try_grid_interact() -> void:
 		return
 	var cell: Vector2i = Vector2i(floor(global_position.x / 48), floor(global_position.y / 48))
 	if mounted:
-		_mounted_plant_3x3(gm, cell)
+		_mounted_interact_3x3(gm, cell)
 		return
 	var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
 	if plot == null:
