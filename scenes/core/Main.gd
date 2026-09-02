@@ -245,6 +245,15 @@ func _ensure_peer_npcs() -> void:
 		# ISSUE-132: Phi Ta Khon villagers (festival hosts).
 		"NongTonNPC": {"scene": "res://scenes/entities/NongTonNPC.tscn", "pos": Vector2(2 * 48 + 24, 2 * 48)},
 		"SomchaiNPC": {"scene": "res://scenes/entities/SomchaiNPC.tscn", "pos": Vector2(3 * 48 + 24, 2 * 48)},
+		# TASK-342: 6 rival NPCs, one per paired candidate. Positions
+		# re-verified clear of every spot in this dict + the Main scene's
+		# own sprites (player/buffalo/coop/companion/etc) as of this task.
+		"YaiNPC": {"scene": "res://scenes/entities/YaiNPC.tscn", "pos": Vector2(14 * 48 + 24, 4 * 48)},
+		"OhmNPC": {"scene": "res://scenes/entities/OhmNPC.tscn", "pos": Vector2(9 * 48 + 24, 12 * 48)},
+		"RungNPC": {"scene": "res://scenes/entities/RungNPC.tscn", "pos": Vector2(7 * 48 + 24, 3 * 48)},
+		"NoteNPC": {"scene": "res://scenes/entities/NoteNPC.tscn", "pos": Vector2(9 * 48 + 24, 3 * 48)},
+		"FonNPC": {"scene": "res://scenes/entities/FonNPC.tscn", "pos": Vector2(2 * 48 + 24, 9 * 48)},
+		"BoonNPC": {"scene": "res://scenes/entities/BoonNPC.tscn", "pos": Vector2(18 * 48 + 24, 8 * 48)},
 	}
 	for npc_name: String in spots.keys():
 		if get_node_or_null(npc_name) != null:
