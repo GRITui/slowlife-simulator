@@ -1413,3 +1413,62 @@ category from the role reassessment, discovered live.
   pushed. Issue #186 closed.
 - **Stop reason:** TASK-347 (a dependency for TASK-342) complete.
   TASK-342 (6 rival NPCs) is next in sequence.
+
+## 2026-09-02 — Run 25 (TASK-342: 6 rival NPCs — first real test of delegate-first)
+
+- **Split by tier per the freshly-written policy:** dialogue content
+  (`RIVAL_DIALOGUE`, 6 rivals x 5 states x 2 lines, tier-0 already
+  revealing the competing interest per TASK-345's fix) and
+  `GIFT_PREFERENCES` entries self-executed first (narrative tier,
+  committed separately). The mechanical implementation — `RivalNPC.gd`,
+  `RivalClock.PAIRS`, 6 `.tscn` scenes + portraits, `Main.gd` wiring,
+  tests — handed to OpenCode (`minimax-m3:free`) as the delegate-first
+  policy's first real exercise on a large task.
+- **First delegate attempt produced nothing**: ran for ~490 lines of
+  log (file listing, reading `GameData.gd`, etc.) then stopped with
+  exit code 0 and zero file changes — no error, no rate-limit hit,
+  just ran out of steps mid-exploration before writing anything. Not
+  worth a second retry-with-more-directive-prompt cycle for a task
+  this well-specified — re-dispatched immediately.
+- **Second delegate attempt succeeded substantially**: `RivalNPC.gd`,
+  `RivalClock.PAIRS` (all 6 pairings), all 6 `.tscn` scenes, 6
+  placeholder portraits + a `tools/gen_rival_portraits.py` generator,
+  `Main.gd` wiring, the Y-sort budget bump (54->60, correctly
+  reasoned), and a genuinely well-structured `tests/test_rival_npcs.gd`
+  (91/91) with careful state isolation between phases — this is
+  meaningfully more code than this session's earlier
+  Claude-self-executed candidate additions (TASK-335/338/341), landed
+  in one delegate pass. (Note: a background-task race meant the
+  "completed" notification arrived before all of the delegate's file
+  writes had actually landed on disk — an initial `git status` looked
+  nearly empty; re-checking a few seconds later showed the real
+  picture. Worth remembering for future delegate dispatches: don't
+  trust a `git status` taken immediately at the notification instant.)
+- **Code Quality Review caught one real bug before merge**: the
+  delegate's portrait hue-shift script round-tripped through PIL's
+  `Image.convert("HSV")`, which has no alpha channel — merging back to
+  RGBA reconstructed every pixel fully opaque, turning each rival's
+  transparent sprite background into a solid black rectangle. Verified
+  empirically (`getchannel("A").getextrema()` on source vs. output)
+  before concluding it was real, not assumed. Regenerated all 6
+  portraits with the same per-pixel `colorsys`-based approach used for
+  TASK-341's placeholders (preserves alpha explicitly), and fixed the
+  tool script itself so a future re-run doesn't reintroduce the bug.
+  Also fixed one stale assertion the delegate's own tests didn't touch
+  (`test_rival_clock.gd` asserted `PAIRS` was empty — no longer true
+  once this task populates it).
+- **Verification:** `run_gate.sh all` green (content 100/100, engine
+  50/50, save-compat 59/59, perf 6/6, touch 10/10).
+  `tests/test_rival_npcs.gd` 91/91, `test_rival_clock.gd` 23/23 (after
+  the stale-assertion fix), `test_peer_npcs.gd`/`test_gift_prefs.gd`/
+  `test_affinity.gd` regression-checked green. Merged `f73be42`, pushed.
+  Issue #187 closed.
+- **Assessment of the delegate-first exercise**: net positive despite
+  the failed first attempt — a substantial fraction of the biggest
+  task in this plan landed in one delegate pass, and Code Quality
+  Review did exactly the job it's supposed to (catch a real,
+  non-obvious bug a confident-looking diff would otherwise ship). The
+  one real lesson: don't assume a "completed, exit 0" background-task
+  notification means the diff is fully on disk yet — re-check.
+- **Stop reason:** TASK-342 complete. TASK-343 (2 unlockable areas) is
+  next in sequence.

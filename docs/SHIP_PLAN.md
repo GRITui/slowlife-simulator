@@ -209,8 +209,12 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       `rival_confessed` fields; `RivalClock.nudge_progress()`; festival
       tie-in (Fishing Competition -> fah, Songkran -> ploy, only the
       thematically-linked rival). Prerequisite for Sprint 3 below.
-- [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live, plus
-      rival-friendship/confession-dilemma quest. TASK-342.
+- [x] **Sprint 3 — 6 rival NPCs.** TASK-342: `RivalClock.PAIRS` wired
+      live (Yai/Ohm/Rung/Note/Fon/Boon), friendship + confession
+      dilemma. First real test of the delegate-first policy on a large
+      task — mechanical implementation delegated to OpenCode, dialogue
+      self-executed; Code Quality Review caught and fixed a real
+      alpha-channel bug in the delegate's portrait script before merge.
 - [ ] 10-level system, phases 2-3 — animals (TASK-348) and villagers
       (TASK-349), folded into the same plan per owner request.
 - [ ] Sprint 4 — 2 more unlockable areas (Deep Canal Bend, Sacred Grove).
