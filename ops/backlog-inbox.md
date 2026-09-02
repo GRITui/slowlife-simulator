@@ -296,3 +296,15 @@ Recommended order if approved, best cost/impact ratio first:
 </task_item>
 
 <!-- AI-LOOP: 2026-09-02 "Broaden to compete with HM:BtN" plan CLOSED. All 3 sprints complete (TASK-335..339 + bonus headman/vet portrait fix, commit d876154). Full record: ops/ai-eng-log.md run 19. Remaining open item, unchanged: no human has played this game end-to-end yet -- still the single highest-leverage gap per the original quality verdict. -->
+
+<task_item>
+  <id>TASK-340</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P1</priority>
+  <title>Rival win/loss save schema + RivalClock mechanism (Sprint 1 of 5)</title>
+  <description>Part of the "6 romance + 6 rivals + 5 unlockable areas" plan. Owner-confirmed deliberate reversal of the no-fail-state precedent: a candidate's rival wins permanently if affinity stays below 25 for 90 days after first meeting (3 telegraphed warnings, no other consequence on loss). SaveManager v3->v4 (npc_first_met_day, lost_to_rival, rival_warning_shown, plus closes TASK-331's deferred milestones_earned persistence gap). RivalClock.gd ships with empty PAIRS -- pure mechanism, no content yet. Self-executed given the save-schema stakes. Commit 6549931.</description>
+  <researcher_notes>Real bug caught by test_save_compat.gd, not inspection: the v3->v4 migration block was nested one level too deep and never ran for the most common real case (a payload already at v3). New tests/test_rival_clock.gd 17/17. Full record: ops/ai-eng-log.md run 20.</researcher_notes>
+</task_item>
+
+<!-- AI-LOOP: 2026-09-02 "6 romance + 6 rivals + 5 areas" plan, Sprint 1 (TASK-340) complete per ops/ai-eng-log.md run 20. Sprints 2-5 (TASK-341..344, specs already written) queued next, pending owner check-in. -->

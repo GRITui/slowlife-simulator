@@ -184,6 +184,23 @@ items shipped across 3 sprints, full gate green on every merge, every
 diff Code-Quality-Reviewed. Unchanged from the original verdict: no
 human has played this end-to-end yet — still the single highest-
 leverage gap, and the natural next step now that this plan is done.
+
+## 6 romance + 6 rivals + 5 unlockable areas (2026-09-02, 5-sprint plan)
+A deliberate, owner-confirmed one-time reversal of the no-fail-state
+precedent above: rivals have real stakes (a neglected candidate can be
+permanently lost), designed to be as fair as that can be — a 90-day
+window from first meeting, 3 telegraphed warnings, soft landing on loss.
+- [x] **Sprint 1 — save schema + mechanism.** TASK-340: `SaveManager`
+      v3→v4, `RivalClock.gd` (ships inert, empty pairing table).
+      Real bug caught by the test suite: a migration block was nested
+      one level too deep and silently never ran for the most common
+      case. Fixed, reverified.
+- [ ] Sprint 2 — 3 new romance candidates (Kiet, Malee, Kanya), bringing
+      the total to 6.
+- [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live.
+- [ ] Sprint 4 — 2 more unlockable areas (Deep Canal Bend, Sacred Grove).
+- [ ] Sprint 5 — final 2 unlockable areas (Lotus Maze Shore, Coastal
+      Trading Post), completing the set of 5.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)

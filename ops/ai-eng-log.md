@@ -1141,3 +1141,55 @@ category from the role reassessment, discovered live.
   highest-leverage gap, and no amount of further content generation
   substitutes for it.
 - **Stop reason:** goal met — all 3 sprints complete, plan closed.
+
+## 2026-09-02 — Run 20 (6 romance + 6 rivals + 5 areas, Sprint 1)
+
+- **Trigger:** user requested scaling to 6 romance candidates, 6
+  romance rivals, and 5 unlockable areas. Given the rival concept's
+  direct conflict with the no-fail-state precedent this session has
+  held (and reaffirmed) throughout, surfaced the actual design fork via
+  AskUserQuestion before drafting anything: flavor-only rivals (matches
+  precedent) vs soft competition vs real stakes where a rival can
+  permanently win a candidate. Owner explicitly chose real stakes, and
+  physical (not narrative-only) rival NPCs — a deliberate, informed
+  reversal of the precedent, not an accidental one. Designed the
+  mechanic to be as fair as a real-stakes system can be: 90-day window
+  from FIRST MEETING (not game start), 3 telegraphed warnings, and a
+  soft landing (lost candidate just becomes a permanent friendly NPC,
+  no other consequence). User asked to see all 5 sprints' specs before
+  any code — wrote and verified all 5
+  (`docs/research/TASK-340..344-spec.md`) against the actual codebase
+  first (map positions via headless `ground_at()` probes, gift/
+  specialty items against `FOOD_ITEMS`/`SELL_PRICES`, confirmed the
+  lotus maze interior is unwalkable `deep_pond` so area 4 goes at its
+  edge instead, confirmed `get_sell_price()`/`cheapest_sellable()`
+  already support the pattern area 5 needs).
+- **TASK-340 (save schema + RivalClock mechanism), self-executed given
+  the stakes:** `SaveManager` v3→v4 adds `npc_first_met_day`/
+  `lost_to_rival`/`rival_warning_shown`, and — since a schema bump was
+  already in progress — closed a second, unrelated, already-known gap
+  in the same pass: TASK-331's `milestones_earned` was deliberately
+  never persisted at the time (that task's spec explicitly deferred
+  it); persisting it now cost nothing extra given the migration was
+  already happening. `RivalClock.gd` ships with an empty `PAIRS` table
+  — pure mechanism, zero content, so the schema and daily-check logic
+  are proven correct in total isolation before TASK-341/342 add any
+  candidates or rivals to depend on it.
+- **Real bug caught by my own test, not by inspection:** the v3→v4
+  migration block was accidentally nested one indentation level too
+  deep — inside the `if version < 3:` body instead of as its sibling —
+  so it silently never executed for a payload that started exactly at
+  v3 (the single most common real-world case: every existing save).
+  Only `test_save_compat.gd`'s "migrate advances v3 payload to version
+  4" assertion caught it; visual inspection of the diff had missed it.
+  Fixed and reverified.
+- **Verification:** `run_gate.sh all` green (content 100/100, engine
+  50/50, save-compat 46/46, perf 6/6, touch 10/10). New
+  `tests/test_rival_clock.gd` (17/17) exercises the full 90-day/3-
+  warning/loss timeline including the "clears forever once affinity
+  hits 25" and "married spouse never at risk" edge cases.
+  `tests/test_peer_npcs.gd` extended to 25/25 covering the
+  `_check_proposal()` hard lock. `test_anniversary.gd`/`test_wedding.gd`
+  unaffected. Merged `6549931`, pushed.
+- **Stop reason:** Sprint 1 of 5 (the highest-risk one) complete,
+  checking in before Sprint 2 (3 new romance candidates).
