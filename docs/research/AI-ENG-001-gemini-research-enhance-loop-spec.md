@@ -162,6 +162,18 @@ worktree, causing unrelated test failures until this runs):
 2. `godot --headless --import --path <path>` — run once, before any test
    script, not only if something looks wrong.
 
+**A worktree isolates by task, not by editor** (Run 13): if a delegate's
+session is taking unusually long with no visible progress, do not start
+manually implementing the same spec inside the *same* worktree as a hedge
+— that puts two editors on the same files at once, and the only reason
+Run 13's collision didn't corrupt anything was luck (the two edits landed
+in different sections of the same file) plus the delegate happening to
+notice and self-correct, not because the setup prevented it. If a
+delegate seems stuck, either wait it out, stop it and take over cleanly
+in that same worktree (not concurrently), or start a fresh worktree for
+a from-scratch attempt — never edit alongside a session you believe may
+still be writing.
+
 **Mandatory prompt boundary (added after Run 7's incident, see
 [What OpenCode is explicitly not for](#what-opencode-is-explicitly-not-for)):**
 every `opencode run` invocation's prompt must explicitly state OpenCode

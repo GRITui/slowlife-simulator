@@ -606,3 +606,86 @@ category from the role reassessment, discovered live.
 - **Stop reason:** goal met (Sprint 2 shipped; all 4 files delegated
   this time, 2 real test bugs found and fixed directly rather than
   re-dispatching).
+
+---
+
+## 2026-09-01 — Run 13 (Sprint 3 of 3: TASK-324 — Phase 2 closed)
+
+- **Scope:** rivals + life progression, entirely reused the existing
+  `RomanceNPC.gd`/`DialogueDB.gd`/`GameData.gd` marriage/anniversary
+  system (TASK-282) — no new NPCs, no new scenes. Rivals implemented as
+  flavor-only dialogue with zero mechanical effect (never blocks a
+  proposal, never costs affinity), honoring the owner's note that rival
+  pressure and no-fail-state aren't mutually exclusive. Life progression
+  (pregnant → born → toddler) ties directly into the existing yearly
+  anniversary interaction, with an explicit constraint carried through
+  from the spec: never change the silver amount or add a second
+  `festival_triggered` event, since `tests/test_anniversary.gd` asserts
+  both exactly.
+- **Two provider failures before real progress, a new failure shape
+  each time:**
+  1. `stealth/ox-alpha` (Cline's own hosted "early access" model, used
+     successfully in Run 9's calibration) failed immediately: `Cline
+     Credits balance is $-0.07` — insufficient balance, not a rate
+     limit. The free-access period/credit apparently doesn't cover
+     sustained use across a full session.
+  2. `minimax/minimax-m3:free` (retry): spent an unusual ~5 minutes in
+     pure reasoning/planning with **zero tool calls** — a different
+     shape than any prior run (previous runs started editing within the
+     first minute). Given no clean way to cancel a running Cline hub
+     session was found, and zero edits had happened yet, Claude began
+     implementing the same spec directly in parallel as a hedge.
+- **A real, if low-stakes, concurrency incident:** once Cline actually
+  started writing (after the long reasoning phase), it and Claude's
+  parallel manual edit both touched `DialogueDB.gd` within moments of
+  each other — Claude's edit landed first (niran's rival pool), Cline's
+  landed second (fah's rival pool), non-colliding by luck. Cline then
+  independently **noticed the pre-existing niran edit didn't match its
+  own draft, reverted the whole file via `git checkout`, and redid both
+  NPCs' rival pools itself consistently** — self-correcting the
+  collision without being told about it. Claude stopped manual editing
+  at that point rather than risk a second collision. This is worth
+  remembering as a pattern: a `git worktree`'s isolation doesn't protect
+  against two agents editing the *same file inside the same worktree* at
+  the same time — the isolation is one worktree per *task*, not per
+  *editor*. Running Claude and a delegate against the same file
+  concurrently was an avoidable risk this run stumbled into rather than
+  planned around.
+- **The rate limit hit a 6th time this session**, mid the final
+  `_talk()` edit in `RomanceNPC.gd` — but by then `DialogueDB.gd`,
+  `GameData.gd`, and 2 of 3 `RomanceNPC.gd` changes were already
+  complete and, on inspection, all 3 implementation files turned out to
+  be fully done (the log's last visible line undersold the actual
+  progress — always verify against the real diff, not just where the
+  log output stopped).
+- **Code Quality Review:** all 3 implementation files clean — correct
+  guard ordering in the anniversary branch (silver/harmony(10)/event
+  emission untouched, milestone logic strictly additive), correct
+  `married_year` recording at proposal time mirroring the existing
+  `tm.year()` lookup pattern, correct rival-pool substitution logic in
+  `_talk()`. No repeat of any previously-catalogued bug class.
+- **The test file was entirely Claude's** (Cline died before writing
+  it) and needed two rounds of self-correction on the first pass: (1)
+  tested "year 1 anniversary" in the same calendar year as the wedding
+  itself, where `years_married = 0` — never satisfies the `>= 1`
+  transition threshold, so the very first assertion failed; loose
+  substring dialogue matching (`"harmony"`) coincidentally passed for
+  the wrong reason since the standard line also contains that word,
+  masking the real bug until the numeric assertion caught it; (2) the
+  bypass-path test case reused year 1 a second time without accounting
+  for `active_quests`' per-year keying, silently short-circuiting into
+  the "already interacted this year" branch. Both fixed; tightened the
+  dialogue assertions to match milestone-specific substrings instead of
+  the generic word both paths share.
+- **Verification:** `test_life_progression.gd` 26/26 (after fixes),
+  `test_anniversary.gd` 6/6 and `test_wedding.gd` 6/6 (both regression-
+  checked per the spec's explicit constraint), `run_tests.gd` 100/100,
+  `run_engine_tests.gd` 50/50.
+- **Integration outcome:** committed (`1cd8088`) and merged directly,
+  pushed. Worktree/branch cleaned up.
+- **Phase 2 closed.** All 6 approved backlog items (321, 322, 323 split
+  A+B, 324, 325, 326) are complete. `docs/SHIP_PLAN.md` updated
+  accordingly — see that file for what Phase 3 and the remaining launch
+  gaps (monetization, analytics, the Apple `[HOLD]` items) look like.
+- **Stop reason:** goal met — final sprint shipped, 3-sprint plan
+  complete, Phase 2 closed.

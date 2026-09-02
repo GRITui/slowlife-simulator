@@ -76,16 +76,30 @@ task-number order.
       real bugs in the generated test file (unresolvable global,
       tier-math error, unset `_player`), all fixed directly. See
       `ops/ai-eng-log.md` run 12.
-- [ ] **Sprint 3 — TASK-324** (rivals + life progression: pregnancy,
-      childbirth, toddler stages). Biggest and most narratively-sensitive
-      remaining item — includes the rival-pressure design tension already
-      resolved (owner decision 2026-09-01, full scope approved). Saved for
-      last so it lands with the most accumulated context/momentum, not
-      because it's less important.
-- [ ] All MVP-scope systems implemented + headless-tested
-- [ ] Feature freeze declared — new asks go to a post-launch backlog
+- [x] **Sprint 3 — TASK-324** (rival flavor + life progression) — `1cd8088`.
+      Rivals implemented as flavor-only dialogue, zero mechanical effect
+      (honors the owner's no-fail-state note). Pregnancy/birth/toddler
+      staged onto the existing anniversary loop, harmony-only bonuses,
+      silver/event-count left exactly unchanged (test_anniversary.gd's
+      exact assertions were the hard constraint here). Two provider
+      failures before real progress (Cline's own `stealth/ox-alpha` out
+      of credits, then `minimax-m3:free`'s 5-minute stall before its 6th
+      rate limit of the session) — see `ops/ai-eng-log.md` run 13 for a
+      worktree-concurrency lesson worth reading before the next delegated
+      run.
+
+**Phase 2 complete.** All 6 approved backlog items (321, 322, 323 A+B,
+324, 325, 326) shipped 2026-09-01.
+- [x] All MVP-scope systems implemented + headless-tested — `run_tests.gd`
+      100/100, `run_engine_tests.gd` 50/50 as of the TASK-324 merge.
+- [ ] Feature freeze declared — new asks go to a post-launch backlog.
+      **Owner call, not yet made.**
 - [ ] Save/migration format finalized and locked (hard-escalate category
-      in `AI-ENG-001` — never auto-merged, always human-reviewed)
+      in `AI-ENG-001` — never auto-merged, always human-reviewed).
+      **Not yet reviewed** — TASK-321..326 all added new `GameData.gd`
+      fields (ore counts, herd counts, companion bond, married_year/
+      child_stage, etc.); worth a dedicated save-compatibility pass
+      before calling the format locked.
 
 ## Phase 3 — Polish / QA / Performance
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
