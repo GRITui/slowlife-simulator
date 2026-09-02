@@ -39,7 +39,30 @@ func try_interact() -> bool:
 			GameData.add_silver(30)
 			GameData.add_harmony(10)
 			SignalBus.festival_triggered.emit("anniversary_" + npc_id)
-			SignalBus.show_dialogue.emit(display_name, "Happy anniversary, year %d — I saved up for us. (+30 silver, +10 harmony)" % year)
+			# TASK-324 life progression: stage the child on this anniversary
+			# (0->1 pregnant, 1->2 born, 2->3 toddler), awarding a harmony bonus
+			# and replacing the standard anniversary line with a milestone line.
+			# Silver amount, add_harmony(10), and festival_triggered.emit above
+			# must stay exactly as they are — do not add a new festival event
+			# and do not change silver; test_anniversary.gd depends on both.
+			var years_married: int = year - int(GameData.married_year)
+			var milestone_line: String = ""
+			if years_married >= 1 and int(GameData.child_stage) == 0:
+				GameData.child_stage = 1
+				GameData.add_harmony(15)
+				milestone_line = "There's a little one on the way — the village grows. (+15 harmony)"
+			elif years_married >= 2 and int(GameData.child_stage) == 1:
+				GameData.child_stage = 2
+				GameData.add_harmony(25)
+				milestone_line = "The baby is here — small, calm, ours. (+25 harmony)"
+			elif years_married >= 3 and int(GameData.child_stage) == 2:
+				GameData.child_stage = 3
+				GameData.add_harmony(15)
+				milestone_line = "Our child is walking now — every step a small festival. (+15 harmony)"
+			if milestone_line.is_empty():
+				SignalBus.show_dialogue.emit(display_name, "Happy anniversary, year %d — I saved up for us. (+30 silver, +10 harmony)" % year)
+			else:
+				SignalBus.show_dialogue.emit(display_name, milestone_line)
 		else:
 			SignalBus.show_dialogue.emit(display_name, "Home is wherever the two of us stop working. Let's head in soon.")
 		return true
@@ -93,6 +116,12 @@ func _check_proposal() -> bool:
 	GameData.remove_item("krathong", 1)
 	GameData.married = true
 	GameData.spouse = npc_id
+	# TASK-324: record the wedding year so the anniversary branch can compute
+	# years_married for life-progression stage transitions. Mirrors the
+	# SignalBus.time_manager.year() lookup the anniversary block uses above.
+	var tm: Node = SignalBus.time_manager
+	var year: int = int(tm.year()) if tm != null and tm.has_method("year") else 1
+	GameData.married_year = year
 	GameData.add_affinity(npc_id, 10) # cap keeps it at 100
 	GameData.add_harmony(20)
 	SignalBus.festival_triggered.emit("wedding_" + npc_id)
@@ -124,6 +153,12 @@ func _give_gift() -> bool:
 
 func _talk() -> void:
 	var tier: String = DialogueDBScript.get_affinity_tier(GameData.get_affinity(npc_id))
+	# TASK-324: occasional light rival pressure on the close-tier courtship
+	# path — every 5th talk only, and never when married to this NPC. Swaps
+	# the dialogue pool for that one call; everything else (talk-count,
+	# quest hooks) stays unchanged.
+	if tier == "close" and not (GameData.married and GameData.spouse == npc_id) and _talk_count % 5 == 4:
+		tier = "rival"
 	var line: String = DialogueDBScript.get_line(npc_id, tier, _talk_count)
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)

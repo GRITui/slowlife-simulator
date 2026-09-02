@@ -144,6 +144,13 @@ const DIALOGUE: Dictionary = {
 			"Honestly — I look forward to the days you're out in the fields too.",
 			"You make the long seasons feel shorter. Don't know how else to say it.",
 		],
+		# TASK-324: occasional light rival pressure on the close-tier courtship
+		# path — someone else has been asking about the player. Flavor-only, no
+		# name, no mechanical effect. Surfaced only on every 5th talk.
+		"rival": [
+			"Someone was asking about you at the seed stall yesterday. Didn't catch a name — just said they're a good planter.",
+			"The trader mentioned you on the coast road. Said your name came up more than once down that way.",
+		],
 		"romantic": [
 			"Walk the canal path with me tonight? Just us, no rivalry this time.",
 			"I used to farm alone before you got here. I don't want to go back to that.",
@@ -213,6 +220,13 @@ const DIALOGUE: Dictionary = {
 		"close": [
 			"I don't tell many people about the deep-canal spots. You're one of the few.",
 			"Some evenings I'd rather sit by the water with you than anywhere else.",
+		],
+		# TASK-324: occasional light rival pressure on the close-tier courtship
+		# path — someone else has been asking about the player. Flavor-only, no
+		# name, no mechanical effect. Surfaced only on every 5th talk.
+		"rival": [
+			"Another fisher was asking after you on the canal yesterday. Said you two should compare catches sometime.",
+			"Someone left a note at the dock asking when you'd be back on the water. Didn't sign it.",
 		],
 		"romantic": [
 			"Stay till the lanterns come out? The water looks different after dark.",

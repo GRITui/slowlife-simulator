@@ -280,6 +280,13 @@ func sell_item_premium(item_id: String, channel: String) -> int:
 var spouse: String = ""
 var married: bool = false
 
+# TASK-324 life progression. `married_year` records the calendar year of the
+# wedding (set at proposal; 0 until then or for test paths that bypass
+# proposal). `child_stage` advances 0 -> 1 -> 2 -> 3 on anniversary calls:
+# 0 = none, 1 = pregnant, 2 = born, 3 = toddler (terminal, no further bonuses).
+var married_year: int = 0
+var child_stage: int = 0
+
 func start_quest(quest_id: String, objective_count: int = 0) -> void:
 	if active_quests.has(quest_id):
 		return
