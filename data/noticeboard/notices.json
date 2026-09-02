@@ -1,0 +1,58 @@
+{
+  "notices": [
+    {
+      "id": "herbs_for_monk",
+      "flavor_npc": "Monk",
+      "item_id": "thai_basil",
+      "qty": 3,
+      "reward_silver": 15,
+      "reward_harmony": 4,
+      "line": "The monk asks for thai basil for temple offerings — 3 sprigs would help."
+    },
+    {
+      "id": "eggs_for_market",
+      "flavor_npc": "Trader",
+      "item_id": "egg",
+      "qty": 3,
+      "reward_silver": 12,
+      "reward_harmony": 2,
+      "line": "The cart trader is short on eggs for the coast route — 3 would fill the order."
+    },
+    {
+      "id": "rice_for_handler",
+      "flavor_npc": "Handler",
+      "item_id": "rice_grain",
+      "qty": 5,
+      "reward_silver": 10,
+      "reward_harmony": 3,
+      "line": "The handler wants extra rice grain to mix into the buffalo feed."
+    },
+    {
+      "id": "chili_for_kitchen",
+      "flavor_npc": "Elder",
+      "item_id": "chili",
+      "qty": 3,
+      "reward_silver": 14,
+      "reward_harmony": 3,
+      "line": "Elder's kitchen ran short on chili for the week's nam prik."
+    },
+    {
+      "id": "lotus_for_temple",
+      "flavor_npc": "Monk",
+      "item_id": "lotus_root",
+      "qty": 2,
+      "reward_silver": 18,
+      "reward_harmony": 5,
+      "line": "Lotus root for the temple's evening offering — 2 would do."
+    },
+    {
+      "id": "mango_for_child",
+      "flavor_npc": "Child",
+      "item_id": "mango",
+      "qty": 2,
+      "reward_silver": 10,
+      "reward_harmony": 2,
+      "line": "The children are asking for mango again. 2 would make their week."
+    }
+  ]
+}

@@ -73,6 +73,8 @@ func _ready() -> void:
 	_ensure_fishing_spot()
 	# TASK-321: mining spot — stamina-gated, no tool requirement, always-on.
 	_ensure_mining_spot()
+	# TASK-332: repeatable side-quest noticeboard (separate from QuestLog).
+	_ensure_noticeboard()
 	# TASK-270: Wing Kwai buffalo race (mounted minigame).
 	_ensure_buffalo_race()
 
@@ -257,6 +259,23 @@ func _ensure_mining_spot() -> void:
 	# for MVP — invisible interact zone, mirroring FishingSpot's own precedent.
 	spot.position = Vector2(1 * 48 + 24, 3 * 48 + 24)
 	add_child(spot)
+
+func _ensure_noticeboard() -> void:
+	if get_node_or_null("Noticeboard") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/Noticeboard.gd")
+	if script == null:
+		return
+	var board: Node2D = script.new() as Node2D
+	if board == null:
+		return
+	board.name = "Noticeboard"
+	# Tile (16, 9) — market lane, SE of the trader (15,8), clear of the
+	# carpenter (18,8), the mango tree prop (17,10), temple lane (row 3),
+	# and the maze pond (cols 14-16, rows 10-12). No sprite for MVP —
+	# invisible interact zone, mirroring FishingSpot/MiningSpot's precedent.
+	board.position = Vector2(16 * 48 + 24, 9 * 48)
+	add_child(board)
 
 func _ensure_chicken_coop() -> void:
 	if get_node_or_null("ChickenCoop") != null:
