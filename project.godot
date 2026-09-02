@@ -14,6 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
+config/name="Slowlife game"
 run/main_scene="res://scenes/core/Main.tscn"
 config/features=PackedStringArray("4.7")
 boot_splash/bg_color=Color(0.9607843, 0.9411765, 0.9098039, 1)
