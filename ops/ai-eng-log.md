@@ -911,4 +911,42 @@ category from the role reassessment, discovered live.
   accordingly before this went to a delegate — same "audit before
   trusting the ticket's own framing" discipline applied to every prior
   research-sourced task this session.
-- **Sprint 3 (TASK-331, TASK-334) not yet started** — continuing next.
+- **Sprint 3 — TASK-331 (milestone collectibles) + TASK-334 (mounted
+  3x3 water/harvest):** both delegates hit provider exhaustion before
+  landing — `openrouter/z-ai/glm-5.3-flash` returned an insufficient-
+  credits error on the very first call for both tasks (not a rate
+  limit — an actual balance issue), `openrouter/z-ai/glm-5.2:free` was
+  rate-limited upstream immediately after, and `opencode/glm-5.2`
+  (native, non-openrouter) returned its own insufficient-balance error.
+  Fell to `openrouter/minimax/minimax-m3:free` (established fallback
+  tier) for both — this time clean, no rate-limit hit mid-task unlike
+  several earlier runs this session.
+  - TASK-331: `GameData.earn_milestone()` + `milestones_earned` dict
+    (idempotent, +10 harmony), 5 trigger sites (deep_miner,
+    master_angler, inseparable, herd_keeper x2 call sites,
+    storm_catch), correctly gated inside each site's own skill-up/tier-
+    up transition block. Did not touch `SaveManager.gd`, per spec. Code
+    Quality Review: clean, matches spec. `tests/test_milestones.gd`
+    38/38. Gate green. Merged (`136b04e`), pushed.
+  - TASK-334: `_mounted_plant_3x3()` generalized to
+    `_mounted_interact_3x3()`, mirroring `_try_grid_interact()`'s
+    unmounted branch logic per-cell (null→plant, ready→harvest,
+    else→water), one summary dialogue line omitting zero-count
+    categories. Unmounted branch confirmed byte-for-byte unchanged.
+    Code Quality Review: clean, matches spec. `tests/test_riding.gd`'s
+    one call-site rename verified correct; new
+    `tests/test_mounted_interact_3x3.gd` 62/62 (mix-state grid,
+    all-empty regression, unmounted no-spill). Gate green. Merged
+    (`31f10d4`), pushed.
+- **3-sprint run complete.** All 6 approved items (328/329/330/331/332/
+  334) shipped 2026-09-02. TASK-333 (affinity decay) remains filed,
+  unimplemented, pending an explicit owner decision on the no-fail-
+  state design-philosophy question — not silently dropped, not
+  defaulted to yes.
+- **Process note carried forward:** the provider fallback chain held up
+  exactly as designed across two independent tasks hitting exhaustion
+  simultaneously — worth keeping the chain (glm-5.3-flash →
+  glm-5.2:free → opencode/glm-5.2 → minimax-m3:free → ...) as the
+  default retry order rather than re-deriving it per incident.
+- **Stop reason:** goal met — all 6 non-deferred items from the
+  research pass are shipped, tested, reviewed, merged, and pushed.

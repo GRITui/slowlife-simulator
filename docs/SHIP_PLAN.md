@@ -139,6 +139,22 @@ task-number order.
       design conflict needing explicit owner sign-off, and tool AoE/
       charge tiers — real depth gap but touches the core interaction
       model). See `ops/ai-eng-log.md` run 16.
+- [x] **3-sprint autonomous run closed all 6 non-deferred TASK-328..334
+      items.** Sprint 1 (self-executed): weather-reactive NPC schedules
+      + dialogue. Sprint 2 (OpenCode-delegated): monsoon festival
+      density (2 new flavor-only festivals — monsoon had zero before
+      this), repeatable side-quest noticeboard. Sprint 3
+      (OpenCode-delegated, after the top 3 provider tiers all hit
+      exhaustion/rate-limits back to back — fell to `minimax-m3:free`):
+      milestone collectibles across 5 varied activities, and a scope
+      correction found before delegating — TASK-334's ticket assumed no
+      multi-tile interaction existed; a mounted 3x3 mechanic already
+      did (planting only), so the real gap was extending it to water/
+      harvest, not a new touch-charge system. TASK-333 (affinity decay)
+      deliberately excluded — still needs an explicit owner call on the
+      no-fail-state design tension. All 5 delegated/self-executed diffs
+      passed Code Quality Review and an independent full-gate re-run
+      before merge. See `ops/ai-eng-log.md` run 17.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)
