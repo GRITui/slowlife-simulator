@@ -155,6 +155,13 @@ task-number order.
       no-fail-state design tension. All 5 delegated/self-executed diffs
       passed Code Quality Review and an independent full-gate re-run
       before merge. See `ops/ai-eng-log.md` run 17.
+- [x] **TASK-333 resolved.** Brought back for discussion; owner rejected
+      decay and picked a non-punishing alternative — a weekly
+      interaction streak (`GameData.record_weekly_engagement()`) that
+      grants a small bonus for consistent engagement instead of ever
+      reducing affinity. Every item from the Gemini gap-analysis
+      research pass is now shipped or explicitly resolved. See
+      `ops/ai-eng-log.md` run 18.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)

@@ -269,6 +269,34 @@ func record_specialty_sale(npc_id: String, day: int) -> void:
 	_reset_specialty_if_new_week(day)
 	specialty_sales_this_week[npc_id] = int(specialty_sales_this_week.get(npc_id, 0)) + 1
 
+# TASK-333 (2026-09-02): weekly interaction streak — a non-punishing
+# alternative to affinity decay, which was flagged as conflicting with
+# this project's established no-fail-state precedent (TASK-319/324).
+# Keeping up an interaction with an NPC every week grants a small BONUS
+# on top of normal affinity gains; missing a week only forfeits that
+# week's bonus and resets the streak to restart — it never reduces
+# affinity already earned. Reuses _get_specialty_week's week concept.
+var npc_weekly_streak: Dictionary = {} # npc_id -> consecutive weeks interacted
+var npc_last_interaction_week: Dictionary = {} # npc_id -> week int of last count
+
+## Call on any affinity-bearing interaction with npc_id. Returns the bonus
+## affinity to grant this call (0 on most calls — only when the streak
+## actually advances past its first week, and only once per npc per week).
+func record_weekly_engagement(npc_id: String, day: int) -> int:
+	var week: int = _get_specialty_week(day)
+	var last_week: int = int(npc_last_interaction_week.get(npc_id, -999))
+	if last_week == week:
+		return 0 # already counted this NPC this week
+	if last_week == week - 1:
+		npc_weekly_streak[npc_id] = int(npc_weekly_streak.get(npc_id, 0)) + 1
+	else:
+		npc_weekly_streak[npc_id] = 1 # first interaction, or streak broken — restart
+	npc_last_interaction_week[npc_id] = week
+	var streak: int = int(npc_weekly_streak[npc_id])
+	if streak < 2:
+		return 0 # first week of a streak just establishes it, no bonus yet
+	return mini(streak - 1, 5) # +1 affinity per streak week, capped at +5
+
 func get_sell_price(item_id: String, channel: String) -> int:
 	var base: int = int(SELL_PRICES.get(item_id, 0))
 	if base <= 0:

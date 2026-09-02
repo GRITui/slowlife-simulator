@@ -39,6 +39,17 @@ func try_interact() -> bool:
 	# which are otherwise touched.
 	_try_offer_quest()
 	_try_complete_talk_objective()
+	# TASK-333 (design pivot from affinity decay, which conflicted with the
+	# established no-fail-state precedent — see TASK-319/324): a weekly
+	# interaction streak grants a small BONUS on top of normal affinity
+	# gains instead of punishing neglect. Granted silently (no dialogue
+	# line — show_dialogue has no queue, a line here would just be
+	# overwritten by whichever branch below emits next).
+	var tm_bonus: Node = SignalBus.time_manager
+	var day_bonus: int = int(tm_bonus.day) if tm_bonus != null and "day" in tm_bonus else 1
+	var bonus: int = GameData.record_weekly_engagement(npc_id, day_bonus)
+	if bonus > 0:
+		GameData.add_affinity(npc_id, bonus)
 	if GameData.married and GameData.spouse == npc_id:
 		# TASK-282: marriage ceiling payoff — annual anniversary, cozy loop.
 		var tm: Node = SignalBus.time_manager

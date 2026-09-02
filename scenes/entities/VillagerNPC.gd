@@ -117,6 +117,23 @@ func talk() -> void:
 	# early return.
 	_try_offer_quest()
 	_try_complete_talk_objective()
+	# TASK-333 (design pivot from affinity decay, which conflicted with the
+	# established no-fail-state precedent — see TASK-319/324): a weekly
+	# interaction streak grants a small BONUS on top of normal affinity
+	# gains instead of punishing neglect. Fires on every interact
+	# (whichever branch below handles it), excluding the transactional
+	# trader. Missing a week only forfeits that week's bonus and resets
+	# the streak — it never reduces affinity already earned. Granted
+	# silently (no separate dialogue line) — show_dialogue has no queue
+	# (Main._on_show_dialogue overwrites dialogue_label.text directly), so
+	# a line emitted here would just get instantly overwritten by
+	# whichever branch below emits its own line next.
+	if npc_id != "trader":
+		var tm_bonus: Node = SignalBus.time_manager
+		var day_bonus: int = int(tm_bonus.day) if tm_bonus != null and "day" in tm_bonus else 1
+		var bonus: int = GameData.record_weekly_engagement(npc_id, day_bonus)
+		if bonus > 0:
+			GameData.add_affinity(npc_id, bonus)
 	# TASK-313 Channel A: Cart Trader (evening farm visit 18:00-21:00, base price).
 	if npc_id == "trader":
 		if not _is_trader_available():

@@ -950,3 +950,52 @@ category from the role reassessment, discovered live.
   default retry order rather than re-deriving it per incident.
 - **Stop reason:** goal met — all 6 non-deferred items from the
   research pass are shipped, tested, reviewed, merged, and pushed.
+
+## 2026-09-02 — Run 18 (TASK-333 resolved: decay -> weekly streak bonus)
+
+- **Trigger:** user asked to bring TASK-333 back for discussion. Laid
+  out the actual decision (not a default-yes): the no-fail-state
+  precedent (`TASK-319`, reaffirmed for `TASK-324`'s rivals), why a
+  decreasing-only value is punish-adjacent, and 3 concrete options —
+  skip it, implement decay anyway, or a non-punishing alternative
+  (streak bonus instead of decay). Owner picked the non-punishing
+  alternative.
+- **Design:** `GameData.record_weekly_engagement(npc_id, day)` — reuses
+  `_get_specialty_week()`'s existing week concept (day/7). Consecutive
+  weeks interacting with an NPC grant a small bonus (+1 affinity per
+  streak week beyond the first, capped at +5); missing a week resets
+  the streak to restart but never reduces affinity already earned.
+  Wired unconditionally into both `VillagerNPC.talk()` and
+  `RomanceNPC.try_interact()` (excluding the transactional trader),
+  right alongside the existing unconditional quest-talk-tracking calls
+  from run 16's fix.
+- **UX bug caught before it shipped:** first draft emitted a dedicated
+  `SignalBus.show_dialogue` line announcing the bonus. Checked
+  `Main._on_show_dialogue()` first (per this session's now-standard
+  "verify, don't assume" discipline) and found it has no queue —
+  `dialogue_label.text` is overwritten directly, so a bonus line
+  emitted before the branch's own dialogue would be instantly
+  overwritten and never actually seen. Removed the dedicated line;
+  bonus is granted silently (matches how buffalo/chicken hearts are
+  discovered too — via HUD, not a toast).
+  Also caught the same class of test-authoring mistake as run 16's
+  gift work: the end-to-end tests initially compared affinity deltas
+  across two `talk()` calls without clearing the seeded starting
+  inventory, so the auto-gift mechanic's own affinity gain (any
+  `FOOD_ITEMS` held) would have been counted as part of the "weekly
+  bonus" delta. Fixed by clearing inventory before each call, isolating
+  the streak effect being tested.
+- **Verification:** new `tests/test_weekly_engagement.gd` (18/18) —
+  direct streak-math unit checks (first interaction, same-week repeat,
+  consecutive-week growth to the +5 cap, missed-week reset,
+  independent per-npc state) plus end-to-end through both NPC scripts.
+  Full gate green: `run_gate.sh all` (content 100/100, engine 50/50,
+  save-compat 35/35, perf 6/6, touch 10/10). Regression-checked
+  `test_gift_prefs.gd` (11/11), `test_quest_chain.gd` (27/27),
+  `test_talk_objective_not_skipped_by_gift.gd` (6/6),
+  `test_anniversary.gd` (6/6), `test_wedding.gd` (6/6) — none affected.
+- **Integration outcome:** self-executed (small, narrative/balance-
+  sensitive, same category as run 17's Sprint 1). TASK-333 flipped to
+  `COMPLETED` in `ops/backlog-inbox.md`; GitHub issue #184 closed.
+- **Stop reason:** goal met — the one remaining filed item from the
+  Gemini research pass is resolved.

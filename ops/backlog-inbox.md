@@ -222,11 +222,11 @@ Recommended order if approved, best cost/impact ratio first:
 <task_item>
   <id>TASK-333</id>
   <source>AI_LOOP_GEMINI</source>
-  <status>NEEDS_OWNER_REVIEW</status>
-  <priority>P3 (design-philosophy conflict — explicit owner call required, do not default-implement)</priority>
-  <title>Affinity decay for ignored NPCs</title>
-  <description>Confirmed: no decay mechanic exists on any affinity value — hearts only ever go up. Gemini proposed a light decay for ignored NPCs (HM:BtN-standard). Flagging this the same way TASK-324's rival system was flagged: it tensions with this project's established no-fail-state cozy precedent (docs/research/TASK-319-spec.md explicitly rejected a strict deadline/evaluation score on this basis) — a value that can only ever go down on player inaction is punish-adjacent in a way this codebase has consistently avoided. Do not implement without an explicit owner decision on which side of that line this falls.</description>
-  <researcher_notes>Impact: medium / Effort: low if approved — but scope inclusion itself is the open question, not the implementation cost. Owner: TBD — needs explicit sign-off, precedent: TASK-324 PO LEDGER 2026-09-01. GitHub issue: #184.</researcher_notes>
+  <status>COMPLETED</status>
+  <priority>P3 (design-philosophy conflict — resolved 2026-09-02)</priority>
+  <title>Affinity decay for ignored NPCs -> weekly interaction streak bonus (owner-directed alternative)</title>
+  <description>Original ask (decay on neglect) confirmed to conflict with the no-fail-state precedent per the discussion below. Owner reviewed 3 options (skip entirely / implement decay anyway / non-punishing alternative) and picked the non-punishing alternative: GameData.record_weekly_engagement() grants a small bonus (+1 affinity per consecutive week interacted with an NPC, capped at +5) instead of ever reducing affinity. Missing a week only forfeits that week's bonus and resets the streak to restart — no value ever goes down. Wired into both VillagerNPC.talk() and RomanceNPC.try_interact(), unconditional on every interact (excluding the transactional trader), granted silently (show_dialogue has no queue, so a dedicated line would just be overwritten by whichever branch's own line fires next).</description>
+  <researcher_notes>Resolved via owner discussion 2026-09-02 (see chat transcript / ops/ai-eng-log.md run 18): decay rejected, weekly-streak bonus chosen instead. tests/test_weekly_engagement.gd (18/18). GitHub issue: #184 (closed).</researcher_notes>
 </task_item>
 
 <task_item>
