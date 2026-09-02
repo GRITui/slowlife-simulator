@@ -176,7 +176,7 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P1</priority>
   <title>Weather-reactive NPC schedules (rain routes NPCs indoors)</title>
   <description>ScheduleDB.gd already drives 7 NPCs' hour-based waypoints, polled every physics frame with SignalBus.time_manager already available; GameData.current_weather already varies (clear/rain/fog/overcast) via TimeManager but nothing consumes it for NPC positioning — Main.gd's own weather_changed handler is a no-op (`pass`). Add a rain-variant waypoint per NPC (reusing each NPC's existing "home" slot where one exists) so villagers visibly react to weather, matching HM:BtN's rain-reroutes-schedules pattern. Confirmed real gap.</description>
-  <researcher_notes>Impact: high (town "feels alive") / Effort: low — infra exists, this is data + one weather param threaded through waypoint_for(). Owner: TBD.</researcher_notes>
+  <researcher_notes>Impact: high (town "feels alive") / Effort: low — infra exists, this is data + one weather param threaded through waypoint_for(). Owner: TBD. GitHub issue: #179.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -186,7 +186,7 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P1</priority>
   <title>Weather/festival-aware dialogue priority tier</title>
   <description>DialogueDB.get_seasonal_line() already has a priority-branch structure (binthabat_done > binthabat_hint > season pool) — extend it with a weather branch (e.g. a "rain" pool per NPC) ahead of the season fallback, so daily dialogue occasionally reacts to current weather without a large new line count. Confirmed real gap: current_weather is tracked but never read by any dialogue path.</description>
-  <researcher_notes>Impact: high / Effort: low — same data-driven pattern already used for season/binthabat branches, just one more Dictionary key per NPC. Owner: TBD.</researcher_notes>
+  <researcher_notes>Impact: high / Effort: low — same data-driven pattern already used for season/binthabat branches, just one more Dictionary key per NPC. Owner: TBD. GitHub issue: #180.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -196,7 +196,7 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P2</priority>
   <title>Festival density expansion (2-4 more lightweight festivals)</title>
   <description>Confirmed: exactly 4 festival triggers exist (Loy Krathong, Songkran, Wan Sart, Fishing Competition) across a 90-day year (30 days/season x 3 seasons) — HM:BtN-class density is closer to 1 every 1-2 weeks. FestivalManager.gd's pattern (minute_ticked subscription, year-season dedupe key, dialogue + optional mechanic) is proven and cheap to replicate. Candidates: a second cool-season event, a second hot-season event beyond Songkran/fishing comp, a monsoon-season event (currently zero monsoon festivals).</description>
-  <researcher_notes>Impact: high (breaks up the daily grind across ~112 in-game days) / Effort: low-medium per festival — reuses an existing, well-tested pattern; scope is "how many, which flavor" not "build the system." Owner: TBD.</researcher_notes>
+  <researcher_notes>Impact: high (breaks up the daily grind across ~112 in-game days) / Effort: low-medium per festival — reuses an existing, well-tested pattern; scope is "how many, which flavor" not "build the system." Owner: TBD. GitHub issue: #181.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -206,7 +206,7 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P2</priority>
   <title>Milestone collectibles across varied activities (not just shipping)</title>
   <description>TASK-326 already added permanent stamina-tier progression, but it's gated on a single axis (lifetime_items_shipped). Gemini's "Sacred Amulet" idea — 8-10 permanent milestones tied to varied achievements (max companion bond, storm-day fishing catch, deep mining tier, festival attendance streak) — would be a genuine expansion of an existing single-axis system into completionist breadth, reusing stamina_tier's existing plumbing rather than inventing a new one. Correct against Gemini's framing: this is an EXTENSION of an existing mechanic, not a net-new gap.</description>
-  <researcher_notes>Impact: high (completionist depth without new gameplay loops) / Effort: medium — needs a milestone-tracking registry distinct from active_quests (these are permanent, not repeatable/removable). Owner: TBD.</researcher_notes>
+  <researcher_notes>Impact: high (completionist depth without new gameplay loops) / Effort: medium — needs a milestone-tracking registry distinct from active_quests (these are permanent, not repeatable/removable). Owner: TBD. GitHub issue: #182.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -216,7 +216,7 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P2</priority>
   <title>Repeatable side-quest noticeboard</title>
   <description>Confirmed: no repeatable/cycling quest source exists anywhere — the 22-objective quest chain (QuestLog.gd) is entirely one-shot narrative content. A noticeboard cycling simple fetch/delivery requests (e.g. "3 herbs for the monk") would give the item economy an ongoing sink and NPC affinity an outlet outside daily gifting, complementing rather than replacing the main chain.</description>
-  <researcher_notes>Impact: medium-high (content range, repeat-play value) / Effort: medium — needs a new lightweight repeatable-quest data shape distinct from QuestData's one-shot objectives array. Owner: TBD.</researcher_notes>
+  <researcher_notes>Impact: medium-high (content range, repeat-play value) / Effort: medium — needs a new lightweight repeatable-quest data shape distinct from QuestData's one-shot objectives array. Owner: TBD. GitHub issue: #183.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -226,7 +226,7 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P3 (design-philosophy conflict — explicit owner call required, do not default-implement)</priority>
   <title>Affinity decay for ignored NPCs</title>
   <description>Confirmed: no decay mechanic exists on any affinity value — hearts only ever go up. Gemini proposed a light decay for ignored NPCs (HM:BtN-standard). Flagging this the same way TASK-324's rival system was flagged: it tensions with this project's established no-fail-state cozy precedent (docs/research/TASK-319-spec.md explicitly rejected a strict deadline/evaluation score on this basis) — a value that can only ever go down on player inaction is punish-adjacent in a way this codebase has consistently avoided. Do not implement without an explicit owner decision on which side of that line this falls.</description>
-  <researcher_notes>Impact: medium / Effort: low if approved — but scope inclusion itself is the open question, not the implementation cost. Owner: TBD — needs explicit sign-off, precedent: TASK-324 PO LEDGER 2026-09-01.</researcher_notes>
+  <researcher_notes>Impact: medium / Effort: low if approved — but scope inclusion itself is the open question, not the implementation cost. Owner: TBD — needs explicit sign-off, precedent: TASK-324 PO LEDGER 2026-09-01. GitHub issue: #184.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -236,5 +236,5 @@ Recommended order if approved, best cost/impact ratio first:
   <priority>P3</priority>
   <title>Tool tier AoE/charge mechanic (multi-tile clear at max tier)</title>
   <description>Confirmed: GridManager.plant/water/harvest all take a single Vector2i cell — no multi-tile operation exists at any tool tier. HM:BtN's charged AoE swings (1x3, 3x3 at max tier) are a real strategic-depth gap for the late game. Larger scope than the other items here: touches the core 1:1-tile interaction model GridManager and the player controller are both built around, plus input handling for a "hold to charge" gesture on iOS touch — needs its own design pass, not a quick data addition like TASK-328/329.</description>
-  <researcher_notes>Impact: high (real late-game depth) / Effort: medium-high — foundational interaction model change, not additive. Owner: TBD.</researcher_notes>
+  <researcher_notes>Impact: high (real late-game depth) / Effort: medium-high — foundational interaction model change, not additive. Owner: TBD. GitHub issue: #185.</researcher_notes>
 </task_item>
