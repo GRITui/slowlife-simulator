@@ -1978,3 +1978,94 @@ category from the role reassessment, discovered live.
   "6 romance + 6 rivals + 5 unlockable areas" plan, all three phases
   of the 10-level relationship-scale unification, and the
   first-playthrough planting-UX gap are all complete and on main.
+
+## 2026-09-03 — Run 31 (Art asset quality pass: portraits, general auto-shader, day/night tint bugfix)
+
+- User asked for a Gemini art-quality review; Gemini's browser tab
+  typing was denied by the user twice, so pivoted to a direct
+  procedural audit instead: measured opaque-color-count per PNG (a
+  proxy for "flat placeholder" vs "shaded") across all 393 assets in
+  `assets/`. Found 340 (86.5%) at <=8 colors and zero above 20,
+  despite `ART_STYLE_GUIDE.md` documenting a "softly-shaded ~70 color"
+  redesign as already applied project-wide — that redesign evidently
+  never touched anything but a few UI panels (TASK-351).
+- Hand-built `tools/gen_npc_portraits_v2.py` for the 6 portraits
+  actually referenced in code (grep-verified via
+  `scenes/core/Main.gd`'s `PORTRAIT_PATHS`) — elder, child, handler,
+  monk, trader, buffalo. Added per-region highlight/shadow shading and
+  distinguishing silhouette detail (conical hat, headwrap, sash, cap)
+  while preserving each character's existing identity color. Verified
+  visually before committing (`2470c9a`).
+- Published a "Sprite Almanac" artifact — a filterable HTML catalog of
+  all 28 character identities (87 sprite files) tagged by color-count
+  tier, plus portrait before/after — for the owner's review before
+  committing to the larger asset-replacement effort.
+- **Model-fit research** (WebSearch, after Gemini browser typing was
+  denied a second time): confirmed the task should be framed as "write
+  PIL code using geometric primitives" (a coding task, well within
+  existing free-model chains) rather than "generate a raw pixel grid"
+  (a recognized hard failure mode for LLMs — Pixel Art Bench found
+  autoregressive models fundamentally struggle with 2D spatial
+  consistency at that framing). This directly shaped how the
+  auto-shading task below was specced and dispatched.
+- Wrote `docs/research/ART-AUTOSHADE-spec.md` and delegated a general
+  auto-shading tool to Cline (minimax-m3:free) to apply the same
+  highlight/shadow technique across `assets/items/` (157 files),
+  `assets/environment/` (~110 files, recursive), `assets/characters/`
+  (87 files, idempotency-guarded), and `assets/particles/` (5 files).
+  312 files reshaded, 49 already-decent files correctly skipped.
+- **Two real issues found and fixed in Code Quality Review**, both
+  invisible to the delegate's own color-count-based verification:
+  1. The delegate's own mid-run investigation found that tiny regions
+     (early crop-growth sprites, particle dots) had their highlight
+     AND shadow blobs together cover the entire region, erasing the
+     base color — it ran out of its time budget mid-fix. Completed:
+     regions under 16px now get a highlight only, guaranteeing the
+     base tone survives.
+  2. Found via visual sampling (NOT catchable by color-count alone): a
+     single directional highlight/shadow blob looks right on a
+     standalone sprite but creates an obvious repeating "spotlight"
+     artifact on TILEABLE ground/water textures once tiled across the
+     map. Excluded `assets/tilesets/` from the batch entirely —
+     documented as a follow-up needing a different, seam-safe
+     technique (per-pixel noise, not directional lighting), not
+     silently shipped as a regression. This is the clearest evidence
+     yet in this project that a purely numeric verification metric
+     (however well-reasoned) is not a substitute for actually looking
+     at the images — the exact discipline this session's Code Quality
+     Review practice exists to enforce.
+  3. Fixed the test file's own coupled bug: it hardcoded a single
+     `n > 8` threshold for every spot-check, which the tiny-region fix
+     (by design) breaks for small assets. Rewired to per-file
+     realistic thresholds already present but unused in the test's own
+     data structure.
+- Independently re-verified: full gate (225 tests), new
+  `test_asset_shading.gd` (14/14 — dimensions preserved, alpha
+  invariant holds bit-for-bit, per-file color-count thresholds),
+  `test_villager_portraits.gd` unaffected (path-only assertions), plus
+  a 32-file visual sample spanning all four categories. Committed
+  `54c8f49`, merged to main, pushed.
+- **Also fixed, opportunistically, while capturing a comparison
+  screenshot for the Gemini review**: `assets/shaders/
+  day_night_tint.gdshader` had a SECOND bug beyond the one already
+  fixed earlier this session — the first fix's `1.0 - day_w` alpha
+  formula was fully opaque (not just briefly opaque) for the ENTIRE
+  night stretch and the exact dawn/dusk peaks, since `day_w` is 0 for
+  that whole period, not just an instant. The screenshot came back
+  almost entirely washed out at 06:00 dawn, which is what surfaced
+  this. Fixed by using `strength` (already correctly capped near
+  `grade_strength`, ~0.22, and 0 at full day) for both the color mix
+  and the alpha directly, rather than two different `day_w`-derived
+  expressions. Added `tests/shaders/test_day_night_tint.gd` — a
+  math-mirror test (Godot's headless renderer can't rasterize canvas
+  shaders) sweeping every hour of the day, since this exact bug CLASS
+  has now shipped twice with zero prior test coverage. Committed
+  `67d985d`, pushed, independently of the art-asset work above.
+- **Stop reason**: this exhausts the immediately actionable art work.
+  Remaining open items per the owner: (1) review the Sprite Almanac
+  and green-light or redirect further asset work, (2) the owner's
+  separate ask to research/design a building-interior + map-transition
+  system (currently zero scene-transition infrastructure exists —
+  only `Main.tscn`), which is a new, substantial feature area, not an
+  art-asset task — tracked separately, not started yet as of this
+  entry.
