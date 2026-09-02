@@ -1627,3 +1627,88 @@ category from the role reassessment, discovered live.
   draft backlog, open GitHub issues) — implementation deliberately not
   started, pending the owner's review of the open design questions on
   TASK-350 and a design pass on TASK-351.
+
+## 2026-09-02 — TASK-350 design questions resolved; TASK-351 built (2 more real bugs found)
+
+- **TASK-350 fully decided via a structured one-by-one Q&A**: owner
+  asked to verify each open design question individually, with
+  research + pro/con for each. Input binding: resolved not as a
+  three-way tradeoff but as one shared Godot InputMap action
+  (`cycle_seed`) bound per-platform — `Q` (keyboard), `L1`/`LB`
+  (gamepad, exact HM:BtN precedent, once the owner clarified
+  controller support is on the roadmap — this reframed the whole
+  question, since a shoulder-button binding I'd initially dismissed as
+  "gamepad-only" becomes the right generalized base pattern once
+  multi-input is the actual goal), and tapping the HUD seed-indicator
+  widget (mobile touch, matching the existing `VirtualJoystick`/
+  `InteractTap` on-screen-control precedent already in `HUD.tscn`).
+  No-seed fallback: keeps falling back to jasmine_rice (no-fail-state
+  preserved) but now with a distinct dialogue line instead of a silent
+  swap. Both decisions recorded in `ops/backlog-inbox.md` and posted to
+  GitHub issue #196; flipped to READY_FOR_PM.
+- **TASK-351 built this run** (self-executed — narrative dialogue
+  wasn't the point here, but Sonnet's never-delegated UI/.tscn tier
+  is): owner pointed at a specific reference — an "Art assets redesign"
+  zip in `assets/` — asking me to use it as reference and enhance
+  current assets. Checked it byte-for-byte against what's currently
+  deployed FIRST rather than assume: every asset compared was
+  IDENTICAL. Reported this honestly before proceeding rather than
+  silently working from a false premise — the zip is a backup/snapshot
+  of the current art, not an unapplied upgrade. Owner then asked for
+  genuinely new HUD art, generated self-executed.
+- **Found the actual target spec already written and unapplied**:
+  `ART_STYLE_GUIDE.md` specifies an exact HUD visual treatment (Clay
+  Brown 1px rounded border, Rice White 90%-opacity backing, specific
+  accent/heading colors) that the currently-shipped assets never
+  implemented — building to this pre-existing spec instead of
+  inventing a new direction.
+- **Investigating the resulting layout surfaced two more real,
+  pre-existing bugs, neither introduced today:**
+  1. `StaminaBar`/`HarmonyBar` set `under_texture`/`progress_texture`
+     in `HUD.tscn` — Godot 4's actual `TextureProgressBar` property
+     names are `texture_under`/`texture_progress`. Scene files
+     silently ignore unknown properties on load, so these bars have
+     **never rendered their fill graphic in this project's history** —
+     only the text labels were ever visible. Found by testing with a
+     solid-red placeholder texture (still invisible) and a direct
+     property-introspection script (`get_property_list()`) rather than
+     guessing; confirmed pre-existing (not caused by this task's edits)
+     by testing the untouched original `HUD.tscn` via `git stash` in
+     isolation before concluding.
+  2. `SeasonBg`/`PromptBg` used `stretch_mode = 1`, which is
+     `STRETCH_TILE` (verified against Godot's actual enum values via a
+     throwaway script, not assumed) — harmless at their original small
+     container heights, but tiled the source texture 4-5x once the
+     stat row's real height (already tall, driven by `TimeBox`'s 7
+     stacked labels) became visible for the first time behind a solid
+     panel background.
+  3. Also fixed `HUD.gd`'s `@onready` node paths (stale after nesting
+     `HBox` one level deeper under a new `StatPanel` wrapper) and
+     centered the Stamina/Harmony/Season columns vertically so
+     `TimeBox`'s extra height doesn't read as broken empty space.
+- **Verification methodology**: used the game's own `--screenshot`
+  CLI hook (TASK-010) throughout, at both dawn and noon, rather than
+  relying on visual inspection of static code — this is exactly the
+  discipline that caught bug #1 (a diagnostic script's own property-
+  access error was almost dismissed as a typo before recognizing it as
+  the actual root cause). `run_gate.sh all` green throughout;
+  `test_hud_progression.gd` (10/10) and `test_touch_targets.gd`
+  (10/10) regression-checked.
+- **Gemini art review attempted per owner's suggestion, not completed**:
+  hit a genuine multi-browser-connection ambiguity (two Chrome
+  instances connected, neither named, `switch_browser`'s confirmation
+  flow timed out at 2 minutes) and then a `file://` navigation
+  restriction (the browser tool can't open local files to get a
+  screenshot into Gemini's chat without a real OS-level upload
+  dialog). Reported the obstacle and gave my own assessment directly
+  rather than keep spending effort on tooling friction for a
+  secondary/nice-to-have opinion on already-shipped work.
+- **Merged `345a7db`, pushed. Re-ran the import pass on the MAIN
+  checkout after merging** (not just the worktree) — applying the
+  lesson from earlier this session's day/night-tint investigation
+  about worktree-isolated import caches not propagating back.
+  Issue #197 closed.
+- **Stop reason:** both TASK-350 (decided, ready to build) and
+  TASK-351 (built, merged, verified) are done. TASK-343 (2 unlockable
+  areas) — interrupted mid-review by this whole HUD/planting
+  investigation — is next to pick back up.

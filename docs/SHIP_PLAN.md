@@ -258,6 +258,27 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
 - [ ] Content update cadence — **NEEDS OWNER DECISION**
 - [ ] Gemini-loop Producer role: periodic "what's stalled" retro summaries
 
+## First human playthrough (2026-09-02) — findings and fixes
+The single highest-leverage gap flagged repeatedly throughout this plan
+finally happened. Real bugs surfaced immediately that no amount of
+headless testing had caught:
+- [x] **Day/night tint shader was permanently fully opaque**, hiding
+      the entire game world behind a solid color wall. One-line fix
+      (a stray `* 0.0` nullified the alpha fade term). Pre-existing
+      bug (TASK-034), not a regression.
+- [x] **Stat bars (Stamina/Harmony) have never rendered their fill
+      graphic**, ever — `HUD.tscn` used non-existent `TextureProgressBar`
+      property names (`under_texture`/`progress_texture` instead of
+      `texture_under`/`texture_progress`). Found and fixed as part of
+      TASK-351.
+- [x] **TASK-351 — HUD visual polish**, applying `ART_STYLE_GUIDE.md`'s
+      already-specified but never-implemented visual spec.
+- [ ] **TASK-350 — active-seed selection for planting** (currently
+      always plants rice, no player control). Decided: one shared
+      InputMap action (`Q` / gamepad `L1` / HUD-tap), fallback to
+      jasmine_rice with a distinct dialogue line when no seed is
+      primed. Ready to build.
+
 ## Known gaps (not placeholders — real, named absences)
 - No monetization model defined or implemented
 - No crash reporting / analytics pipeline
