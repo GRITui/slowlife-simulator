@@ -60,6 +60,17 @@ func _initialize() -> void:
 		if k.begins_with("pla_") or k.contains("_small") or k.contains("_mid") or k.contains("_big"):
 			fish_items += 1
 	_check(fish_items >= 1, "caught fish items in inventory (%d kinds)" % fish_items)
+	# Phase 3 audit: real InteractArea now exists (was always null before —
+	# see FishingSpot.gd's header comment) so proximity actually works.
+	_check(spot.get("_area") != null, "FishingSpot._area is a real Area2D (not null)")
+	var player: Node2D = main.get_node_or_null("Player") as Node2D
+	if player != null:
+		# Simulate the Area2D proximity signal directly — headless has no
+		# physics step to reliably drive real body_entered/exited firing.
+		spot.call("_on_body_entered", player)
+		_check(bool(spot.get("_player_in_range")) == true, "entering the InteractArea sets _player_in_range")
+		spot.call("_on_body_exited", player)
+		_check(bool(spot.get("_player_in_range")) == false, "exiting the InteractArea clears _player_in_range")
 	main.queue_free()
 	print("\n=== FISHING TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:

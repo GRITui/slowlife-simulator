@@ -3,24 +3,49 @@ extends Node2D
 ## tile while holding a fishing rod: rolls a catch from data/fish/fish.json
 ## (20 Thai freshwater species x 3 sizes), gated by season + fishing skill.
 ## Zero-combat catch-and-relax: no fail states, soft "nothing biting" only.
+##
+## Phase 3 audit (2026-09-02): this spot is instanced dynamically via
+## Main.gd's _ensure_fishing_spot() (script.new(), no .tscn), which never
+## added an InteractArea child — @onready $InteractArea was always null,
+## so _player_in_range never became true and cast_line() could only ever
+## be triggered by direct method calls (as every existing test does), never
+## by a real player pressing interact. Fixed the same way MiningSpot.gd
+## (TASK-321) fixed the identical latent bug: build a real Area2D +
+## CollisionShape2D programmatically in _ready().
 
 const FISH_PATH: String = "res://data/fish/fish.json"
 const _WATER := ["canal", "water_lotuspond", "deep_pond"]
 
 @export var spot_name: String = "Fishing Spot"
+## Proximity radius (matches SluiceGate/CarpenterUpgrade/MiningSpot InteractArea).
+@export var interact_radius: float = 56.0
 var fishing_rolls: int = 0 ## lifetime catches, +1 skill per 5 rolls (cap 4)
 
 var _player_in_range: bool = false
 var _roster: Array = []
-
-@onready var _area: Area2D = $InteractArea if has_node("InteractArea") else null
+var _area: Area2D = null
 
 func _ready() -> void:
 	add_to_group("fishing_spot")
-	if _area != null:
-		_area.body_entered.connect(_on_body_entered)
-		_area.body_exited.connect(_on_body_exited)
+	_build_interact_area()
 	_load_roster()
+
+func _build_interact_area() -> void:
+	_area = Area2D.new()
+	_area.name = "InteractArea"
+	_area.collision_layer = 0
+	_area.collision_mask = 1 # player layer
+	_area.monitorable = true
+	_area.monitoring = true
+	var shape: CircleShape2D = CircleShape2D.new()
+	shape.radius = interact_radius
+	var collider: CollisionShape2D = CollisionShape2D.new()
+	collider.shape = shape
+	collider.debug_color = Color(0.2, 0.7, 0.5, 0.32)
+	_area.add_child(collider)
+	add_child(_area)
+	_area.body_entered.connect(_on_body_entered)
+	_area.body_exited.connect(_on_body_exited)
 
 func _load_roster() -> void:
 	var f: FileAccess = FileAccess.open(FISH_PATH, FileAccess.READ)
