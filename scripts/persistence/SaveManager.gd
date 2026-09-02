@@ -12,7 +12,7 @@ extends Node
 # including all of it added across TASK-321..326. v3 persists all of it.
 
 const SAVE_PATH: String = "user://savegame.json"
-const SAVE_VERSION: int = 3
+const SAVE_VERSION: int = 4
 
 # Dynamic autoload helpers — safe in main scene, --script, and packaged export.
 func _gd() -> Node:
@@ -62,6 +62,13 @@ func save_game() -> bool:
 		"married": gd.married,
 		"married_year": gd.married_year,
 		"child_stage": gd.child_stage,
+		# v4 additive fields — TASK-340 rival win/loss + TASK-331 milestones
+		# (the latter was deliberately deferred at TASK-331 time; closing it
+		# here since a schema bump is already in progress for this task).
+		"npc_first_met_day": gd.npc_first_met_day,
+		"lost_to_rival": gd.lost_to_rival,
+		"rival_warning_shown": gd.rival_warning_shown,
+		"milestones_earned": gd.milestones_earned,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -148,6 +155,22 @@ func migrate(data: Dictionary) -> Dictionary:
 		if not out.has("child_stage"):
 			out["child_stage"] = 0
 		out["version"] = 3
+	# v3 -> v4: TASK-340 rival win/loss fields (a save from before this
+	# task loads as if the player had met nobody and no rival had ever
+	# progressed -- fully backward-compatible, no behavior change).
+	# Also closes TASK-331's deliberately-deferred milestones_earned
+	# persistence gap in the same pass, since a schema bump is already
+	# happening here.
+	if version < 4:
+		if not out.has("npc_first_met_day"):
+			out["npc_first_met_day"] = {}
+		if not out.has("lost_to_rival"):
+			out["lost_to_rival"] = {}
+		if not out.has("rival_warning_shown"):
+			out["rival_warning_shown"] = {}
+		if not out.has("milestones_earned"):
+			out["milestones_earned"] = {}
+		out["version"] = 4
 	return out
 
 func load_game() -> bool:
@@ -201,6 +224,10 @@ func load_game() -> bool:
 		gd.married = bool(data.get("married", false))
 		gd.married_year = int(data.get("married_year", 0))
 		gd.child_stage = int(data.get("child_stage", 0))
+		gd.npc_first_met_day = (data.get("npc_first_met_day", {}) as Dictionary).duplicate(true)
+		gd.lost_to_rival = (data.get("lost_to_rival", {}) as Dictionary).duplicate(true)
+		gd.rival_warning_shown = (data.get("rival_warning_shown", {}) as Dictionary).duplicate(true)
+		gd.milestones_earned = (data.get("milestones_earned", {}) as Dictionary).duplicate(true)
 		sb.show_dialogue.emit("System", "Game loaded.")
 		return true
 	return false

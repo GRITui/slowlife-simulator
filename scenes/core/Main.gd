@@ -82,8 +82,22 @@ func _ready() -> void:
 	SignalBus.minute_ticked.connect(_on_minute_ticked_unlocks)
 	# TASK-332: repeatable side-quest noticeboard (separate from QuestLog).
 	_ensure_noticeboard()
+	# TASK-340: rival win/loss clock (PAIRS empty until TASK-342 wires
+	# real candidates — inert but present so save/load and the daily
+	# tick machinery are proven before any content depends on them).
+	_ensure_rival_clock()
 	# TASK-270: Wing Kwai buffalo race (mounted minigame).
 	_ensure_buffalo_race()
+
+func _ensure_rival_clock() -> void:
+	if get_node_or_null("RivalClock") != null:
+		return
+	var script: GDScript = load("res://scripts/core/RivalClock.gd")
+	if script == null:
+		return
+	var clock: Node = script.new()
+	clock.name = "RivalClock"
+	add_child(clock)
 
 func _ensure_buffalo_race() -> void:
 	if get_node_or_null("BuffaloRace") != null:

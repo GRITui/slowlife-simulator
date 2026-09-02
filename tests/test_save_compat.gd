@@ -32,7 +32,7 @@ func _initialize() -> void:
 		"season": "cool",
 	}
 	var m: Dictionary = sm.migrate(v1)
-	_check(int(m.get("version", 0)) == 3, "migrate advances v1 all the way to version 3")
+	_check(int(m.get("version", 0)) == 4, "migrate advances v1 all the way to version 4")
 	var inv: Dictionary = m.get("inventory", {}) as Dictionary
 	_check(inv.get("rice_grain") is int and int(inv["rice_grain"]) == 3,
 		"migrate coerces inventory floats to int (rice_grain)")
@@ -49,6 +49,9 @@ func _initialize() -> void:
 	_check((m.get("tool_tiers", {}) as Dictionary).get("hoe", 0) == 1,
 		"v1->v3 default-adds tool_tiers with hoe=1")
 	_check(bool(m.get("married", true)) == false, "v1->v3 default-adds married=false")
+	_check((m.get("npc_first_met_day", {"x": 1}) as Dictionary).is_empty(), "v1->v4 default-adds npc_first_met_day={}")
+	_check((m.get("lost_to_rival", {"x": 1}) as Dictionary).is_empty(), "v1->v4 default-adds lost_to_rival={}")
+	_check((m.get("milestones_earned", {"x": 1}) as Dictionary).is_empty(), "v1->v4 default-adds milestones_earned={}")
 
 	# --- migrate(): v1 without new v2 fields gets default-added ---
 	var v1_no_krathong: Dictionary = {
@@ -65,19 +68,31 @@ func _initialize() -> void:
 	# --- migrate(): a v2 payload (no v3 fields yet) advances to v3 with defaults ---
 	var v2: Dictionary = {"version": 2, "inventory": {"mango": 2}, "harmony": 5, "season": "hot"}
 	var m2: Dictionary = sm.migrate(v2)
-	_check(int(m2.get("version", 0)) == 3, "migrate advances v2 payload to version 3")
+	_check(int(m2.get("version", 0)) == 4, "migrate advances v2 payload to version 4")
 	_check((m2.get("inventory", {}) as Dictionary).get("mango") == 2, "v2 inventory preserved")
 	_check(int(m2.get("veteran_year", -1)) == 1, "v2->v3 default-adds veteran_year=1")
 	_check(int(m2.get("married_year", -1)) == 0, "v2->v3 default-adds married_year=0")
 
-	# --- migrate(): already-v3 payload is a no-op pass-through ---
+	# --- migrate(): a v3 payload (no v4 fields yet) advances to v4 with defaults ---
 	var v3: Dictionary = {"version": 3, "inventory": {"mango": 2}, "harmony": 5, "season": "hot",
 		"fishing_skill": 3, "married": true, "spouse": "niran"}
 	var m3: Dictionary = sm.migrate(v3)
-	_check(int(m3.get("version", 0)) == 3, "migrate keeps version 3 payload")
+	_check(int(m3.get("version", 0)) == 4, "migrate advances v3 payload to version 4")
 	_check(int(m3.get("fishing_skill", 0)) == 3, "v3 fishing_skill preserved, not reset to default")
 	_check(bool(m3.get("married", false)) == true and String(m3.get("spouse", "")) == "niran",
 		"v3 marriage state preserved, not reset to default")
+	_check((m3.get("npc_first_met_day", {"x": 1}) as Dictionary).is_empty(), "v3->v4 default-adds npc_first_met_day={}")
+
+	# --- migrate(): already-v4 payload is a no-op pass-through ---
+	var v4: Dictionary = {"version": 4, "inventory": {"mango": 2}, "harmony": 5, "season": "hot",
+		"fishing_skill": 3, "married": true, "spouse": "niran",
+		"lost_to_rival": {"fah": true}, "milestones_earned": {"deep_miner": true}}
+	var m4: Dictionary = sm.migrate(v4)
+	_check(int(m4.get("version", 0)) == 4, "migrate keeps version 4 payload")
+	_check(bool((m4.get("lost_to_rival", {}) as Dictionary).get("fah", false)),
+		"v4 lost_to_rival preserved, not reset to default")
+	_check(bool((m4.get("milestones_earned", {}) as Dictionary).get("deep_miner", false)),
+		"v4 milestones_earned preserved, not reset to default")
 
 	# --- round-trip via real file IO (user://) ---
 	var gd0: Node = root.get_node("GameData")
@@ -103,6 +118,10 @@ func _initialize() -> void:
 	gd0.spouse = "niran"
 	gd0.married_year = 1
 	gd0.child_stage = 2
+	gd0.npc_first_met_day["fah"] = 5
+	gd0.lost_to_rival["kiet"] = true
+	gd0.rival_warning_shown["fah"] = 2
+	gd0.milestones_earned["deep_miner"] = true
 	var saved: bool = sm.save_game()
 	_check(saved, "save_game() writes user://savegame.json")
 	# Mutate state to defaults, then load must restore every field above.
@@ -123,6 +142,10 @@ func _initialize() -> void:
 	gd0.spouse = ""
 	gd0.married_year = 0
 	gd0.child_stage = 0
+	gd0.npc_first_met_day.clear()
+	gd0.lost_to_rival.clear()
+	gd0.rival_warning_shown.clear()
+	gd0.milestones_earned.clear()
 	var loaded: bool = sm.load_game()
 	_check(loaded, "load_game() reads saved file back")
 	var gd: Node = root.get_node("GameData")
@@ -142,13 +165,17 @@ func _initialize() -> void:
 	_check(int(gd.veteran_year) == 2, "round-trip restores veteran_year=2")
 	_check(gd.married and gd.spouse == "niran" and int(gd.married_year) == 1 and int(gd.child_stage) == 2,
 		"round-trip restores full marriage/family state")
+	_check(int(gd.npc_first_met_day.get("fah", -1)) == 5, "round-trip restores npc_first_met_day")
+	_check(bool(gd.lost_to_rival.get("kiet", false)), "round-trip restores lost_to_rival")
+	_check(int(gd.rival_warning_shown.get("fah", -1)) == 2, "round-trip restores rival_warning_shown")
+	_check(bool(gd.milestones_earned.get("deep_miner", false)), "round-trip restores milestones_earned")
 
 	# --- saved file carries the version tag ---
 	var f: FileAccess = FileAccess.open("user://savegame.json", FileAccess.READ)
 	var raw: String = f.get_as_text() if f else ""
 	var parsed: Variant = JSON.parse_string(raw)
-	_check(parsed is Dictionary and int((parsed as Dictionary).get("version", 0)) == 3,
-		"saved JSON carries version=3")
+	_check(parsed is Dictionary and int((parsed as Dictionary).get("version", 0)) == 4,
+		"saved JSON carries version=4")
 
 	sm.queue_free()
 	print("\n=== SAVE-COMPAT TESTS: %d passed, %d failed ===" % [_passed, _failed])

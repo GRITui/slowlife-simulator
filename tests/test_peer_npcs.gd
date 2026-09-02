@@ -64,6 +64,23 @@ func _initialize() -> void:
 	_check(ploy.try_interact(), "Ploy specialty-sell interact succeeds at close tier")
 	_check(int(gd.inventory.get("banana_rice_cake", 0)) == 0, "specialty item consumed")
 	_check(gd.silver > silver_before, "specialty sell grants silver premium")
+
+	# TASK-340: rival win/loss clock — npc_first_met_day set on first
+	# interact (niran was already interacted with above, at boot day 1).
+	_check(int(gd.npc_first_met_day.get("niran", -1)) == 1, "npc_first_met_day set on first interact")
+	var met_before: int = int(gd.npc_first_met_day.get("niran", -1))
+	niran.try_interact()
+	_check(int(gd.npc_first_met_day.get("niran", -1)) == met_before,
+		"npc_first_met_day is not overwritten on later interacts")
+	# _check_proposal() hard-blocks a candidate lost to their rival, at any
+	# affinity, with a krathong held — the permanent enforcement point.
+	gd.affinity["fah"] = 100
+	gd.add_item("krathong", 1)
+	gd.lost_to_rival["fah"] = true
+	_check(fah.call("_check_proposal") == false, "lost_to_rival permanently blocks proposal even at affinity 100")
+	_check(not gd.married, "proposal block leaves married=false")
+	gd.lost_to_rival.erase("fah")
+	_check(fah.call("_check_proposal") == true, "proposal succeeds normally once not lost_to_rival")
 	main.queue_free()
 	print("\n=== PEER-NPC TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
