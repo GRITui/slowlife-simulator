@@ -371,7 +371,7 @@ Recommended order if approved, best cost/impact ratio first:
 <task_item>
   <id>TASK-350</id>
   <source>OWNER</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>P1 (blocks meaningful crop variety the moment a player owns 2+ seed types)</priority>
   <title>Active-seed selection for planting — first real gap in the "no menu UI" philosophy</title>
   <description>Owner found via actual play (first human playthrough this project has had): pressing interact on an empty tile always plants rice, with no way to choose a different crop. Root cause confirmed in code: `Player._find_crop_for_held_seed()` auto-picks "the first seed_* item found in GameData.inventory" (Dictionary iteration order, not player-controlled), falling back to jasmine_rice if no seeds held at all. This is the SAME "auto-pick first matching held item" pattern this whole game deliberately uses everywhere (gift-giving, specialty-selling) to avoid any menu/choice UI — it just breaks down specifically for planting once a player owns more than one seed type, since there's no way to express "no, THIS one."</description>
@@ -384,7 +384,7 @@ Recommended order if approved, best cost/impact ratio first:
 
   **NO-SEED FALLBACK DECIDED (owner, 2026-09-02):** when no seed is primed (owns none), planting still falls back to jasmine_rice (preserves the no-fail-state guarantee — interact always does something) but emits a distinct dialogue line ("No seed selected — planted rice instead.") instead of silently planting rice with no signal. Both open questions now resolved — ready to spec/build.
 
-  Still open: whether "no seed primed" (owns none) should fall back to jasmine_rice (current behavior, no-fail-state-consistent) or block planting with a dialogue prompt — pending a follow-up owner decision.</researcher_notes>
+  **SHIPPED (2026-09-02):** spec written (`docs/research/TASK-350-spec.md`), delegated to Cline (minimax-m3:free) alongside TASK-348/349, Code Quality Review + merge self-executed. Commit 5acae24 (merge -&gt; main), GitHub issue #196 closed. `Player._find_crop_for_held_seed()` now prefers a session-only `_primed_seed_id` (not persisted to save data) set by the new shared `cycle_seed` InputMap action (Q on keyboard; gamepad L1/LB left intentionally unbound — no controller testing rig exists yet), falling back to the legacy first-held pick only when nothing is primed. New HUD `SeedIndicator.gd` widget mirrors `InteractTap.gd`'s touch-to-action pattern for mobile tap-to-cycle, label visible for desktop players too. Delegate run hit the same tool-hook timeout TASK-348's run hit, but only after finishing all substantive work (caught mid a self-inflicted `project.godot` formatting slip it was correctly cleaning up). Code Quality Review found zero defects in the finished work. Independently re-verified: 19/19 new seed-selection tests (including the actual end-to-end bug-fix case — priming a non-first-inventory seed and confirming THAT crop gets planted), full gate (225 tests) green.</researcher_notes>
 </task_item>
 
 <task_item>

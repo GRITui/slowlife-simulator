@@ -1923,3 +1923,58 @@ category from the role reassessment, discovered live.
 - **Stop reason for this run**: TASK-348 complete. TASK-350 (active-
   seed selection) still running concurrently in its own worktree —
   see next entry once it lands.
+
+## 2026-09-02 — Run 30 (TASK-350: active-seed selection — final task of the "dispatch all left" batch)
+
+- Dispatched to Cline (minimax-m3:free, low reasoning) alongside
+  TASK-348/349, after writing the build-ready spec
+  (`docs/research/TASK-350-spec.md`) — this task was decided
+  (input binding, no-seed fallback) but never formally specced until
+  now, since the owner asked to dispatch everything remaining in one
+  go rather than spec-then-build one task at a time.
+- Hit the same `session.hook`/timeout tooling failure TASK-348's run
+  hit, but this time only AFTER finishing all substantive work — its
+  transcript shows it was mid-cleanup of a self-introduced
+  `project.godot` formatting mistake (an inline `;` comment placed
+  where it accidentally duplicated the `[input_devices]` section
+  header) when the timeout landed, and had already corrected the
+  duplication before the cutoff. Confirmed via `git diff project.godot`
+  that the final state was clean, no duplicate section, correct
+  `cycle_seed` action block matching the existing `interact`/movement
+  action formatting exactly.
+- Code Quality Review found no defects: `Player.gd`'s
+  `cycle_primed_seed()` and rewritten `_find_crop_for_held_seed()`
+  match the spec's code samples closely; `_primed_seed_id` lives on
+  `Player.gd` as session-only state per the spec's explicit
+  not-persisted requirement (confirmed `SaveManager.gd` diff is empty);
+  new `scenes/ui/SeedIndicator.gd` mirrors `InteractTap.gd`'s
+  touch-to-action indirection exactly; the new HUD widget reuses the
+  shared `StyleBoxFlat_statpanel` resource rather than duplicating it,
+  per the spec's visual-consistency instruction; `tests/ui/
+  test_touch_targets.gd`'s sweep was sensibly generalized to also
+  catch script-driven `PanelContainer` touch targets (not just
+  `BaseButton`/`HSlider`/`CheckBox`) without falsely flagging plain
+  visual panels.
+- Independently re-verified: 19/19 new `test_seed_selection.gd`
+  checks — including the actual end-to-end bug-fix case (priming the
+  second-in-inventory seed and confirming THAT crop, not the first
+  one, is what actually gets planted at a real grid cell) — plus the
+  full gate (225 tests) green, pre- and post-merge.
+- Also found and committed a small piece of session debt unrelated to
+  any task: `project.godot`'s `config/name="Slowlife game"` had been
+  sitting as an uncommitted local change all session (likely
+  auto-set by opening the project in the editor at some point) and
+  was blocking a clean merge. Committed it directly (`d6699eb`) as
+  trivial metadata rather than stashing/discarding it.
+- Committed `0ed8acf`, merged (`5acae24`), pushed. Closed GitHub
+  issue #196.
+- **This closes out the owner's "dispatch all left task to cline"
+  batch**: TASK-344, TASK-348, TASK-349, and TASK-350 all shipped in
+  one session via four delegate dispatches (two run entirely clean,
+  two hit the same tool-hook infrastructure timeout mid-run but had
+  either finished or nearly finished their actual work by the time it
+  hit — Code Quality Review caught and completed the gaps in both
+  cases rather than needing a full re-run). With this, the entire
+  "6 romance + 6 rivals + 5 unlockable areas" plan, all three phases
+  of the 10-level relationship-scale unification, and the
+  first-playthrough planting-UX gap are all complete and on main.
