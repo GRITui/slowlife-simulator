@@ -1509,3 +1509,65 @@ category from the role reassessment, discovered live.
   missing NPC sprites) or whether a second issue is still lurking —
   asked the owner to relaunch and confirm before treating this as fully
   closed.
+
+## 2026-09-02 — Second issue found and fixed: day/night tint shader always opaque
+
+- **The import-cache fix alone did not resolve the blank rectangle** —
+  owner confirmed it persisted after relaunching. Investigated further
+  with real runtime diagnostics rather than continuing to guess:
+  temporarily instrumented `Main._capture_screenshot()` to dump
+  viewport size, camera transform, `GroundLayer` state, and canvas
+  transform during an actual headful run (using the existing TASK-010
+  `--screenshot` CLI hook). Every logical/transform value came back
+  provably correct (camera centers the player exactly on screen,
+  `GroundLayer` has all 320 cells populated, canvas transform math
+  checks out to the pixel). Ruled out a renderer/GPU issue by switching
+  `renderer/rendering_method` to `mobile` (a completely different,
+  native-Metal backend) and reproducing the exact same bug bit-for-bit
+  — proved this was a genuine project bug, not a Compatibility-
+  renderer/driver quirk.
+- **Root cause:** `assets/shaders/day_night_tint.gdshader`'s fragment
+  function ends with `COLOR = vec4(graded, 1.0 - day_w * 0.0)` — the
+  stray `* 0.0` nullifies the day-fraction term entirely, so alpha is
+  ALWAYS 1.0 (fully opaque) regardless of time of day. This full-screen
+  `ColorRect` overlay (`TintLayer/TintRect` in `Main.tscn`, layer 5,
+  drawn above the world) was designed as a subtle dawn/dusk/night color
+  grade that fades transparent at full daylight (per the shader's own
+  header comment) — instead it permanently rendered as a solid opaque
+  wall, hiding the entire game world behind it. Confirmed the exact
+  match: at the game's default boot time (06:00, `day_fraction≈0.25`,
+  peak "dawn" weight), the shader's color math computes to
+  `(0.973, 0.920, 0.83)` ≈ RGB `(248,234,212)` — bit-for-bit the same
+  cream color sampled from the reported blank rectangle.
+- **This is a pre-existing bug (TASK-034), not a regression from
+  today's session** — it simply never surfaced until an actual human
+  ran the game, since it's exactly the class of purely-visual defect
+  headless testing structurally cannot catch (the one existing test
+  touching this feature only checks that `day_night_cycle_changed`
+  signal exists, never samples rendered pixels).
+- **Fix:** `COLOR = vec4(graded, 1.0 - day_w)` — one-line removal of
+  the erroneous multiplication. Verified visually via two screenshots:
+  boot time (dawn) now shows the intended subtle warm tint with the
+  full world clearly visible underneath (previously 100% hidden);
+  forcing the clock to noon renders completely clear with no tint at
+  all, confirming the fade-to-transparent behavior works correctly.
+  `run_gate.sh all` green throughout (content 100/100, engine 50/50,
+  save-compat 59/59, perf 6/6, touch 10/10). Merged `92dd094`, pushed.
+- **Also found and reverted, unrelated to the fix**: `Main.tscn` had a
+  local uncommitted diff (Godot editor auto-save churn — added `uid=`/
+  `unique_id=` metadata, reordered `ext_resource` entries, dropped a
+  few redundant default-matching property overrides) that also
+  happened to shift `TintRect`'s anchoring offset slightly, which was
+  incidentally exposing a thin sliver of real content around the
+  screen's edges even before the shader fix. Reverted via
+  `git checkout -- scenes/core/Main.tscn` since it was pure unintended
+  editor noise, not real work — confirmed the shader fix alone is
+  sufficient and this revert doesn't reintroduce anything.
+- **No new automated test added for this specific class of bug** —
+  shader fragment-output correctness isn't practically unit-testable
+  in this project's headless CI setup (would require sampling actual
+  rendered pixels, which needs a real window). Flagging as an accepted
+  testing gap: any future full-screen shader/overlay work should get a
+  manual visual check at a few different time-of-day values before
+  being considered done, since this is a class of bug the test suite
+  cannot see.
