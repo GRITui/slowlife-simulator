@@ -25,6 +25,11 @@ const DIALOGUE: Dictionary = {
 			"Monsoon — the sluice gate keeps the water kind.",
 			"Stay on the bunds when the fields flood.",
 		],
+		# TASK-329: weather branch (any season) — see get_seasonal_line().
+		"rain": [
+			"Come sit under the eave a moment. The rain will ease.",
+			"Good rain for the rice. Bad rain for these old knees.",
+		],
 		"binthabat_done": [
 			"Sadhu — your alms this morning steadied the village heart.",
 			"Merit returns as calm. The fields felt it today.",
@@ -58,6 +63,10 @@ const DIALOGUE: Dictionary = {
 			"Puddles everywhere! I found a lotus leaf boat.",
 			"Will the path to school flood?",
 		],
+		"rain": [
+			"Splashing in puddles is the BEST part of rain!",
+			"Mom says come inside when it rains this hard. I'm inside! Mostly.",
+		],
 		"binthabat_done": [
 			"Did you give rice to the monk? I want to try one day!",
 			"Elder says sharing makes the village smile.",
@@ -82,6 +91,10 @@ const DIALOGUE: Dictionary = {
 			"Gate is working hard this season. Listen to the water.",
 			"Repair the gate and pandan seed will come with the flow.",
 			"Canal's rising faster than I like. If it breaks the bank, bring me wood — we reinforce before it floods, not after.",
+		],
+		"rain": [
+			"Good day to check the sluice gate holds. Bad day to be standing here doing it.",
+			"Buffalo don't mind the rain. I do.",
 		],
 		"binthabat_done": [
 			"Merit morning — water feels lighter on days you offer.",
@@ -246,7 +259,11 @@ static func get_line(npc_id: String, season: String, idx: int) -> String:
 		return "..."
 	return String(pool[idx % pool.size()])
 
-static func get_seasonal_line(npc_id: String, season: String, binthabat_done: bool, hint_roll: int) -> String:
+## TASK-329: weather defaults to "clear" so existing callers are unaffected.
+## Priority stays binthabat_done > binthabat_hint > rain > season, matching
+## the existing branch structure — rain is a ~40% flavor chance (like the
+## 1-in-3 binthabat hint), not a hard override, so season lines still show.
+static func get_seasonal_line(npc_id: String, season: String, binthabat_done: bool, hint_roll: int, weather: String = "clear") -> String:
 	var npc: Dictionary = DIALOGUE.get(npc_id, {})
 	if npc.is_empty():
 		return "..."
@@ -260,6 +277,10 @@ static func get_seasonal_line(npc_id: String, season: String, binthabat_done: bo
 		var hint_pool: Array = npc.get("binthabat_hint", [])
 		if not hint_pool.is_empty() and hint_roll % 3 == 0:
 			return String(hint_pool[hint_roll % hint_pool.size()])
+	if weather == "rain":
+		var rain_pool: Array = npc.get("rain", [])
+		if not rain_pool.is_empty() and hint_roll % 5 < 2:
+			return String(rain_pool[hint_roll % rain_pool.size()])
 	var pool: Array = npc.get(season, [])
 	if pool.is_empty():
 		pool = npc.get("cool", [])
