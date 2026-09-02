@@ -39,7 +39,7 @@ func _initialize() -> void:
 	gd.current_season = "hot"
 	gd.inventory.erase("seed_rice") # isolate sticky seeds (first-held-seed picker)
 	gd.add_item("seed_sticky_rice", 12)
-	player._mounted_plant_3x3(gm, Vector2i(6, 6))
+	player._mounted_interact_3x3(gm, Vector2i(6, 6))
 	var planted: int = 0
 	for dx in [-1, 0, 1]:
 		for dy in [-1, 0, 1]:
