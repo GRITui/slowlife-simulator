@@ -1712,3 +1712,110 @@ category from the role reassessment, discovered live.
   TASK-351 (built, merged, verified) are done. TASK-343 (2 unlockable
   areas) — interrupted mid-review by this whole HUD/planting
   investigation — is next to pick back up.
+
+## 2026-09-02 — Run 26 (TASK-343: Deep Canal Bend + Sacred Grove, delegate-first)
+
+- Picked back up TASK-343 (interrupted mid-review by the HUD/planting
+  investigation, see prior entries). OpenCode's delegated implementation
+  was already sitting uncommitted in worktree
+  `/Users/grit/slowlife-game-loop-task343` (branch `task-343-areas`) from
+  before the interruption — confirmed via `git status --short` that the
+  run had actually completed successfully this time (2nd attempt; the
+  1st attempt on this same task hit the now-documented OpenCode
+  stuck-exploring-no-write failure mode, see the Cline-preference note
+  added to CLAUDE.md this session).
+- Code Quality Review, file by file:
+  - `DeepCanalSpot.gd` (176 lines) — clean. Matches spec exactly:
+    inverted rarity weights (0.4/1.2/2.5/4.0 vs FishingSpot's
+    4.0/2.5/1.2/0.4), skill cap 4, `_water_adjacent()` via
+    `ground_at()`, programmatic Area2D, no fishing_skill bump or
+    milestone re-trigger, applies the skill-4 mastery silver tip
+    matching FishingSpot's own precedent.
+  - `SacredGroveSpot.gd` (originally 67 lines) — **found the predicted
+    bug**: copied ForestTree.gd's `@onready var _area: Area2D =
+    $InteractArea if has_node("InteractArea") else null`. Invalid for a
+    `script.new()`-instanced spot (no `.tscn` backing, so `$InteractArea`
+    is always null) — `chop()` could only ever fire from a direct test
+    call, never a real player pressing interact. This exact failure
+    class has now shipped at least once before in this project (per
+    MountainCaveSpot.gd/DeepCanalSpot.gd's own precedent-avoidance
+    comments in their headers). Fixed by rebuilding the Area2D
+    programmatically via `_build_interact_area()`, mirroring
+    DeepCanalSpot.gd's/MountainCaveSpot.gd's exact pattern, with a
+    BUGFIX doc comment explaining the finding.
+  - `Main.gd`'s `_ensure_deep_canal()`/`_ensure_sacred_grove()` wiring —
+    clean, correct gating + positions, called from both `_ready()` and
+    the `minute_ticked` unlock handler.
+  - `tests/perf/test_mobile_budget.gd` diff — clean, both new spots
+    correctly added to the Y-sort no-sprite exclusion list, no budget
+    bump needed (neither has a visible sprite).
+  - `tests/test_deep_canal.gd` (187 lines) / `tests/test_sacred_grove.gd`
+    (146 lines) — thorough, mirroring `test_mountain_cave.gd`'s
+    structure: default-gate-hides-spot, tick-unlocks, fresh-boot-with-
+    stat-already-met unlocks immediately, real Area2D assertion (calling
+    out the exact null-bug class by name in a comment — the delegate's
+    own test would have caught the SacredGroveSpot bug above if it had
+    been run before this review), daily-gate + yield-comparison checks,
+    and a statistical rarity-inversion check for the canal.
+- **Second bug found, this time in the delegate's own test**: the
+  legendary-rarity statistical check in `test_deep_canal.gd` compared 0
+  rolls to 0 rolls regardless of the real weight inversion — both
+  legendary fish species are season-gated (`pla_buk`=monsoon,
+  `pla_sai_rung`=hot) but the test ran at `GameData`'s default boot
+  season (`"cool"`). First fix attempt (`gd.current_season = "monsoon"`)
+  didn't take effect either — `FishingSpot._current_season()` reads
+  `SignalBus.time_manager.current_season` first, only falling back to
+  `GameData.current_season`. Fixed by also forcing
+  `sb.time_manager.current_season = "monsoon"` before rolling.
+- Re-imported assets and ran both new test files individually (16/16,
+  17/17), then `bash scripts/ci/run_gate.sh all` (175/175, unchanged).
+  Committed `999fe74`, merged to main (`29eac36`), re-ran the import
+  pass on the MAIN checkout post-merge (per the established lesson),
+  re-verified both new tests pass there too, pushed immediately per
+  standing instruction. Closed GitHub issue #188.
+- **Stop reason:** TASK-343 complete. Next in the 8-sprint queue:
+  TASK-344 (final 2 of 5 unlockable areas), TASK-348 (10-level
+  animals), TASK-349 (10-level villagers). TASK-350 (active-seed
+  selection) remains decided/ready-for-build but not yet started.
+
+## 2026-09-02 — Run 27 (TASK-344: Lotus Maze Shore + Coastal Trading Post — zero-defect delegate run)
+
+- Dispatched to Cline (`minimax/minimax-m3:free`, low reasoning effort)
+  in worktree `/Users/grit/slowlife-game-loop-task344`. First delegate
+  run this session where Code Quality Review found NO defects.
+- The delegate correctly self-applied both lessons from the two prior
+  tasks' bugs without being told to in the prompt: built
+  `LotusMazeShoreSpot.gd`/`CoastalTradingPost.gd`'s `InteractArea`
+  programmatically from the start (its own code comment: "the @onready
+  path is always null because nothing ever adds the child — fix that
+  here"), and proactively forced the statistical test's season to
+  "monsoon" before rolling for the legendary-rarity check — the exact
+  fix `test_deep_canal.gd` needed after failing once in TASK-343. Its
+  own context window included the just-merged `DeepCanalSpot.gd`/
+  `SacredGroveSpot.gd` as reference material, so this reads as the
+  free-model worker generalizing from patterns already present in the
+  codebase, not just following the immediate spec — a genuinely
+  encouraging signal for the delegate-first policy at scale.
+- Independently re-verified rather than trusting the delegate's
+  self-reported "225/225 green": re-ran `godot --headless --import`,
+  both new test files individually (16/16 lotus-maze-shore, 26/26
+  coastal-trading-post), and the full gate (225/225) myself before
+  committing. Also re-verified after merge on the main checkout.
+- Committed `2a7ad58`, merged to main, pushed immediately. Closed
+  GitHub issue #189.
+- **This completes the entire "6 romance + 6 rivals + 5 unlockable
+  areas" plan** (Mountain Cave, Deep Canal Bend, Sacred Grove, Lotus
+  Maze Shore, Coastal Trading Post all shipped).
+- **TASK-350 spec written** (`docs/research/TASK-350-spec.md`) — was
+  decided/ready-for-build but never formally specced; wrote it now
+  (active-seed `cycle_seed` InputMap action on `Player.gd`, session-only
+  `_primed_seed_id` not persisted to save data, new
+  `scenes/ui/SeedIndicator.gd` HUD widget mirroring `InteractTap.gd`'s
+  touch-to-action pattern) so it could be dispatched alongside the
+  rest of the remaining backlog per the owner's "dispatch all left
+  task to cline" instruction.
+- **Four tasks dispatched in parallel** to separate worktrees/Cline
+  sessions (TASK-344 above, plus TASK-348, TASK-349, TASK-350) — first
+  time this session running concurrent delegate sessions on the same
+  free model/account rather than strictly sequential, per the owner's
+  explicit instruction to dispatch everything remaining now.
