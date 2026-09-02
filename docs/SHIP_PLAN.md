@@ -195,12 +195,29 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       Real bug caught by the test suite: a migration block was nested
       one level too deep and silently never ran for the most common
       case. Fixed, reverified.
+- [x] **10-level system, phase 1 — shared scale + romance retrofit.**
+      TASK-346: `GameData.level_for()` (0-10 derived from 0-100
+      affinity, no schema change), Niran/Fah/Ploy's dialogue
+      retrofitted from 4 tiers to 10 numbered pools. Landed ahead of
+      Sprint 2 in the numbering since TASK-341 (below) depends on it.
 - [ ] Sprint 2 — 3 new romance candidates (Kiet, Malee, Kanya), bringing
-      the total to 6.
-- [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live.
+      the total to 6. TASK-341, 10-level from the start.
+- [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live, plus
+      rival-friendship/confession-dilemma quest. TASK-347 (schema v5:
+      `rival_progress`/`rival_friendship`/`rival_confessed`) lands
+      first, then TASK-342.
+- [ ] 10-level system, phases 2-3 — animals (TASK-348) and villagers
+      (TASK-349), folded into the same plan per owner request.
 - [ ] Sprint 4 — 2 more unlockable areas (Deep Canal Bend, Sacred Grove).
+      TASK-343.
 - [ ] Sprint 5 — final 2 unlockable areas (Lotus Maze Shore, Coastal
-      Trading Post), completing the set of 5.
+      Trading Post), completing the set of 5. TASK-344.
+- [ ] **Deferred fast-follow (per Gemini second opinion + owner
+      "Proceed" 2026-09-02):** 1 new scored mini-game (Harvest Race,
+      Decha/Niran) + 3 rival quest chains with a 30-day bidirectional
+      deadline (Anon/Kiet — mask-carving; Siri/Malee — festival
+      performance; Boon/Kanya — remedy quest) — specced after the 8
+      sprints above ship, not before.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)

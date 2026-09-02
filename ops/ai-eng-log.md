@@ -1223,3 +1223,45 @@ category from the role reassessment, discovered live.
   with reciprocal effects from player action) was flagged as a
   separate, larger scope decision, not bundled into the current plan.
 - No code changed this entry — pure design discussion + backlog filing.
+
+## 2026-09-02 — Run 21 (10-level system, phase 1: shared scale + romance retrofit)
+
+- Owner escalation this run bundled several asks at once (festival
+  win/loss nudging rival progress, romance switching to a 10-level
+  scale applied to animals/villagers too, and a rival-friendship ->
+  confession -> dilemma quest system) — resolved into 8 sequenced specs
+  (TASK-346..349 for the level system + schema, TASK-341/342 already
+  in flight for the new cast, TASK-343/344 for the remaining
+  unlockable areas). Full specs written and reviewed with the owner
+  before any code changed, per explicit request.
+- **Sequencing question** (build the new mini-game/quest content now
+  vs. after the 8 already-specced sprints) was routed to Gemini for a
+  second opinion per explicit owner instruction, rather than decided
+  directly. Gemini recommended Option B — ship the 8 specced sprints
+  first, treat the 1 new mini-game + 3 rival quest chains as a
+  fast-follow spec-and-build pass after. Owner said proceed on that
+  basis; the mini-game/quest work is deferred, not dropped.
+- **TASK-346 built this run** (self-executed — narrative content):
+  `GameData.level_for(value) = clampi(value/10, 0, 10)` added as the
+  one shared derived scale (no schema change, affinity stays 0-100).
+  Niran/Fah/Ploy's dialogue retrofitted from the old 4-tier
+  (stranger/friendly/close/romantic, 8 lines each) to 10 numbered
+  pools (20 lines each) — the original 8 lines per candidate kept as
+  anchors, redistributed to their nearest new level, with new lines
+  filling the expanded resolution. `RomanceNPC._talk()` now selects by
+  level instead of the removed `DialogueDB.get_affinity_tier()`; the
+  TASK-324 rival-flavor override now fires on levels 6-8 (the
+  level-equivalent of the old "close" tier). `_check_proposal()`'s
+  affinity>=90 gate is unchanged. Level-0 fallback (affinity < 10)
+  falls back to level 1's pool.
+- **Verification:** `run_gate.sh all` green (content 100/100, engine
+  50/50, save-compat 46/46, perf 6/6, touch 10/10).
+  `tests/test_affinity.gd` rewritten from tier-string checks to
+  `level_for()` boundary checks + per-level dialogue-pool existence
+  checks (43/43). `tests/test_peer_npcs.gd` (25/25),
+  `test_anniversary.gd` (6/6), `test_wedding.gd` (6/6) regression-
+  checked green, unaffected — none hardcode dialogue-pool key strings.
+  Merged `c70f90a`, pushed.
+- **Stop reason:** TASK-346 (phase 1 of the level system, and a
+  dependency for TASK-341/347/348/349) complete. TASK-341 (3 new
+  candidates, 10-level from the start) is next in sequence.
