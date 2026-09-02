@@ -1341,3 +1341,75 @@ category from the role reassessment, discovered live.
   (code) + `ad8cddf` (specs), pushed.
 - **Stop reason:** Rename complete. Resuming the sequenced plan at
   TASK-347 next.
+
+## 2026-09-02 — Run 24 (delegation policy validated with Gemini + backlog hygiene + TASK-347)
+
+- **Delegation policy work, done before resuming the build sequence:**
+  owner asked to validate "delegate-first, daily rate-limit resets,
+  model-agnostic fallback" as an operating policy. Researched with
+  Gemini across 3 passes, independently spot-checked every specific
+  claim (model names, benchmarks, pricing, rate limits) against
+  primary sources (OpenRouter's own model pages, Cohere/Meta/Poolside
+  docs) before trusting any of it — a first pass returned confident,
+  zero-citation numbers that turned out to mostly be real on
+  verification, but the discipline caught it not following the "cite
+  sources" instruction until asked again explicitly. Confirmed:
+  OpenRouter free-tier limits reset on the UTC calendar day (not a
+  rolling 24h window), rate limits are per-model not per-account, and
+  OpenRouter natively supports an ordered `models` fallback array.
+  Validated a task-boundary framework against Gemini's generic
+  "blast radius x context scope" heuristic and REJECTED two of its
+  recommendations for this repo specifically (delegate narrative,
+  delegate UI) using this session's own bug history as the
+  counter-evidence, rather than adopting a generic recommendation
+  wholesale. Final policy (delegate-first for GDScript gameplay logic,
+  self-execute schema/narrative/UI, verified 3-5-candidate free-model
+  fallback chains per task type) written into `CLAUDE.md`, commit
+  `e67be58`.
+- **Backlog hygiene:** found TASK-005..010's `<status>` tags in
+  `ops/backlog-inbox.md` had never been flipped past
+  NEEDS_OWNER_REVIEW/READY_FOR_PM despite being merged years into the
+  project's founding sprint (confirmed COMPLETED in `backlog.json`
+  with PR links for all 6). Corrected — pure doc-lag fix, no new work.
+  Commit `a38cf94`.
+- **GitHub issues opened for every remaining backlog item** (TASK-347
+  through TASK-349, #186-191) plus closed retroactive issues for
+  today's earlier completions (TASK-340/341/345/346, #192-195) — per
+  owner instruction, so a concurrent session can't duplicate
+  in-flight work.
+- **Assessed and declined to delegate git/gh actions** (issue/PR
+  creation) to a free-tier model per owner's question: the token
+  overhead of dispatching a delegate exceeds the cost of the action
+  itself, and git/gh actions are precisely the trust boundary where
+  Claude's judgment gate applies (every delegate spec this session
+  says "no git/gh actions, stop after tests are green") — a free
+  model deciding when something is safe to push isn't the same kind
+  of task as writing an implementation from a spec.
+- **TASK-347 built this run** (self-executed — schema change):
+  `SaveManager` v4->v5 adds `rival_progress` (replaces pure
+  day-elapsed tracking, nudgeable), `rival_friendship`/
+  `rival_confessed` (for TASK-342). `RivalClock.nudge_progress()`
+  added. Festival tie-in: Fishing Competition nudges fah's rival
+  clock -5/+5 on win/loss, Songkran Cooking Contest nudges ploy's the
+  same way — only the thematically-linked rival, per the original
+  design decision. New `SignalBus.rival_clock` registry slot.
+- **Real bug avoided, not shipped:** followed the spec's explicit
+  warning and rewrote `test_rival_clock.gd`'s day-loop boundary
+  checks to set `rival_progress` directly — confirmed by running the
+  ORIGINAL day-loop test against the new progress-tracking code
+  first and watching it fail (call-count accumulation diverges from
+  elapsed-day arithmetic when the loop has a day-skip gap; 67 calls
+  landed at 74.4%, missing the tier-3 threshold the old test expected
+  at "75.6%"). This is exactly the kind of subtle mismatch that ships
+  quietly if you don't actually run the old test against the new code.
+- **Verification:** `run_gate.sh all` green (content 100/100, engine
+  50/50, save-compat 59/59, perf 6/6, touch 10/10).
+  `tests/test_rival_clock.gd` rewritten to 23/23 including a
+  nudge-vs-no-nudge counterfactual pair proving the "slightly"
+  framing is a real numeric effect. `test_fishing_competition_scoring.gd`
+  (28/28) and `test_songkran_cooking_contest.gd` (34/34) extended with
+  nudge assertions. `test_peer_npcs.gd`/`test_affinity.gd`/
+  `test_gift_prefs.gd` regression-checked green. Merged `98a9887`,
+  pushed. Issue #186 closed.
+- **Stop reason:** TASK-347 (a dependency for TASK-342) complete.
+  TASK-342 (6 rival NPCs) is next in sequence.

@@ -342,3 +342,18 @@ Recommended order if approved, best cost/impact ratio first:
   <description>Brings the romance-candidate count from 3 to 6: Kiet (apprentice woodcarver, meticulous/understated), Malee (festival drummer, bold/expressive), Kanya (herbalist, gentle/nature-connected). Authored directly in TASK-346's 10-level dialogue shape (no old 4-tier draft ever existed for these) — full DialogueDB entry (20 level lines + "1_warned" + "rival" per candidate), GIFT_PREFERENCES, RomanceNPC._try_specialty_sell() branch, placeholder portrait (hue-shifted from an existing sprite), .tscn + Main.gd wiring. Also folds in TASK-345's early-warning fix for ALL 6 candidates (not just the 3 new ones), closing that gap. Self-executed (narrative content). Commit 64850e7.</description>
   <researcher_notes>Y-sort perf budget bumped 51->54. Real bug caught during test-writing, not inspection: a GDScript closure gotcha — a lambda capturing a local var by value silently never updated the outer scope, making the "1_warned" line assertion falsely fail; fixed by using a class-member field + bound method instead of a lambda for the signal spy. tests/test_peer_npcs.gd extended to 73/73; test_affinity.gd (43/43), test_anniversary.gd/test_wedding.gd regression-checked green.</researcher_notes>
 </task_item>
+
+<!-- HYGIENE: 2026-09-02 Kiet/Malee/Kanya renamed to Chang/Klong/Yaa (and Niran->Ek) per owner
+     request — Thai nicknames instead of formal-sounding names. Applied throughout code, tests,
+     and pending specs (TASK-342/347/349, SHIP_PLAN.md). See commits 15b69ca/ad8cddf. Planned
+     rivals also renamed: Decha->Yai, Chai->Ohm, Anon->Note, Siri->Fon (Rung/Boon unchanged). -->
+
+<task_item>
+  <id>TASK-347</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P1</priority>
+  <title>Schema v5 — rival progress meter + rival friendship/confession fields</title>
+  <description>SaveManager v4->v5: rival_progress (float 0-100, replaces pure day-elapsed tracking for the win/loss clock, advances ~1.11/day, nudgeable), rival_friendship + rival_confessed (both for TASK-342, no behavior here). RivalClock.nudge_progress() added. Festival tie-in: Fishing Competition win/loss nudges fah's rival -5/+5, Songkran Cooking Contest nudges ploy's rival the same way — only the thematically-linked rival, per owner decision from the original design discussion. New SignalBus.rival_clock registry slot (mirrors grid_manager/time_manager). Self-executed (schema change, always-escalate tier). Commit 98a9887.</description>
+  <researcher_notes>Real bug avoided by following the spec's explicit warning: rewriting test_rival_clock.gd's boundary checks to set rival_progress directly, rather than keeping the old day-loop simulation — confirmed by running the original day-loop against the new code first and watching it fail (a day-68 gap in the loop meant 67 calls landed at 74.4% instead of the elapsed-day math's 75.6%, missing the tier-3 threshold). Also added a nudge-vs-no-nudge counterfactual pair proving the "slightly" framing is a real numeric effect. tests/test_save_compat.gd (59/59), test_rival_clock.gd (23/23), test_fishing_competition_scoring.gd (28/28), test_songkran_cooking_contest.gd (34/34) all green.</researcher_notes>
+</task_item>

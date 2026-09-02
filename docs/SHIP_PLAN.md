@@ -204,10 +204,13 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       Yaa, bringing the total to 6, authored directly in the
       10-level shape. Also closed TASK-345's fairness gap for all 6
       candidates via a "1_warned" dialogue pool.
+- [x] **Schema v5 — rival progress meter.** TASK-347: `rival_progress`
+      (replaces day-elapsed tracking, nudgeable), `rival_friendship`,
+      `rival_confessed` fields; `RivalClock.nudge_progress()`; festival
+      tie-in (Fishing Competition -> fah, Songkran -> ploy, only the
+      thematically-linked rival). Prerequisite for Sprint 3 below.
 - [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live, plus
-      rival-friendship/confession-dilemma quest. TASK-347 (schema v5:
-      `rival_progress`/`rival_friendship`/`rival_confessed`) lands
-      first, then TASK-342.
+      rival-friendship/confession-dilemma quest. TASK-342.
 - [ ] 10-level system, phases 2-3 — animals (TASK-348) and villagers
       (TASK-349), folded into the same plan per owner request.
 - [ ] Sprint 4 — 2 more unlockable areas (Deep Canal Bend, Sacred Grove).
