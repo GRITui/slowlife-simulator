@@ -33,7 +33,7 @@ func _initialize() -> void:
 		await process_frame
 		quit(1)
 		return
-	_check(clock.PAIRS.is_empty(), "PAIRS is empty in this task (content added in TASK-342)")
+	_check(clock.PAIRS.size() == 6, "PAIRS has all 6 real pairings (populated by TASK-342)")
 
 	var pair: Dictionary = {"rival_id": "test_rival", "rival_name": "Test Rival", "candidate_name": "Test Candidate"}
 
