@@ -41,11 +41,13 @@ func _initialize() -> void:
 			# MiningSpot does NOT — it's a logic-only interactable with no
 			# visual footprint, added to the exclusion list below instead of
 			# inflating the budget for a node with nothing to sort).
+			# TASK-332: Noticeboard joins the same exclusion list for the same
+			# reason (logic-only interactable, invisible interact zone).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard":
 						continue
 					sorted_kids += 1
 			_check(sorted_kids <= 49, "y-sorted participants <= 49 (got %d)" % sorted_kids)
