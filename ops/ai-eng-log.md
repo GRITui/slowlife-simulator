@@ -1571,3 +1571,59 @@ category from the role reassessment, discovered live.
   manual visual check at a few different time-of-day values before
   being considered done, since this is a class of bug the test suite
   cannot see.
+
+## 2026-09-02 — Owner playthrough continues: 2 more findings filed as backlog
+
+- **Owner confirmed the day/night tint fix worked**, then immediately
+  surfaced two more real findings from continued play: (1) "UI/HUD
+  look so bad," and (2) pressing interact always plants rice
+  regardless of what seed is held, with no way to choose.
+- **Investigated the "big blue rectangle" the owner also reported**
+  alongside the HUD complaint: could not reproduce it deterministically
+  — tried a fresh boot, and simulating the owner's exact reported
+  actions (plant + water a plot, advance the clock to the same
+  in-game time, 10:51 Day 1) via automated screenshot capture; neither
+  shows it. The color doesn't match any known UI/shader asset in this
+  codebase either. Concluded most likely a transient rendering/capture
+  artifact (e.g. caught mid window-resize) rather than a deterministic
+  bug, and excluded it from the HUD polish ticket's scope rather than
+  chasing an unreproducible lead further.
+- **Confirmed the planting bug in code**: `Player._find_crop_for_held_seed()`
+  auto-picks "the first `seed_*` item in inventory" (Dictionary
+  iteration order) — this is the SAME "auto-pick first matching held
+  item" pattern this whole game deliberately uses everywhere (gifting,
+  specialty-selling) to avoid menu/choice UI. It's not an isolated
+  bug; it's this project's core interaction paradigm breaking down
+  specifically for farming once a player owns 2+ seed types.
+- **Research attempted with Gemini per the owner's suggestion — failed
+  twice in a row** (one query stuck 90+ seconds with zero visible
+  progress, a retry after starting a fresh chat also stuck 80+ seconds
+  on the same "Analyzing Game Mechanics" step). Rather than keep
+  fighting an unreliable tool for well-documented, stable facts about
+  long-established game mechanics, fell back to direct WebSearch
+  queries instead — got clean, citable answers on the first try for
+  both: Harvest Moon: Back to Nature (R1 cycles the equipped
+  tool/item one at a time, R2 opens the full rucksack for less-common
+  digging) and Stardew Valley (always-visible hotbar, number keys or
+  scroll wheel, no popup). Worth remembering: WebSearch is the more
+  reliable tool for stable, well-documented facts; Gemini's own value-
+  add here (second opinions, synthesis) isn't worth its reliability
+  cost for something already answerable by a direct search.
+- **Filed two backlog items, both `NEEDS_OWNER_REVIEW` (design
+  decisions needed before build, not shipped yet):**
+  - TASK-350 (P1): active-seed cycle for planting, recommended as a
+    lightweight HM:BtN-style single-key cycle + small HUD indicator —
+    explicitly NOT a full inventory popup, to preserve the existing
+    no-menu-UI philosophy. Open question flagged for the owner: exact
+    key binding, and whether "no seed primed" keeps falling back to
+    jasmine_rice or should block planting with a prompt.
+  - TASK-351 (P2): HUD visual polish pass, scoped to concrete observed
+    issues only (Time/Season label overlap, cramped spacing, no
+    consistent panel styling) — deliberately excludes the
+    unreproducible blue-rectangle report.
+- **GitHub issues opened** for both: #196 (TASK-350), #197 (TASK-351).
+  Commit `cdc2aee`, pushed.
+- **Stop reason:** goal met per the owner's ask (research, reassess,
+  draft backlog, open GitHub issues) — implementation deliberately not
+  started, pending the owner's review of the open design questions on
+  TASK-350 and a design pass on TASK-351.
