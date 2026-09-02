@@ -47,6 +47,13 @@ const DIALOGUE: Dictionary = {
 			"My grandmother spoke of a giant in the deep canal bend — once a generation, monsoon only. Few believe her. I do.",
 			"At high noon in the hot season, something flashes every color in the sun near the lotus maze. I've only seen it once.",
 		],
+		# TASK-349: high-affiliation flavor (level 6+, season-agnostic) —
+		# warmer/more familiar than seasonal lines, a sign the player's
+		# specific effort with the Elder is being noticed.
+		"high_affiliation": [
+			"You're starting to listen like one of us, child. The village knows it.",
+			"I don't say this to many — but you've earned a place at the long table.",
+		],
 	},
 	"child": {
 		"cool": [
@@ -74,6 +81,12 @@ const DIALOGUE: Dictionary = {
 		"binthabat_hint": [
 			"Monk is on temple lane early — I heard the bell!",
 			"Rice grain is easy to share.",
+		],
+		# TASK-349: high-affiliation flavor (level 6+, season-agnostic) —
+		# child's familiarity grows; not generic, about YOU specifically.
+		"high_affiliation": [
+			"You're my favorite grown-up here. Don't tell the others.",
+			"I saved you a seat by the cool spot. Just yours, don't sit anywhere else.",
 		],
 	},
 	"handler": {
@@ -104,6 +117,12 @@ const DIALOGUE: Dictionary = {
 			"Temple lane, 05:00-07:30 — don't miss the monk.",
 			"Sticky rice also counts for alms, if you have it.",
 		],
+		# TASK-349: high-affiliation flavor (level 6+, season-agnostic) —
+		# the handler's gruff competence softens into genuine partnership.
+		"high_affiliation": [
+			"You've learned the gate better than some I've trained. Don't let that go to your head.",
+			"If something breaks the bank next monsoon, I want you there. Not anyone else.",
+		],
 	},
 
 	# TASK-338: Nok, semi-retired veteran farmer — warm, instructive,
@@ -133,6 +152,12 @@ const DIALOGUE: Dictionary = {
 		"binthabat_hint": [
 			"Temple lane, before the heat sets in — the monk's there most mornings.",
 			"Rice, sticky rice, whatever you can spare. It's the offering that matters, not the size.",
+		],
+		# TASK-349: high-affiliation flavor (level 6+, season-agnostic) —
+		# Nok's mentoring tone deepens into something more like kin.
+		"high_affiliation": [
+			"I've taught a few in my years. Few I would've trusted with my plot. You're one of them.",
+			"My own grandchildren visit less than you do. Don't read anything into that. Actually — do, a little.",
 		],
 	},
 	"monk": {
@@ -251,11 +276,25 @@ const DIALOGUE: Dictionary = {
 			"The village runs on small kindnesses. Keep it up.",
 			"Wing Kwai prep is underway — the buffalo earn their festival.",
 		],
+		# TASK-349: high-affiliation flavor (level 6+, season-agnostic) —
+		# the headman's official voice thaws a little, since they trust
+		# you with more than the usual village business.
+		"high_affiliation": [
+			"I don't make a habit of saying this, but — the village is steadier with you in it.",
+			"When there's hard news to deliver, I'd rather you were the one explaining it than me.",
+		],
 	},
 	"vet": {
 		"cool": [
 			"Buffalo look healthy. Whatever you are feeding them, keep at it.",
 			"Goat arrived last week — strong hooves, good sign.",
+		],
+		# TASK-349: high-affiliation flavor (level 6+, season-agnostic) —
+		# the vet starts treating you as a fellow keeper, not just a
+		# client — a quiet professional respect.
+		"high_affiliation": [
+			"You've got the eye for it. Half my clients wouldn't notice a limp that early.",
+			"If anything goes wrong in the field, call me first. I mean that.",
 		],
 	},
 
@@ -573,11 +612,18 @@ static func get_line(npc_id: String, season: String, idx: int) -> String:
 		return "..."
 	return String(pool[idx % pool.size()])
 
+## TASK-349: level defaults to 0 so existing callers (MonkNPC.gd, any
+## test without a level arg) are unaffected. Priority stays
+## binthabat_done > binthabat_hint > rain > high_affiliation > season —
+## inserted last/lowest-priority since it's the newest, most optional
+## flavor layer; season content should still be the common case even
+## at high affiliation, not overridden most of the time.
+##
 ## TASK-329: weather defaults to "clear" so existing callers are unaffected.
 ## Priority stays binthabat_done > binthabat_hint > rain > season, matching
 ## the existing branch structure — rain is a ~40% flavor chance (like the
 ## 1-in-3 binthabat hint), not a hard override, so season lines still show.
-static func get_seasonal_line(npc_id: String, season: String, binthabat_done: bool, hint_roll: int, weather: String = "clear") -> String:
+static func get_seasonal_line(npc_id: String, season: String, binthabat_done: bool, hint_roll: int, weather: String = "clear", level: int = 0) -> String:
 	var npc: Dictionary = DIALOGUE.get(npc_id, {})
 	if npc.is_empty():
 		return "..."
@@ -595,6 +641,14 @@ static func get_seasonal_line(npc_id: String, season: String, binthabat_done: bo
 		var rain_pool: Array = npc.get("rain", [])
 		if not rain_pool.is_empty() and hint_roll % 5 < 2:
 			return String(rain_pool[hint_roll % rain_pool.size()])
+	# TASK-349: high-affiliation flavor (level 6+ = affinity 60+) — same
+	# ~40% chance as the rain branch, season-agnostic since it's about the
+	# RELATIONSHIP, not the season/weather. Lowest priority so season
+	# content remains the common case even at high affiliation.
+	if level >= 6:
+		var high_pool: Array = npc.get("high_affiliation", [])
+		if not high_pool.is_empty() and hint_roll % 5 < 2:
+			return String(high_pool[hint_roll % high_pool.size()])
 	var pool: Array = npc.get(season, [])
 	if pool.is_empty():
 		pool = npc.get("cool", [])
