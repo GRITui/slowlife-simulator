@@ -1193,3 +1193,33 @@ category from the role reassessment, discovered live.
   unaffected. Merged `6549931`, pushed.
 - **Stop reason:** Sprint 1 of 5 (the highest-risk one) complete,
   checking in before Sprint 2 (3 new romance candidates).
+
+## 2026-09-02 — Run 20 continued (discoverability gap found, filed not fixed)
+
+- **User asked whether the 6 rivals need backstory/dialogue hinting
+  they're rivals at all.** Answering that surfaced a real fairness gap
+  in the design as specced: the candidate's own "rival" flavor tier
+  only shows at close tier (affinity >= 60), but the loss condition
+  fires when affinity NEVER reaches 25 — the player actually at risk
+  would never see it. TASK-342's rival tier-0 dialogue was also
+  written deliberately soft, revealing nothing. As specced, a
+  disengaged player could lose a candidate with zero warning ever
+  surfaced, contradicting the fairness goal the mechanic was designed
+  around in TASK-340.
+- Per explicit owner instruction, filed as TASK-345 rather than
+  editing the pending TASK-341/342 specs immediately — proposed fix
+  (rival tier-0 reveals the competing interest immediately; add a
+  distinct candidate-stranger-tier line gated on
+  `rival_warning_shown >= 1`) is documented in the backlog entry for
+  whoever builds Sprint 2/3 to apply.
+- **Second question: could the rival and candidate's own relationship
+  visibly develop over the 90 days, not just flip at the deadline?**
+  Assessed as feasible and valuable with near-zero added mechanical
+  risk — `rival_warning_shown` (0-3, already tracked) is already a
+  reasonable proxy for "how far along" and can be reused purely as
+  richer dialogue content (both the rival's own tone and, once
+  TASK-345 lands, the candidate's own dialogue) rather than needing a
+  new persisted stat. A deeper version (a real `rival_affection` value
+  with reciprocal effects from player action) was flagged as a
+  separate, larger scope decision, not bundled into the current plan.
+- No code changed this entry — pure design discussion + backlog filing.

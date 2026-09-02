@@ -308,3 +308,13 @@ Recommended order if approved, best cost/impact ratio first:
 </task_item>
 
 <!-- AI-LOOP: 2026-09-02 "6 romance + 6 rivals + 5 areas" plan, Sprint 1 (TASK-340) complete per ops/ai-eng-log.md run 20. Sprints 2-5 (TASK-341..344, specs already written) queued next, pending owner check-in. -->
+
+<task_item>
+  <id>TASK-345</id>
+  <source>OWNER</source>
+  <status>NEEDS_OWNER_REVIEW</status>
+  <priority>P1 (fairness gap in an already-approved mechanic — should land before or alongside Sprint 3)</priority>
+  <title>Early rival-awareness — fix a real fairness gap in the TASK-340/341/342 warning system</title>
+  <description>Found while discussing Sprint 2/3: the existing candidate "rival" flavor-dialogue tier (built for Niran/Fah/Ploy under TASK-324, planned for Kiet/Malee/Kanya under TASK-341) only surfaces at close tier (affinity >= 60) — but the loss condition fires when affinity NEVER reaches 25. A player actually at risk of losing a candidate would never see that hint at all; the rival NPC's own tier-0 dialogue (as specced in TASK-342) was also written deliberately soft ("casual, no pressure yet"), revealing nothing. As specced, an at-risk player could go the full 90 days with zero warning and learn what happened only from the single ambient "X has married Y" message after the fact — directly contradicting the fairness goal the whole mechanic was designed around.</description>
+  <researcher_notes>Proposed fix (not yet applied to the pending specs, filed here instead per owner instruction 2026-09-02): (1) rival tier-0 dialogue should establish the competing-interest fact immediately on first meeting, not withhold it to later tiers; (2) add a distinct line to each candidate's OWN stranger-tier pool (their lowest tier, the one an at-risk/disengaged player actually sees) that surfaces once rival_warning_shown >= 1, so the person the player would actually lose is the one delivering the warning, not a rival the player may never approach. Needs applying to docs/research/TASK-341-spec.md and TASK-342-spec.md before either is built. GitHub issue: not yet opened.</researcher_notes>
+</task_item>
