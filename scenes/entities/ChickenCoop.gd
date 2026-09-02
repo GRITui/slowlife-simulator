@@ -28,23 +28,29 @@ func collect_egg() -> bool:
 	_last_egg_day = day
 	GameData.add_chicken_affinity(5)
 	SignalBus.chicken_affinity_changed.emit(GameData.chicken_affinity, GameData.chicken_hearts())
-	var egg_id: String = "egg_gold" if GameData.chicken_hearts() >= 3 else "egg"
+	# TASK-348: gold-egg tier moved from hearts >= 3 (old 0-4 scale, 75%) to
+	# hearts >= 8 (new 0-10 scale, 80%) — the 0-4 "knows your footsteps"
+	# threshold rescaled to the same percentage of the new ceiling.
+	var egg_id: String = "egg_gold" if GameData.chicken_hearts() >= 8 else "egg"
 	# TASK-323B: yield scales with herd size — one egg per hen (count 1..3).
 	GameData.add_item(egg_id, GameData.chicken_count)
 	var egg_word: String = "egg" if GameData.chicken_count == 1 else "eggs"
-	if egg_id == "egg_gold":
-		SignalBus.show_dialogue.emit("Chickens", "+%d golden %s — the hens know your footsteps. Hearts: %d!" % [GameData.chicken_count, egg_word, GameData.chicken_hearts()])
-	else:
-		SignalBus.show_dialogue.emit("Chickens", "+%d %s — warm from the nest." % [GameData.chicken_count, egg_word])
+	# TASK-348: full 10-line hearts-up dialogue pool replaces the prior
+	# 2-line "gold egg" vs "warm from the nest" branching. The pool is
+	# keyed by the NEW hearts value (1..10) — line choice is independent
+	# of the gold-egg item-tier check above.
+	SignalBus.show_dialogue.emit("Chickens", _hearts_line(GameData.chicken_hearts()))
 	# TASK-323B: breeding attempt — automatic side effect of the daily
-	# interact. Conditions, in spec order: hearts >= 2, count < cap, then
-	# spend_silver. Never spend speculatively (mirrors CarpenterUpgrade.gd
-	# check-before-deduct, not the old deduct-then-refund mistake). Cap
-	# (chicken_count < 3) is enforced at the call site per the spec, not
-	# on the var itself in GameData.gd. On insufficient silver: silent
-	# skip, no dialogue nag — breeding is a cozy bonus on top of the
-	# normal daily collection, not a requirement.
-	if GameData.chicken_hearts() >= 2 and GameData.chicken_count < 3:
+	# interact. Conditions, in spec order: hearts >= 5 (TASK-348: was
+	# >= 2 in the 0-4 era, now >= 5 in the 0-10 era — same 50% of the
+	# ceiling), count < cap, then spend_silver. Never spend
+	# speculatively (mirrors CarpenterUpgrade.gd check-before-deduct,
+	# not the old deduct-then-refund mistake). Cap (chicken_count < 3)
+	# is enforced at the call site per the spec, not on the var itself
+	# in GameData.gd. On insufficient silver: silent skip, no dialogue
+	# nag — breeding is a cozy bonus on top of the normal daily
+	# collection, not a requirement.
+	if GameData.chicken_hearts() >= 5 and GameData.chicken_count < 3:
 		if GameData.spend_silver(40):
 			GameData.chicken_count += 1
 			SignalBus.show_dialogue.emit("Chickens", "A new chick hatched! The coop swells to %d hens." % GameData.chicken_count)
@@ -53,6 +59,28 @@ func collect_egg() -> bool:
 				if GameData.earn_milestone("herd_keeper"):
 					SignalBus.show_dialogue.emit("System", "Milestone: Herd Keeper! (+10 harmony)")
 	return true
+
+## TASK-348: 10-line hearts-up dialogue pool, one line per hearts value
+## 1..10 in the chicken's voice — brisk, egg-and-flock framing. Called
+## whenever the hearts level actually increases; replacing the prior
+## 2-line "gold egg" vs "warm from the nest" branching. The gold-egg
+## item-tier check in collect_egg() is a separate concern from which
+## dialogue line is shown — an item-tier change and a dialogue-line
+## change are not required to coincide.
+func _hearts_line(hearts: int) -> String:
+	var egg_word: String = "egg" if GameData.chicken_count == 1 else "eggs"
+	match hearts:
+		1: return "+%d %s — a soft cluck as you approach. Hearts: 1!" % [GameData.chicken_count, egg_word]
+		2: return "+%d %s — the hens eye you, heads tilting. Hearts: 2!" % [GameData.chicken_count, egg_word]
+		3: return "+%d %s — they don't scatter when you open the gate. Hearts: 3!" % [GameData.chicken_count, egg_word]
+		4: return "+%d %s — a hen steps closer to inspect your hand. Hearts: 4!" % [GameData.chicken_count, egg_word]
+		5: return "+%d %s — the rooster greets you with a short crow. Hearts: 5!" % [GameData.chicken_count, egg_word]
+		6: return "+%d %s — the flock follows you around the run. Hearts: 6!" % [GameData.chicken_count, egg_word]
+		7: return "+%d %s — a hen hops onto the fence to watch you work. Hearts: 7!" % [GameData.chicken_count, egg_word]
+		8: return "+%d golden %s — the hens know your footsteps. Hearts: 8!" % [GameData.chicken_count, egg_word]
+		9: return "+%d golden %s — a small fortune for the morning basket. Hearts: 9!" % [GameData.chicken_count, egg_word]
+		10: return "+%d golden %s — the flock is yours. Hearts: 10!" % [GameData.chicken_count, egg_word]
+		_: return "+%d %s — warm from the nest." % [GameData.chicken_count, egg_word]
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _player_in_range:

@@ -46,7 +46,9 @@ func _initialize() -> void:
 	# --- companion_bond_changed drives FarmHeartsLabel live ---
 	var companion: Node = main.get_node_or_null("CompanionNPC")
 	if companion != null:
-		gd.companion_bond = 24 # one tick from tier 1 (25/tier)
+		# TASK-348: one tick from tier 1 is now bond=9 (10/tier), was 24
+		# (25/tier) in the legacy /25.0 era.
+		gd.companion_bond = 9
 		companion.call("_on_minute_ticked", 1, 6, 0)
 		# BOND_MINUTES_PER_POINT is 60 nearby-minutes; drive enough ticks while
 		# forcing distance to read as "within COMFORT" via direct state.
@@ -55,11 +57,15 @@ func _initialize() -> void:
 		if player != null:
 			companion.global_position = (player as Node2D).global_position
 		companion.call("_on_minute_ticked", 1, 6, 1)
-		_check(int(gd.companion_bond) == 25, "companion_bond advanced to 25 (tier 1)")
+		_check(int(gd.companion_bond) == 10, "companion_bond advanced to 10 (tier 1)")
 		_check(_bond_events.size() >= 1, "companion_bond_changed emitted")
 		if not _bond_events.is_empty():
 			_check(_bond_events.back()[1] == 1, "companion_bond_changed reports tier 1")
-		_check(farm_lbl.text.contains("♥"), "FarmHeartsLabel reflects cat bond live (has a heart)")
+		# TASK-348: HeartsLabel/FarmHeartsLabel switched from repeating "♥"
+		# glyphs to a numeric "Lv N/10" format (see HUD.gd's
+		# _on_farm_hearts_changed()) — the 0-10 scale would need up to 10
+		# glyphs, too crowded for the compact HUD.
+		_check(farm_lbl.text.contains("Lv 1/10"), "FarmHeartsLabel reflects cat bond live (Lv 1/10)")
 	else:
 		_check(false, "Companion node present (skip live-signal checks)")
 

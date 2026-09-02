@@ -139,17 +139,19 @@ func _initialize() -> void:
 	_check(_milestone_dialogue_count("Master Angler") == ma_dialogue_after_first,
 		"repeated casts after cap do not re-fire Master Angler dialogue")
 
-	# --- 3) inseparable: companion_bond_tier reaches max (4) ---
+	# --- 3) inseparable: companion_bond_tier reaches max (10) ---
+	# TASK-348: rescaled from the legacy /25.0 scale (max tier 4) to the
+	# 0-10 scale (TASK-346's level_for()) — max tier is now 10.
 	gd.milestones_earned.erase("inseparable")
 	_dialogue_hits.clear()
-	gd.companion_bond = 99 # tier 3 (99/25 = 3); one more grant -> tier 4
+	gd.companion_bond = 99 # level_for(99) = 9; one more grant -> level 10
 	cat.set("_nearby_minutes", 59)
 	# Park cat within COMFORT so the tick triggers a +1 grant.
 	player.global_position = Vector2(480, 384)
 	cat.global_position = player.global_position
 	sb.minute_ticked.emit(1, 6, 0)
-	_check(int(gd.companion_bond_tier()) == 4,
-		"companion_bond_tier reached max 4 after inseparable trigger")
+	_check(int(gd.companion_bond_tier()) == 10,
+		"companion_bond_tier reached max 10 after inseparable trigger")
 	_check(bool(gd.milestones_earned.get("inseparable", false)),
 		"inseparable milestone recorded")
 	_check(_saw_milestone_line("Inseparable"),
@@ -161,7 +163,7 @@ func _initialize() -> void:
 		cat.set("_nearby_minutes", 59)
 		sb.minute_ticked.emit(1, 6, 1)
 	_check(_milestone_dialogue_count("Inseparable") == is_dialogue_after_first,
-		"repeated companion ticks after tier 4 do not re-fire Inseparable dialogue")
+		"repeated companion ticks after tier 10 do not re-fire Inseparable dialogue")
 
 	# --- 4) herd_keeper: buffalo_count >= 3 AND chicken_count >= 3 ---
 	gd.milestones_earned.erase("herd_keeper")

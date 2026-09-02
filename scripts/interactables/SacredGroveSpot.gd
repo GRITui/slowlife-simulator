@@ -1,13 +1,16 @@
 extends Node2D
 ## SacredGroveSpot — TASK-343. A secondary, unlockable wood-gathering spot the
 ## cat companion trusts the player enough to show, gated behind
-## GameData.companion_bond_tier() reaching its cap (4). Reuses the same
-## "wood" item from ForestTree (no new item); the "richer vein, harder to
-## reach" framing here is a higher daily yield (3 base + axe bonus, vs
-## ForestTree's 1 base + axe bonus) since wood has no rarity tiers to
-## invert. Daily-gated per spot, mirroring ForestTree.gd's once-per-day
-## logic. The cat's own trust milestone ("inseparable") is owned by the
-## companion system — this spot does NOT re-trigger it.
+## GameData.companion_bond_tier() reaching its cap. TASK-348: cap is
+## now level 10 (the 0-10 scale from TASK-346), was level 4 in the
+## legacy /25.0 era — the unlock check itself lives in Main.gd's
+## _ensure_sacred_grove(). Reuses the same "wood" item from ForestTree
+## (no new item); the "richer vein, harder to reach" framing here is a
+## higher daily yield (3 base + axe bonus, vs ForestTree's 1 base + axe
+## bonus) since wood has no rarity tiers to invert. Daily-gated per
+## spot, mirroring ForestTree.gd's once-per-day logic. The cat's own
+## trust milestone ("inseparable") is owned by the companion system —
+## this spot does NOT re-trigger it.
 ##
 ## BUGFIX (Code Quality Review): the original draft copied ForestTree.gd's
 ## @onready $InteractArea pattern, but ForestTree is placed via a real

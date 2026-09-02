@@ -64,9 +64,15 @@ func set_high_contrast(v: bool) -> void:
 		_on_harmony_changed(GameData.harmony)
 
 func _on_buffalo_hearts(affinity: int, hearts: int) -> void:
+	# TASK-348: hearts display switched from repeating "♥" glyphs to a
+	# compact "Lv N/10" numeric format. The 0-10 scale (TASK-346) means
+	# up to 10 heart glyphs would crowd the small FarmHeartsLabel slot
+	# in the compact HUD; "Lv 7/10" stays scannable on a 10pt label
+	# under mobile 80% scale and also matches the SkillsLabel's
+	# "Fish Lv3 | Mine Lv2" pattern.
 	var lbl: Label = find_child("HeartsLabel", true, false) as Label
 	if lbl:
-		lbl.text = "Buffalo: %s (%d)" % ["♥".repeat(hearts) if hearts > 0 else "—", affinity]
+		lbl.text = "Buffalo: Lv %d/10 (%d)" % [hearts, affinity]
 
 func _on_tool_upgraded(_tool_id: String, _new_tier: int) -> void:
 	_update_tool_tier_label()
@@ -84,15 +90,18 @@ func _update_tool_tier_label() -> void:
 ## into one line matching HeartsLabel's heart-repeat style, refreshed on
 ## either source signal (args are ignored — both just trigger a full re-read
 ## of GameData, since the two stats are independent).
+##
+## TASK-348: same Lv N/10 numeric format as _on_buffalo_hearts() —
+## consistent with the unified 0-10 scale.
 func _on_farm_hearts_changed(_a: int, _b: int) -> void:
 	var lbl: Label = find_child("FarmHeartsLabel", true, false) as Label
 	if lbl:
 		var chicken_hearts: int = GameData.chicken_hearts()
 		var cat_tier: int = GameData.companion_bond_tier()
-		lbl.text = "Chicken: %s (%d) x%d | Cat: %s (%d)" % [
-			"♥".repeat(chicken_hearts) if chicken_hearts > 0 else "—", GameData.chicken_affinity,
+		lbl.text = "Chicken: Lv %d/10 (%d) x%d | Cat: Lv %d/10 (%d)" % [
+			chicken_hearts, GameData.chicken_affinity,
 			GameData.chicken_count,
-			"♥".repeat(cat_tier) if cat_tier > 0 else "—", GameData.companion_bond]
+			cat_tier, GameData.companion_bond]
 
 ## Fishing/mining skill have no dedicated level-up signal (unlike tool
 ## tiers), so this piggybacks on the existing minute_ticked connection
