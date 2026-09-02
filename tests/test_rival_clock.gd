@@ -46,36 +46,32 @@ func _initialize() -> void:
 	_check(not gd.lost_to_rival.get("test_candidate", false), "hasn't met yet: no loss")
 	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 0, "hasn't met yet: no warning")
 
-	# --- met on day 1. Simulate one check per day, matching how the real
-	# _on_minute_ticked driver calls this exactly once per calendar day as
-	# the game clock advances linearly (the loop only advances one warning
-	# tier per call by design, so skipping days in a test would jump past
-	# intermediate tiers — this mirrors real continuous play instead). ---
+	# --- TASK-347: progress is tracked as an explicit float (rival_progress),
+	# not recomputed from day-elapsed, so boundary checks set it directly
+	# rather than simulating one _check_candidate call per calendar day (a
+	# call-count-based simulation would drift from the day-elapsed math the
+	# old test relied on, since _check_candidate now advances progress once
+	# per CALL, not once per elapsed day). ---
 	gd.npc_first_met_day["test_candidate"] = 1
-	for day: int in range(2, 24): # through day 23: elapsed 22, frac 0.244 (just under 25%)
-		clock.call("_check_candidate", "test_candidate", day, pair)
-	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 0, "24%% elapsed: no warning yet")
-	clock.call("_check_candidate", "test_candidate", 24, pair) # elapsed 23, frac 0.256
-	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 1, "25%%+ elapsed sets warning tier 1")
+	gd.rival_progress["test_candidate"] = 24.0 # just under the 25% warning threshold
+	clock.call("_check_candidate", "test_candidate", 24, pair) # +1.111 -> 25.11%
+	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 1, "25%%+ progress sets warning tier 1")
 
-	for day: int in range(25, 46):
-		clock.call("_check_candidate", "test_candidate", day, pair)
-	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 1, "49%% elapsed: still tier 1")
-	clock.call("_check_candidate", "test_candidate", 46, pair) # elapsed 45, frac 0.5
-	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 2, "50%%+ elapsed sets warning tier 2")
+	gd.rival_progress["test_candidate"] = 49.0
+	clock.call("_check_candidate", "test_candidate", 46, pair) # +1.111 -> 50.11%
+	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 2, "50%%+ progress sets warning tier 2")
 
-	for day: int in range(47, 68):
-		clock.call("_check_candidate", "test_candidate", day, pair)
-	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 2, "74%% elapsed does not advance to tier 3 yet")
-	clock.call("_check_candidate", "test_candidate", 69, pair) # elapsed 68, frac 0.756
-	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 3, "75%%+ elapsed sets warning tier 3")
+	gd.rival_progress["test_candidate"] = 74.0
+	clock.call("_check_candidate", "test_candidate", 69, pair) # +1.111 -> 75.11%
+	_check(int(gd.rival_warning_shown.get("test_candidate", 0)) == 3, "75%%+ progress sets warning tier 3")
 
-	for day: int in range(70, 91):
-		clock.call("_check_candidate", "test_candidate", day, pair)
-	# --- day 91 (elapsed 90, >= WINDOW_DAYS): still below affinity 25 -> loss resolves ---
+	# --- progress reaching 100 resolves a loss ---
 	_check(int(gd.get_affinity("test_candidate")) < 25, "affinity still below 25 at the deadline (test setup)")
-	clock.call("_check_candidate", "test_candidate", 91, pair)
-	_check(bool(gd.lost_to_rival.get("test_candidate", false)), "90+ days elapsed, affinity < 25 -> lost_to_rival")
+	gd.rival_progress["test_candidate"] = 99.0
+	clock.call("_check_candidate", "test_candidate", 91, pair) # +1.111 -> clamped to 100
+	_check(bool(gd.lost_to_rival.get("test_candidate", false)), "progress reaching 100, affinity < 25 -> lost_to_rival")
+	_check(is_equal_approx(float(gd.rival_progress.get("test_candidate", 0.0)), 100.0),
+		"rival_progress clamps at 100, doesn't overshoot")
 	_check(_last_dialogue.contains("Test Candidate") and _last_dialogue.contains("Test Rival"),
 		"loss dialogue names both candidate and rival")
 
@@ -83,6 +79,66 @@ func _initialize() -> void:
 	_last_dialogue = ""
 	clock.call("_check_candidate", "test_candidate", 200, pair)
 	_check(_last_dialogue == "", "no repeat loss dialogue on later ticks")
+
+	# --- default pacing (nothing nudging it) still reaches 100 within
+	# WINDOW_DAYS ticks, matching the original day-elapsed behavior. One
+	# tick of slack allows for float-accumulation rounding across 90 adds
+	# of a repeating decimal (100.0/90.0) without making this test brittle. ---
+	gd.npc_first_met_day["paced_candidate"] = 1
+	gd.rival_progress.erase("paced_candidate")
+	gd.affinity["paced_candidate"] = 0
+	for day: int in range(2, 3 + clock.WINDOW_DAYS):
+		clock.call("_check_candidate", "paced_candidate", day, pair)
+	_check(bool(gd.lost_to_rival.get("paced_candidate", false)),
+		"default pacing (no nudges) still reaches loss within WINDOW_DAYS ticks")
+
+	# --- nudge_progress() ---
+	gd.npc_first_met_day["nudge_candidate"] = 1
+	gd.rival_progress["nudge_candidate"] = 50.0
+	gd.lost_to_rival.erase("nudge_candidate")
+	gd.married = false
+	clock.call("nudge_progress", "nudge_candidate", -5.0)
+	_check(is_equal_approx(float(gd.rival_progress.get("nudge_candidate", 0.0)), 45.0),
+		"nudge_progress(-5.0) subtracts from current progress")
+	clock.call("nudge_progress", "nudge_candidate", 200.0)
+	_check(is_equal_approx(float(gd.rival_progress.get("nudge_candidate", 0.0)), 100.0),
+		"nudge_progress clamps to 100 on overshoot")
+	clock.call("nudge_progress", "nudge_candidate", -500.0)
+	_check(is_equal_approx(float(gd.rival_progress.get("nudge_candidate", 0.0)), 0.0),
+		"nudge_progress clamps to 0 on undershoot")
+	# no-op: candidate hasn't been met yet
+	gd.rival_progress.erase("unmet_candidate")
+	clock.call("nudge_progress", "unmet_candidate", 50.0)
+	_check(not gd.rival_progress.has("unmet_candidate"), "nudge_progress no-ops on an unmet candidate")
+	# no-op: candidate already lost
+	gd.npc_first_met_day["lost_nudge_candidate"] = 1
+	gd.rival_progress["lost_nudge_candidate"] = 50.0
+	gd.lost_to_rival["lost_nudge_candidate"] = true
+	clock.call("nudge_progress", "lost_nudge_candidate", -50.0)
+	_check(is_equal_approx(float(gd.rival_progress.get("lost_nudge_candidate", 0.0)), 50.0),
+		"nudge_progress no-ops on an already-lost candidate")
+
+	# --- a nudge meaningfully delays the next warning tier / eventual loss,
+	# proving the "slightly" framing isn't a token gesture. Tiers 1/2 have
+	# already fired (shown=2); without a nudge the next tick would cross the
+	# 75% tier-3 threshold — with a -10 nudge it doesn't. ---
+	gd.npc_first_met_day["delayed_candidate"] = 1
+	gd.rival_progress["delayed_candidate"] = 74.0
+	gd.lost_to_rival.erase("delayed_candidate")
+	gd.rival_warning_shown["delayed_candidate"] = 2
+	gd.affinity["delayed_candidate"] = 0
+	clock.call("nudge_progress", "delayed_candidate", -10.0) # 74 -> 64
+	clock.call("_check_candidate", "delayed_candidate", 69, pair) # +1.111 -> 65.11%, below tier-3's 75%
+	_check(int(gd.rival_warning_shown.get("delayed_candidate", 0)) == 2,
+		"a -10 nudge keeps progress under the tier-3 threshold that a call without it would have crossed")
+	# Prove the counterfactual: the SAME sequence without the nudge does cross it.
+	gd.rival_progress["unnudged_candidate"] = 74.0
+	gd.npc_first_met_day["unnudged_candidate"] = 1
+	gd.rival_warning_shown["unnudged_candidate"] = 2
+	gd.affinity["unnudged_candidate"] = 0
+	clock.call("_check_candidate", "unnudged_candidate", 69, pair) # +1.111 -> 75.11%, crosses tier-3
+	_check(int(gd.rival_warning_shown.get("unnudged_candidate", 0)) == 3,
+		"without the nudge, the same starting progress does cross tier 3 at this tick")
 
 	# --- a DIFFERENT candidate, actively courted, is never at risk ---
 	gd.npc_first_met_day["safe_candidate"] = 1

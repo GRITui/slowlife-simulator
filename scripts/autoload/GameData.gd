@@ -351,6 +351,15 @@ var child_stage: int = 0
 var npc_first_met_day: Dictionary = {}
 var lost_to_rival: Dictionary = {}
 var rival_warning_shown: Dictionary = {}
+# TASK-347: rival_progress replaces pure day-elapsed tracking for the win/
+# loss clock -- candidate_id -> float 0-100 (100 = the rival wins), advances
+# automatically ~1.11/day (100/RivalClock.WINDOW_DAYS) and is nudgeable by
+# festival wins/losses via RivalClock.nudge_progress(). rival_friendship /
+# rival_confessed are for TASK-342's rival gift/confession system -- this
+# task only adds the fields, TASK-342 owns the behavior.
+var rival_progress: Dictionary = {}
+var rival_friendship: Dictionary = {}
+var rival_confessed: Dictionary = {}
 
 func start_quest(quest_id: String, objective_count: int = 0) -> void:
 	if active_quests.has(quest_id):

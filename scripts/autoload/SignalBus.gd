@@ -20,6 +20,7 @@ signal barter_completed(have_id: String, want_id: String)
 var grid_manager: Node = null
 var time_manager: Node = null
 var market_shop: Node = null # TASK-327: MarketShop UI panel registry slot.
+var rival_clock: Node = null # TASK-347: RivalClock registry slot (festival tie-in reads this).
 
 # --- Extended signals (backward-compat with existing codebase) ---
 signal village_harmony_changed(new_harmony: int)

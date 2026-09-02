@@ -112,7 +112,14 @@ func _initialize() -> void:
 	# Force score >> any randi_range(4, 14) roll so player wins.
 	var silver_before: int = gd.silver
 	var harmony_before: int = gd.harmony
+	# TASK-347: a "first" placement nudges Ploy's own rival clock back.
+	gd.npc_first_met_day["ploy"] = 1
+	gd.rival_progress["ploy"] = 50.0
+	gd.lost_to_rival.erase("ploy")
+	gd.married = false
 	tm.set_time(3, 18, 0)
+	_check(is_equal_approx(float(gd.rival_progress.get("ploy", 0.0)), 45.0),
+		"first place nudges ploy's rival_progress back by 5.0")
 	_check(not trig._cook_active, "window close sets _cook_active = false")
 	_check(gd.silver - silver_before >= 1, "1st place grants silver > 0")
 	_check(gd.harmony - harmony_before >= 1, "1st place grants harmony > 0")
@@ -133,7 +140,11 @@ func _initialize() -> void:
 	trig._cook_score = 0 # player cooks nothing — guaranteed participation.
 	silver_before = gd.silver
 	harmony_before = gd.harmony
+	# TASK-347: a "participation" placement nudges Ploy's rival clock forward.
+	gd.rival_progress["ploy"] = 50.0
 	tm.set_time(3, 18, 0)
+	_check(is_equal_approx(float(gd.rival_progress.get("ploy", 0.0)), 55.0),
+		"participation nudges ploy's rival_progress forward by 5.0")
 	_check(not trig._cook_active, "participation window close clears _cook_active")
 	_check(gd.silver - silver_before >= 1, "participation grants silver > 0 (no-fail)")
 	_check(gd.harmony - harmony_before >= 1, "participation grants harmony > 0 (no-fail)")

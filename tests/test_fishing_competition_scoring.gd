@@ -93,7 +93,14 @@ func _initialize() -> void:
 	comp._player_score = 99
 	var silver_before: int = gd.silver
 	var harmony_before: int = gd.harmony
+	# TASK-347: a "first" placement nudges Fah's own rival clock back.
+	gd.npc_first_met_day["fah"] = 1
+	gd.rival_progress["fah"] = 50.0
+	gd.lost_to_rival.erase("fah")
+	gd.married = false
 	tm.set_time(15, 16, 0)
+	_check(is_equal_approx(float(gd.rival_progress.get("fah", 0.0)), 45.0),
+		"first place nudges fah's rival_progress back by 5.0")
 	_check(not comp._competition_active, "window close sets _competition_active = false")
 	_check(gd.silver - silver_before >= 1, "1st place grants silver > 0")
 	_check(gd.harmony - harmony_before >= 1, "1st place grants harmony > 0")
@@ -115,7 +122,11 @@ func _initialize() -> void:
 	comp._player_score = 0 # player catches nothing — guaranteed participation.
 	silver_before = gd.silver
 	harmony_before = gd.harmony
+	# TASK-347: a "participation" placement nudges Fah's rival clock forward.
+	gd.rival_progress["fah"] = 50.0
 	tm.set_time(15, 16, 0)
+	_check(is_equal_approx(float(gd.rival_progress.get("fah", 0.0)), 55.0),
+		"participation nudges fah's rival_progress forward by 5.0")
 	_check(not comp._competition_active, "participation window close clears _competition_active")
 	_check(gd.silver - silver_before >= 1, "participation grants silver > 0 (no-fail)")
 	_check(gd.harmony - harmony_before >= 1, "participation grants harmony > 0 (no-fail)")
