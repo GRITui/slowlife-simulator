@@ -39,7 +39,7 @@ You manage your own internal task execution to maintain high quality while optim
   exists — TASK-340 shipped a real bug here (a migration block nested one
   indentation level too deep, silently never running for the most common
   case) caught only by that discipline, not by inspection.
-* **OpenCode/Cline (delegate-first as of 2026-09-02 — try delegation BEFORE
+* **Cline/OpenCode (delegate-first as of 2026-09-02 — try delegation BEFORE
   self-executing, not after):** GDScript gameplay logic, state machines,
   `SignalBus` wiring, data models — including full features, not just small
   well-scoped pieces. Claude still designs the scope/interface first (this
@@ -48,6 +48,30 @@ You manage your own internal task execution to maintain high quality while optim
   role on this tier is "scope it, then code-review the diff for quality" —
   see `AI-ENG-001`'s Code Quality Review step, not just the mechanical
   tests-green/scoped-diff gate that already existed.
+  * **Cline is the preferred tool over OpenCode, as of 2026-09-02** — owner
+    tested both directly with the same model (GLM-5.3-Flash): Cline worked
+    properly, OpenCode got stuck. This session independently hit the same
+    OpenCode failure mode twice (TASK-342, TASK-343 — a run would explore
+    files thoroughly and never write anything, no error, just silently ran
+    out of steps). Try Cline first; fall back to OpenCode only if Cline
+    itself is unavailable.
+  * **Set the worker model's reasoning effort LOW for implementation tasks,
+    not high** — validated 2026-09-02 against actual research (arXiv
+    2502.08235, 2608.26442), not just a tooling preference: reasoning models
+    show ~3x higher "overthinking" scores than non-reasoning models, with a
+    measured NEGATIVE correlation between overthinking and actual task-
+    resolution rate. "Analysis Paralysis" (extensive exploration, no action)
+    is a named failure mode in that research — it's exactly what this
+    session's own stuck OpenCode runs looked like. Concretely: o1 at high
+    reasoning effort resolved 29.1% of tasks at $1,400; at low reasoning
+    effort, 21.0% at 3.5x lower cost — and two low-reasoning attempts (keep
+    the better one) reached 27.3%, nearly matching high-reasoning quality at
+    43% less compute. This matches what this session organically did anyway
+    (retry the same model on a fresh attempt after a stuck run succeeded
+    both times) — low reasoning + willingness to retry beats one expensive
+    high-reasoning attempt for well-specified implementation work. Reserve
+    high reasoning for Claude's own design/spec-writing pass, not the
+    delegate's execution pass.
   * **Rate limits are per-model, not per-account or per-platform** — a limit
     hit on one model doesn't affect another. Validated 2026-09-02 against
     OpenRouter's own docs: free (`:free`) models get 20 req/min and either
@@ -60,6 +84,11 @@ You manage your own internal task execution to maintain high quality while optim
     immediately rather than waiting on the one that hit its limit** — this
     is OpenRouter's own supported pattern (an ordered `models` array that
     auto-walks on failure), not a workaround.
+  * **On a stuck/no-action run (not a rate-limit — the model just explores
+    and never writes anything), retry once with the SAME model/config
+    before switching** — per the research above, this is a validated
+    pattern, not a hopeful re-roll. If a second attempt also produces
+    nothing, then fall back to the next model in the chain or self-execute.
 
 ### Free-model fallback chains (validated 2026-09-02, re-verify periodically — this roster rotates)
 
