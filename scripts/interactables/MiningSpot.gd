@@ -118,6 +118,9 @@ func dig() -> bool:
 	if level > _skill():
 		GameData.mining_skill = level
 		SignalBus.show_dialogue.emit(spot_name, "Mining skill up! Now level %d." % level)
+		# TASK-331 deep_miner milestone — first time mining_skill hits cap.
+		if level >= skill_cap and GameData.earn_milestone("deep_miner"):
+			SignalBus.show_dialogue.emit("System", "Milestone: Deep Miner! (+10 harmony)")
 	SignalBus.craft_completed.emit(item, 1) # reuse item-gained signal (no new orphan)
 	SignalBus.show_dialogue.emit(spot_name, "Dug up %s! (+%d harmony)" % [
 		String(picked.get("display_name", "ore")), int(picked.get("harmony_value", 1))])

@@ -123,6 +123,23 @@ func _check_stamina_milestone() -> void:
 		max_stamina += 15.0
 		current_stamina += 15.0 # setter already clamps + emits stamina_changed
 
+# TASK-331 milestone collectibles — permanent, one-time achievements
+# across varied activities (distinct from TASK-326's single-axis
+# shipping milestones above). Not yet persisted — see SaveManager.gd
+# note; a human-reviewed follow-up adds that (save-format changes are
+# always-escalate in this project's pipeline).
+var milestones_earned: Dictionary = {}
+
+## Idempotent: returns true only the first time an id is earned (and
+## grants the reward then); returns false on every later call for the
+## same id, with no further mutation.
+func earn_milestone(id: String, reward_harmony: int = 10) -> bool:
+	if milestones_earned.get(id, false):
+		return false
+	milestones_earned[id] = true
+	add_harmony(reward_harmony)
+	return true
+
 # TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
 #   watering_can: watered plots also pre-advance growth (tier*30 effective
 #   minutes) and watering costs no stamina above tier 1.
