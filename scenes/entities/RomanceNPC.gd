@@ -194,14 +194,20 @@ func _give_gift() -> bool:
 	return true
 
 func _talk() -> void:
-	var tier: String = DialogueDBScript.get_affinity_tier(GameData.get_affinity(npc_id))
-	# TASK-324: occasional light rival pressure on the close-tier courtship
-	# path — every 5th talk only, and never when married to this NPC. Swaps
-	# the dialogue pool for that one call; everything else (talk-count,
-	# quest hooks) stays unchanged.
-	if tier == "close" and not (GameData.married and GameData.spouse == npc_id) and _talk_count % 5 == 4:
-		tier = "rival"
-	var line: String = DialogueDBScript.get_line(npc_id, tier, _talk_count)
+	# TASK-346: affinity 0-100 mapped to a 10-level dialogue pool (see
+	# GameData.level_for()). Level 0 (affinity < 10) falls back to level 1's
+	# pool — there's no separate "level 0" content, the first meeting is
+	# already covered by level 1's lines.
+	var level: int = maxi(GameData.level_for(GameData.get_affinity(npc_id)), 1)
+	var pool_key: String = str(level)
+	# TASK-324: occasional light rival pressure on the close-equivalent
+	# courtship band (levels 6-8, matching the old "close" tier's 60-89
+	# affinity range under floor(affinity/10)) — every 5th talk only, and
+	# never when married to this NPC. Swaps the dialogue pool for that one
+	# call; everything else (talk-count, quest hooks) stays unchanged.
+	if level >= 6 and level <= 8 and not (GameData.married and GameData.spouse == npc_id) and _talk_count % 5 == 4:
+		pool_key = "rival"
+	var line: String = DialogueDBScript.get_line(npc_id, pool_key, _talk_count)
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)
 
