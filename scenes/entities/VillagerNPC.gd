@@ -150,7 +150,7 @@ func talk() -> void:
 	if npc_id == "handler" and _try_tool_upgrade():
 		return
 	# TASK-313 Channel C: Specialty Buyer (close tier, +45% premium, 3/week cap).
-	if (npc_id == "fah" or npc_id == "niran") and _try_specialty_sell():
+	if (npc_id == "fah" or npc_id == "ek") and _try_specialty_sell():
 		return
 	# Phase 3 audit (2026-09-02): GIFT_PREFERENCES already covered elder/
 	# child/handler (and headman/vet fall back to "neutral"), but only
@@ -256,15 +256,15 @@ func _try_trader_sell() -> bool:
 	return false
 
 func _try_specialty_sell() -> bool:
-	# Channel C: Specialty Buyer — handled in RomanceNPC for Fah/Niran,
+	# Channel C: Specialty Buyer — handled in RomanceNPC for Fah/Ek,
 	# but VillagerNPC also checks for those ids if somehow routed here.
-	if npc_id != "fah" and npc_id != "niran":
+	if npc_id != "fah" and npc_id != "ek":
 		return false
 	var tm: Node = SignalBus.time_manager
 	var day: int = int(tm.day) if tm != null and "day" in tm else 1
 	if not GameData.can_specialty_sell(npc_id, day):
 		return false
-	# Thematic categories: Fah buys rare fish, Niran buys hot-season crops.
+	# Thematic categories: Fah buys rare fish, Ek buys hot-season crops.
 	var want_item: String = ""
 	if npc_id == "fah":
 		for item_id in ["pla_nin_big", "pla_soi_big", "pla_chon_big", "mango_sticky_rice", "lotus_root"]:
@@ -276,7 +276,7 @@ func _try_specialty_sell() -> bool:
 				if String(item_id).begins_with("pla_") and GameData.has_item(item_id, 1):
 					want_item = item_id
 					break
-	elif npc_id == "niran":
+	elif npc_id == "ek":
 		for item_id in ["durian", "mango", "durian_sticky_rice", "mango_sticky_rice"]:
 			if GameData.has_item(item_id, 1):
 				want_item = item_id

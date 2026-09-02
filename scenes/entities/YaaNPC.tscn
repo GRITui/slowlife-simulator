@@ -1,15 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://niran_npc001"]
+[gd_scene load_steps=4 format=3 uid="uid://yaa_npc001"]
 
-[ext_resource type="Texture2D" path="res://assets/characters/niran_idle_01.png" id="1_idle"]
+[ext_resource type="Texture2D" path="res://assets/characters/yaa_idle_01.png" id="1_idle"]
 [ext_resource type="Script" path="res://scenes/entities/RomanceNPC.gd" id="9_script"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
 radius = 48.0
 
-[node name="NiranNPC" type="CharacterBody2D" groups=["villager_npc", "romance_candidate"]]
+[node name="YaaNPC" type="CharacterBody2D" groups=["villager_npc", "romance_candidate"]]
 script = ExtResource("9_script")
-npc_id = "niran"
-display_name = "Niran"
+npc_id = "yaa"
+display_name = "Yaa"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_idle")

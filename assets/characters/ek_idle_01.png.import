@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ce0d4k1djxgs6"
-path="res://.godot/imported/kanya_idle_01.png-ad45124235a08677a9ef9ad5b917c34c.ctex"
+uid="uid://dglv3r3e1xben"
+path="res://.godot/imported/ek_idle_01.png-522c97e8258684ad0822544d670c642b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/kanya_idle_01.png"
-dest_files=["res://.godot/imported/kanya_idle_01.png-ad45124235a08677a9ef9ad5b917c34c.ctex"]
+source_file="res://assets/characters/ek_idle_01.png"
+dest_files=["res://.godot/imported/ek_idle_01.png-522c97e8258684ad0822544d670c642b.ctex"]
 
 [params]
 

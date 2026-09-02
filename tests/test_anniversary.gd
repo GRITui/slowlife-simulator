@@ -25,26 +25,26 @@ func _initialize() -> void:
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	var niran: Node = main.get_node_or_null("NiranNPC")
+	var ek: Node = main.get_node_or_null("EkNPC")
 	var tm: Node = sb.time_manager
-	if niran == null:
+	if ek == null:
 		await process_frame
 		quit(1)
 		return
 	gd.inventory.clear()
 	# Marriage state (wedding test path compressed).
 	gd.married = true
-	gd.spouse = "niran"
+	gd.spouse = "ek"
 	var silver0: int = int(gd.silver)
-	_check(niran.try_interact(), "anniversary year 1")
+	_check(ek.try_interact(), "anniversary year 1")
 	_check(int(gd.silver) == silver0 + 30 and int(gd.harmony) >= 10, "+30 silver, +10 harmony")
 	_check(_events == 1, "anniversary event fired once")
 	# Same year: no repeat.
-	niran.try_interact()
+	ek.try_interact()
 	_check(_events == 1 and int(gd.silver) == silver0 + 30, "same-year repeat blocked (cozy daily line)")
 	# Year 2: new anniversary.
 	tm.set_time(97, 12, 0)
-	niran.try_interact()
+	ek.try_interact()
 	_check(_events == 2, "year-2 anniversary fires")
 	_check(int(gd.silver) == silver0 + 60, "second +30 silver")
 	sb.festival_triggered.disconnect(_on_festival)
