@@ -162,6 +162,19 @@ task-number order.
       reducing affinity. Every item from the Gemini gap-analysis
       research pass is now shipped or explicitly resolved. See
       `ops/ai-eng-log.md` run 18.
+
+## Broaden to compete with HM:BtN (2026-09-02 quality/stickiness verdict)
+- [x] **Sprint 1 — cast & stakes.** TASK-335: third romance candidate
+      (Ploy). TASK-336: Fishing Competition is now a real scored
+      contest — the game's first competitive mini-game (zero fail
+      state, every placement tier grants something).
+- [x] **Sprint 2 — world breadth.** TASK-337: Mountain Cave, a
+      secondary area gated behind mining mastery (no map/grid
+      expansion, no new item, no save-schema change). TASK-338: Nok,
+      a 12th named villager. Bonus: found and fixed a real pre-existing
+      bug while scoping this — headman/vet had dedicated portraits
+      that silently never rendered (always showed Elder instead).
+- [ ] Sprint 3 — second scored mini-game. Queued, pending check-in.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)

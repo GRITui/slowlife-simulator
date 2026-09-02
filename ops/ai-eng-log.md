@@ -1047,3 +1047,57 @@ category from the role reassessment, discovered live.
   next.**
 - **Stop reason:** Sprint 1 of 3 complete, both items shipped, gate
   green, continuing to Sprint 2.
+
+## 2026-09-02 — Run 19 continued (Sprint 2: world breadth)
+
+- **User said "go carefully."** Spent extra verification time up front
+  before writing either spec — paid off twice.
+- **TASK-338 (grow the NPC roster, self-executed) design work
+  surfaced a real bug before any new code was written:** while
+  confirming exactly how Elder/Child/Handler are declared (they're 3
+  instances of one shared `VillagerNPC.tscn`, not separate files —
+  verified by reading `Main.tscn` directly rather than assuming),
+  found `VillagerNPC.gd`'s headless-safe idle-texture fallback had
+  cases for elder/child/handler but NONE for headman/vet — despite
+  both having dedicated portrait assets (`headman_idle_01.png`,
+  `vet_idle_01.png`) sitting unused since whenever they were added.
+  Both silently rendered as Elder. Fixed immediately as its own commit
+  (`d876154`), with a new `tests/test_villager_portraits.gd` (15/15) —
+  the first test in this project to check portrait textures at all,
+  since it's exactly the class of purely-visual bug headless testing
+  otherwise can't catch (ties directly back to the verdict's "nobody
+  has played this" finding).
+- **TASK-338 itself:** added Nok, a veteran-farmer villager, using the
+  now-verified simple pattern (static `VillagerNPC.tscn` instance +
+  explicit `idle_texture` override, no new `.tscn`, no new `Main.gd`
+  function). Caught one more issue in my own first draft before
+  shipping: her loved-gift list included `"ginger"`, which isn't in
+  `GameData.FOOD_ITEMS` (the auto-gift picker's source list) — would
+  never have been reachable. Swapped for `thai_basil`. Extended
+  weather-reactive scheduling (TASK-328) to a 3rd NPC via the existing
+  `RAIN_HOME` mechanism, for free. Y-sort budget 50→51 (same
+  documented pattern, now a running commit-log of its own). Merged
+  `480b790`, pushed.
+- **TASK-337 (secondary unlockable area, delegated to OpenCode
+  `minimax-m3:free`):** designed carefully to route around the actual
+  risk flagged in the original plan — no grid/map expansion at all.
+  Verified the unlock condition (`mining_skill >= 3`) is already
+  persisted, so the spot's existence is derived live every check
+  rather than stored as a new flag, sidestepping a `SaveManager.gd`
+  schema bump entirely (always-escalate category, would otherwise have
+  needed separate human review). Verified rarity-weight math and the
+  exact ore-roster reuse before writing the spec, so the delegate had
+  zero design decisions left to make, only implementation. Delegate
+  made two good judgment calls not spelled out verbatim in the spec:
+  didn't inflate the perf budget for a spot with no sprite (correctly
+  added it to the exclusion list instead, matching precedent), and
+  used a seeded RNG in the statistical rarity-inversion test to avoid
+  flakiness. Code Quality Review: clean, matches spec exactly,
+  correctly avoided duplicating the `deep_miner` milestone trigger.
+  `tests/test_mountain_cave.gd` 16/16. Merged `73c3c3e`, pushed.
+- **Sprint 2 closed.** Both items shipped, one real pre-existing bug
+  found and fixed as a bonus, gate green throughout
+  (content 100/100, engine 50/50, save-compat 35/35, perf 6/6, touch
+  10/10).
+- **Stop reason:** Sprint 2 of 3 complete, checking in before Sprint 3
+  (second scored mini-game).

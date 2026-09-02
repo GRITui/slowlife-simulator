@@ -262,3 +262,25 @@ Recommended order if approved, best cost/impact ratio first:
 </task_item>
 
 <!-- AI-LOOP: 2026-09-02 "Broaden to compete with HM:BtN" plan, Sprint 1 (TASK-335, TASK-336) complete per ops/ai-eng-log.md run 19. Sprint 2 (secondary unlockable area, additional named NPCs) and Sprint 3 (second scored mini-game) queued next. -->
+
+<task_item>
+  <id>TASK-337</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P2</priority>
+  <title>Secondary unlockable area (Mountain Cave)</title>
+  <description>Part of the "broaden to compete with HM:BtN" plan. NOT a map/grid expansion (too risky given the Y-sort budget and GridManager's load-bearing 20x16 size) -- one new interactable (MountainCaveSpot.gd) in an already-empty map corner, gated behind mining_skill reaching cap 3. No new persisted field (unlock derived live from the already-persisted mining_skill), no new item (reuses ore.json's 3 ores with inverted rarity weighting). Delegated to OpenCode (minimax-m3:free). Commit 73c3c3e.</description>
+  <researcher_notes>New tests/test_mountain_cave.gd 16/16 including a seeded statistical check on the rarity inversion. Full record: ops/ai-eng-log.md run 19.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-338</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P2</priority>
+  <title>Grow the named NPC roster (Nok)</title>
+  <description>Part of the "broaden to compete with HM:BtN" plan. Recounted the roster before scoping (12 named NPCs, not ~9 as first estimated). Added exactly one new villager: Nok, a veteran farmer contrasting Niran's rivalry with cooperative wisdom. Self-executed (narrative content on existing data-driven infrastructure). Commit 480b790.</description>
+  <researcher_notes>Surfaced and separately fixed a real pre-existing bug while scoping: headman/vet had dedicated portraits that were never wired up and silently rendered as Elder (commit d876154, new tests/test_villager_portraits.gd 15/15). Full record: ops/ai-eng-log.md run 19.</researcher_notes>
+</task_item>
+
+<!-- AI-LOOP: 2026-09-02 "Broaden to compete with HM:BtN" plan, Sprint 2 (TASK-337, TASK-338) complete per ops/ai-eng-log.md run 19, plus a bonus pre-existing bug fix (headman/vet portrait fallback, commit d876154). Sprint 3 (second scored mini-game) queued next, pending owner check-in. -->
