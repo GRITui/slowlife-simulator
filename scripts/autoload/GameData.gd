@@ -79,32 +79,38 @@ var mining_skill: int = 1
 static func level_for(value: int) -> int:
 	return clampi(int(value / 10.0), 0, 10)
 
-# ISSUE-129 buffalo affinity ('hearts'): 0..100, 25 per heart, max 4 hearts.
+# ISSUE-129 buffalo affinity ('hearts'): 0..100, 10 per heart, max 10 hearts.
+# TASK-348: scale unified with the romance/chicken/companion 10-level system
+# (TASK-346's level_for()). Underlying storage still 0..100 — only the
+# derived 0..10 hearts value changed.
 var buffalo_affinity: int = 0
 
 func add_buffalo_affinity(amount: int) -> void:
 	buffalo_affinity = clampi(buffalo_affinity + amount, 0, 100)
 
 func buffalo_hearts() -> int:
-	return int(buffalo_affinity / 25.0)
+	return level_for(buffalo_affinity)
 
 # TASK-323 chicken affinity ('hearts'): mirrors buffalo pattern, 0..100.
+# TASK-348: scale unified with the 10-level system (see buffalo_hearts()).
 var chicken_affinity: int = 0
 
 func add_chicken_affinity(amount: int) -> void:
 	chicken_affinity = clampi(chicken_affinity + amount, 0, 100)
 
 func chicken_hearts() -> int:
-	return int(chicken_affinity / 25.0)
+	return level_for(chicken_affinity)
 
-# TASK-325 companion bond: 0..100, tier per /25.0 (mirrors buffalo_hearts()).
+# TASK-325 companion bond: 0..100. TASK-348: scale unified with the 10-level
+# system (TASK-346's level_for()); max is now level 10, not the legacy /25.0
+# level 4 cap.
 var companion_bond: int = 0
 
 func add_companion_bond(amount: int) -> void:
 	companion_bond = clampi(companion_bond + amount, 0, 100)
 
 func companion_bond_tier() -> int:
-	return int(companion_bond / 25.0)
+	return level_for(companion_bond)
 
 # TASK-323B herd-size counter. Starts at 1 (a single chicken / a single
 # buffalo), grown by breeding on each daily interact once hearts >= 2.

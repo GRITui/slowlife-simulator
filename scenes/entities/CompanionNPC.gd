@@ -57,8 +57,10 @@ func _on_minute_ticked(_day: int, _hour: int, _minute: int) -> void:
 		SignalBus.companion_bond_changed.emit(GameData.companion_bond, tier_after)
 		if tier_after > tier_before:
 			SignalBus.show_dialogue.emit("Companion", _tier_line(tier_after))
-			# TASK-331 inseparable milestone — first time companion_bond_tier hits 4.
-			if tier_after >= 4 and GameData.earn_milestone("inseparable"):
+			# TASK-331 inseparable milestone — first time companion_bond_tier hits
+			# the cap. TASK-348: cap is now level 10 (the 0-10 scale from TASK-346),
+			# was 4 in the legacy /25.0 era.
+			if tier_after >= 10 and GameData.earn_milestone("inseparable"):
 				SignalBus.show_dialogue.emit("System", "Milestone: Inseparable! (+10 harmony)")
 
 func _physics_process(delta: float) -> void:
@@ -112,13 +114,22 @@ func _find_player() -> Node2D:
 	var nodes: Array = get_tree().get_nodes_in_group("player")
 	return nodes[0] as Node2D if not nodes.is_empty() else null
 
-## TASK-325: cozy tier-up dialogue. Index matches companion_bond_tier()
-## (0 = new acquaintance, 1..4 = ascending closeness). Cap-safe: any
-## out-of-range tier falls back to the highest line.
+## TASK-325 / TASK-348: cozy tier-up dialogue. Index matches
+## companion_bond_tier() — 0 = new acquaintance, 1..10 = ascending
+## closeness, 10 = the terminal "true companion" peak (the prior
+## tier-4 line is preserved at level 10 verbatim, so the old terminal
+## copy survives the scale change). Cap-safe: any out-of-range tier
+## falls back to the highest line.
 func _tier_line(tier: int) -> String:
 	match tier:
-		1: return "Your cat rubs against your leg. (Companion bond: 1)"
-		2: return "Your cat follows at your heel. (Companion bond: 2)"
-		3: return "Your cat purrs on your lap. (Companion bond: 3)"
-		4: return "Your cat is your true companion. (Companion bond: 4)"
+		1: return "Your cat watches you from a distance. (Companion bond: 1)"
+		2: return "Your cat brushes past your ankle. (Companion bond: 2)"
+		3: return "Your cat rubs against your leg. (Companion bond: 3)"
+		4: return "Your cat follows you around the farm. (Companion bond: 4)"
+		5: return "Your cat walks at your heel through the paddy. (Companion bond: 5)"
+		6: return "Your cat waits for you on the porch. (Companion bond: 6)"
+		7: return "Your cat curls up beside you by the fire. (Companion bond: 7)"
+		8: return "Your cat sleeps at the foot of your bed. (Companion bond: 8)"
+		9: return "Your cat purrs on your lap, eyes half-closed. (Companion bond: 9)"
+		10: return "Your cat is your true companion. (Companion bond: 10)"
 		_: return "Your cat purrs. (Companion bond: %d)" % tier

@@ -379,12 +379,14 @@ func _ensure_deep_canal() -> void:
 	add_child(spot)
 
 func _ensure_sacred_grove() -> void:
-	# TASK-343: gated on GameData.companion_bond_tier() >= 4 (the cap, the
-	# same threshold as the inseparable milestone). Thematically: the cat
+	# TASK-343 / TASK-348: gated on GameData.companion_bond_tier() >= 10
+	# (the cap, the same threshold as the inseparable milestone). The
+	# old /25.0 "tier 4" cap (100% of the 0-4 ceiling) was rescaled to
+	# the same 100% of the new 0-10 ceiling. Thematically: the cat
 	# leads you to a grove it trusts you enough to show. Derive the
 	# unlock state live each call — no persisted flag, no schema bump.
 	# Called once from _ready() and again from the minute_ticked handler.
-	if GameData.companion_bond_tier() < 4:
+	if GameData.companion_bond_tier() < 10:
 		return
 	if get_node_or_null("SacredGroveSpot") != null:
 		return
