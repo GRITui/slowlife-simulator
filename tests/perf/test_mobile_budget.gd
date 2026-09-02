@@ -53,6 +53,10 @@ func _initialize() -> void:
 			# exclusion list for the same reason (logic-only interactables,
 			# no visible sprite, same treatment as the prior unlockable
 			# spots).
+			# TASK-344: LotusMazeShoreSpot and CoastalTradingPost join the
+			# same exclusion list for the same reason (logic-only
+			# interactables, no visible sprite, same treatment as the prior
+			# unlockable spots — both ship as invisible interact zones).
 			# 51->54 (TASK-341: Chang/Klong/Yaa, 3 more romance candidates,
 			# each with a real Sprite2D — same treatment as Ploy/Nok).
 			# 54->60 (TASK-342: Yai/Ohm/Rung/Note/Fon/Boon, 6 rival NPCs,
@@ -64,7 +68,7 @@ func _initialize() -> void:
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost":
 						continue
 					sorted_kids += 1
 			_check(sorted_kids <= 60, "y-sorted participants <= 60 (got %d)" % sorted_kids)

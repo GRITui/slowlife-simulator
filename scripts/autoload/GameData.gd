@@ -255,6 +255,21 @@ func cheapest_sellable() -> String:
 				best_price = price
 	return best
 
+## TASK-344: Priciest sellable item currently held (Coastal Trading Post
+## sells the highest-value item, mirroring cheapest_sellable()'s shape
+## with the comparison inverted). Used by CoastalTradingPost.trade()
+## — returns "" when nothing sellable is held.
+func priciest_sellable() -> String:
+	var best: String = ""
+	var best_price: int = 0
+	for item_id: String in inventory.keys():
+		var price: int = int(SELL_PRICES.get(item_id, 0))
+		if price > 0 and int(inventory[item_id]) > 0:
+			if best == "" or price > best_price:
+				best = item_id
+				best_price = price
+	return best
+
 # TASK-313 3-channel sell economy: Channel A (Cart, base), B (Market +15%), C (Specialty +45% gated).
 # Specialty weekly cap tracking (Binthabat-style daily reset, but 7-day window).
 var specialty_sales_this_week: Dictionary = {} # npc_id -> count this week
@@ -314,6 +329,11 @@ func get_sell_price(item_id: String, channel: String) -> int:
 	match channel:
 		"market":
 			return int(ceil(base * 1.15))
+		"coastal":
+			# TASK-344: between market (+15%) and specialty (+45%). The
+			# Coastal Trading Post sells the priciest held item at this
+			# mid-tier premium.
+			return int(ceil(base * 1.25))
 		"specialty":
 			return int(ceil(base * 1.45))
 		_:

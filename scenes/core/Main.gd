@@ -88,6 +88,13 @@ func _ready() -> void:
 	# minute_ticked subscription — extend the existing handler instead.
 	_ensure_deep_canal()
 	_ensure_sacred_grove()
+	# TASK-344: lotus maze shore (fishing, milestones-gated) and coastal
+	# trading post (economy, lifetime_items_shipped-gated). Same pattern:
+	# called here so a loaded save that already meets the gate shows the
+	# spot immediately at boot, and from the minute_ticked handler so a
+	# freshly-met gate unlocks it without a reload.
+	_ensure_lotus_maze_shore()
+	_ensure_coastal_trading_post()
 	SignalBus.minute_ticked.connect(_on_minute_ticked_unlocks)
 	# TASK-332: repeatable side-quest noticeboard (separate from QuestLog).
 	_ensure_noticeboard()
@@ -333,14 +340,16 @@ func _ensure_mountain_cave() -> void:
 	add_child(spot)
 
 func _on_minute_ticked_unlocks(_day: int, _hour: int, _minute: int) -> void:
-	# TASK-337 + TASK-343: lazy unlock poll. Cheap (one int compare +
-	# get_node_or_null per spot per tick); runs even after the spot
-	# already exists so it stays idempotent. Main has no other
+	# TASK-337 + TASK-343 + TASK-344: lazy unlock poll. Cheap (one int
+	# compare + get_node_or_null per spot per tick); runs even after the
+	# spot already exists so it stays idempotent. Main has no other
 	# minute_ticked subscription of its own — every other system owns
 	# its own — so this is intentionally the only one in this file.
 	_ensure_mountain_cave()
 	_ensure_deep_canal()
 	_ensure_sacred_grove()
+	_ensure_lotus_maze_shore()
+	_ensure_coastal_trading_post()
 
 func _ensure_deep_canal() -> void:
 	# TASK-343: gated on GameData.fishing_skill >= 4 (the cap, the same
@@ -392,6 +401,61 @@ func _ensure_sacred_grove() -> void:
 	# ForestTree19_4. No sprite for MVP — invisible interact zone,
 	# mirroring MiningSpot/Noticeboard/MountainCaveSpot's precedent.
 	spot.position = Vector2(19 * 48 + 24, 6 * 48)
+	add_child(spot)
+
+func _ensure_lotus_maze_shore() -> void:
+	# TASK-344: gated on GameData.milestones_earned.size() >= 5 — every
+	# TASK-331 milestone earned (deep_miner, master_angler, inseparable,
+	# herd_keeper, storm_catch). The "completionist" capstone, not a
+	# single-skill gate. Derive the unlock state live each call — no
+	# persisted flag, no schema bump. Called once from _ready() (covers
+	# loaded-save boot) and again from the minute_ticked handler.
+	if (GameData.milestones_earned as Dictionary).size() < 5:
+		return
+	if get_node_or_null("LotusMazeShoreSpot") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/LotusMazeShoreSpot.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "LotusMazeShoreSpot"
+	# Tile (13, 11) — verified via headless ground_at() probe: tile
+	# (13,11) is plantable_soil (walkable) and its east neighbor
+	# (14,11) is deep_pond (inside the lotus maze interior), satisfying
+	# _water_adjacent(). The maze interior itself (cols 14-16 rows 10-12)
+	# is non-walkable, so the spot sits on the walkable edge, mirroring
+	# FishingSpot.gd's own water-adjacency check. No sprite for MVP —
+	# invisible interact zone, same precedent as MiningSpot /
+	# MountainCaveSpot / DeepCanalSpot / SacredGroveSpot.
+	spot.position = Vector2(13 * 48 + 24, 11 * 48)
+	add_child(spot)
+
+func _ensure_coastal_trading_post() -> void:
+	# TASK-344: gated on GameData.lifetime_items_shipped >= 200 — the
+	# same threshold as stamina_tier 4 (cap), framing this as the
+	# natural capstone of the shipping economy ("you ship enough that the
+	# coastal traders come looking for you"). Derive the unlock state
+	# live each call — no persisted flag, no schema bump. Called once
+	# from _ready() and again from the minute_ticked handler.
+	if int(GameData.lifetime_items_shipped) < 200:
+		return
+	if get_node_or_null("CoastalTradingPost") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/CoastalTradingPost.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "CoastalTradingPost"
+	# Tile (16, 6) — verified via headless ground_at() probe: tile
+	# (16,6) is plantable_soil, near the existing TraderNPC / market
+	# cluster (15,8) / (16,9). No sprite for MVP — invisible interact
+	# zone, same precedent as MiningSpot / MountainCaveSpot / DeepCanalSpot
+	# / SacredGroveSpot / LotusMazeShoreSpot.
+	spot.position = Vector2(16 * 48 + 24, 6 * 48)
 	add_child(spot)
 
 func _ensure_noticeboard() -> void:
