@@ -200,8 +200,10 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       affinity, no schema change), Niran/Fah/Ploy's dialogue
       retrofitted from 4 tiers to 10 numbered pools. Landed ahead of
       Sprint 2 in the numbering since TASK-341 (below) depends on it.
-- [ ] Sprint 2 — 3 new romance candidates (Kiet, Malee, Kanya), bringing
-      the total to 6. TASK-341, 10-level from the start.
+- [x] **Sprint 2 — 3 new romance candidates.** TASK-341: Kiet, Malee,
+      Kanya, bringing the total to 6, authored directly in the
+      10-level shape. Also closed TASK-345's fairness gap for all 6
+      candidates via a "1_warned" dialogue pool.
 - [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live, plus
       rival-friendship/confession-dilemma quest. TASK-347 (schema v5:
       `rival_progress`/`rival_friendship`/`rival_confessed`) lands

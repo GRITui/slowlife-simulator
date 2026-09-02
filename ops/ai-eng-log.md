@@ -1265,3 +1265,41 @@ category from the role reassessment, discovered live.
 - **Stop reason:** TASK-346 (phase 1 of the level system, and a
   dependency for TASK-341/347/348/349) complete. TASK-341 (3 new
   candidates, 10-level from the start) is next in sequence.
+
+## 2026-09-02 — Run 22 (Sprint 2: Kiet, Malee, Kanya — 6 romance candidates)
+
+- **TASK-341 built this run** (self-executed — narrative content):
+  3 new romance candidates bringing the total to 6 — Kiet (apprentice
+  woodcarver), Malee (festival drummer), Kanya (herbalist). Each got a
+  full `DialogueDB` entry authored directly in TASK-346's 10-level
+  shape (20 level lines + "1_warned" + "rival"), a `GIFT_PREFERENCES`
+  entry (all loved/liked items re-verified against `FOOD_ITEMS` before
+  writing — the auto-gift-picker mistake that shipped 3 times earlier
+  this session did not recur), a `RomanceNPC._try_specialty_sell()`
+  branch, a placeholder portrait (hue-shifted from an existing
+  sprite), and `.tscn` + `Main.gd` wiring mirroring the existing 3.
+- **TASK-345's fix folded in for all 6 candidates**, not just the 3
+  new ones: `RomanceNPC._talk()` now checks a `"1_warned"` dialogue
+  pool at level 1 once `GameData.rival_warning_shown >= 1` — retrofit
+  onto Niran/Fah/Ploy in the same pass so it isn't a second edit to
+  this file later. TASK-345 marked RESOLVED (half of it — the rival
+  NPC's own tier-0 dialogue is still TASK-342's to do).
+- **Real bug caught while writing the test, not by inspection**: the
+  `"1_warned"` end-to-end test used a lambda (`func(_w, l): last_line
+  = l`) as a signal-spy callback — GDScript lambdas capture local vars
+  by value, so the assignment silently updated a shadow copy and the
+  outer `last_line` never changed, making every assertion read an
+  empty string. Fixed by using a class-member field + a bound method
+  instead of a lambda closure. Worth remembering: this is a real
+  GDScript gotcha, not specific to this test.
+- **Verification:** `run_gate.sh all` green (content 100/100, engine
+  50/50, save-compat 46/46, perf 6/6 after bumping the Y-sort budget
+  51->54, touch 10/10). `tests/test_peer_npcs.gd` extended to 73/73
+  (instancing/gift/specialty-sell for all 3 new candidates, plus the
+  "1_warned" fire/no-fire check across all 6). `test_affinity.gd`
+  (43/43), `test_anniversary.gd` (6/6), `test_wedding.gd` (6/6)
+  regression-checked green, unaffected. Merged `64850e7`, pushed.
+- **Stop reason:** Sprint 2 of the 8-sprint plan complete. TASK-347
+  (schema v5: `rival_progress`/`rival_friendship`/`rival_confessed`)
+  is next — a save-schema change, same risk class as TASK-340, self-
+  executed with the same care (write the migration test first).

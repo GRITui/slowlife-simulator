@@ -312,11 +312,11 @@ Recommended order if approved, best cost/impact ratio first:
 <task_item>
   <id>TASK-345</id>
   <source>OWNER</source>
-  <status>NEEDS_OWNER_REVIEW</status>
+  <status>RESOLVED</status>
   <priority>P1 (fairness gap in an already-approved mechanic — should land before or alongside Sprint 3)</priority>
   <title>Early rival-awareness — fix a real fairness gap in the TASK-340/341/342 warning system</title>
   <description>Found while discussing Sprint 2/3: the existing candidate "rival" flavor-dialogue tier (built for Niran/Fah/Ploy under TASK-324, planned for Kiet/Malee/Kanya under TASK-341) only surfaces at close tier (affinity >= 60) — but the loss condition fires when affinity NEVER reaches 25. A player actually at risk of losing a candidate would never see that hint at all; the rival NPC's own tier-0 dialogue (as specced in TASK-342) was also written deliberately soft ("casual, no pressure yet"), revealing nothing. As specced, an at-risk player could go the full 90 days with zero warning and learn what happened only from the single ambient "X has married Y" message after the fact — directly contradicting the fairness goal the whole mechanic was designed around.</description>
-  <researcher_notes>Proposed fix (not yet applied to the pending specs, filed here instead per owner instruction 2026-09-02): (1) rival tier-0 dialogue should establish the competing-interest fact immediately on first meeting, not withhold it to later tiers; (2) add a distinct line to each candidate's OWN stranger-tier pool (their lowest tier, the one an at-risk/disengaged player actually sees) that surfaces once rival_warning_shown >= 1, so the person the player would actually lose is the one delivering the warning, not a rival the player may never approach. Needs applying to docs/research/TASK-341-spec.md and TASK-342-spec.md before either is built. GitHub issue: not yet opened.</researcher_notes>
+  <researcher_notes>Half 1 of the fix (the candidate's own warning) landed in TASK-341, commit 64850e7: a "1_warned" dialogue pool per candidate, checked in RomanceNPC._talk() at level 1 once GameData.rival_warning_shown >= 1 — applied to all 6 candidates (Niran/Fah/Ploy retroactively, Kiet/Malee/Kanya from the start). Half 2 (the rival NPC's own tier-0 dialogue revealing the competing interest immediately) is still TASK-342's to implement, not yet built.</researcher_notes>
 </task_item>
 
 <task_item>
@@ -327,4 +327,14 @@ Recommended order if approved, best cost/impact ratio first:
   <title>10-level system, phase 1: shared scale + romance dialogue retrofit</title>
   <description>Owner asked romantic affinity be expressed as a 10-level scale (also to be applied to friendly-NPC/animal affiliation in later phases, TASK-348/349). Adds GameData.level_for(value) = clampi(value/10, 0, 10) as the one shared derived function -- no schema change, affinity stays stored 0-100. Retrofits Niran/Fah/Ploy's dialogue from the old 4-tier (stranger/friendly/close/romantic, 8 lines each) to 10 numbered pools (20 lines each, redistributing the originals as anchors and writing new lines for the expanded resolution). RomanceNPC._talk() now selects by GameData.level_for() instead of the removed DialogueDB.get_affinity_tier(); the TASK-324 rival-flavor override now fires on levels 6-8 (the level-equivalent of the old "close" tier, 60-89 affinity under floor(affinity/10)). _check_proposal()'s affinity>=90 gate is unchanged. Self-executed (narrative content). Commit c70f90a.</description>
   <researcher_notes>Level-0 fallback (affinity < 10, before any dialogue pool exists) resolved by falling back to level 1's pool -- no separate "level 0" content needed since the first-meeting lines already live there. tests/test_affinity.gd rewritten from tier-string checks to level-number checks (43/43); tests/test_peer_npcs.gd, test_anniversary.gd, test_wedding.gd regression-checked green, unaffected (none hardcode dialogue-pool keys). Phases 2 (animals, TASK-348) and 3 (villagers, TASK-349) are specced and queued next, not yet built.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-341</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P1</priority>
+  <title>3 more romance candidates (Kiet, Malee, Kanya) — Sprint 2 of the 6+6+5 plan</title>
+  <description>Brings the romance-candidate count from 3 to 6: Kiet (apprentice woodcarver, meticulous/understated), Malee (festival drummer, bold/expressive), Kanya (herbalist, gentle/nature-connected). Authored directly in TASK-346's 10-level dialogue shape (no old 4-tier draft ever existed for these) — full DialogueDB entry (20 level lines + "1_warned" + "rival" per candidate), GIFT_PREFERENCES, RomanceNPC._try_specialty_sell() branch, placeholder portrait (hue-shifted from an existing sprite), .tscn + Main.gd wiring. Also folds in TASK-345's early-warning fix for ALL 6 candidates (not just the 3 new ones), closing that gap. Self-executed (narrative content). Commit 64850e7.</description>
+  <researcher_notes>Y-sort perf budget bumped 51->54. Real bug caught during test-writing, not inspection: a GDScript closure gotcha — a lambda capturing a local var by value silently never updated the outer scope, making the "1_warned" line assertion falsely fail; fixed by using a class-member field + bound method instead of a lambda for the signal spy. tests/test_peer_npcs.gd extended to 73/73; test_affinity.gd (43/43), test_anniversary.gd/test_wedding.gd regression-checked green.</researcher_notes>
 </task_item>
