@@ -43,5 +43,9 @@ signal silver_changed(silver: int)
 signal buffalo_affinity_changed(affinity: int, hearts: int)
 # TASK-323: emitted on chicken collect_egg (affinity, hearts) — HUD hearts UI.
 signal chicken_affinity_changed(affinity: int, hearts: int)
+# Phase 3 audit (2026-09-02): emitted on companion bond grant (bond, tier) —
+# mirrors buffalo/chicken so HUD has a reactive hook (previously HUD had no
+# way to learn about companion_bond changes at all).
+signal companion_bond_changed(bond: int, tier: int)
 # TASK-317: emitted on tool upgrade (tool_id, new_tier) — HUD tier display.
 signal tool_upgraded(tool_id: String, new_tier: int)

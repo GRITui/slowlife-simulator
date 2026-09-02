@@ -94,14 +94,27 @@ task-number order.
       100/100, `run_engine_tests.gd` 50/50 as of the TASK-324 merge.
 - [ ] Feature freeze declared — new asks go to a post-launch backlog.
       **Owner call, not yet made.**
-- [ ] Save/migration format finalized and locked (hard-escalate category
-      in `AI-ENG-001` — never auto-merged, always human-reviewed).
-      **Not yet reviewed** — TASK-321..326 all added new `GameData.gd`
-      fields (ore counts, herd counts, companion bond, married_year/
-      child_stage, etc.); worth a dedicated save-compatibility pass
-      before calling the format locked.
+- [x] Save/migration format audit — `SaveManager.gd` was silently
+      dropping ~24 of ~30 `GameData.gd` fields on every save/load cycle
+      (only inventory/harmony/season/silver/a11y prefs ever persisted).
+      Extended to v3 covering everything added through TASK-321..326;
+      `test_save_compat.gd` grown 14→35 checks (v1→v3 and v2→v3
+      migration + full round-trip). Still human-reviewed per the
+      hard-escalate policy — not auto-merged.
 
 ## Phase 3 — Polish / QA / Performance
+- [x] Fixed latent `@onready $InteractArea` null-bug in `FishingSpot.gd`
+      (mirrors a bug already caught in `MiningSpot.gd`'s first draft) —
+      both dynamically-instanced spots now build a real `Area2D` in
+      `_ready()`, so proximity interact actually works in real play.
+- [x] Raised the Y-sort perf budget 44→49 to account for TASK-322's
+      `CarpenterUpgrade` sprite; excluded `MiningSpot` (no sprite, was
+      incorrectly counted against the budget).
+- [x] HUD progression gap closed — companion bond, chicken hearts/herd
+      size, fishing/mining skill previously had zero HUD surface. Added
+      `SignalBus.companion_bond_changed` (parity with the existing
+      buffalo/chicken pattern) and two new combined-stat labels
+      (`FarmHeartsLabel`, `SkillsLabel`). See `ops/ai-eng-log.md` run 14.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)

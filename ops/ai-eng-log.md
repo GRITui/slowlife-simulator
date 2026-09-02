@@ -689,3 +689,43 @@ category from the role reassessment, discovered live.
   gaps (monetization, analytics, the Apple `[HOLD]` items) look like.
 - **Stop reason:** goal met — final sprint shipped, 3-sprint plan
   complete, Phase 2 closed.
+
+## 2026-09-02 — Run 14 (Phase 3 polish: HUD progression gap, self-executed)
+
+- **Worker:** Claude (Sonnet, self-executed — `.tscn`/UI is this repo's
+  never-delegated tier per `CLAUDE.md`, not an AI-ENG-001 delegate task).
+- **Trigger:** continuing "Keep digging" Phase 3 audit. Found that four
+  progression stats had no HUD surface at all: `companion_bond`
+  (TASK-325), `chicken_affinity`/`chicken_count` herd size (TASK-323),
+  and `fishing_skill`/`mining_skill` (TASK-050/321). Confirmed with
+  owner ("Add them now") before implementing.
+- **Signal-parity gap found:** `buffalo_affinity_changed` and
+  `chicken_affinity_changed` both exist on `SignalBus.gd`, but there was
+  no equivalent for companion bond — `CompanionNPC.gd` only emitted
+  `show_dialogue` on tier-up, giving the HUD no reactive hook at all.
+  Added `companion_bond_changed(bond, tier)` mirroring the existing
+  pair, emitted from `CompanionNPC._on_minute_ticked()` on every bond
+  grant (not just tier-ups, matching how buffalo/chicken emit on every
+  interact regardless of tier change).
+- **No signal exists for fishing/mining skill level-ups either**
+  (`FishingSpot.gd`/`MiningSpot.gd` only emit `show_dialogue`). Rather
+  than add two more single-purpose signals for a stat that only needs
+  to be eventually-consistent on a HUD label, piggybacked the refresh
+  on HUD's existing `SignalBus.minute_ticked` connection instead.
+- **HUD additions:** two new compact combined-stat labels under
+  `Margin/Root/HBox/TimeBox` in `HUD.tscn`, matching the existing
+  `HeartsLabel`/`ToolTierLabel` convention (one line per related-stat
+  group, not one label per stat): `FarmHeartsLabel` ("Chicken: ♥♥ (30)
+  x2 | Cat: ♥ (10)") and `SkillsLabel` ("Skills: Fish Lv2 | Mine Lv1").
+  Added both to `_BASE_FONT_SIZES` so the existing accessibility
+  font-scaling system covers them.
+- **Verification:** new `tests/test_hud_progression.gd` (10/10) covers
+  the new signal, both label init states, and live refresh on both the
+  new signal and the piggybacked `minute_ticked` path. Full gate green:
+  `run_gate.sh all` — engine+content 100/100, save-compat 35/35,
+  perf-budget 6/6 (unaffected — no new sorted Node2D children). Spot-
+  checked `test_hearts_live.gd` (9/9) and `test_fishing.gd` (16/16)
+  unaffected by the new `SignalBus` connections in `HUD._ready()`.
+- **Integration outcome:** self-executed, no delegate gate to pass —
+  committed and pushed directly per the standing push-immediately rule.
+- **Stop reason:** task complete; continuing Phase 3 digging next.

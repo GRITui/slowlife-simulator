@@ -54,6 +54,7 @@ func _on_minute_ticked(_day: int, _hour: int, _minute: int) -> void:
 		var tier_before: int = GameData.companion_bond_tier()
 		GameData.add_companion_bond(1)
 		var tier_after: int = GameData.companion_bond_tier()
+		SignalBus.companion_bond_changed.emit(GameData.companion_bond, tier_after)
 		if tier_after > tier_before:
 			SignalBus.show_dialogue.emit("Companion", _tier_line(tier_after))
 

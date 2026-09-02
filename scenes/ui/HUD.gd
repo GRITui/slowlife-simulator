@@ -25,6 +25,7 @@ const _BASE_FONT_SIZES: Dictionary = {
 	"StaminaLabel": 12, "HarmonyLabel": 12, "SeasonLabelLabel": 10,
 	"SeasonLabel": 13, "TimeLabelHeader": 12, "TimeLabel": 13,
 	"CropLabel": 12, "PromptLabel": 13,
+	"FarmHeartsLabel": 10, "SkillsLabel": 10,
 }
 @export var font_scale: float = 1.0
 @export var high_contrast: bool = false
@@ -77,6 +78,30 @@ func _update_tool_tier_label() -> void:
 		var can: int = GameData.tool_tier("watering_can")
 		var sickle: int = GameData.tool_tier("sickle")
 		lbl.text = "Tools: Hoe T%d | Can T%d | Sickle T%d" % [hoe, can, sickle]
+
+## Phase 3 audit (2026-09-02): companion_bond/chicken hearts/herd size were
+## previously invisible in the HUD (no label showed them at all). Combined
+## into one line matching HeartsLabel's heart-repeat style, refreshed on
+## either source signal (args are ignored — both just trigger a full re-read
+## of GameData, since the two stats are independent).
+func _on_farm_hearts_changed(_a: int, _b: int) -> void:
+	var lbl: Label = find_child("FarmHeartsLabel", true, false) as Label
+	if lbl:
+		var chicken_hearts: int = GameData.chicken_hearts()
+		var cat_tier: int = GameData.companion_bond_tier()
+		lbl.text = "Chicken: %s (%d) x%d | Cat: %s (%d)" % [
+			"♥".repeat(chicken_hearts) if chicken_hearts > 0 else "—", GameData.chicken_affinity,
+			GameData.chicken_count,
+			"♥".repeat(cat_tier) if cat_tier > 0 else "—", GameData.companion_bond]
+
+## Fishing/mining skill have no dedicated level-up signal (unlike tool
+## tiers), so this piggybacks on the existing minute_ticked connection
+## rather than adding a new signal for a stat that only needs to be
+## eventually-consistent on the HUD.
+func _update_skills_label() -> void:
+	var lbl: Label = find_child("SkillsLabel", true, false) as Label
+	if lbl:
+		lbl.text = "Skills: Fish Lv%d | Mine Lv%d" % [GameData.fishing_skill, GameData.mining_skill]
 
 func _on_silver_changed(silver: int) -> void:
 	var lbl: Label = find_child("SilverLabel", true, false) as Label
@@ -131,6 +156,8 @@ func _ready() -> void:
 	SignalBus.settings_changed.connect(_on_settings_changed)
 	SignalBus.silver_changed.connect(_on_silver_changed)
 	SignalBus.buffalo_affinity_changed.connect(_on_buffalo_hearts)
+	SignalBus.chicken_affinity_changed.connect(_on_farm_hearts_changed)
+	SignalBus.companion_bond_changed.connect(_on_farm_hearts_changed)
 	SignalBus.tool_upgraded.connect(_on_tool_upgraded)
 	# TASK-027: restore persisted a11y prefs (defaults keep legacy behavior).
 	set_font_scale(GameData.font_scale)
@@ -139,6 +166,8 @@ func _ready() -> void:
 	_on_silver_changed(GameData.silver)
 	_on_buffalo_hearts(GameData.buffalo_affinity, GameData.buffalo_hearts())
 	_update_tool_tier_label()
+	_on_farm_hearts_changed(0, 0)
+	_update_skills_label()
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)
@@ -188,6 +217,7 @@ func _on_season_changed(s: String) -> void:
 func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 	if time_label:
 		time_label.text = "%02d:%02d  Day %d" % [hour, minute, day]
+	_update_skills_label()
 
 func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
 	if crop_label:
