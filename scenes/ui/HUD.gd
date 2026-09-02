@@ -16,6 +16,9 @@ extends CanvasLayer
 @onready var time_label: Label = $Margin/Root/StatPanel/HBox/TimeBox/TimeLabel if has_node("Margin/Root/StatPanel/HBox/TimeBox/TimeLabel") else null
 @onready var crop_label: Label = $Margin/Root/CropProgress/CropLabel if has_node("Margin/Root/CropProgress/CropLabel") else null
 @onready var prompt_label: Label = $Margin/Root/ActionPrompt/PromptLabel if has_node("Margin/Root/ActionPrompt/PromptLabel") else null
+# TASK-350 — seed indicator widget (visible both desktop + mobile, but the
+# touch-to-cycle path is mobile-only and lives on the SeedIndicator Control).
+@onready var seed_label: Label = find_child("SeedLabel", true, false) as Label
 
 var _max_stamina: float = 100.0
 var _max_harmony: int = 100
@@ -103,6 +106,36 @@ func _update_skills_label() -> void:
 	if lbl:
 		lbl.text = "Skills: Fish Lv%d | Mine Lv%d" % [GameData.fishing_skill, GameData.mining_skill]
 
+## TASK-350 — read Player._primed_seed_id and update the SeedLabel. Same
+## poll-on-minute-tick approach as _update_skills_label above: the primed
+## seed changes infrequently (Q presses + planting), the player gets
+## immediate dialogue-line feedback ("Seed selected: X.") so a one-minute
+## eventual-consistent HUD refresh is fine without a dedicated signal.
+func _update_seed_label() -> void:
+	if seed_label == null:
+		return
+	var primed: String = ""
+	var players: Array = get_tree().get_nodes_in_group("player")
+	if not players.is_empty():
+		primed = String((players[0] as Node).get("_primed_seed_id"))
+	if primed == "":
+		seed_label.text = "No seed"
+		return
+	# Look up the crop's display_name from Player._seed_lookup (the static
+	# cache it built from data/crops/*.tres). Falls back to the raw seed id
+	# if the lookup isn't primed yet on this run.
+	var players2: Array = get_tree().get_nodes_in_group("player")
+	if players2.is_empty():
+		seed_label.text = primed
+		return
+	var p: Node = players2[0]
+	var lookup: Dictionary = (p.get("_seed_lookup") as Dictionary)
+	var crop: Resource = lookup.get(primed)
+	if crop != null and "display_name" in crop:
+		seed_label.text = String(crop.display_name)
+	else:
+		seed_label.text = primed
+
 func _on_silver_changed(silver: int) -> void:
 	var lbl: Label = find_child("SilverLabel", true, false) as Label
 	if lbl:
@@ -168,6 +201,7 @@ func _ready() -> void:
 	_update_tool_tier_label()
 	_on_farm_hearts_changed(0, 0)
 	_update_skills_label()
+	_update_seed_label()
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)
@@ -218,6 +252,7 @@ func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 	if time_label:
 		time_label.text = "%02d:%02d  Day %d" % [hour, minute, day]
 	_update_skills_label()
+	_update_seed_label()
 
 func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
 	if crop_label:

@@ -61,10 +61,45 @@ func _update_animation(dir: Vector2) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		_try_grid_interact()
+	# TASK-350: cycle which held seed is "primed" for planting (Q key).
+	if event.is_action_pressed("cycle_seed"):
+		cycle_primed_seed()
 	# TASK-272: R mounts/dismounts the buffalo (dedicated key avoids the
 	# buffalo-milk interact conflict).
 	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
 		toggle_mount()
+
+## TASK-350: cycle which held seed_* item is "primed" for planting.
+## Wraps around; falls back to "" (no seed) if the player holds none.
+func cycle_primed_seed() -> void:
+	var held: Array[String] = []
+	for item_id: String in GameData.inventory.keys():
+		if String(item_id).begins_with("seed_") and int(GameData.inventory[item_id]) > 0:
+			held.append(String(item_id))
+	if held.is_empty():
+		_primed_seed_id = ""
+		SignalBus.show_dialogue.emit("Farmer", "No seeds to select.")
+		return
+	held.sort() # deterministic order, not Dictionary iteration order
+	var idx: int = held.find(_primed_seed_id)
+	_primed_seed_id = held[(idx + 1) % held.size()]
+	# Ensure lookup is primed so we can name the selected crop.
+	if _seed_lookup.is_empty():
+		var dir: DirAccess = DirAccess.open("res://data/crops")
+		if dir != null:
+			dir.list_dir_begin()
+			var fname: String = dir.get_next()
+			while fname != "":
+				if fname.ends_with(".tres"):
+					var res: Resource = load("res://data/crops/" + fname)
+					if res != null and "seed_item_id" in res:
+						var sid: String = String(res.seed_item_id)
+						if sid != "":
+							_seed_lookup[sid] = res
+				fname = dir.get_next()
+	var crop: Resource = _seed_lookup.get(_primed_seed_id)
+	var crop_name: String = String(crop.get("display_name")) if crop != null and "display_name" in crop else _primed_seed_id
+	SignalBus.show_dialogue.emit("Farmer", "Seed selected: %s." % crop_name)
 
 ## TASK-272: mount/dismount. Buffalo repositions under the rider each frame
 ## while mounted (visual rider illusion without a ride node).
@@ -133,12 +168,26 @@ func _try_grid_interact() -> void:
 	if plot == null:
 		# TASK-043: seed-driven planting — first owned seed_* item maps to its
 		# CropData; falls back to jasmine_rice when no seeds are held (demo).
+		# TASK-350: _find_crop_for_held_seed() now prefers _primed_seed_id
+		# (Q-cycled selection) before falling back to "first held seed_*".
 		var crop: Resource = _find_crop_for_held_seed()
-		if crop == null:
+		var used_fallback: bool = crop == null
+		if used_fallback:
+			# TASK-350: distinguish the no-seeds-held case (signal a
+			# substitution) from the held-but-unprimed case (silent fall
+			# through to "first held seed_*" via _find_crop_for_held_seed()
+			# above, which still produces a normal "Planted %s." line).
 			crop = load("res://data/crops/jasmine_rice.tres")
 		if crop != null and gm.plant(cell, crop):
-			var crop_name: String = String(crop.get("display_name")) if "display_name" in crop else "crop"
-			SignalBus.show_dialogue.emit("Farmer", "Planted %s." % crop_name)
+			if used_fallback:
+				# Truly no seeds held (primed or otherwise). The substitution
+				# line makes the no-fail-state guarantee explicit instead of
+				# silently planting rice with the misleading "Planted Jasmine
+				# Rice." line.
+				SignalBus.show_dialogue.emit("Farmer", "No seed selected — planted rice instead.")
+			else:
+				var crop_name: String = String(crop.get("display_name")) if "display_name" in crop else "crop"
+				SignalBus.show_dialogue.emit("Farmer", "Planted %s." % crop_name)
 		else:
 			SignalBus.show_dialogue.emit("Farmer", "Cannot plant here.")
 	else:
@@ -156,8 +205,12 @@ func _try_grid_interact() -> void:
 				SignalBus.show_dialogue.emit("Farmer", "Already watered.")
 
 func _find_crop_for_held_seed() -> Resource:
-	# TASK-043: index data/crops/*.tres by seed_item_id once, then match the
-	# first seed_* item the player holds. Static cache survives respawns.
+	# TASK-043: index data/crops/*.tres by seed_item_id once (static cache,
+	# survives respawns). TASK-350: prefer the primed seed (set by
+	# cycle_primed_seed()) over the legacy "first held seed_*" pick, so a
+	# player who uses the new cycle feature actually plants what they
+	# chose. The legacy first-held fallback below is kept for players who
+	# never press Q (regression-safe default behavior).
 	if _seed_lookup.is_empty():
 		var dir: DirAccess = DirAccess.open("res://data/crops")
 		if dir == null:
@@ -172,12 +225,21 @@ func _find_crop_for_held_seed() -> Resource:
 					if sid != "":
 						_seed_lookup[sid] = res
 			fname = dir.get_next()
+	# TASK-350: primed seed wins when it's set AND still held (count > 0).
+	if _primed_seed_id != "" and int(GameData.inventory.get(_primed_seed_id, 0)) > 0 \
+			and _seed_lookup.has(_primed_seed_id):
+		return _seed_lookup[_primed_seed_id] as Resource
 	for item_id: String in GameData.inventory.keys():
 		if String(item_id).begins_with("seed_") and _seed_lookup.has(String(item_id)):
 			return _seed_lookup[String(item_id)] as Resource
 	return null
 
 static var _seed_lookup: Dictionary = {}
+
+## TASK-350 — session-only, not persisted. The "primed" seed_* item that
+## planting will use next. Lives on Player (not GameData) so it's not
+## accidentally serialized by SaveManager later.
+var _primed_seed_id: String = ""
 
 func _on_season_changed(s: String) -> void:
 	if SignalBus.time_manager:

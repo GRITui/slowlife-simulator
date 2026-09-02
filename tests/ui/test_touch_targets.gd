@@ -30,7 +30,15 @@ func _scan_scene(path: String) -> void:
 
 func _walk(node: Node, bad: Array) -> void:
 	for c in node.get_children():
-		if c is BaseButton or c is HSlider or c is CheckBox:
+		# TASK-350: SeedIndicator is a tappable PanelContainer (it hosts
+		# its own _gui_input() touch handler rather than being a Button).
+		# Only count PanelContainers that carry a script — plain visual
+		# panels like the HUD's StatPanel are not interactive touch targets
+		# and should be ignored.
+		var is_touch_target: bool = c is BaseButton or c is HSlider or c is CheckBox
+		if c is PanelContainer and c.get_script() != null:
+			is_touch_target = true
+		if is_touch_target:
 			_interactive += 1
 			var ms: Vector2 = (c as Control).custom_minimum_size
 			if ms.y < 44.0:
