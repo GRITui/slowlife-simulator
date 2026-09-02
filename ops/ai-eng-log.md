@@ -1472,3 +1472,40 @@ category from the role reassessment, discovered live.
   notification means the diff is fully on disk yet — re-check.
 - **Stop reason:** TASK-342 complete. TASK-343 (2 unlockable areas) is
   next in sequence.
+
+## 2026-09-02 — Process gap found via first real human playthrough
+
+- **Owner ran the game via the Godot editor** (finally — the single
+  highest-leverage gap this whole session has repeatedly flagged) and
+  hit a large blank rectangle covering most of the screen below the
+  HUD, on the very first launch.
+- **Root cause, confirmed by running the game headfully and capturing
+  console output:** `Main._ready()` -> `_ensure_peer_npcs()` threw
+  repeated non-fatal resource-load errors for all 6 rival portraits
+  (Yai/Ohm/Rung/Note/Fon/Boon) — `Unable to open file:
+  res://.godot/imported/<name>_idle_01.png-<hash>.ctex`. Every task
+  this session that added new binary assets (TASK-341, TASK-342) was
+  built and verified inside an isolated git worktree, and each
+  worktree has its OWN separate `.godot/imported/` cache — running
+  `godot --headless --import --path .` inside the worktree (which this
+  session did faithfully, every time) never propagates to the main
+  checkout's own cache after the branch merges back. This checkout
+  (`/Users/grit/slowlife-game`, where the owner actually runs the game)
+  had simply never had its import cache refreshed since TASK-341/342
+  landed.
+- **Fixed:** ran `godot --headless --import --path .` directly in the
+  main checkout. Confirmed clean — the same headful run that
+  previously produced 24 error lines now produces zero. Nothing to
+  commit (`.godot/imported/` is gitignored, a local cache only).
+- **Process lesson, now the actual point of this entry:** worktree-
+  isolated verification proves the CODE is correct, but does NOT prove
+  the MAIN checkout (the one a human actually plays) is in a runnable
+  state after a merge that adds new binary assets. Going forward: after
+  merging any branch that added `.png`/other binary assets, re-run the
+  import pass in the main checkout too, not just in the worktree that
+  built it.
+- **Open question, not yet resolved:** whether the missing imports were
+  the FULL explanation for the visual (a blank rectangle, not just 6
+  missing NPC sprites) or whether a second issue is still lurking —
+  asked the owner to relaunch and confirm before treating this as fully
+  closed.
