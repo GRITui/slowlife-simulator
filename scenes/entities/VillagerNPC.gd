@@ -88,6 +88,11 @@ func _physics_process(_delta: float) -> void:
 				"elder": path = "res://assets/characters/npc_elder_idle_01.png"
 				"child": path = "res://assets/characters/npc_child_idle_01.png"
 				"handler": path = "res://assets/characters/npc_handler_idle_01.png"
+				# Phase 3 audit (2026-09-02): headman/vet have dedicated
+				# portrait assets that sat unused — this fallback had no case
+				# for either, so both silently rendered as Elder.
+				"headman": path = "res://assets/characters/headman_idle_01.png"
+				"vet": path = "res://assets/characters/vet_idle_01.png"
 				_: path = "res://assets/characters/npc_elder_idle_01.png"
 			if ResourceLoader.exists(path):
 				var tex: Texture2D = load(path) as Texture2D
