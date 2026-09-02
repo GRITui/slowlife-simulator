@@ -29,7 +29,7 @@ func _ready() -> void:
 	if not ScheduleDBScript.SCHEDULES.has(npc_id):
 		set_physics_process(npc_id == "trader") # trader needs visibility updates even without schedule
 	else:
-		_schedule_pos = ScheduleDBScript.waypoint_for(npc_id, _current_hour()) * 48.0 + Vector2(24, 24)
+		_schedule_pos = ScheduleDBScript.waypoint_for(npc_id, _current_hour(), _current_weather()) * 48.0 + Vector2(24, 24)
 		global_position = _schedule_pos
 
 func _current_hour() -> int:
@@ -37,6 +37,12 @@ func _current_hour() -> int:
 	if tm != null and "hour" in tm:
 		return int(tm.hour)
 	return 6
+
+## TASK-328: weather-aware schedule override (rain routes elder/child home).
+func _current_weather() -> String:
+	if "current_weather" in GameData:
+		return String(GameData.current_weather)
+	return "clear"
 
 func _update_trader_visibility() -> void:
 	# TASK-313 Channel A: Trader at farm evenings 18:00-21:00.
@@ -58,7 +64,7 @@ func _physics_process(_delta: float) -> void:
 		return
 	var tm: Node = SignalBus.time_manager
 	if tm != null:
-		var target: Vector2 = ScheduleDBScript.waypoint_for(npc_id, int(tm.hour)) * 48.0 + Vector2(24, 24)
+		var target: Vector2 = ScheduleDBScript.waypoint_for(npc_id, int(tm.hour), _current_weather()) * 48.0 + Vector2(24, 24)
 		if target != _schedule_pos:
 			_schedule_pos = target
 		var dist: float = global_position.distance_to(_schedule_pos)
@@ -145,7 +151,7 @@ func talk() -> void:
 	var binthabat_done: bool = false
 	if "last_offering_day" in GameData and "daily_offerings" in GameData:
 		binthabat_done = int(GameData.last_offering_day) == day and int(GameData.daily_offerings) > 0
-	var line: String = DialogueDBScript.get_seasonal_line(npc_id, season, binthabat_done, _talk_count)
+	var line: String = DialogueDBScript.get_seasonal_line(npc_id, season, binthabat_done, _talk_count, _current_weather())
 	_talk_count += 1
 	SignalBus.show_dialogue.emit(display_name, line)
 	# Track per-NPC talk for quests (no reward loop — cozy only).
