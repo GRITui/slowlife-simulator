@@ -12,7 +12,7 @@ extends Node
 # including all of it added across TASK-321..326. v3 persists all of it.
 
 const SAVE_PATH: String = "user://savegame.json"
-const SAVE_VERSION: int = 4
+const SAVE_VERSION: int = 5
 
 # Dynamic autoload helpers — safe in main scene, --script, and packaged export.
 func _gd() -> Node:
@@ -69,6 +69,11 @@ func save_game() -> bool:
 		"lost_to_rival": gd.lost_to_rival,
 		"rival_warning_shown": gd.rival_warning_shown,
 		"milestones_earned": gd.milestones_earned,
+		# v5 additive fields — TASK-347 rival progress meter + friendship/
+		# confession system (the latter built by TASK-342).
+		"rival_progress": gd.rival_progress,
+		"rival_friendship": gd.rival_friendship,
+		"rival_confessed": gd.rival_confessed,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -171,6 +176,18 @@ func migrate(data: Dictionary) -> Dictionary:
 		if not out.has("milestones_earned"):
 			out["milestones_earned"] = {}
 		out["version"] = 4
+	# v4 -> v5: TASK-347 rival progress meter + friendship/confession fields.
+	# A save from before this task loads as if no rival clock had ever
+	# advanced past day-zero and no rival friendship had ever been built --
+	# fully backward-compatible, no behavior change.
+	if version < 5:
+		if not out.has("rival_progress"):
+			out["rival_progress"] = {}
+		if not out.has("rival_friendship"):
+			out["rival_friendship"] = {}
+		if not out.has("rival_confessed"):
+			out["rival_confessed"] = {}
+		out["version"] = 5
 	return out
 
 func load_game() -> bool:
@@ -228,6 +245,9 @@ func load_game() -> bool:
 		gd.lost_to_rival = (data.get("lost_to_rival", {}) as Dictionary).duplicate(true)
 		gd.rival_warning_shown = (data.get("rival_warning_shown", {}) as Dictionary).duplicate(true)
 		gd.milestones_earned = (data.get("milestones_earned", {}) as Dictionary).duplicate(true)
+		gd.rival_progress = (data.get("rival_progress", {}) as Dictionary).duplicate(true)
+		gd.rival_friendship = (data.get("rival_friendship", {}) as Dictionary).duplicate(true)
+		gd.rival_confessed = (data.get("rival_confessed", {}) as Dictionary).duplicate(true)
 		sb.show_dialogue.emit("System", "Game loaded.")
 		return true
 	return false

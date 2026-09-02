@@ -139,6 +139,16 @@ func _resolve_contest() -> void:
 	SignalBus.show_dialogue.emit("Elder",
 		"The tasting's done — you: %d, the field: %d. %s! (+%d silver, +%d harmony)" % [
 			_cook_score, rival_score, placement_label, silver_reward, harmony_reward])
+	# TASK-347: only Ploy's own rival (thematically linked to cooking) is
+	# nudged — a "first" win pushes the rival's clock back, a
+	# "participation" loss (the field/rival won) pushes it forward. A tie
+	# does nothing. The other 5 rivals are deliberately unaffected.
+	var rc: Node = SignalBus.rival_clock
+	if rc != null:
+		if placement == "first":
+			rc.nudge_progress("ploy", -5.0)
+		elif placement == "participation":
+			rc.nudge_progress("ploy", 5.0)
 	_cook_active = false
 	_cook_score = 0
 

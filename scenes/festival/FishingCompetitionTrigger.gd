@@ -97,6 +97,16 @@ func _resolve_competition() -> void:
 	SignalBus.show_dialogue.emit("Fah",
 		"Competition's over — you: %d, the field: %d. %s! (+%d silver, +%d harmony)" % [
 			_player_score, rival_score, placement_label, silver_reward, harmony_reward])
+	# TASK-347: only Fah's own rival (thematically linked to fishing) is
+	# nudged — a "first" win pushes the rival's clock back, a
+	# "participation" loss (the field/rival won) pushes it forward. A tie
+	# does nothing. The other 5 rivals are deliberately unaffected.
+	var rc: Node = SignalBus.rival_clock
+	if rc != null:
+		if placement == "first":
+			rc.nudge_progress("fah", -5.0)
+		elif placement == "participation":
+			rc.nudge_progress("fah", 5.0)
 	_competition_active = false
 	_player_score = 0
 
