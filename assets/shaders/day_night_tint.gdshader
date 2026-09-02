@@ -22,5 +22,10 @@ void fragment() {
 	vec3 tint = warm * 1.0 + night_color * night_w;
 	float strength = grade_strength * (dawn_w + dusk_w + night_w);
 	vec3 graded = mix(vec3(1.0), tint, strength);
-	COLOR = vec4(graded, 1.0 - day_w * 0.0);
+	// BUGFIX: was `1.0 - day_w * 0.0`, which always evaluates to 1.0 (fully
+	// opaque) regardless of time of day, turning this subtle transitions-only
+	// overlay into a permanent full-screen opaque wall hiding the entire
+	// world. Intended behavior per the header comment (dawn/dusk/night tint,
+	// neutral/invisible at full day): fade to transparent as day_w -> 1.
+	COLOR = vec4(graded, 1.0 - day_w);
 }
