@@ -1819,3 +1819,107 @@ category from the role reassessment, discovered live.
   time this session running concurrent delegate sessions on the same
   free model/account rather than strictly sequential, per the owner's
   explicit instruction to dispatch everything remaining now.
+
+## 2026-09-02 — Run 28 (TASK-349: villager high-affiliation dialogue — clean delegate run)
+
+- Dispatched to Cline (minimax-m3:free, low reasoning) alongside
+  TASK-348/350, per the owner's "dispatch all left task to cline"
+  instruction (first time running 3 concurrent delegate sessions on
+  the same free-tier model/account rather than strictly sequential).
+- Code Quality Review found no defects: the new `high_affiliation`
+  branch in `DialogueDB.get_seasonal_line()` matches the spec's exact
+  priority order (`binthabat_done > binthabat_hint > rain >
+  high_affiliation > season`), `VillagerNPC.talk()` threads
+  `GameData.level_for(affinity)` through correctly, `MonkNPC.gd` is
+  untouched as required. The new test coverage is genuinely careful —
+  each priority-interaction test case documents in a comment exactly
+  which `hint_roll` value isolates that specific branch ordering
+  (e.g. roll 2 avoids both the hint modulus and the high-affiliation
+  modulus, roll 0 is favorable for both binthabat_done AND high
+  simultaneously, confirming done still wins on ordering not just
+  inequality of triggers).
+- Independently re-verified: 25/25 `test_weather_dialogue.gd`, 14/14
+  `test_gift_prefs.gd`, 14/14 `test_schedules.gd`, full gate (225
+  tests) green, pre- and post-merge.
+- Committed `22dac3a`, merged (`5271c17`), pushed. Closed GitHub
+  issue #191.
+
+## 2026-09-02 — Run 29 (TASK-348: buffalo/chicken/companion 10-level rescale — delegate timeout, Code Quality Review completed the interrupted work)
+
+- Dispatched to Cline (minimax-m3:free, low reasoning) alongside
+  TASK-349/350. The run's own transcript shows careful, methodical
+  work (re-deriving each rescaled threshold by hand, e.g. "0 + 75 = 75
+  -> level 7 requires... let me use +80 instead to land exactly on the
+  new boundary") right up until it hit `error: hook dispatch failed:
+  session.hook requires a valid hook event payload` followed by
+  `error: The operation timed out.` mid-edit of
+  `tests/test_companion_bond.gd`'s BuffaloRace-bonus test cases —
+  a tooling failure, not the model getting stuck/looping (worth
+  distinguishing from the OpenCode "explores forever, writes nothing"
+  failure mode documented earlier this session; this one wrote
+  substantial correct work right up to the cutoff).
+- Code Quality Review verified all the CODE changes first (all clean,
+  matching the spec's rescale table exactly: `GameData.gd`'s three
+  hearts/tier functions, `Buffalo.gd`/`ChickenCoop.gd`'s gold-tier +
+  breeding gates + new 10-line dialogue pools, `CompanionNPC.gd`'s
+  10-line `_tier_line()` + rescaled milestone cap, `HUD.gd`'s
+  "Lv N/10" format) — then found the interrupted test work:
+  - `tests/test_companion_bond.gd` was mid-edit: the top-of-file
+    scale-math checks and the initial API-surface checks (lines
+    ~33-53) were already fixed, but the dialogue-integration section
+    (still referencing the old "one point below tier 1 (25)") and all
+    of the BuffaloRace-bonus Case A-D labels ("tier < 2"/"tier >= 2")
+    were untouched. Finished these by hand: tier-1 crossing now uses
+    bond=9->10 (was 24->25), cap check now asserts tier 10 (was 4),
+    Case B/C/D relabeled to the new tier>=5 gate (bond=50 still
+    numerically works either way since 50/10=5, but the OLD label
+    "tier 2" was actively misleading about what the code now checks).
+  - `tests/test_milestones.gd`'s `inseparable` milestone check
+    (`companion_bond_tier() == 4`) was never touched at all — exactly
+    the gap the spec's own "find and fix rather than leave it silently
+    checking a now-unreachable-early threshold" line called out.
+    Fixed to `== 10`.
+  - `tests/test_hud_progression.gd` — not touched at all, and NOT
+    caught by the delegate's self-reported "gate green" because this
+    file isn't wired into `run_gate.sh` (same standalone-test
+    convention as `test_deep_canal.gd` etc.). Its
+    `farm_lbl.text.contains("♥")` assertion would have shipped broken
+    against the new "Lv N/10" HUD format if Code Quality Review had
+    trusted the delegate's gate-green claim instead of independently
+    running every test file the spec named by hand. Fixed the
+    companion_bond crossing value (24->9, matching the same rescale)
+    and the assertion itself (`"♥"` -> `"Lv 1/10"`).
+  - Also independently confirmed (not a bug, a positive finding): the
+    delegate had already found and fixed a real consumer the spec's
+    own pre-written grep table had missed —
+    `Main.gd::_ensure_sacred_grove()`'s `companion_bond_tier() >= 4`
+    gate, added by TASK-343 which merged AFTER this spec was written,
+    so it couldn't have been in the spec's table. Rescaled to `>= 10`
+    correctly, unprompted.
+- Ran a final repo-wide sweep (`grep -rn "♥"`, `grep -rln
+  "buffalo_hearts\|chicken_hearts\|companion_bond_tier"`) before
+  considering this done — confirms no stray glyph references remain
+  and every consumer file is accounted for.
+- Independently re-verified every touched test file individually
+  (`test_milestones` 38/38, `test_companion_bond` 33/33,
+  `test_buffalo_hearts` 5/5, `test_livestock_quality` 18/18,
+  `test_hud_progression` 10/10, `test_race` 13/13, `test_sacred_grove`
+  17/17 — the latter two as regression checks, untouched by this
+  task) plus the full gate (225 tests), pre- and post-merge.
+- Committed `9959d03`, merged (`3550aa7` — auto-merged cleanly despite
+  running concurrently with TASK-344/349's worktrees, no conflicts).
+  Pushed. Closed GitHub issue #190.
+- **Process lesson for the delegate-first policy at this scale**: a
+  free-model delegate can hit an infrastructure-level failure
+  (tool-hook timeout) mid-task through no fault of its own reasoning,
+  leaving genuinely good work in a partially-finished state rather
+  than a clean stop. The mitigation that worked here was NOT retrying
+  the whole task from scratch — it was Code Quality Review treating
+  "gate green" as a claim to verify file-by-file against the spec's
+  own testing checklist, which is what this session's whole
+  delegate-first policy already prescribes; this task is the clearest
+  evidence yet that the discipline pays for itself even when nothing
+  the delegate wrote was actually wrong, just incomplete.
+- **Stop reason for this run**: TASK-348 complete. TASK-350 (active-
+  seed selection) still running concurrently in its own worktree —
+  see next entry once it lands.
