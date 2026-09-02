@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://hud000001"]
+[gd_scene load_steps=10 format=3 uid="uid://hud000001"]
 
 [ext_resource type="Script" path="res://scenes/ui/HUD.gd" id="1_hud"]
 [ext_resource type="Script" path="res://scenes/ui/VirtualJoystick.gd" id="7_joy"]
@@ -9,6 +9,22 @@
 [ext_resource type="Texture2D" path="res://assets/ui/action_prompt.png" id="5_prompt"]
 [ext_resource type="Texture2D" path="res://assets/ui/inventory_slot.png" id="6_slot"]
 [ext_resource type="Texture2D" path="res://assets/ui/icons/silver_coin.png" id="9_coin"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_statpanel"]
+bg_color = Color(0.9490196, 0.9019608, 0.76862746, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.41568628, 0.28627452, 0.18823529, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -30,62 +46,72 @@ theme_override_constants/margin_bottom = 0
 
 [node name="Root" type="VBoxContainer" parent="Margin"]
 alignment = 0
+theme_override_constants/separation = 8
 
-[node name="HBox" type="HBoxContainer" parent="Margin/Root"]
+[node name="StatPanel" type="PanelContainer" parent="Margin/Root"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_styles/panel = SubResource("StyleBoxFlat_statpanel")
 
-[node name="StaminaBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+[node name="HBox" type="HBoxContainer" parent="Margin/Root/StatPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="StaminaBox" type="VBoxContainer" parent="Margin/Root/StatPanel/HBox"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
 
-[node name="StaminaLabel" type="Label" parent="Margin/Root/HBox/StaminaBox"]
+[node name="StaminaLabel" type="Label" parent="Margin/Root/StatPanel/HBox/StaminaBox"]
 layout_mode = 2
 text = "Stamina"
-theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_colors/font_color = Color(0.42745098, 0.14509805, 0.16862746, 1)
 theme_override_font_sizes/font_size = 12
 
-[node name="StaminaBar" type="TextureProgressBar" parent="Margin/Root/HBox/StaminaBox"]
+[node name="StaminaBar" type="TextureProgressBar" parent="Margin/Root/StatPanel/HBox/StaminaBox"]
 custom_minimum_size = Vector2(128, 28)
 layout_mode = 2
 max_value = 100.0
 value = 100.0
 show_percentage = false
-under_texture = ExtResource("2_energy")
-progress_texture = ExtResource("2_energy")
+texture_under = ExtResource("2_energy")
+texture_progress = ExtResource("2_energy")
 tint_under = Color(1, 1, 1, 1)
 tint_progress = Color(0.68, 0.83, 0.5, 1)
 tint_over = Color(1, 1, 1, 1)
 fill_mode = 1
 nine_patch_stretch = false
 
-[node name="HarmonyBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+[node name="HarmonyBox" type="VBoxContainer" parent="Margin/Root/StatPanel/HBox"]
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
 
-[node name="HarmonyLabel" type="Label" parent="Margin/Root/HBox/HarmonyBox"]
+[node name="HarmonyLabel" type="Label" parent="Margin/Root/StatPanel/HBox/HarmonyBox"]
 layout_mode = 2
 text = "Harmony"
-theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_colors/font_color = Color(0.42745098, 0.14509805, 0.16862746, 1)
 theme_override_font_sizes/font_size = 12
 
-[node name="HarmonyBar" type="TextureProgressBar" parent="Margin/Root/HBox/HarmonyBox"]
+[node name="HarmonyBar" type="TextureProgressBar" parent="Margin/Root/StatPanel/HBox/HarmonyBox"]
 custom_minimum_size = Vector2(128, 28)
 layout_mode = 2
 max_value = 100.0
 value = 0.0
 show_percentage = false
-under_texture = ExtResource("3_harmony")
-progress_texture = ExtResource("3_harmony")
+texture_under = ExtResource("3_harmony")
+texture_progress = ExtResource("3_harmony")
 tint_under = Color(1, 1, 1, 1)
 tint_progress = Color(0.95, 0.56, 0.69, 1)
 fill_mode = 1
 
-[node name="SeasonBox" type="Control" parent="Margin/Root/HBox"]
+[node name="SeasonBox" type="Control" parent="Margin/Root/StatPanel/HBox"]
 custom_minimum_size = Vector2(128, 42)
 layout_mode = 2
+size_flags_vertical = 4
 
-[node name="SeasonBg" type="TextureRect" parent="Margin/Root/HBox/SeasonBox"]
+[node name="SeasonBg" type="TextureRect" parent="Margin/Root/StatPanel/HBox/SeasonBox"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -93,10 +119,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_season")
-stretch_mode = 1
+stretch_mode = 0
 expand_mode = 0
 
-[node name="SeasonVBox" type="VBoxContainer" parent="Margin/Root/HBox/SeasonBox"]
+[node name="SeasonVBox" type="VBoxContainer" parent="Margin/Root/StatPanel/HBox/SeasonBox"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -105,34 +131,34 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="SeasonLabelLabel" type="Label" parent="Margin/Root/HBox/SeasonBox/SeasonVBox"]
+[node name="SeasonLabelLabel" type="Label" parent="Margin/Root/StatPanel/HBox/SeasonBox/SeasonVBox"]
 layout_mode = 2
 horizontal_alignment = 1
 text = "Season"
-theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_colors/font_color = Color(0.42745098, 0.14509805, 0.16862746, 1)
 theme_override_font_sizes/font_size = 10
 
-[node name="SeasonLabel" type="Label" parent="Margin/Root/HBox/SeasonBox/SeasonVBox"]
+[node name="SeasonLabel" type="Label" parent="Margin/Root/StatPanel/HBox/SeasonBox/SeasonVBox"]
 layout_mode = 2
 horizontal_alignment = 1
 text = "Cool"
 theme_override_font_sizes/font_size = 13
 
-[node name="TimeBox" type="VBoxContainer" parent="Margin/Root/HBox"]
+[node name="TimeBox" type="VBoxContainer" parent="Margin/Root/StatPanel/HBox"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 
-[node name="TimeLabelHeader" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="TimeLabelHeader" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "Time"
-theme_override_colors/font_color = Color(0.41568628, 0.105882354, 0.6039216, 1)
+theme_override_colors/font_color = Color(0.42745098, 0.14509805, 0.16862746, 1)
 theme_override_font_sizes/font_size = 12
 
-[node name="SilverRow" type="HBoxContainer" parent="Margin/Root/HBox/TimeBox"]
+[node name="SilverRow" type="HBoxContainer" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="SilverIcon" type="TextureRect" parent="Margin/Root/HBox/TimeBox/SilverRow"]
+[node name="SilverIcon" type="TextureRect" parent="Margin/Root/StatPanel/HBox/TimeBox/SilverRow"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 size_flags_vertical = 4
@@ -140,42 +166,42 @@ texture = ExtResource("9_coin")
 stretch_mode = 5
 expand_mode = 1
 
-[node name="SilverLabel" type="Label" parent="Margin/Root/HBox/TimeBox/SilverRow"]
+[node name="SilverLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox/SilverRow"]
 layout_mode = 2
 size_flags_vertical = 4
 text = "Silver: 0"
 theme_override_colors/font_color = Color(0.72, 0.64, 0.35, 1)
 theme_override_font_sizes/font_size = 13
 
-[node name="HeartsLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="HeartsLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "Buffalo: — (0)"
 theme_override_colors/font_color = Color(0.95, 0.56, 0.69, 1)
 theme_override_font_sizes/font_size = 12
 horizontal_alignment = 1
 
-[node name="ToolTierLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="ToolTierLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "Tools: Hoe T1 | Can T1 | Sickle T1"
 theme_override_colors/font_color = Color(0.3, 0.5, 0.3, 1)
 theme_override_font_sizes/font_size = 10
 horizontal_alignment = 1
 
-[node name="FarmHeartsLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="FarmHeartsLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "Chicken: — (0) x1 | Cat: — (0)"
 theme_override_colors/font_color = Color(0.95, 0.56, 0.69, 1)
 theme_override_font_sizes/font_size = 10
 horizontal_alignment = 1
 
-[node name="SkillsLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="SkillsLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "Skills: Fish Lv1 | Mine Lv1"
 theme_override_colors/font_color = Color(0.3, 0.5, 0.3, 1)
 theme_override_font_sizes/font_size = 10
 horizontal_alignment = 1
 
-[node name="TimeLabel" type="Label" parent="Margin/Root/HBox/TimeBox"]
+[node name="TimeLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "06:00  Day 1"
 theme_override_font_sizes/font_size = 13
@@ -199,25 +225,25 @@ alignment = 0
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("6_slot")
-stretch_mode = 1
+stretch_mode = 0
 
 [node name="Slot2" type="TextureRect" parent="Margin/Root/InventoryRow"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("6_slot")
-stretch_mode = 1
+stretch_mode = 0
 
 [node name="Slot3" type="TextureRect" parent="Margin/Root/InventoryRow"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("6_slot")
-stretch_mode = 1
+stretch_mode = 0
 
 [node name="Slot4" type="TextureRect" parent="Margin/Root/InventoryRow"]
 custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
 texture = ExtResource("6_slot")
-stretch_mode = 1
+stretch_mode = 0
 
 [node name="ActionPrompt" type="Control" parent="Margin/Root"]
 custom_minimum_size = Vector2(240, 48)
@@ -231,7 +257,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_prompt")
-stretch_mode = 1
+stretch_mode = 0
 
 [node name="PromptLabel" type="Label" parent="Margin/Root/ActionPrompt"]
 layout_mode = 1

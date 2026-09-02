@@ -10,10 +10,10 @@ extends CanvasLayer
 		is_mobile = v
 		_apply_scale()
 
-@onready var stamina_bar: TextureProgressBar = $Margin/Root/HBox/StaminaBox/StaminaBar if has_node("Margin/Root/HBox/StaminaBox/StaminaBar") else null
-@onready var harmony_bar: TextureProgressBar = $Margin/Root/HBox/HarmonyBox/HarmonyBar if has_node("Margin/Root/HBox/HarmonyBox/HarmonyBar") else null
-@onready var season_label: Label = $Margin/Root/HBox/SeasonBox/SeasonVBox/SeasonLabel if has_node("Margin/Root/HBox/SeasonBox/SeasonVBox/SeasonLabel") else null
-@onready var time_label: Label = $Margin/Root/HBox/TimeBox/TimeLabel if has_node("Margin/Root/HBox/TimeBox/TimeLabel") else null
+@onready var stamina_bar: TextureProgressBar = $Margin/Root/StatPanel/HBox/StaminaBox/StaminaBar if has_node("Margin/Root/StatPanel/HBox/StaminaBox/StaminaBar") else null
+@onready var harmony_bar: TextureProgressBar = $Margin/Root/StatPanel/HBox/HarmonyBox/HarmonyBar if has_node("Margin/Root/StatPanel/HBox/HarmonyBox/HarmonyBar") else null
+@onready var season_label: Label = $Margin/Root/StatPanel/HBox/SeasonBox/SeasonVBox/SeasonLabel if has_node("Margin/Root/StatPanel/HBox/SeasonBox/SeasonVBox/SeasonLabel") else null
+@onready var time_label: Label = $Margin/Root/StatPanel/HBox/TimeBox/TimeLabel if has_node("Margin/Root/StatPanel/HBox/TimeBox/TimeLabel") else null
 @onready var crop_label: Label = $Margin/Root/CropProgress/CropLabel if has_node("Margin/Root/CropProgress/CropLabel") else null
 @onready var prompt_label: Label = $Margin/Root/ActionPrompt/PromptLabel if has_node("Margin/Root/ActionPrompt/PromptLabel") else null
 
