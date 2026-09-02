@@ -61,6 +61,10 @@ func _ready() -> void:
 	_ensure_songkran()
 	# TASK-319: Fishing competition festival (hot season day 15).
 	_ensure_fishing_competition()
+	# TASK-330: monsoon festival density — Asalha Bucha (monsoon day 5).
+	_ensure_asalha_bucha()
+	# TASK-330: Ok Phansa, end of the rains retreat (monsoon day 28).
+	_ensure_ok_phansa()
 	# TASK-048: cat companion follows the farmer.
 	_ensure_companion()
 	# TASK-049: chicken coop — daily egg (pasture edge).
@@ -302,6 +306,26 @@ func _ensure_fishing_competition() -> void:
 		return
 	var trigger: Node = script.new()
 	trigger.name = "FishingCompetitionTrigger"
+	add_child(trigger)
+
+func _ensure_asalha_bucha() -> void:
+	if get_node_or_null("AsalhaBuchaTrigger") != null:
+		return
+	var script: GDScript = load("res://scenes/festival/AsalhaBuchaTrigger.gd")
+	if script == null:
+		return
+	var trigger: Node = script.new()
+	trigger.name = "AsalhaBuchaTrigger"
+	add_child(trigger)
+
+func _ensure_ok_phansa() -> void:
+	if get_node_or_null("OkPhansaTrigger") != null:
+		return
+	var script: GDScript = load("res://scenes/festival/OkPhansaTrigger.gd")
+	if script == null:
+		return
+	var trigger: Node = script.new()
+	trigger.name = "OkPhansaTrigger"
 	add_child(trigger)
 
 func _ensure_banana_tree() -> void:
