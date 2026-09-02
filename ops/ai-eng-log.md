@@ -1101,3 +1101,43 @@ category from the role reassessment, discovered live.
   10/10).
 - **Stop reason:** Sprint 2 of 3 complete, checking in before Sprint 3
   (second scored mini-game).
+
+## 2026-09-02 — Run 19 concluded (Sprint 3: second scored mini-game)
+
+- **TASK-339 (Songkran Cooking Contest, delegated to OpenCode
+  `minimax-m3:free`):** rather than add a whole new festival day for a
+  cooking contest (which would have undone TASK-330's careful 2-per-
+  season balancing), extended `SongkranTrigger.gd` in place to reuse
+  its existing hot-day-3, 12:00-18:00 window — the same move TASK-336
+  made on the fishing trigger. Ties the 36-recipe cooking system (the
+  game's most content-rich, most underused system per the original
+  verdict) into a competitive loop for the first time.
+- **Real risk identified and specced around before delegating:**
+  `SignalBus.craft_completed` is shared across `CookingStation`,
+  `FishingSpot`, and `MiningSpot` — a naive scoring handler would have
+  double-counted fish/ore catches as "cooking." Spec explicitly
+  required a `recipes.json` membership check instead of a prefix match
+  (recipes have no consistent id prefix, unlike fish's `_small/_mid/_big`
+  suffix), and required a test proving fish/ore/typo item_ids do NOT
+  score. Delegate's diff and test suite both did this correctly on the
+  first pass — no fix-forward needed here, unlike Sprint 1's fishing
+  contest which needed a trailing-newline nit fixed.
+- Code Quality Review: clean, mirrors `FishingCompetitionTrigger.gd`'s
+  proven shape exactly including the `_placement_for()` pure-function
+  extraction for deterministic tie testing.
+  `tests/test_songkran_cooking_contest.gd` 32/32. Merged `3fc026b`,
+  pushed. Independently re-verified full gate on `main` post-merge.
+- **"Broaden to compete with HM:BtN" plan closed.** All 6 items shipped
+  (TASK-335..339 plus the bonus headman/vet portrait fix) across 3
+  sprints. Two new romance candidates' worth of social depth (well,
+  one — Ploy — plus the weekly-engagement system from the prior run),
+  two scored competitive loops where zero existed before, one gated
+  secondary area, one new villager, and one real pre-existing visual
+  bug fixed along the way. Gate green throughout every single merge
+  (content 100/100, engine 50/50, save-compat 35/35, perf 6/6, touch
+  10/10) — never merged on a red or unreviewed diff.
+- **What's still not addressed, unchanged from the original verdict:**
+  no human has played any of this end-to-end. Still the single
+  highest-leverage gap, and no amount of further content generation
+  substitutes for it.
+- **Stop reason:** goal met — all 3 sprints complete, plan closed.

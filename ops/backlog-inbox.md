@@ -284,3 +284,15 @@ Recommended order if approved, best cost/impact ratio first:
 </task_item>
 
 <!-- AI-LOOP: 2026-09-02 "Broaden to compete with HM:BtN" plan, Sprint 2 (TASK-337, TASK-338) complete per ops/ai-eng-log.md run 19, plus a bonus pre-existing bug fix (headman/vet portrait fallback, commit d876154). Sprint 3 (second scored mini-game) queued next, pending owner check-in. -->
+
+<task_item>
+  <id>TASK-339</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P3</priority>
+  <title>Songkran Cooking Contest (second scored mini-game)</title>
+  <description>Part of the "broaden to compete with HM:BtN" plan. Reuses Songkran's existing 12:00-18:00 window rather than adding a new festival day (would have undone TASK-330's 2-per-season balance). Recipes cooked during the window score their harmony_reward; a rival is rolled at window close; every placement tier grants a strictly-positive reward. Ties the 36-recipe cooking system into competition for the first time. Delegated to OpenCode (minimax-m3:free). Commit 3fc026b.</description>
+  <researcher_notes>Specced explicitly around the shared-signal risk (SignalBus.craft_completed is also emitted by FishingSpot/MiningSpot) via a recipes.json membership check, not a prefix match -- delegate implemented and tested this correctly on the first pass. New tests/test_songkran_cooking_contest.gd 32/32. Full record: ops/ai-eng-log.md run 19.</researcher_notes>
+</task_item>
+
+<!-- AI-LOOP: 2026-09-02 "Broaden to compete with HM:BtN" plan CLOSED. All 3 sprints complete (TASK-335..339 + bonus headman/vet portrait fix, commit d876154). Full record: ops/ai-eng-log.md run 19. Remaining open item, unchanged: no human has played this game end-to-end yet -- still the single highest-leverage gap per the original quality verdict. -->

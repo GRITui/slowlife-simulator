@@ -174,7 +174,16 @@ task-number order.
       a 12th named villager. Bonus: found and fixed a real pre-existing
       bug while scoping this — headman/vet had dedicated portraits
       that silently never rendered (always showed Elder instead).
-- [ ] Sprint 3 — second scored mini-game. Queued, pending check-in.
+- [x] **Sprint 3 — second scored mini-game.** TASK-339: Songkran
+      Cooking Contest, reusing the existing festival window rather than
+      adding a new one. Ties the 36-recipe cooking system into
+      competition for the first time.
+
+**"Broaden to compete with HM:BtN" plan closed** (2026-09-02). All 6
+items shipped across 3 sprints, full gate green on every merge, every
+diff Code-Quality-Reviewed. Unchanged from the original verdict: no
+human has played this end-to-end yet — still the single highest-
+leverage gap, and the natural next step now that this plan is done.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)
