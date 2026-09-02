@@ -46,11 +46,14 @@ func _initialize() -> void:
 			# 49->50 (TASK-335: Ploy, third romance candidate, has a real
 			# Sprite2D and legitimately counts, same as CarpenterUpgrade).
 			# 50->51 (TASK-338: Nok, new villager, same treatment).
+			# TASK-337: MountainCaveSpot joins the same exclusion list for the
+			# same reason (logic-only interactable, no visible sprite, same
+			# treatment as MiningSpot/Noticeboard). Y-sort budget stays at 51.
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot":
 						continue
 					sorted_kids += 1
 			_check(sorted_kids <= 51, "y-sorted participants <= 51 (got %d)" % sorted_kids)

@@ -73,6 +73,13 @@ func _ready() -> void:
 	_ensure_fishing_spot()
 	# TASK-321: mining spot — stamina-gated, no tool requirement, always-on.
 	_ensure_mining_spot()
+	# TASK-337: mountain cave — secondary unlockable spot, gated on
+	# GameData.mining_skill reaching cap. Run once at boot so a loaded save
+	# with mining_skill already at 3 gets the spot immediately, then again
+	# from the minute_ticked handler so a freshly-earned cap also unlocks
+	# it without needing a reload.
+	_ensure_mountain_cave()
+	SignalBus.minute_ticked.connect(_on_minute_ticked_unlocks)
 	# TASK-332: repeatable side-quest noticeboard (separate from QuestLog).
 	_ensure_noticeboard()
 	# TASK-270: Wing Kwai buffalo race (mounted minigame).
@@ -262,6 +269,38 @@ func _ensure_mining_spot() -> void:
 	# for MVP — invisible interact zone, mirroring FishingSpot's own precedent.
 	spot.position = Vector2(1 * 48 + 24, 3 * 48 + 24)
 	add_child(spot)
+
+func _ensure_mountain_cave() -> void:
+	# TASK-337: gated on GameData.mining_skill >= 3 (the cap). Derive the
+	# unlock state live each call so a save from before this task ships
+	# unlocks correctly the moment it loads — no persisted flag, no schema
+	# bump. Called once from _ready() (covers loaded-save boot) and again
+	# from the minute_ticked handler (covers freshly-earned cap in-session).
+	if GameData.mining_skill < 3:
+		return
+	if get_node_or_null("MountainCaveSpot") != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/MountainCaveSpot.gd")
+	if script == null:
+		return
+	var spot: Node2D = script.new() as Node2D
+	if spot == null:
+		return
+	spot.name = "MountainCaveSpot"
+	# Tile (19, 14) — SE corner, verified clear of every other position in
+	# Main.gd / Main.tscn. Centered in the tile (24, 24 offset) like the
+	# other interactable spots. No sprite for MVP — invisible interact zone,
+	# mirroring MiningSpot/Noticeboard's precedent.
+	spot.position = Vector2(19 * 48 + 24, 14 * 48 + 24)
+	add_child(spot)
+
+func _on_minute_ticked_unlocks(_day: int, _hour: int, _minute: int) -> void:
+	# TASK-337: lazy unlock poll. Cheap (one int compare + get_node_or_null
+	# per tick); runs even after the spot already exists so it stays
+	# idempotent. Main has no other minute_ticked subscription of its own
+	# — every other system owns its own — so this is intentionally the only
+	# one in this file.
+	_ensure_mountain_cave()
 
 func _ensure_noticeboard() -> void:
 	if get_node_or_null("Noticeboard") != null:
