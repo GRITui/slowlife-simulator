@@ -6,7 +6,7 @@
 <task_item>
   <id>TASK-005</id>
   <source>OWNER_POPUP</source>
-  <status>NEEDS_OWNER_REVIEW</status>
+  <status>COMPLETED</status>
   <priority>HIGH</priority>
   <title>Define 3/4 art rules in ART_STYLE_GUIDE (tile metrics, Y-sort, zoom 2.2 provisional)</title>
   <description>Update ART_STYLE_GUIDE.md with the 3/4 perspective canon per issue #5 REV 2. Ground stays flat 32x32; verticals get tall art; Y-sort origin at feet; zoom 2.2 provisional.</description>
@@ -16,7 +16,7 @@
 <task_item>
   <id>TASK-006</id>
   <source>OWNER_POPUP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>HIGH</priority>
   <title>Generate tall art assets for 3/4 canon (16-color palette)</title>
   <description>Bamboo wall 32x48, structure wall 32x48 front + 32x16 cap, mango 32x64, banana/sluice 32x48, stove 32x40. Dock stays flat. Strict 16-color palette.</description>
@@ -26,7 +26,7 @@
 <task_item>
   <id>TASK-007</id>
   <source>OWNER_POPUP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>HIGH</priority>
   <title>World render: 20x16 tilemap matrix + Y-sort layers + bounds + edge dressing</title>
   <description>Render locked Hybrid A/B layout in Main.tscn: tilemap matrix, Y-sorted prop/character layer, bounds colliders, bamboo ring + Deep Pond backdrop.</description>
@@ -36,7 +36,7 @@
 <task_item>
   <id>TASK-008</id>
   <source>OWNER_POPUP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>HIGH</priority>
   <title>Camera center-lock in-engine + zoom tune (3/4 canon)</title>
   <description>Player.tscn Camera2D: drag margins off, smoothing off, zoom 2.2 provisional (tune with real art). NOTE: Camera2D 'current' property is gone in Godot 4.7 - use 'enabled'.</description>
@@ -46,7 +46,7 @@
 <task_item>
   <id>TASK-009</id>
   <source>OWNER_POPUP</source>
-  <status>READY_FOR_PM</status>
+  <status>COMPLETED</status>
   <priority>MEDIUM</priority>
   <title>Player walk 8-frame / idle 4-frame animation wiring</title>
   <description>Wire AnimatedSprite2D states. Existing: idle 1 frame, walk_down/right 4 frames. Generate walk_up; left mirrors right if Pha Khao Ma reads OK mirrored.</description>
@@ -56,13 +56,17 @@
 <task_item>
   <id>TASK-010</id>
   <source>OWNER_POPUP</source>
-  <status>NEEDS_OWNER_REVIEW</status>
+  <status>COMPLETED</status>
   <priority>MEDIUM</priority>
   <title>HUD QA + seasonal tint + screenshot capture hook</title>
   <description>Verify HUD anchors + tints per ART_STYLE_GUIDE; add screenshot hook (F12) saving 1600x900 PNG to user:// for director review.</description>
   <researcher_notes>Owner: @visual-inspector. Issue #10. No hard deps.</researcher_notes>
 </task_item>
 
+<!-- HYGIENE: 2026-09-02 TASK-005..010's <status> tags here had never been flipped past
+     NEEDS_OWNER_REVIEW/READY_FOR_PM despite being merged back in the project's founding
+     sprint (confirmed COMPLETED in backlog.json with PR links for all 6, e.g. TASK-008
+     PR #30). Corrected to COMPLETED to match backlog.json — pure doc-lag fix, no new work. -->
 <!-- PO LEDGER: 2026-08-31 TASK-005 -> PR #11 merged (squash), issue #6 auto-closed. Tests 40/40 green. -->
 <!-- PO LEDGER: 2026-08-31 hygiene: pruned stale task-005-art-rules ref, visual-inspector handshake synced. Owner locked: repo squad names unchanged (parallel design team), multi-sprint auto-continue after exit gates. -->
 <!-- PO LEDGER: 2026-08-31 Sprint1 wave1: TASK-006 PR #14 merged (issue #7), TASK-009 PR #13 merged (issue #9, rebased to strip design team's unpushed 51cfd2b), TASK-010 PR #12 merged (issue #10, design team delivery). Merged main 40/40 green. Remaining Sprint 1: TASK-007 -> TASK-008. -->
