@@ -32,18 +32,23 @@ func _initialize() -> void:
 			var ring: Node = main.get_node_or_null("BambooRing")
 			_check(ring != null and ring.get_child_count() == 0,
 				"BambooRing is a single baked sprite (0 children)")
-			# Y-sort budget: visible actors/props (z>=0) <= 36, excluding
-# (32->36 in TASK-029: +Buffalo/+CookingStation/+MarketStall; 36->40 in
-# TASK-052: peer NPCs Niran + Fah; 40->44 in #131: Headman + Vet)
+			# Y-sort budget: visible actors/props (z>=0) <= 49, excluding
 			# ground dressing (z<0) and logic containers.
+			# History: 32->36 (TASK-029: +Buffalo/+CookingStation/+MarketStall);
+			# 36->40 (TASK-052: peer NPCs Niran + Fah); 40->44 (#131: Headman +
+			# Vet); 44->49 (Phase 3 audit, 2026-09-02: TASK-322's
+			# CarpenterUpgrade has a Sprite2D and legitimately counts. TASK-321's
+			# MiningSpot does NOT — it's a logic-only interactable with no
+			# visual footprint, added to the exclusion list below instead of
+			# inflating the budget for a node with nothing to sort).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 48, "y-sorted participants <= 48 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 49, "y-sorted participants <= 49 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)
