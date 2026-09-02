@@ -50,6 +50,12 @@ func try_interact() -> bool:
 	var bonus: int = GameData.record_weekly_engagement(npc_id, day_bonus)
 	if bonus > 0:
 		GameData.add_affinity(npc_id, bonus)
+	# TASK-340: rival win/loss clock starts the first time the player ever
+	# interacts with this candidate, not from game start — exploring at
+	# your own pace before meeting someone costs nothing. Reuses day_bonus
+	# (already computed above for TASK-333) rather than a second lookup.
+	if not GameData.npc_first_met_day.has(npc_id):
+		GameData.npc_first_met_day[npc_id] = day_bonus
 	if GameData.married and GameData.spouse == npc_id:
 		# TASK-282: marriage ceiling payoff — annual anniversary, cozy loop.
 		var tm: Node = SignalBus.time_manager
@@ -140,6 +146,11 @@ func _try_specialty_sell() -> bool:
 ## TASK-059: proposal — romantic tier (>=90) + krathong held. Cozy, mutual:
 ## the NPC accepts and a small wedding fires via festival_triggered.
 func _check_proposal() -> bool:
+	# TASK-340: permanent lock — a candidate lost to their rival can never
+	# be proposed to, at any affinity, ever. The one hard enforcement point
+	# for the whole rival win/loss system.
+	if GameData.lost_to_rival.get(npc_id, false):
+		return false
 	if GameData.married or GameData.get_affinity(npc_id) < 90:
 		return false
 	if not GameData.has_item("krathong", 1):

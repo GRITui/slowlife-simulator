@@ -332,6 +332,16 @@ var married: bool = false
 var married_year: int = 0
 var child_stage: int = 0
 
+# TASK-340 rival win/loss system. npc_first_met_day: npc_id -> day the
+# player first ever interacted with them (clock start). lost_to_rival:
+# npc_id -> true once the rival has won (permanent, one-way). No other
+# consequence — the candidate remains a normal friendly NPC.
+# rival_warning_shown: npc_id -> highest warning index (0-3) already
+# surfaced, so a warning line is shown at most once per threshold.
+var npc_first_met_day: Dictionary = {}
+var lost_to_rival: Dictionary = {}
+var rival_warning_shown: Dictionary = {}
+
 func start_quest(quest_id: String, objective_count: int = 0) -> void:
 	if active_quests.has(quest_id):
 		return
