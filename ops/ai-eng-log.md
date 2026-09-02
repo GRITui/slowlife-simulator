@@ -854,3 +854,61 @@ category from the role reassessment, discovered live.
   owner's behalf.
 - **Stop reason:** goal met (research delivered, verified, 2 items
   shipped, rest triaged and filed with priority labels per instruction).
+
+## 2026-09-02 — Run 17 (3-sprint backlog clearance, Sprints 1-2)
+
+- **Trigger:** "run 3 sprints autonomously to complete all of pending
+  backlogs" (TASK-328..334). Clarified TASK-333 (affinity decay) first —
+  it was explicitly filed as needing an owner call for a design-
+  philosophy conflict, and a blanket "do all" instruction doesn't
+  obviously cover that. Owner chose to skip it; 6 items (328/329/330/
+  331/332/334) proceeded across 3 sprints.
+- **Sprint 1 — TASK-328 (weather-reactive NPC schedules) + TASK-329
+  (weather-aware dialogue):** self-executed (dialogue voice/quality
+  benefits from direct authorship for a task this size — narrative
+  flavor text is not a great fit for blind delegation). `ScheduleDB.gd`
+  gained a `weather` param + `RAIN_HOME` override (elder/child route
+  home in rain — the only two NPCs with an existing "home" schedule
+  slot, not inventing new positions for the rest). `DialogueDB.
+  get_seasonal_line()` gained a weather branch (~40% flavor chance)
+  ahead of the season fallback. `tests/test_schedules.gd` 3→12 checks,
+  new `tests/test_weather_dialogue.gd` 5/5. Gate green. Merged
+  (`ada73e3`), pushed.
+- **Sprint 2 — TASK-330 (monsoon festival density) + TASK-332
+  (noticeboard):** delegated to OpenCode (`openrouter/z-ai/glm-5.3-flash`)
+  from written specs, in two SEPARATE worktrees run in parallel — a
+  deliberate fix from this session's earlier worktree-concurrency
+  lesson (run 13): two delegates must never share a worktree, even
+  briefly. (First launch attempt actually failed silently — `timeout`
+  isn't installed on this machine, so both `opencode run` invocations
+  no-op'd instantly; caught before any real concurrent-worktree risk
+  materialized, redone without `timeout` in isolated worktrees.)
+  - TASK-330: both new triggers (`AsalhaBuchaTrigger.gd`,
+    `OkPhansaTrigger.gd`) mirror `SongkranTrigger.gd`'s exact shape,
+    flavor-only per spec (no new items/economy). Code Quality Review:
+    clean, matches spec verbatim. `tests/test_new_monsoon_festivals.gd`
+    13/13. Gate green. Merged (`7c7f637`), pushed.
+  - TASK-332: `Noticeboard.gd` mirrors `MiningSpot.gd`'s programmatic-
+    Area2D pattern exactly; check-before-deduct fulfill (verified via a
+    `silver_changed` emission-count assertion, not just trusting the
+    code); V1 deliberately does not persist across save/load (save-
+    format changes are always-escalate, not bundled here). Code Quality
+    Review: clean. `tests/test_noticeboard.gd` 24/24 — the delegate also
+    correctly caught and fixed a knock-on: the Y-sort perf budget test
+    needed `Noticeboard` added to its no-sprite exclusion list (same
+    treatment as `MiningSpot`), which it did without being told to.
+    Gate green. Merged (`5e155b6`), pushed — Main.gd auto-merged cleanly
+    against Sprint 2's other branch (both were pure independent
+    additions to `_ready()`), re-verified full gate on `main` post-merge
+    anyway rather than trusting the auto-merge.
+- **Scope correction found while writing Sprint 3's spec (before
+  delegating):** the original TASK-334 ticket ("tool tier AoE/charge
+  mechanic") assumed no multi-tile interaction existed at all. Code
+  audit found `Player.gd` already has a working mounted 3x3 mechanic
+  (`_mounted_plant_3x3()`, TASK-272) — it only handles planting. Real
+  gap: extending it to water/harvest too, not building a new touch-
+  charge gesture system. Rescoped `docs/research/TASK-334-spec.md`
+  accordingly before this went to a delegate — same "audit before
+  trusting the ticket's own framing" discipline applied to every prior
+  research-sourced task this session.
+- **Sprint 3 (TASK-331, TASK-334) not yet started** — continuing next.
