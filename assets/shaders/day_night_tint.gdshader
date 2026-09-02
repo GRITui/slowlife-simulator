@@ -21,11 +21,16 @@ void fragment() {
 	vec3 warm = dawn_color * dawn_w + dusk_color * dusk_w;
 	vec3 tint = warm * 1.0 + night_color * night_w;
 	float strength = grade_strength * (dawn_w + dusk_w + night_w);
-	vec3 graded = mix(vec3(1.0), tint, strength);
-	// BUGFIX: was `1.0 - day_w * 0.0`, which always evaluates to 1.0 (fully
-	// opaque) regardless of time of day, turning this subtle transitions-only
-	// overlay into a permanent full-screen opaque wall hiding the entire
-	// world. Intended behavior per the header comment (dawn/dusk/night tint,
-	// neutral/invisible at full day): fade to transparent as day_w -> 1.
-	COLOR = vec4(graded, 1.0 - day_w);
+	// BUGFIX #2 (2026-09-03): the first bugfix pass (see git history) fixed
+	// the always-1.0 case but replaced it with `1.0 - day_w`, which is STILL
+	// wrong: day_w is 0 for the ENTIRE non-day period (all of night, and the
+	// exact peak of dawn/dusk), so alpha=1-day_w was fully opaque for hours,
+	// not just a brief transition instant — a solid, nearly-white wall
+	// (mix(white, tint, ~0.22) at alpha 1.0) covering the whole screen every
+	// night. This is a canvas_item unshaded/blend_mix overlay: alpha and
+	// color blend strength should be the SAME value, not two different
+	// day_w-derived expressions. `strength` already caps at grade_strength
+	// (~0.22) and is 0 at full day, so use it directly for both — always a
+	// subtle tint, never opaque, matching the header comment's intent.
+	COLOR = vec4(tint, strength);
 }
