@@ -197,11 +197,11 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       case. Fixed, reverified.
 - [x] **10-level system, phase 1 — shared scale + romance retrofit.**
       TASK-346: `GameData.level_for()` (0-10 derived from 0-100
-      affinity, no schema change), Niran/Fah/Ploy's dialogue
+      affinity, no schema change), Ek/Fah/Ploy's dialogue
       retrofitted from 4 tiers to 10 numbered pools. Landed ahead of
       Sprint 2 in the numbering since TASK-341 (below) depends on it.
-- [x] **Sprint 2 — 3 new romance candidates.** TASK-341: Kiet, Malee,
-      Kanya, bringing the total to 6, authored directly in the
+- [x] **Sprint 2 — 3 new romance candidates.** TASK-341: Chang, Klong,
+      Yaa, bringing the total to 6, authored directly in the
       10-level shape. Also closed TASK-345's fairness gap for all 6
       candidates via a "1_warned" dialogue pool.
 - [ ] Sprint 3 — 6 rival NPCs, wiring `RivalClock.PAIRS` live, plus
@@ -216,9 +216,9 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       Trading Post), completing the set of 5. TASK-344.
 - [ ] **Deferred fast-follow (per Gemini second opinion + owner
       "Proceed" 2026-09-02):** 1 new scored mini-game (Harvest Race,
-      Decha/Niran) + 3 rival quest chains with a 30-day bidirectional
-      deadline (Anon/Kiet — mask-carving; Siri/Malee — festival
-      performance; Boon/Kanya — remedy quest) — specced after the 8
+      Yai/Ek) + 3 rival quest chains with a 30-day bidirectional
+      deadline (Note/Chang — mask-carving; Fon/Klong — festival
+      performance; Boon/Yaa — remedy quest) — specced after the 8
       sprints above ship, not before.
 - [ ] Full human playthrough pass (headless tests don't substitute for this)
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,

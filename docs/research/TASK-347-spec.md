@@ -63,7 +63,7 @@ Per owner decision: **only the thematically-linked rival is affected**,
 not all 6.
 - Winning the Fishing Competition (`FishingCompetitionTrigger.gd`'s
   `_resolve_competition()`, placement `"first"`) → `RivalClock.nudge_progress("fah", -5.0)`
-  (pushes Chai back). Losing (placement `"participation"`, i.e. the
+  (pushes Ohm back). Losing (placement `"participation"`, i.e. the
   rival/field won) → `RivalClock.nudge_progress("fah", +5.0)`. A tie
   does nothing (neither pushed).
 - Winning the Songkran Cooking Contest (`SongkranTrigger.gd`'s
@@ -80,7 +80,7 @@ not all 6.
   registry-style reference doesn't exist for `RivalClock`, add one to
   `SignalBus.gd` mirroring `grid_manager`'s exact pattern (register in
   `_ready()`, clear in `_exit_tree()`), rather than tree-walking.
-- Niran/Kiet/Malee/Kanya's rivals (Decha/Anon/Siri/Boon) are
+- Ek/Chang/Klong/Yaa's rivals (Yai/Note/Fon/Boon) are
   deliberately NOT affected by any mini-game today — this is
   intentional per the owner's explicit choice, not a gap to silently
   patch. A future mini-game tied to farming/crafting/herbalism could

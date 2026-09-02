@@ -72,7 +72,7 @@ func _on_body_exited(body: Node) -> void:
 
 `_give_gift()`/`_try_confession_resolution()` are detailed in Part C.
 
-Uses a `.tscn` per rival (same shape as `NiranNPC.tscn`), one portrait
+Uses a `.tscn` per rival (same shape as `EkNPC.tscn`), one portrait
 each — same as originally planned, unchanged.
 
 ## Part B: rival dialogue — tier-0 now reveals the stakes (TASK-345 fix)
@@ -212,12 +212,12 @@ bump here instead and note it clearly for TASK-347 to build on).
 
 | Rival | Candidate | Personality | Position (re-verify before placing) |
 |---|---|---|---|
-| Decha | Niran | Louder, brasher version of Niran's own competitiveness | `Vector2(14*48+24, 4*48)` |
-| Chai | Fah | Quietly persistent, patient in a way that unsettles | `Vector2(9*48+24, 12*48)` |
+| Yai | Ek | Louder, brasher version of Ek's own competitiveness | `Vector2(14*48+24, 4*48)` |
+| Ohm | Fah | Quietly persistent, patient in a way that unsettles | `Vector2(9*48+24, 12*48)` |
 | Rung | Ploy | Charming, social, effortlessly likable | `Vector2(7*48+24, 3*48)` |
-| Anon | Kiet | Less patient than Kiet, showy craft over careful craft | `Vector2(9*48+24, 3*48)` |
-| Siri | Malee | Flashier performer, competitive about the spotlight | `Vector2(2*48+24, 9*48)` |
-| Boon | Kanya | Calm scholarly rival, competes through quiet expertise | `Vector2(18*48+24, 8*48)` |
+| Note | Chang | Less patient than Chang, showy craft over careful craft | `Vector2(9*48+24, 3*48)` |
+| Fon | Klong | Flashier performer, competitive about the spotlight | `Vector2(2*48+24, 9*48)` |
+| Boon | Yaa | Calm scholarly rival, competes through quiet expertise | `Vector2(18*48+24, 8*48)` |
 
 6 placeholder portraits, hue-shift technique, 6 distinct rotations.
 

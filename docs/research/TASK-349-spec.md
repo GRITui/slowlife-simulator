@@ -96,7 +96,7 @@ Extend `tests/test_weather_dialogue.gd` (the existing file covering
 - Do not change the existing `binthabat_done`/`binthabat_hint`/`rain`
   branch logic or priority order relative to each other — only insert
   the new branch at the bottom, right before the season fallback.
-- Do not touch romance candidates (Niran/Fah/Ploy/Kiet/Malee/Kanya) —
+- Do not touch romance candidates (Ek/Fah/Ploy/Chang/Klong/Yaa) —
   they use a completely different dialogue function
   (`get_line()`/TASK-346's 10-level pools), not `get_seasonal_line()`
   at all.
