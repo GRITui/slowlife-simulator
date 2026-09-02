@@ -174,29 +174,60 @@ const DIALOGUE: Dictionary = {
 	# Affinity-tiered, not season-tiered — mirrors the round's PO_INBOX MVP
 	# spec: stranger -> friendly -> close -> romantic, gated by a future
 	# GameData.affinity[npc_id] int this data doesn't itself track.
+	# TASK-346: retrofitted from the original 4-tier (stranger/friendly/
+	# close/romantic) shape to 10 numbered levels — see GameData.level_for().
+	# The 8 original lines are preserved as anchors (2 per old tier,
+	# redistributed to their nearest new level) with new lines filling the
+	# expanded resolution in between.
 	"niran": {
-		"stranger": [
+		"1": [
 			"You're new to the paddies. Mind the eastern bund, it floods first.",
 			"Elder says you're doing fine for a first season. High praise, from her.",
 		],
-		"friendly": [
+		"2": [
+			"Still sizing you up. Don't take it personally.",
+			"Not bad, for someone who didn't grow up here.",
+		],
+		"3": [
 			"Race you to the harvest this time? Loser waters both plots tomorrow.",
 			"Saved you the good seed. Don't tell the market I undercut myself.",
 		],
-		"close": [
+		"4": [
+			"You're actually decent competition now. Annoying, but true.",
+			"I look forward to seeing whose plot does better this week.",
+		],
+		"5": [
+			"You've gotten better. Doesn't mean I'll go easy on you.",
+			"Half the reason I work harder is you're right there working too.",
+		],
+		"6": [
 			"Honestly — I look forward to the days you're out in the fields too.",
 			"You make the long seasons feel shorter. Don't know how else to say it.",
 		],
-		# TASK-324: occasional light rival pressure on the close-tier courtship
-		# path — someone else has been asking about the player. Flavor-only, no
-		# name, no mechanical effect. Surfaced only on every 5th talk.
+		"7": [
+			"I keep finding reasons to walk past your plot instead of mine.",
+			"Somewhere along the way this stopped feeling like rivalry.",
+		],
+		"8": [
+			"I think about you more than I compete with you these days.",
+			"Don't tell anyone I said that. Actually — tell whoever you want.",
+		],
+		"9": [
+			"Walk the canal path with me tonight? Just us, no rivalry this time.",
+			"I used to farm alone before you got here. I don't want to go back to that.",
+		],
+		"10": [
+			"There's no version of this farm, or this life, I want without you in it.",
+			"You're not my rival anymore. Haven't been for a long time.",
+		],
+		# TASK-324: occasional light rival pressure on the close-equivalent
+		# courtship band (levels 6-8, matching the old 60-89 affinity range
+		# exactly under floor(affinity/10)) — someone else has been asking
+		# about the player. Flavor-only, no name, no mechanical effect.
+		# Surfaced only on every 5th talk.
 		"rival": [
 			"Someone was asking about you at the seed stall yesterday. Didn't catch a name — just said they're a good planter.",
 			"The trader mentioned you on the coast road. Said your name came up more than once down that way.",
-		],
-		"romantic": [
-			"Walk the canal path with me tonight? Just us, no rivalry this time.",
-			"I used to farm alone before you got here. I don't want to go back to that.",
 		],
 	},
 	"veteran": {
@@ -251,29 +282,55 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
+	# TASK-346: retrofitted to 10 numbered levels (see the "niran" comment
+	# above for the general approach).
 	"fah": {
-		"stranger": [
+		"1": [
 			"The canal's calm this morning. Good for thinking, if you like that sort of thing.",
 			"You fish? No — didn't think so. Ask me sometime, if you're curious.",
 		],
-		"friendly": [
+		"2": [
+			"You're quieter than most people who come by here. I don't mind that.",
+			"Come back if you want to actually learn something about the water.",
+		],
+		"3": [
 			"Caught something strange near the lotus maze yesterday. Still thinking about it.",
 			"You're quieter than the village gives you credit for. I like that.",
 		],
-		"close": [
+		"4": [
+			"I don't usually explain my methods. I might, for you.",
+			"You ask better questions than most people bother to.",
+		],
+		"5": [
+			"I saved you a spot on the dock. Didn't think about why until after.",
+			"There's a difference between being alone and being lonely. You're helping with the second one.",
+		],
+		"6": [
 			"I don't tell many people about the deep-canal spots. You're one of the few.",
 			"Some evenings I'd rather sit by the water with you than anywhere else.",
 		],
-		# TASK-324: occasional light rival pressure on the close-tier courtship
-		# path — someone else has been asking about the player. Flavor-only, no
-		# name, no mechanical effect. Surfaced only on every 5th talk.
+		"7": [
+			"I've started timing my casts around when you usually show up.",
+			"Quiet is easier to share with the right person. Turns out.",
+		],
+		"8": [
+			"I think about what you'd say about a catch before I even land it.",
+			"You've made the water feel less like the only company I need.",
+		],
+		"9": [
+			"Stay till the lanterns come out? The water looks different after dark.",
+			"I've started saving the best catches to cook for you. Didn't plan that. Just happened.",
+		],
+		"10": [
+			"I used to think I preferred the water to people. That was before you.",
+			"Wherever you are is quieter and better than anywhere I'd be without you.",
+		],
+		# TASK-324: occasional light rival pressure on the close-equivalent
+		# courtship band (levels 6-8). Flavor-only, no name, no mechanical
+		# effect. Surfaced only on every 5th talk.
 		"rival": [
 			"Another fisher was asking after you on the canal yesterday. Said you two should compare catches sometime.",
 			"Someone left a note at the dock asking when you'd be back on the water. Didn't sign it.",
-		],
-		"romantic": [
-			"Stay till the lanterns come out? The water looks different after dark.",
-			"I've started saving the best catches to cook for you. Didn't plan that. Just happened.",
 		],
 	},
 
@@ -281,28 +338,55 @@ const DIALOGUE: Dictionary = {
 	# near the temple lane — contrasts Niran's competitive edge and Fah's
 	# quiet introspection with an extroverted, community-glue personality.
 	# Same 5-tier structure (stranger/friendly/close/rival/romantic).
+	# TASK-346: retrofitted to 10 numbered levels (see the "niran" comment
+	# above for the general approach).
 	"ploy": {
-		"stranger": [
+		"1": [
 			"New to the village? Have a taste — first one's always free.",
 			"Careful, the mango sticky rice sells out by midday. Ask the market why.",
 		],
-		"friendly": [
+		"2": [
+			"You came back for seconds. I remember faces that do that.",
+			"Most people just grab and go. You actually said thank you.",
+		],
+		"3": [
 			"I saved you the last piece. Don't tell the headman, he'll want it too.",
 			"You've got flour on your sleeve again. Here, hold still —",
 		],
-		"close": [
+		"4": [
+			"I started setting a piece aside before you even show up.",
+			"You ask how the recipes are made. Most people just eat and leave.",
+		],
+		"5": [
+			"I give everyone a smile. Yours I actually mean.",
+			"Somehow you're the customer I look forward to most.",
+		],
+		"6": [
 			"Everyone gets my sweets. You get the ones I actually make for myself.",
 			"I talk to the whole village every day. Somehow you're the one I think about after.",
 		],
-		# TASK-324 pattern: occasional light rival pressure on the close-tier
-		# courtship path. Flavor-only, no name, no mechanical effect.
+		"7": [
+			"I've started saving my best batch for whenever you show up next.",
+			"The stall gets quiet after you leave. I've noticed that more than I'd like to admit.",
+		],
+		"8": [
+			"I don't know when 'the customer I like' became 'the person I think about all day.'",
+			"Everyone in this village gets a taste of something. You get all of me, if you want it.",
+		],
+		"9": [
+			"Come by after the stall closes tonight? Just us, no customers, no sweets to sell.",
+			"I used to give my best to everyone equally. Not anymore. Not since you.",
+		],
+		"10": [
+			"The stall was never the sweetest thing about this place. You are.",
+			"I don't want to imagine closing up shop each night without you waiting for me.",
+		],
+		# TASK-324 pattern: occasional light rival pressure on the
+		# close-equivalent courtship band (levels 6-8). Flavor-only, no
+		# name, no mechanical effect.
 		"rival": [
 			"Someone from the coast road asked about you at the stall. Wanted to know if you were spoken for.",
 			"The trader keeps asking if I've 'said anything yet.' Told him it's none of his business. It isn't, right?",
-		],
-		"romantic": [
-			"Come by after the stall closes tonight? Just us, no customers, no sweets to sell.",
-			"I used to give my best to everyone equally. Not anymore. Not since you.",
 		],
 	},
 }
@@ -363,16 +447,6 @@ static func get_market_line(season: String, have_id: String, want_id: String) ->
 	if pool.is_empty():
 		return "Trade? %s for %s — share the harvest." % [have_id, want_id]
 	return String(pool[0])
-
-## TASK-051: affinity -> dialogue tier (breakpoints 25/60/90).
-static func get_affinity_tier(affinity: int) -> String:
-	if affinity >= 90:
-		return "romantic"
-	if affinity >= 60:
-		return "close"
-	if affinity >= 25:
-		return "friendly"
-	return "stranger"
 
 ## TASK-054: per-NPC liked gifts. loved = +20 affinity + special line,
 ## liked = +10, anything else food = +5 (v1 fallback).

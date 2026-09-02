@@ -69,6 +69,16 @@ var fishing_skill: int = 1
 # TASK-321 mining skill — 1..3, gates ore.json skill_required tiers.
 var mining_skill: int = 1
 
+# TASK-346: uniform 10-level scale used across every affinity-like value
+# in the game (romance, buffalo, chicken, companion, and villagers).
+# Replaces the previous inconsistent granularities (buffalo/chicken/
+# companion used /25.0 = 0-4 "hearts"; romance used hard 25/60/90
+# thresholds = ~4 tiers) with one shared 0-10 scale. Values themselves
+# stay stored 0-100 exactly as before — this is a pure derived function,
+# no schema change.
+static func level_for(value: int) -> int:
+	return clampi(int(value / 10.0), 0, 10)
+
 # ISSUE-129 buffalo affinity ('hearts'): 0..100, 25 per heart, max 4 hearts.
 var buffalo_affinity: int = 0
 
