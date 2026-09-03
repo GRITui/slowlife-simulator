@@ -59,18 +59,42 @@ func _ready() -> void:
 			pl.global_position = SignalBus.pending_load_position
 			SignalBus.has_pending_load_position = false
 		elif SignalBus.pending_warp_id != "":
-			var door_node: Node = null
-			for d in get_tree().get_nodes_in_group("door"):
-				if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
-					door_node = d
+			# TASK-357: EdgeTransition warp-id (walk-through area edges) —
+			# mirrors InteriorBase._place_player. The player's coordinate on
+			# carry_axis is read from SignalBus.edge_carry_value so the
+			# incoming edge lands the player at the parallel offset, NOT a
+			# fixed point like a Door. Without this branch, walking off the
+			# west edge of CoastalArea.tscn would snap the player to the
+			# outdoor default (480, 384) on arrival back in World — defeating
+			# the whole point of walk-through edges.
+			var edge_node: Node = null
+			for e in get_tree().get_nodes_in_group("edge_transition"):
+				if e is Node2D and String((e as Node).get("warp_id")) == SignalBus.pending_warp_id:
+					edge_node = e
 					break
-			if door_node != null:
-				pl.global_position = (door_node as Node2D).global_position + Vector2((door_node as Node).get("spawn_offset"))
+			if edge_node != null:
+				var axis: String = String((edge_node as Node).get("carry_axis"))
+				var edge_pos: Vector2 = (edge_node as Node2D).global_position
+				if axis == "y":
+					pl.global_position = Vector2(edge_pos.x, SignalBus.edge_carry_value)
+				else:
+					pl.global_position = Vector2(SignalBus.edge_carry_value, edge_pos.y)
+				# Consume the pending warp so a later unrelated scene load
+				# doesn't misinterpret a stale value.
+				SignalBus.pending_warp_id = ""
 			else:
-				pl.global_position = Vector2(10 * 48, 8 * 48)
-			# Consume the pending warp so a later unrelated scene load
-			# doesn't misinterpret a stale value.
-			SignalBus.pending_warp_id = ""
+				var door_node: Node = null
+				for d in get_tree().get_nodes_in_group("door"):
+					if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
+						door_node = d
+						break
+				if door_node != null:
+					pl.global_position = (door_node as Node2D).global_position + Vector2((door_node as Node).get("spawn_offset"))
+				else:
+					pl.global_position = Vector2(10 * 48, 8 * 48)
+				# Consume the pending warp so a later unrelated scene load
+				# doesn't misinterpret a stale value.
+				SignalBus.pending_warp_id = ""
 		else:
 			pl.global_position = Vector2(10 * 48, 8 * 48)
 	# TASK-038 (PO_INBOX directive #1): buffalo unlock — instance the dormant

@@ -61,6 +61,11 @@ run_scene_transitions() {
 	godot --headless --path . --script res://tests/test_scene_transitions.gd
 }
 
+run_area_edges() {
+	echo "== area-edges gate: tests/test_area_edges.gd =="
+	godot --headless --path . --script res://tests/test_area_edges.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -69,6 +74,7 @@ case "$GATE" in
 	perf) run_perf ;;
 	touch) run_touch ;;
 	scenes) run_scene_transitions ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|all)" >&2; exit 2 ;;
+	area_edges) run_area_edges ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|all)" >&2; exit 2 ;;
 esac
