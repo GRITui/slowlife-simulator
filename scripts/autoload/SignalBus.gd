@@ -34,6 +34,15 @@ var pending_warp_id: String = "" # TASK-352: set by SceneLoader before change_sc
 # area's spawn resolution should check has_pending_load_position first.
 var has_pending_load_position: bool = false
 var pending_load_position: Vector2 = Vector2.ZERO
+# TASK-357: set by the outgoing EdgeTransition (just before it emits
+# scene_transition_requested) to the player's current position on the
+# transition's carry_axis; read by the incoming scene's matching edge via
+# InteriorBase._spawn_player so the player lands at the parallel
+# coordinate across the swap (a Door warp would snap to a fixed point,
+# which is wrong for walk-through area edges). A door transition leaves
+# this at its default 0.0 — InteriorBase only reads it when the
+# resolved pending_warp_id matches an EdgeTransition, not a Door.
+var edge_carry_value: float = 0.0
 
 # --- Extended signals (backward-compat with existing codebase) ---
 signal village_harmony_changed(new_harmony: int)
