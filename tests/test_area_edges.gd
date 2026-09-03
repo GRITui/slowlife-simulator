@@ -362,11 +362,28 @@ func _collect_warp_ids(dir_path: String, all_warp_ids: Dictionary, warp_id_re: R
 
 func _wait_for_current_scene(expected_path: String) -> void:
 	# change_scene_to_file defers the actual swap; poll current_scene until
-	# it matches expected_path or we hit a generous frame budget. Same shape
-	# as test_scene_transitions.gd's helper.
-	for _i in 10:
+	# it matches expected_path or we hit a generous wall-clock budget.
+	# Same shape as test_scene_transitions.gd's helper.
+	# TASK-354: switched from a fixed 10-iteration process_frame budget to
+	# a 2-second time budget (matches the SceneLoader internal helper
+	# and test_scene_transitions.gd). SceneLoader now adds a ~200ms
+	# fade-out / fade-in around the swap, which can stretch total
+	# wall-clock past 10 unthrottled headless frames under contention.
+	# Also yields a few extra process_frames AFTER the swap is detected
+	# so the new scene's _ready() chain AND Player._physics_process clamp
+	# have a chance to run before the caller reads position — the
+	# fade-in delayed the test's read enough to occasionally observe
+	# the player's pre-clamp global_position (e.g. x=0 on the west
+	# edge instead of the [24, 936]-clamped x=24).
+	var deadline_msec: int = Time.get_ticks_msec() + 2000
+	while Time.get_ticks_msec() < deadline_msec:
 		await process_frame
 		if current_scene != null:
 			var ps: Node = current_scene
 			if ps.scene_file_path == expected_path:
+				# Three extra frames is enough for _ready() + at least one
+				# Player._physics_process tick under normal headless load.
+				await process_frame
+				await process_frame
+				await process_frame
 				return
