@@ -29,9 +29,24 @@ func _check(cond: bool, label: String) -> void:
 		print("  FAIL  save-scene-restore :: %s" % label)
 
 func _wait_for_current_scene(expected_path: String) -> void:
-	for _i in 10:
+	# TASK-354: switched from a fixed 10-iteration process_frame budget to
+	# a 2-second time budget. SceneLoader now adds a ~200ms fade-out /
+	# fade-in around every change_scene_to_file() call, which can stretch
+	# total wall-clock past 10 unthrottled headless frames under
+	# contention. A time budget is self-tuning for any future fade
+	# retune (no per-call-site budget edits) and still returns promptly
+	# under the common case (next process_frame). Also yields a few extra
+	# process_frames after the swap so the new scene's _ready() chain
+	# AND Player._physics_process have a chance to run before the caller
+	# reads position — the fade previously left the test reading the
+	# player's pre-clamp global_position on rare occasions.
+	var deadline_msec: int = Time.get_ticks_msec() + 2000
+	while Time.get_ticks_msec() < deadline_msec:
 		await process_frame
 		if current_scene != null and current_scene.scene_file_path == expected_path:
+			await process_frame
+			await process_frame
+			await process_frame
 			return
 
 func _initialize() -> void:

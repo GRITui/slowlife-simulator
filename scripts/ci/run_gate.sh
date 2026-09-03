@@ -71,6 +71,11 @@ run_farmhouse_content() {
 	godot --headless --path . --script res://tests/test_farmhouse_content.gd
 }
 
+run_transition_fade() {
+	echo "== transition-fade gate: tests/test_transition_fade.gd =="
+	godot --headless --path . --script res://tests/test_transition_fade.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -81,6 +86,7 @@ case "$GATE" in
 	scenes) run_scene_transitions ;;
 	area_edges) run_area_edges ;;
 	farmhouse_content) run_farmhouse_content ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|all)" >&2; exit 2 ;;
+	transition_fade) run_transition_fade ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_transition_fade ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|transition_fade|all)" >&2; exit 2 ;;
 esac

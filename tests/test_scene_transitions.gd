@@ -90,13 +90,20 @@ func _run_all() -> void:
 	# active on every signal-driven transition. Wait past the window so
 	# this FarmHouse -> World emit is treated as a NEW transition, not a
 	# re-trigger of the World -> FarmHouse emit above (~4 frames away).
+	# TASK-354: SceneLoader now stamps _last_transition_msec only AFTER
+	# its ~100ms fade-out tween completes (not immediately on emit), so
+	# the real gap between two transitions' debounce stamps is up to
+	# ~100ms tighter than the wait below suggests. 0.5s left only a ~0ms
+	# safety margin against the 400ms window under that additional
+	# delay (observed flaking intermittently) -- widened to 1.0s for a
+	# comfortable ~500ms+ margin regardless of fade timing jitter.
 	# TimeManager auto-ticks at 6 min/sec, so freeze auto-tick across the
-	# 500ms wait AND the post-emit frame drain, otherwise a single game
+	# wait AND the post-emit frame drain, otherwise a single game
 	# minute can tick during the scene swap and our target (8,3,12)
 	# drifts to (8,3,13) before we can read it back.
 	var saved_auto_tick: bool = tm.auto_tick
 	tm.auto_tick = false
-	await create_timer(0.5).timeout
+	await create_timer(1.0).timeout
 	tm.set_time(8, 3, 12)
 	var tm_before_2: Node = sb.time_manager
 	sb.scene_transition_requested.emit(WORLD_PATH, "farmhouse_exit")
@@ -275,21 +282,25 @@ func _run_all() -> void:
 	#
 	# Pre-test setup: the previous section's transition (~line 91's
 	# emit) set SceneLoader._last_transition_msec, so the debounce
-	# window is still active. Wait past it (500ms > 400ms) AND disable
+	# window is still active. Wait past it AND disable
 	# TimeManager.auto_tick across the wait, then reload World with no
 	# warp (pending_warp_id is already ""). The reload update inside
-	# SceneLoader is itself timestamped, so we wait ANOTHER 500ms after
+	# SceneLoader is itself timestamped, so we wait ANOTHER margin after
 	# the reload completes before doing the double-emit — otherwise the
 	# reload itself eats the first double-emit via debounce.
-	await create_timer(0.5).timeout
+	# TASK-354: widened 0.5s -> 1.0s — SceneLoader now stamps
+	# _last_transition_msec only after its ~100ms fade-out tween
+	# completes, tightening the real margin against the 400ms debounce
+	# window (observed intermittent flaking at 0.5s).
+	await create_timer(1.0).timeout
 	var saved_auto_tick_2: bool = tm.auto_tick
 	tm.auto_tick = false
 	sb.scene_transition_requested.emit(WORLD_PATH, "")
 	await _wait_for_current_scene(WORLD_PATH)
 	tm.auto_tick = saved_auto_tick_2
-	# Wait past the debounce window again — _wait_for_current_scene
-	# itself only takes ~30-50ms, well inside the 400ms debounce.
-	await create_timer(0.5).timeout
+	# Wait past the debounce window again, with the same TASK-354
+	# fade-delay margin as above.
+	await create_timer(1.0).timeout
 	_check(current_scene.scene_file_path == WORLD_PATH,
 		"pre-debounce-test setup landed on World as expected (baseline)")
 	# Now fire TWO signal requests back-to-back, with no awaits. Both
@@ -359,10 +370,26 @@ func _run_all() -> void:
 
 func _wait_for_current_scene(expected_path: String) -> void:
 	# change_scene_to_file defers the actual swap; poll current_scene until
-	# it matches expected_path or we hit a generous frame budget.
-	for _i in 10:
+	# it matches expected_path or we hit a generous wall-clock budget.
+	# TASK-354: switched from a fixed 10-iteration process_frame budget to
+	# a 2-second time budget. SceneLoader now adds a ~200ms fade-out /
+	# fade-in around the swap, which can stretch total wall-clock past 10
+	# unthrottled headless frames under contention. A time-based wait is
+	# self-tuning for any future fade retune (no per-call-site budget
+	# edits), matches SceneLoader's own internal helper, and still
+	# returns promptly under the common case (next process_frame).
+	# Also yields a few extra process_frames AFTER the swap is detected
+	# so the new scene's _ready() chain AND Player._physics_process clamp
+	# have a chance to run before the caller reads position — the fade
+	# delayed the test's read enough to occasionally observe the player's
+	# pre-clamp global_position.
+	var deadline_msec: int = Time.get_ticks_msec() + 2000
+	while Time.get_ticks_msec() < deadline_msec:
 		await process_frame
 		if current_scene != null:
 			var ps: Node = current_scene
 			if ps.scene_file_path == expected_path:
+				await process_frame
+				await process_frame
+				await process_frame
 				return

@@ -4,6 +4,16 @@ extends Node2D
 ## hand-placed level geometry, not dynamically-gated content — a real
 ## .tscn instance CAN safely use @onready $InteractArea here; this is
 ## the ForestTree.gd case, not the MountainCaveSpot.gd case.
+##
+## TASK-354: door-open/close SFX on interact, played via the existing
+## AudioManager autoload (which synthesizes SFX programmatically — no
+## binary audio assets on disk, so the actual stream is a synthesized
+## click rather than a committed .wav). No dedicated AudioStreamPlayer
+## needed here since AudioManager owns SFX playback + bus routing
+## itself.
+## TODO(art/audio): swap the synthesized "ui_click" SFX for an authored
+## door-creak sample once the audio art lane lands one in assets/audio/
+## — only the id string passed to play_sfx() would need to change.
 
 @export var target_scene_path: String = ""
 @export var target_warp_id: String = ""
@@ -25,6 +35,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not _player_in_range:
 		return
 	if event.is_action_pressed("interact"):
+		# TASK-354: play door SFX on interact. Routed through the
+		# AudioManager autoload so it uses the same synthesized "ui_click"
+		# stream every other UI sound uses — and respects the user's
+		# master/SFX volume via the SFX bus (handled inside the manager).
+		# Guarded with get_node_or_null so headless test contexts that
+		# don't boot the AudioManager autoload still work cleanly.
+		var am: Node = get_node_or_null("/root/AudioManager")
+		if am != null and am.has_method("play_sfx"):
+			am.call("play_sfx", "ui_click")
 		SignalBus.scene_transition_requested.emit(target_scene_path, target_warp_id)
 		get_viewport().set_input_as_handled()
 
