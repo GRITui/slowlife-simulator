@@ -10,6 +10,10 @@ extends SceneTree
 # specifically, i.e. price == ceil(base * 1.25), NOT the base /
 # market / specialty rate), and the soft-fail zero-mutation path
 # when nothing sellable is held.
+# TASK-357: CoastalTradingPost lives under CoastalArea.tscn now (Phase-1
+# cluster split). This test instantiates CoastalArea instead of World —
+# the spot's parent changed, but the gating logic + behavior is identical.
+const COASTAL_AREA_PATH: String = "res://scenes/interiors/CoastalArea.tscn"
 
 var _passed: int = 0
 var _failed: int = 0
@@ -26,40 +30,45 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	var gd: Node = root.get_node("GameData")
 	# 1) Default state (lifetime_items_shipped=0) — CoastalTradingPost NOT
-	# present under World after boot. Mirrors test_mountain_cave.gd's
-	# SceneTree + World.tscn-instantiation pattern. Force the autoload into
-	# a known state so the "no spot at default shipping" assertion is
-	# unambiguous.
+	# present under CoastalArea after boot. Mirrors test_mountain_cave.gd's
+	# SceneTree + scene-instantiation pattern, just instantiating the new
+	# owning scene. Force the autoload into a known state so the "no spot
+	# at default shipping" assertion is unambiguous.
 	gd.lifetime_items_shipped = 0
-	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
-	root.add_child(main)
+	var coastal: Node = (load(COASTAL_AREA_PATH) as PackedScene).instantiate()
+	root.add_child(coastal)
 	await process_frame
 	await process_frame
-	# Also assert it's NOT in World.tscn (would mean someone hard-coded it).
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
-	_check(not tscn_text.contains("[node name=\"CoastalTradingPost\""),
-		"CoastalTradingPost is NOT hard-authored in World.tscn (dynamic only)")
-	_check(main.get_node_or_null("CoastalTradingPost") == null,
+	# Also assert it's NOT hard-authored in either scene file (would mean
+	# someone hard-coded it back into World after the Phase-1 split, or
+	# bypassed the dynamic _ensure_coastal_trading_post spawn entirely).
+	var world_tscn: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
+	_check(not world_tscn.contains("[node name=\"CoastalTradingPost\""),
+		"CoastalTradingPost is NOT hard-authored in World.tscn (lives under CoastalArea now)")
+	var coastal_tscn: String = FileAccess.get_file_as_string(COASTAL_AREA_PATH)
+	_check(not coastal_tscn.contains("[node name=\"CoastalTradingPost\""),
+		"CoastalTradingPost is NOT hard-authored in CoastalArea.tscn (dynamic only)")
+	_check(coastal.get_node_or_null("CoastalTradingPost") == null,
 		"CoastalTradingPost absent at default lifetime_items_shipped=0")
 	_check(int(gd.lifetime_items_shipped) == 0, "lifetime_items_shipped starts at 0 for this test")
 	# 2) Setting shipped to 200 and emitting one minute_ticked tick — the
-	# spot should appear (lazy unlock via World's minute_ticked handler).
+	# spot should appear (lazy unlock via CoastalArea's minute_ticked handler).
 	gd.lifetime_items_shipped = 200
 	sb.minute_ticked.emit(1, 6, 0)
 	await process_frame
-	var post: Node = main.get_node_or_null("CoastalTradingPost")
+	var post: Node = coastal.get_node_or_null("CoastalTradingPost")
 	_check(post != null, "CoastalTradingPost appears after lifetime_items_shipped=200 + minute_ticked")
-	# 3) Fresh boot with shipped already at 200: a brand-new World instance
-	# must show the spot immediately, no tick required (proves the
-	# _ready() call path covers loaded saves).
-	main.queue_free()
+	# 3) Fresh boot with shipped already at 200: a brand-new CoastalArea
+	# instance must show the spot immediately, no tick required (proves
+	# the _build_render() call path covers loaded saves).
+	coastal.queue_free()
 	await process_frame
 	gd.lifetime_items_shipped = 200
-	var main2: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
-	root.add_child(main2)
+	var coastal2: Node = (load(COASTAL_AREA_PATH) as PackedScene).instantiate()
+	root.add_child(coastal2)
 	await process_frame
 	await process_frame
-	var post2: Node = main2.get_node_or_null("CoastalTradingPost")
+	var post2: Node = coastal2.get_node_or_null("CoastalTradingPost")
 	_check(post2 != null, "fresh boot with shipped=200 shows CoastalTradingPost immediately (no tick needed)")
 	# 4) Real InteractArea — this project has twice shipped the
 	# @onready $InteractArea null-bug; do not repeat it.
@@ -79,11 +88,12 @@ func _initialize() -> void:
 					has_circle = true
 					break
 		_check(has_circle, "InteractArea has CollisionShape2D with CircleShape2D radius 56")
-	# Spot should be at tile (16, 6) — spec-verified-clear position via
-	# headless ground_at() probe (plantable_soil, near market cluster).
+	# Spot should be at area-local tile (1, 2) — placed near the
+	# west-edge EdgeTransition so the player walking off World.tscn's
+	# east edge lands near (but not on top of) the trading post.
 	var pos: Vector2 = (post2 as Node2D).position
-	_check(is_equal_approx(pos.x, 16 * 48 + 24) and is_equal_approx(pos.y, 6 * 48),
-		"CoastalTradingPost positioned at coast lane (792, 288)")
+	_check(is_equal_approx(pos.x, 1 * 48 + 48 / 2.0) and is_equal_approx(pos.y, 2 * 48 + 48 / 2.0),
+		"CoastalTradingPost positioned at area-local tile (1,2) — (72, 96)")
 	# 5) Soft-fail when nothing sellable is held. trade() returns false,
 	# nothing is removed from inventory, nothing added to silver,
 	# lifetime_items_shipped is unchanged.
@@ -169,7 +179,7 @@ func _initialize() -> void:
 	var gained2: int = int(gd.silver) - pre_wallet2
 	_check(gained2 == 7,
 		"silver gained equals coastal rate ceil(5*1.25)=7 (got %d)" % gained2)
-	main2.queue_free()
+	coastal2.queue_free()
 	print("\n=== COASTAL TRADING POST TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
 		push_error("COASTAL TRADING POST GATE FAILED")

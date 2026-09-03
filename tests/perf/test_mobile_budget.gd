@@ -73,14 +73,33 @@ func _initialize() -> void:
 			# contradictory — if the door is correctly excluded, the count
 			# doesn't change and the ceiling shouldn't move either. The
 			# actual measured count with the door present is still 60).
+			# TASK-357: EastEdge (the World->CoastalArea walk-through
+			# transition at the east map edge) joins the same exclusion
+			# list for the same reason as FarmHouseDoor / MiningSpot /
+			# Noticeboard — a logic-only interactable, no visible sprite,
+			# just an Area2D + RectangleShape2D collision child. The
+			# corresponding CoastalArea->World WestEdge lives under
+			# CoastalArea, not World, so it doesn't appear in this World-
+			# tree count at all.
+			# 60->59 (TASK-357 Phase-1 split: CarpenterUpgrade moved out
+			# of World.tscn into CoastalArea.tscn as a static child —
+			# legitimately counted toward the Y-sort budget when it lived
+			# here because it has a Sprite2D, no longer contributes once
+			# it lives under CoastalArea). CoastalTradingPost /
+			# SacredGroveSpot were already on the exclusion list
+			# (logic-only interactables, no sprite) so they don't move
+			# the count when their spawn site changes from World to
+			# CoastalArea. EastEdge is added to the list (no sprite).
+			# MEASURED actual count is 59 — do not change this ceiling
+			# without re-running and matching the printed "got N".
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 60, "y-sorted participants <= 60 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 59, "y-sorted participants <= 59 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)
