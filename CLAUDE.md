@@ -136,6 +136,69 @@ on a rate-limit or provider error, move to the next.
 
 ---
 
+## Sprint Planning & RACI (added 2026-09-03, project sponsor request)
+
+Plan in sprints that bundle several related tasks, not one task at a
+time. For each new sprint:
+
+1. **Map dependencies before assigning work.** Tasks with no dependency
+   on each other are candidates for parallel execution (separate git
+   worktrees, separate delegate dispatches running concurrently). Tasks
+   where one genuinely needs another's output chain sequentially within
+   the sprint instead. In practice on this project, independent tasks
+   have mostly been executed sequentially anyway to keep Code Quality
+   Review load manageable and avoid simultaneous merge-conflict risk
+   against `main` — parallel worktrees are the right call when the
+   sponsor explicitly wants wall-clock speed over review bandwidth;
+   default to sequential otherwise.
+2. **Assign RACI per task**, layered on top of the model-routing tiers
+   above rather than replacing them:
+   - **Responsible** — whichever tier from "Tiered Execution & Model
+     Routing" actually fits the task (Cline/free-model delegate for
+     GDScript gameplay logic; Claude self-execution for shaders, iOS
+     safe-area UI, narrative, or save-schema migrations).
+   - **Accountable** — Claude for the Code Quality Review + merge
+     decision on every task; the project owner specifically for any
+     task that carries an unresolved design question in its own
+     description (e.g. a spec that says "decide X before implementing")
+     or that crosses into an always-escalate tier.
+   - **Consulted** — Gemini when the task benefits from external/genre
+     research (see the Gemini row above); the owner when a task's scope
+     genuinely can't be resolved without their call, surfaced as an
+     explicit question before dispatching implementation, not folded
+     silently into a default.
+   - **Informed** — `ops/backlog-inbox.md` and the task's GitHub issue,
+     every time, no exceptions.
+   Record the RACI assignment in the GitHub issue body (owner
+   preference, 2026-09-03) rather than as a new structured field in
+   `ops/backlog-inbox.md` — keep the ledger format stable.
+3. **Standardize `ops/backlog-inbox.md`'s `<status>` values** going
+   forward: `SPECCED` (designed, not started), `DOING` (actively being
+   implemented), `COMPLETED` (merged). This isn't just bookkeeping
+   style — the project-status automation below reads this field
+   directly and needs it to be reliable, not inferred.
+
+### Project status visibility (added 2026-09-03)
+
+`ops/PROJECT_STATUS.md` is auto-regenerated every 3 hours by
+`scripts/ci/update_project_status.sh`, then committed and pushed to
+`main` automatically, so the project sponsor can check a Kanban board
+(Backlog/Doing/Done), milestone rollups, and the current sprint's RACI
+table without asking the lead dev directly. The generator dispatches a
+free, low-reasoning-effort model (same Cline/OpenRouter infrastructure
+as delegated implementation work) with the full contents of
+`ops/backlog-inbox.md` plus `gh issue list` as context — this is
+deliberately a mechanical "read structured data, refill a template"
+task, not one needing judgment, so a cheap model is intentionally
+sufficient rather than a compromise. The commit step is scoped to
+touch only that one file (never a broad `git add`) and never
+force-pushes; a `git pull --ff-only` failure or a subsequent push
+failure just skips that cycle rather than retrying or forcing. Do not
+hand-edit `ops/PROJECT_STATUS.md` — it will be overwritten on the next
+run.
+
+---
+
 ## Scope & Deliverables
 Full ownership of the codebase in service of shipping working features:
 - **Gameplay (`scenes/`, `scripts/`):** Systems, state machines, `SignalBus` events, quests, festivals, data models.
