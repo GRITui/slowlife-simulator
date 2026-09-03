@@ -86,6 +86,17 @@ func _run_all() -> void:
 		"clock state day=5 14:37 SURVIVED the World -> FarmHouse swap (the load-bearing fix)")
 	# Same again in reverse — FarmHouse -> World. Set a distinct time first
 	# so we know the swap didn't reset to the start_day/start_hour defaults.
+	# TASK-353: SceneLoader's 400ms transition debounce (Fix 2) is now
+	# active on every signal-driven transition. Wait past the window so
+	# this FarmHouse -> World emit is treated as a NEW transition, not a
+	# re-trigger of the World -> FarmHouse emit above (~4 frames away).
+	# TimeManager auto-ticks at 6 min/sec, so freeze auto-tick across the
+	# 500ms wait AND the post-emit frame drain, otherwise a single game
+	# minute can tick during the scene swap and our target (8,3,12)
+	# drifts to (8,3,13) before we can read it back.
+	var saved_auto_tick: bool = tm.auto_tick
+	tm.auto_tick = false
+	await create_timer(0.5).timeout
 	tm.set_time(8, 3, 12)
 	var tm_before_2: Node = sb.time_manager
 	sb.scene_transition_requested.emit(WORLD_PATH, "farmhouse_exit")
@@ -93,6 +104,7 @@ func _run_all() -> void:
 	await process_frame
 	await process_frame
 	await process_frame
+	tm.auto_tick = saved_auto_tick
 	_check(sb.time_manager == tm_before_2,
 		"SignalBus.time_manager is the SAME node instance after FarmHouse -> World swap")
 	_check(sb.time_manager != null and sb.time_manager.day == 8
@@ -150,29 +162,16 @@ func _run_all() -> void:
 		str(sb.pending_warp_id),
 		str(player_world.global_position),
 	])
-	# Re-fetch immediately after a frame so we capture post-_ready position
-	# and not whatever move_and_slide() drifted it to during the wait loop.
-	# Distance tolerance, not exact equality. Root cause (confirmed via a
-	# standalone instrumented load: a single World.tscn boot shows ZERO
-	# drift over 20 physics frames with no input): change_scene_to_file()
-	# defers the outgoing scene's teardown, so for a frame or two the
-	# OUTGOING World's Player and the just-spawned INCOMING World's Player
-	# both exist, exactly coincident at the same (480,384) fallback spawn
-	# point. Two exactly-overlapping CharacterBody2Ds depenetrate via
-	# Godot's own move_and_slide collision recovery even with zero
-	# explicit velocity, pushing apart along X (Y matches exactly in every
-	# observed run — only X separates). This is a transient side effect of
-	# reusing the same historical fallback spawn point across a scene
-	# reload, not a bug in the warp/door targeting logic itself: it only
-	# affects the "no pending_warp_id" fallback path (rare in real
-	# gameplay — real door transitions always carry a pending_warp_id and
-	# land at a specific door, never hit this fallback), and self-corrects
-	# within a few frames once the outgoing Player is actually freed.
-	# 100px comfortably covers observed drift (41px, 62px across runs)
-	# without masking a real "wrong door" spawn bug — a door-mismatch
-	# would land the player at a completely different tile, hundreds of
-	# pixels away.
-	_check(player_world.global_position.distance_to(Vector2(10 * 48, 8 * 48)) < 100.0,
+	# TASK-353: Fix 1 — SceneLoader now strips the outgoing Player's
+	# collision_layer/mask to 0 right before calling change_scene_to_file(),
+	# so the depenetration-recovery race that used to push the new Player
+	# ~40-60px along X (Y matched exactly in every observed run) can no
+	# longer happen at the source. The previous < 100.0 tolerance check
+	# was masking the symptom — the root cause is fixed in SceneLoader,
+	# not just papered over in the assertion. Tolerance tightened to
+	# < 5.0px (allows for sub-pixel float noise only); run five times in
+	# a row to confirm it's stable, not a one-off.
+	_check(player_world.global_position.distance_to(Vector2(10 * 48, 8 * 48)) < 5.0,
 		"Player spawn near (480,384) when no pending_warp_id (fresh-boot default, got %s)"
 			% str(player_world.global_position))
 
@@ -264,7 +263,62 @@ func _run_all() -> void:
 	_check("pending_warp_id" in sb,
 		"SignalBus exposes pending_warp_id field (TASK-352)")
 
-	# --- 6. Regression: zero remaining Main.tscn / "Main" node-name
+	# --- 6. TASK-353 Fix 2 — SceneLoader debounce. Two signal-driven
+	# transitions fired with no frame wait between them must collapse to
+	# ONE actual scene change: the FIRST request wins, the second is
+	# dropped (no change_scene_to_file call, pending_warp_id is NOT
+	# updated). We drive the signal twice in immediate succession (no
+	# awaits between the emits), let several frames elapse for any
+	# debounced request to land, and confirm current_scene matches the
+	# FIRST target path and that pending_warp_id was consumed for the
+	# first request (not stuck holding the second one's value).
+	#
+	# Pre-test setup: the previous section's transition (~line 91's
+	# emit) set SceneLoader._last_transition_msec, so the debounce
+	# window is still active. Wait past it (500ms > 400ms) AND disable
+	# TimeManager.auto_tick across the wait, then reload World with no
+	# warp (pending_warp_id is already ""). The reload update inside
+	# SceneLoader is itself timestamped, so we wait ANOTHER 500ms after
+	# the reload completes before doing the double-emit — otherwise the
+	# reload itself eats the first double-emit via debounce.
+	await create_timer(0.5).timeout
+	var saved_auto_tick_2: bool = tm.auto_tick
+	tm.auto_tick = false
+	sb.scene_transition_requested.emit(WORLD_PATH, "")
+	await _wait_for_current_scene(WORLD_PATH)
+	tm.auto_tick = saved_auto_tick_2
+	# Wait past the debounce window again — _wait_for_current_scene
+	# itself only takes ~30-50ms, well inside the 400ms debounce.
+	await create_timer(0.5).timeout
+	_check(current_scene.scene_file_path == WORLD_PATH,
+		"pre-debounce-test setup landed on World as expected (baseline)")
+	# Now fire TWO signal requests back-to-back, with no awaits. Both
+	# hit SceneLoader._on_transition_requested within < 1ms of each
+	# other. The first targets FarmHouse; the second targets a path
+	# that does NOT exist as a scene (res://DOES_NOT_EXIST.tscn) so a
+	# successful second transition would error and we'd notice
+	# immediately.
+	sb.scene_transition_requested.emit(FARMHOUSE_PATH, "")
+	sb.scene_transition_requested.emit("res://DOES_NOT_EXIST.tscn", "")
+	# Let several frames elapse — enough for any non-debounced request
+	# to land its change_scene_to_file. If the second emit was honored,
+	# we'd see a load-failure error from Godot (and current_scene would
+	# either stay on FarmHouse's old scene OR fail to load). If the
+	# debounce worked, current_scene should now be FarmHouse (the first
+	# target) with no errors.
+	await process_frame
+	await process_frame
+	await process_frame
+	await process_frame
+	await process_frame
+	await _wait_for_current_scene(FARMHOUSE_PATH)
+	_check(current_scene.scene_file_path == FARMHOUSE_PATH,
+		"debounce: first of two back-to-back signal emits won (current_scene=%s)"
+			% str(current_scene.scene_file_path))
+	_check(current_scene.scene_file_path != "res://DOES_NOT_EXIST.tscn",
+		"debounce: second emit (res://DOES_NOT_EXIST.tscn) was DROPPED, not honored")
+
+	# --- 7. Regression: zero remaining Main.tscn / "Main" node-name
 	# assumptions across the test files most likely to reference the old
 	# path. Any hit here means a previous rename was patched half-way or
 	# someone reintroduced an old path while editing.
