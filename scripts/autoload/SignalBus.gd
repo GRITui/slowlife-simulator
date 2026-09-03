@@ -7,6 +7,15 @@ extends Node
 signal minute_ticked(day: int, hour: int, minute: int)
 signal season_changed(new_season: String)
 signal weather_changed(new_weather: String)
+# TASK-355: tomorrow's weather. Same shape as weather_changed (a single
+# String) so any existing weather listener (HUD tint, RainDriver, etc.)
+# can rebind to a forecast hook with no parsing changes. Emitted by
+# TimeManager on every forecast roll — initial _ready, the
+# day-rollover branch, and the post-rotation reroll on season
+# boundaries. Consumers that want "what's the weather right now"
+# keep reading weather_changed; this one is for "what's the weather
+# going to be tomorrow morning".
+signal weather_forecast_changed(forecast: String)
 signal stamina_changed(current_stamina: float, max_stamina: float)
 signal binthabat_offered(item_id: String, harmony_yield: int)
 signal infrastructure_repaired(structure_id: String)
