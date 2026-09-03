@@ -13,12 +13,12 @@ func _check(cond: bool, label: String) -> void:
 		print("  FAIL  profiler :: %s" % label)
 
 func _initialize() -> void:
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var overlay: CanvasLayer = main.get_node_or_null("ProfilerOverlay") as CanvasLayer
-	_check(overlay != null, "ProfilerOverlay attached under Main")
+	_check(overlay != null, "ProfilerOverlay attached under World")
 	if overlay == null:
 		main.queue_free()
 		print("\n=== PROFILER TESTS: %d passed, %d failed ===" % [_passed, _failed])

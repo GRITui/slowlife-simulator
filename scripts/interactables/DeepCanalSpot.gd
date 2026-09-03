@@ -77,8 +77,10 @@ func eligible_fish() -> Array:
 	return out
 
 func _water_adjacent() -> bool:
-	var main: Node = get_parent()
-	var wr: Node = main.get_node_or_null("WorldRender") if main != null else null
+	# TASK-352: prefer the SignalBus.world_render registry slot so this
+	# works identically in the outdoor World scene AND in any future
+	# interior without depending on a hardcoded child node path.
+	var wr: Node = SignalBus.world_render
 	if wr == null or not wr.has_method("ground_at"):
 		return false
 	var origin := Vector2i(int(global_position.x / 48.0), int(global_position.y / 48.0))

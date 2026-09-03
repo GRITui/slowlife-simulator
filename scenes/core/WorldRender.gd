@@ -2,10 +2,10 @@ extends Node2D
 var _cached_ring: Node2D = null
 var _cached_bounds: Node = null
 # WorldRender — TASK-007 world render, Hybrid A/B (Isan 20x16 plain + 3x3 lotus maze)
-# Data-driven: zone matrix + prop table below. Builds into parent (Main):
+# Data-driven: zone matrix + prop table below. Builds into parent (World):
 #   Backdrop (Deep Pond #1565C0) -> GroundLayer (flat 32x32) -> WaterOverlay ->
-#   BambooRing (edge dressing, 1 tile outside map) -> standing props (direct Main
-#   children so Main.y_sort_enabled sorts them with Player/MonkNPC) -> Bounds.
+#   BambooRing (edge dressing, 1 tile outside map) -> standing props (direct World
+#   children so World.y_sort_enabled sorts them with Player/MonkNPC) -> Bounds.
 # 3/4 canon REV 2: ground flat, verticals tall art, sort origin at feet/base.
 
 const TILE: int = 48
@@ -88,7 +88,7 @@ var _ground_layer: TileMapLayer
 var _deep_tex: ImageTexture
 var _main: Node2D
 
-# Called from Main._ready (after children are readied — Godot blocks child->parent
+# Called from World._ready (after children are readied — Godot blocks child->parent
 # add_child during setup, so the build is driven by the parent, not our _ready).
 func build(main: Node2D) -> void:
 	_main = main

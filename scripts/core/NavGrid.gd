@@ -4,7 +4,7 @@ extends RefCounted
 # Engine-layer utility (owner @spatial-physics): decoupled from any scene —
 # callers supply a walkability predicate (e.g. combining GridManager bounds
 # with WorldRender ground-tile water checks) so this stays independent of
-# the content squad's WorldRender.gd / Main.tscn.
+# the content squad's WorldRender.gd / World.tscn.
 
 const WATER_TILES := ["water_lotuspond", "deep_pond", "canal"]
 

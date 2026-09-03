@@ -3,7 +3,7 @@ extends Node2D
 ## cat companion trusts the player enough to show, gated behind
 ## GameData.companion_bond_tier() reaching its cap. TASK-348: cap is
 ## now level 10 (the 0-10 scale from TASK-346), was level 4 in the
-## legacy /25.0 era — the unlock check itself lives in Main.gd's
+## legacy /25.0 era — the unlock check itself lives in World.gd's
 ## _ensure_sacred_grove(). Reuses the same "wood" item from ForestTree
 ## (no new item); the "richer vein, harder to reach" framing here is a
 ## higher daily yield (3 base + axe bonus, vs ForestTree's 1 base + axe
@@ -15,7 +15,7 @@ extends Node2D
 ## BUGFIX (Code Quality Review): the original draft copied ForestTree.gd's
 ## @onready $InteractArea pattern, but ForestTree is placed via a real
 ## .tscn with a real InteractArea child — this spot is instanced dynamically
-## via Main.gd's script.new() (same as MountainCaveSpot/DeepCanalSpot), so
+## via World.gd's script.new() (same as MountainCaveSpot/DeepCanalSpot), so
 ## $InteractArea would ALWAYS be null and chop() could only ever fire from
 ## a direct method call (tests), never from a real player pressing interact.
 ## Build the Area2D programmatically instead, matching MountainCaveSpot.gd/

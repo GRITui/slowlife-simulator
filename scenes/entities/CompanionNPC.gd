@@ -21,7 +21,7 @@ const _WATER := ["canal", "water_lotuspond", "deep_pond"]
 const BOND_MINUTES_PER_POINT: int = 60
 
 @export var follow_enabled: bool = true
-## Dependency injected by Main._ensure_companion (ENGINE-006 hygiene —
+## Dependency injected by World._ensure_companion (ENGINE-006 hygiene —
 ## no node-path tree walks from entities).
 var world_render: Node = null
 

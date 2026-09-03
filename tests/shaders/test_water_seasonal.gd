@@ -26,7 +26,7 @@ func _initialize() -> void:
 	_check(wm != null and wm.get_shader_parameter("season_index") != null,
 		"water season_index uniform present")
 
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

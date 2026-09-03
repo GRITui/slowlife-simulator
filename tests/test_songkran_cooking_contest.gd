@@ -42,12 +42,12 @@ func _initialize() -> void:
 	sb.festival_triggered.connect(_on_festival)
 	sb.show_dialogue.connect(_on_dialogue)
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var trig: Node = main.get_node_or_null("SongkranTrigger")
-	_check(trig != null, "SongkranTrigger instanced under Main")
+	_check(trig != null, "SongkranTrigger instanced under World")
 	if trig == null:
 		await process_frame
 		quit(1)

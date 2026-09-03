@@ -56,8 +56,8 @@ func _initialize() -> void:
 	_check(int(gd.companion_bond) == 0, "clamped below 0")
 	_check(int(gd.companion_bond_tier()) == 0, "tier stays 0 below 0")
 
-	# Boot Main scene and wait for companion spawn (Main._ensure_companion).
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	# Boot World scene and wait for companion spawn (World._ensure_companion).
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

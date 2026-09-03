@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://farmhouse352"]
+
+[ext_resource type="Script" path="res://scenes/interiors/FarmHouse.gd" id="1_farm"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="2_door"]
+
+[node name="FarmHouse" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_farm")
+
+[node name="OutsideDoor" parent="." instance=ExtResource("2_door")]
+position = Vector2(144, 240)
+target_scene_path = "res://scenes/core/World.tscn"
+target_warp_id = "farmhouse_entry"
+warp_id = "farmhouse_exit"
+spawn_offset = Vector2(0, -48)

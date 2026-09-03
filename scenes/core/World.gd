@@ -1,6 +1,7 @@
 extends Node2D
-# Main — Hybrid A/B (Isan 20×16 + 3×3 lotus maze), EN, 16-color
-# Orchestrates TimeManager + GridManager + MonkNPC + Player + HUD + Dialogue + Seasonal tint.
+# World — Hybrid A/B (Isan 20×16 + 3×3 lotus maze), EN, 16-color
+# TASK-352: renamed from World. Orchestrates TimeManager + GridManager +
+# MonkNPC + Player + HUD + Dialogue + Seasonal tint.
 
 @onready var dialogue_label: Label = $DialogueLayer/Panel/DialogueLabel if has_node("DialogueLayer/Panel/DialogueLabel") else null
 @onready var dialogue_panel: Panel = $DialogueLayer/Panel if has_node("DialogueLayer/Panel") else null
@@ -22,11 +23,16 @@ const PORTRAIT_PATHS: Dictionary = {
 }
 
 func _ready() -> void:
-	# world render first (TASK-007): builds layers/props/bounds into Main now that
+	# world render first (TASK-007): builds layers/props/bounds into World now that
 	# children are readied
 	var wr := get_node_or_null("WorldRender")
 	if wr and wr.has_method("build"):
 		wr.build(self)
+	# TASK-352: register the per-area render node so scene-tree-bound
+	# lookups (`get_parent().get_node("WorldRender")`) can be replaced
+	# with `SignalBus.world_render` across all area scripts.
+	if wr != null:
+		SignalBus.world_render = wr
 	SignalBus.show_dialogue.connect(_on_show_dialogue)
 	SignalBus.season_changed.connect(_on_season_tint)
 	SignalBus.weather_changed.connect(_on_weather)
@@ -39,13 +45,30 @@ func _ready() -> void:
 		# TASK-044 decision: machete ships in starting inventory (no equip
 		# system; stem-felling gate checks has_item only).
 		GameData.add_item("machete", 1)
-	# position player near home center
+	# TASK-352: if we just arrived via SceneLoader, find the matching door
+	# in the "door" group and spawn the player at door + offset; otherwise
+	# (fresh boot / loaded save with no pending warp) fall back to the
+	# historical default of (480, 384) so existing saves keep their spawn.
 	var pl := get_node_or_null("Player")
 	if pl:
-		pl.global_position = Vector2(10 * 48, 8 * 48)
+		if SignalBus.pending_warp_id != "":
+			var door_node: Node = null
+			for d in get_tree().get_nodes_in_group("door"):
+				if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
+					door_node = d
+					break
+			if door_node != null:
+				pl.global_position = (door_node as Node2D).global_position + Vector2((door_node as Node).get("spawn_offset"))
+			else:
+				pl.global_position = Vector2(10 * 48, 8 * 48)
+			# Consume the pending warp so a later unrelated scene load
+			# doesn't misinterpret a stale value.
+			SignalBus.pending_warp_id = ""
+		else:
+			pl.global_position = Vector2(10 * 48, 8 * 48)
 	# TASK-038 (PO_INBOX directive #1): buffalo unlock — instance the dormant
 	# TASK-020 scene into the pasture zone. Programmatic (not .tscn) so the
-	# art lane's in-flight Main.tscn sprint stays conflict-free.
+	# art lane's in-flight World.tscn sprint stays conflict-free.
 	_ensure_trader()
 	_ensure_buffalo()
 	# TASK-039 (PO_INBOX directive #2): game-state flow — dormant
@@ -262,7 +285,7 @@ func _ensure_peer_npcs() -> void:
 		"NongTonNPC": {"scene": "res://scenes/entities/NongTonNPC.tscn", "pos": Vector2(2 * 48 + 24, 2 * 48)},
 		"SomchaiNPC": {"scene": "res://scenes/entities/SomchaiNPC.tscn", "pos": Vector2(3 * 48 + 24, 2 * 48)},
 		# TASK-342: 6 rival NPCs, one per paired candidate. Positions
-		# re-verified clear of every spot in this dict + the Main scene's
+		# re-verified clear of every spot in this dict + the World scene's
 		# own sprites (player/buffalo/coop/companion/etc) as of this task.
 		"YaiNPC": {"scene": "res://scenes/entities/YaiNPC.tscn", "pos": Vector2(14 * 48 + 24, 4 * 48)},
 		"OhmNPC": {"scene": "res://scenes/entities/OhmNPC.tscn", "pos": Vector2(9 * 48 + 24, 12 * 48)},
@@ -333,7 +356,7 @@ func _ensure_mountain_cave() -> void:
 		return
 	spot.name = "MountainCaveSpot"
 	# Tile (19, 14) — SE corner, verified clear of every other position in
-	# Main.gd / Main.tscn. Centered in the tile (24, 24 offset) like the
+	# World.gd / World.tscn. Centered in the tile (24, 24 offset) like the
 	# other interactable spots. No sprite for MVP — invisible interact zone,
 	# mirroring MiningSpot/Noticeboard's precedent.
 	spot.position = Vector2(19 * 48 + 24, 14 * 48 + 24)
@@ -342,7 +365,7 @@ func _ensure_mountain_cave() -> void:
 func _on_minute_ticked_unlocks(_day: int, _hour: int, _minute: int) -> void:
 	# TASK-337 + TASK-343 + TASK-344: lazy unlock poll. Cheap (one int
 	# compare + get_node_or_null per spot per tick); runs even after the
-	# spot already exists so it stays idempotent. Main has no other
+	# spot already exists so it stays idempotent. World has no other
 	# minute_ticked subscription of its own — every other system owns
 	# its own — so this is intentionally the only one in this file.
 	_ensure_mountain_cave()
@@ -372,7 +395,7 @@ func _ensure_deep_canal() -> void:
 	# Tile (12, 14) — verified via headless ground_at() probe: tile
 	# (12,14) is ground_grass (walkable) and its north neighbor (12,13)
 	# is canal, satisfying _water_adjacent(). Clear of every other node's
-	# position in Main.gd / Main.tscn. No sprite for MVP — invisible
+	# position in World.gd / World.tscn. No sprite for MVP — invisible
 	# interact zone, mirroring MiningSpot/Noticeboard/MountainCaveSpot's
 	# precedent.
 	spot.position = Vector2(12 * 48 + 24, 14 * 48)

@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://doortask352"]
+
+[ext_resource type="Script" path="res://scenes/interactables/Door.gd" id="1_door"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_door"]
+radius = 48.0
+
+[node name="Door" type="Node2D" groups=["door"]]
+script = ExtResource("1_door")
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_door")

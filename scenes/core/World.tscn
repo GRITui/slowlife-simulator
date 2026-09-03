@@ -1,9 +1,9 @@
 [gd_scene load_steps=15 format=3 uid="uid://main000001"]
 
-[ext_resource type="Script" path="res://scenes/core/Main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scenes/core/World.gd" id="1_world"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="15_door"]
 [ext_resource type="Script" path="res://scenes/core/DayNightTintDriver.gd" id="11_dnt"]
 [ext_resource type="Script" path="res://scenes/core/WorldRender.gd" id="1_wr"]
-[ext_resource type="PackedScene" path="res://scenes/core/TimeManager.tscn" id="2_tm"]
 [ext_resource type="PackedScene" path="res://scenes/core/GridManager.tscn" id="3_gm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/MonkNPC.tscn" id="4_monk"]
 [ext_resource type="PackedScene" path="res://scenes/entities/Player.tscn" id="5_pl"]
@@ -16,14 +16,12 @@
 [ext_resource type="PackedScene" path="res://scenes/interactables/CarpenterUpgrade.tscn" id="13_carpenter"]
 [ext_resource type="Texture2D" path="res://assets/characters/nok_idle_01.png" id="14_nok"]
 
-[node name="Main" type="Node2D"]
+[node name="World" type="Node2D"]
 y_sort_enabled = true
-script = ExtResource("1_main")
+script = ExtResource("1_world")
 
 [node name="WorldRender" type="Node2D" parent="."]
 script = ExtResource("1_wr")
-
-[node name="TimeManager" parent="." instance=ExtResource("2_tm")]
 
 [node name="GridManager" parent="." instance=ExtResource("3_gm")]
 position = Vector2(0, 0)
@@ -119,3 +117,10 @@ mouse_filter = 2
 [node name="DayNightTintDriver" type="CanvasLayer" parent="."]
 layer = 4
 script = ExtResource("11_dnt")
+
+[node name="FarmHouseDoor" parent="." instance=ExtResource("15_door")]
+position = Vector2(168, 456)
+target_scene_path = "res://scenes/interiors/FarmHouse.tscn"
+target_warp_id = "farmhouse_exit"
+warp_id = "farmhouse_entry"
+spawn_offset = Vector2(0, -48)

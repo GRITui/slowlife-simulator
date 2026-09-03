@@ -24,15 +24,15 @@ func _craftable_ids(station: Node) -> Array:
 
 func _initialize() -> void:
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
-	# two frames: one for Main._ready to wire CookingStation, one for safety
+	# two frames: one for World._ready to wire CookingStation, one for safety
 	await process_frame
 	await process_frame
 
 	# (b) node present, structure_id correct
 	var carpenter: Node = main.get_node_or_null("CarpenterUpgrade")
-	_check(carpenter != null, "CarpenterUpgrade node instanced under Main.tscn")
+	_check(carpenter != null, "CarpenterUpgrade node instanced under World.tscn")
 	if carpenter != null:
 		_check(String(carpenter.structure_id) == "house_kitchen",
 			"structure_id == 'house_kitchen' (got '%s')" % String(carpenter.structure_id))
@@ -45,7 +45,7 @@ func _initialize() -> void:
 	gd.harmony = 0
 
 	var station: Node = main.get_node_or_null("CookingStation")
-	_check(station != null, "CookingStation present (Main.gd _ensure_cooking_station)")
+	_check(station != null, "CookingStation present (World.gd _ensure_cooking_station)")
 
 	# (a) before repair, even with all ingredients held, the new recipes
 	# must NOT appear in get_all_craftable().

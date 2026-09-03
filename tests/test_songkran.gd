@@ -21,12 +21,12 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	sb.festival_triggered.connect(_on_festival)
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var st: Node = main.get_node_or_null("SongkranTrigger")
-	_check(st != null, "SongkranTrigger instanced under Main")
+	_check(st != null, "SongkranTrigger instanced under World")
 	if st == null:
 		await process_frame
 		quit(1)

@@ -34,10 +34,10 @@ func _initialize() -> void:
 	sb.game_paused_changed.emit(false)
 	sb.game_paused_changed.disconnect(_on_paused)
 	_check(_hits == 2, "game_paused_changed round-trip (2 hits)")
-	# Main emits exist (static-ish check via method source presence).
-	var main_src: String = FileAccess.open("res://scenes/core/Main.gd", FileAccess.READ).get_as_text()
+	# World emits exist (static-ish check via method source presence).
+	var main_src: String = FileAccess.open("res://scenes/core/World.gd", FileAccess.READ).get_as_text()
 	var emit_count: int = main_src.count("game_paused_changed.emit")
-	_check(emit_count == 3, "Main.gd emits pause state 3x (got %d)" % emit_count)
+	_check(emit_count == 3, "World.gd emits pause state 3x (got %d)" % emit_count)
 	print("\n=== FRAME-CAP TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
 		push_error("FRAME-CAP GATE FAILED")

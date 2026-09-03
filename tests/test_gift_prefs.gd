@@ -29,7 +29,7 @@ func _initialize() -> void:
 	_check(int(db.gift_affinity("neutral")) == 5, "neutral = +5")
 	# End-to-end through RomanceNPC.
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

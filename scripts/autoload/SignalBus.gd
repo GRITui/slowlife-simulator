@@ -12,6 +12,9 @@ signal binthabat_offered(item_id: String, harmony_yield: int)
 signal infrastructure_repaired(structure_id: String)
 signal show_dialogue(speaker_name: String, text: String)
 signal barter_completed(have_id: String, want_id: String)
+# TASK-352: every scene transition (doors now; save/load, debug teleport,
+# festival cutscenes later) goes through SceneLoader via this one signal.
+signal scene_transition_requested(target_scene_path: String, target_warp_id: String)
 
 # Reference registry (ENGINE-006) — set once by the owning system on _ready(),
 # read directly instead of hard node paths / scene-tree walks. Not a signal
@@ -21,6 +24,8 @@ var grid_manager: Node = null
 var time_manager: Node = null
 var market_shop: Node = null # TASK-327: MarketShop UI panel registry slot.
 var rival_clock: Node = null # TASK-347: RivalClock registry slot (festival tie-in reads this).
+var world_render: Node = null # TASK-352: per-area render registry (was get_parent().get_node("WorldRender")).
+var pending_warp_id: String = "" # TASK-352: set by SceneLoader before change_scene_to_file(); consumed by the target area on _ready().
 
 # --- Extended signals (backward-compat with existing codebase) ---
 signal village_harmony_changed(new_harmony: int)

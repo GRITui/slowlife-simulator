@@ -23,36 +23,36 @@ func _check(cond: bool, label: String) -> void:
 func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	var gd: Node = root.get_node("GameData")
-	# 1) Default skill (1) — DeepCanalSpot NOT present under Main after
-	# boot. Mirrors test_mountain_cave.gd's SceneTree + Main.tscn
+	# 1) Default skill (1) — DeepCanalSpot NOT present under World after
+	# boot. Mirrors test_mountain_cave.gd's SceneTree + World.tscn
 	# pattern. Force the autoload into a known state so the "no spot at
 	# default skill" assertion is unambiguous.
 	gd.fishing_skill = 1
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	# Also assert it's NOT in Main.tscn (would mean someone hard-coded it).
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/Main.tscn")
+	# Also assert it's NOT in World.tscn (would mean someone hard-coded it).
+	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
 	_check(not tscn_text.contains("[node name=\"DeepCanalSpot\""),
-		"DeepCanalSpot is NOT hard-authored in Main.tscn (dynamic only)")
+		"DeepCanalSpot is NOT hard-authored in World.tscn (dynamic only)")
 	_check(main.get_node_or_null("DeepCanalSpot") == null,
 		"DeepCanalSpot absent at default fishing_skill=1")
 	_check(int(gd.fishing_skill) == 1, "fishing_skill starts at 1 for this test")
 	# 2) Setting skill to 4 and emitting one minute_ticked tick — the spot
-	# should appear (lazy unlock via Main's minute_ticked handler).
+	# should appear (lazy unlock via World's minute_ticked handler).
 	gd.fishing_skill = 4
 	sb.minute_ticked.emit(1, 6, 0)
 	await process_frame
 	var canal: Node = main.get_node_or_null("DeepCanalSpot")
 	_check(canal != null, "DeepCanalSpot appears after fishing_skill=4 + minute_ticked")
-	# 3) Fresh boot with skill already at 4: a brand-new Main instance
+	# 3) Fresh boot with skill already at 4: a brand-new World instance
 	# must show the spot immediately, no tick required (proves the
 	# _ready() call path covers loaded saves).
 	main.queue_free()
 	await process_frame
 	gd.fishing_skill = 4
-	var main2: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main2: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main2)
 	await process_frame
 	await process_frame

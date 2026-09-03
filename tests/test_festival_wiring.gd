@@ -1,5 +1,5 @@
 extends SceneTree
-# TASK-040 festival wiring gate — manager live under Main, minute_ticked
+# TASK-040 festival wiring gate — manager live under World, minute_ticked
 # hook fires festival exactly once per cool-season day 7.
 
 var _passed: int = 0
@@ -20,12 +20,12 @@ func _check(cond: bool, label: String) -> void:
 func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	sb.festival_triggered.connect(_on_festival)
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var fm: Node = main.get_node_or_null("FestivalManager")
-	_check(fm != null, "FestivalManager instanced under Main")
+	_check(fm != null, "FestivalManager instanced under World")
 	_check(fm != null and fm.is_in_group("festival_manager"), "manager tagged")
 	_check(sb.minute_ticked.get_connections().size() > 0, "minute_ticked has live connections")
 	_check(_hits == 0, "no festival before day 7 cool")

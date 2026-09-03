@@ -23,12 +23,12 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	var gd: Node = root.get_node("GameData")
 	sb.show_dialogue.connect(_on_dialogue)
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var clock: Node = main.get_node_or_null("RivalClock")
-	_check(clock != null, "RivalClock instanced under Main")
+	_check(clock != null, "RivalClock instanced under World")
 	if clock == null:
 		await process_frame
 		quit(1)

@@ -32,7 +32,7 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	var gd: Node = root.get_node("GameData")
 	sb.show_dialogue.connect(_on_dialogue)
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
@@ -49,7 +49,7 @@ func _initialize() -> void:
 	for r: Dictionary in rivals:
 		var node_name: String = r["name"]
 		var node: Node = main.get_node_or_null(node_name)
-		_check(node != null, "%s instanced under Main" % node_name)
+		_check(node != null, "%s instanced under World" % node_name)
 		if node == null:
 			continue
 		_check(node.is_in_group("villager_npc"), "%s tagged villager_npc" % node_name)
@@ -61,7 +61,7 @@ func _initialize() -> void:
 
 	# --- RivalClock PAIRS is populated end-to-end (regression on TASK-340) ---
 	var clock: Node = main.get_node_or_null("RivalClock")
-	_check(clock != null, "RivalClock instanced under Main")
+	_check(clock != null, "RivalClock instanced under World")
 	if clock != null:
 		_check(clock.PAIRS.size() == 6, "PAIRS has 6 entries (was empty pre-TASK-342)")
 		_check(clock.PAIRS.has("ek") and String(clock.PAIRS["ek"]["rival_id"]) == "yai",

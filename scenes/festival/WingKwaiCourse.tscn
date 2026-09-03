@@ -6,7 +6,7 @@
 ## Script-less visual scaffold — positions mirror BuffaloRace.CHECKPOINTS
 ## exactly (scripts/interactables/BuffaloRace.gd) so the flags mark the
 ## real distance-check targets, not just approximate scenery. Engine-lane:
-## instance under Main alongside BuffaloRace/Buffalo (see issue #156).
+## instance under World alongside BuffaloRace/Buffalo (see issue #156).
 
 [node name="Checkpoint1" type="Sprite2D" parent="."]
 position = Vector2(168, 528)
