@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://farmhousebed355"]
+
+[ext_resource type="Script" path="res://scripts/interactables/FarmHouseBed.gd" id="1_bed"]
+[ext_resource type="Texture2D" path="res://assets/environment/pha_khao_ma.png" id="2_bedtex"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bed"]
+radius = 48.0
+
+[node name="FarmHouseBed" type="Node2D" groups=["farmhouse_bed"]]
+script = ExtResource("1_bed")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_bedtex")
+modulate = Color(0.95, 0.88, 0.78, 1)
+offset = Vector2(0, 0)
+
+[node name="InteractArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractArea"]
+shape = SubResource("CircleShape2D_bed")
+
+[node name="PromptLabel" type="Label" parent="."]
+offset_left = -80.0
+offset_top = -56.0
+offset_right = 80.0
+offset_bottom = -40.0
+horizontal_alignment = 1
+visible = false
+text = "Press [E] to sleep"

@@ -20,6 +20,18 @@ const TILE: int = 48
 const GRID: Vector2i = Vector2i(6, 5)
 const FLOOR_TILE: String = "res://assets/tilesets/structure_floor.png"
 const WALL_TILE: String = "res://assets/tilesets/structure_wall.png"
+# TASK-355: extra furniture/decoration sprites so the room doesn't
+# read as an empty box. Each points at an existing environment texture
+# already in the project — no new art generated, just reused
+# Thai-rural props (water jar, clay stove, white cloth, mo hom cloth).
+# Loaded lazily inside _build_render() (not as consts) so a failed
+# import in one texture doesn't block the whole scene from booting.
+const DECOR_PATHS: Dictionary = {
+	"water_jar": "res://assets/environment/water_jar.png",
+	"clay_stove": "res://assets/environment/clay_stove.png",
+	"pha_khao_ma": "res://assets/environment/pha_khao_ma.png",
+	"mohom_cloth": "res://assets/environment/mohom_cloth.png",
+}
 
 @onready var _ground_layer: TileMapLayer = null
 
@@ -36,8 +48,8 @@ func _build_render() -> void:
 	var ts := TileSet.new()
 	ts.tile_size = Vector2i(TILE, TILE)
 	var src := TileSetAtlasSource.new()
-	var tex: Texture2D = load(FLOOR_TILE) as Texture2D
-	src.texture = tex
+	var floor_tex: Texture2D = load(FLOOR_TILE) as Texture2D
+	src.texture = floor_tex
 	src.texture_region_size = Vector2i(TILE, TILE)
 	src.create_tile(Vector2i(0, 0))
 	ts.add_source(src, -1)
@@ -67,6 +79,31 @@ func _build_render() -> void:
 			side.centered = false
 			side.position = Vector2(x_off * TILE - TILE, y * TILE)
 			add_child(side)
+	# TASK-355: a few extra decoration sprites so the room doesn't read
+	# as an empty box. Placed away from the bed (72, 72) and shrine
+	# (216, 72) positions and away from the door at (144, 240) so the
+	# walkable interior cells stay reachable. Failed texture loads are
+	# silently skipped — better an empty room than a parse error.
+	var decor_cells: Array = [
+		# [name, column, row] — column/row in tile units, 0-indexed.
+		["clay_stove", 4, 3],     # back-right corner, near the door
+		["water_jar", 1, 4],      # bottom-left, against the back wall
+		["mohom_cloth", 4, 4],    # bottom-right, mo hom sarong hanging
+		["pha_khao_ma", 1, 3],    # left-center, white offering cloth
+	]
+	for cell in decor_cells:
+		var key: String = cell[0]
+		var path: String = DECOR_PATHS.get(key, "")
+		if path == "":
+			continue
+		var decor_tex: Texture2D = load(path) as Texture2D
+		if decor_tex == null:
+			continue
+		var sprite := Sprite2D.new()
+		sprite.texture = decor_tex
+		sprite.centered = false
+		sprite.position = Vector2(int(cell[1]) * TILE, int(cell[2]) * TILE)
+		add_child(sprite)
 
 ## BUGFIX (Code Quality Review): Player.gd's _try_grid_interact() and
 ## _mounted_interact_3x3() call gm.plant()/water()/harvest() DIRECTLY, with

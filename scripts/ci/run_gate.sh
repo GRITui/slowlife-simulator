@@ -66,6 +66,11 @@ run_area_edges() {
 	godot --headless --path . --script res://tests/test_area_edges.gd
 }
 
+run_farmhouse_content() {
+	echo "== farmhouse-content gate: tests/test_farmhouse_content.gd =="
+	godot --headless --path . --script res://tests/test_farmhouse_content.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -75,6 +80,7 @@ case "$GATE" in
 	touch) run_touch ;;
 	scenes) run_scene_transitions ;;
 	area_edges) run_area_edges ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|all)" >&2; exit 2 ;;
+	farmhouse_content) run_farmhouse_content ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|all)" >&2; exit 2 ;;
 esac
