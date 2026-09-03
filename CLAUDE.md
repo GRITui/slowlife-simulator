@@ -148,6 +148,19 @@ on a rate-limit or provider error, move to the next.
   - RACI recorded in the GitHub issue body (owner pref), not a new `backlog-inbox.md` field.
 - `ops/backlog-inbox.md` `<status>` values, standardized: `SPECCED` (designed) / `DOING` (in progress) / `COMPLETED` (merged). Status-automation below reads this directly — keep it accurate, not inferred.
 
+### Standing authorization: autonomous sprint start (2026-09-03)
+
+Start the next sprint's tasks without asking first, once ALL of these hold:
+- Current sprint's tasks are COMPLETED/merged (backlog-inbox.md status, not assumed).
+- The candidate task's issue/spec has NO unresolved owner-decision point (a "Decide:", "owner to decide", or explicit open design question in its own text). If one exists, surface it via AskUserQuestion before dispatch — do not default silently, do not skip the task without saying why.
+- Any concrete factual claim the spec makes about existing code has been consult-verified per the pattern below, OR the task is routine/well-scoped enough that the consult step doesn't apply.
+- The task doesn't cross into Prohibited/Explicit-permission territory from the general safety rules (destructive git ops, external sends, etc.) — sprint-start authority never extends there.
+- Sprint composition/ordering follows the backlog's own stated order if one exists; otherwise sequential by priority, lowest-risk-first.
+
+On auto-start: post a brief "Starting Sprint N: <tasks>" note, not a question. Still apply full RACI + Code Quality Review + gate discipline per-task — this authorizes not-asking-to-start, not skipping review. `ops/PROJECT_STATUS.md`'s auto-update is the owner's visibility mechanism for this — that's the tradeoff this authorization is made against.
+
+**Stop and report** (don't keep grinding silently) if: the full gate can't be made green after a reasonable retry budget, a delegate hits the tool-infra timeout repeatedly on the same task without net progress, or a task turns out to need a design decision only discoverable mid-implementation (same handling as the free-worker-consult finding pattern — surface it, get the call, then continue).
+
 ### Free-worker consult pattern (2026-09-03)
 
 Before dispatching implementation on a task whose spec makes concrete factual claims about the existing codebase (positions, thresholds, "already-adjacent" spatial assumptions, etc.), consider a cheap read-only free-model pass to spot-check those claims against actual code — same verify-don't-trust discipline already applied to Gemini output. Motivated by two same-session incidents where a wrong spatial assumption in the TASK-357 spec (DeepCanalSpot/SacredGrove positions swapped) wasn't caught until a delegate discovered it mid-implementation, burning a dispatch cycle. Cheapest ROI: tasks with several unverified numeric/positional claims baked into the spec, not routine well-scoped tasks. Skip for tasks with no such claims — the check itself costs a dispatch too.
