@@ -56,10 +56,11 @@ ships:
 
 1. The reusable infrastructure (edge transitions, warp-id namespacing,
    an `InteriorBase`/`AreaBase` refactor, the save-schema fix below).
-2. **One** proof-of-concept split: carve the eastern water cluster —
-   `DeepCanalSpot` (19,6) and `CoastalTradingPost` (16,6), already
-   adjacent on the same row at the map's eastern edge — into a new
-   `CoastalArea.tscn`, reachable by walking off `World.tscn`'s east edge.
+2. **One** proof-of-concept split: carve the eastern water/upgrade
+   cluster — `DeepCanalSpot` (19,6), `CoastalTradingPost` (16,6), and
+   `CarpenterUpgrade` (18,8), all clustered at the map's eastern edge —
+   into a new `CoastalArea.tscn`, reachable by walking off `World.tscn`'s
+   east edge.
 
 Every other district (village/amenity buildings, NPC homes, a
 market/temple conversion) is explicit follow-up work, tracked as
@@ -67,6 +68,43 @@ separate tasks once this framework is proven — not scoped here, for the
 same reason TASK-352 didn't try to convert Market/Temple in its first
 pass: proving the mechanism cleanly matters more than maximizing area
 count in one diff.
+
+**Owner decisions locked in (this session):**
+- Sequencing: #199 and #203 run in parallel; the `EdgeTransition` piece
+  specifically blocks on #199 merging before it ships — do not merge
+  `EdgeTransition.gd` ahead of #199.
+- Phase-1 slice: CoastalArea as above, `CarpenterUpgrade` included.
+  `Noticeboard` (16,9) stays in `World` — close to the cut zone, but a
+  community/quest board belongs in the main hub, not a satellite area;
+  draw the `EdgeTransition` boundary to unambiguously leave it on the
+  `World` side.
+- Save-schema fix (below) stays in scope for this task, not split out.
+  Migration test written first, per this project's save-schema rule.
+- Sprint order across current follow-ups: #199 → #203 → #201 → #200 →
+  #202.
+
+### Relocation assessment (existing NPCs/objects near the cut zone)
+
+Checked every static and dynamically-spawned position in `World.tscn`/
+`World.gd` against the CoastalArea cut zone. Only two objects were close
+enough to be a real question:
+
+- **`CarpenterUpgrade`** (18,8) — ~2.5 tiles from both DeepCanalSpot and
+  CoastalTradingPost, and already spatially isolated from the farm
+  cluster (x=4-10). **Moves to CoastalArea** (owner decision).
+- **`Noticeboard`** (16,9) — same x-column as CoastalTradingPost, 3
+  tiles south. **Stays in `World`** — a community/quest board should
+  stay centrally reachable, not live behind an area transition.
+
+Everything else in the current roster (Elder, Child, Nok, Handler,
+SluiceGate, MarketStall, FarmHouseDoor, trader, goat, coop, cat, forest,
+cooking station, buffalo) is well clear of the cut zone — no other
+relocation candidates for this slice.
+
+Not for this task, but noted for whoever specs a future Temple district:
+`MonkNPC`/Temple (17.5,3.5) sits close enough to this cluster that the
+two districts' boundaries will need to be coordinated so they don't
+overlap oddly later.
 
 ## Architecture
 
@@ -233,17 +271,23 @@ Required companion fix, in scope for this task (not deferred):
    `EdgeTransition` as well as `Door` — edge crossings are walk-through,
    so an unfixed instant-re-trigger bug is *worse* here than at a door
    (no interact press to accidentally repeat — just standing near the
-   boundary could ping-pong). **TASK-353 should land before or alongside
-   this task**, not after.
+   boundary could ping-pong). Per the owner-confirmed sequencing: #199
+   and this task start in parallel, but `EdgeTransition.gd` specifically
+   does not merge until #199 has landed.
 
 **Phase 1 (proof-of-concept, this task):** `CoastalArea.tscn` — relocate
 `DeepCanalSpot` and `CoastalTradingPost` out of `World.gd`'s
-`_ensure_deep_canal`/`_ensure_coastal_trading_post` into the new scene's
-`_ready()`, add a matching `EdgeTransition` pair at `World.tscn`'s east
-edge / `CoastalArea.tscn`'s west edge. Confirms: the Y-sort budget
-measurably drops on `World.tscn` (two fewer participants), the
-coordinate carry-over lands the player at the correct parallel offset,
-and the whole round trip survives a save/load in either scene.
+`_ensure_deep_canal`/`_ensure_coastal_trading_post` (dynamic spawns)
+into the new scene's `_ready()`; move `CarpenterUpgrade` (currently a
+static `.tscn`-instanced child of `World.tscn`, per its
+`instance=ExtResource("13_carpenter")` node) into `CoastalArea.tscn` as
+a static child there instead. Add a matching `EdgeTransition` pair at
+`World.tscn`'s east edge / `CoastalArea.tscn`'s west edge. `Noticeboard`
+stays in `World` (see relocation assessment above). Confirms: the
+Y-sort budget measurably drops on `World.tscn` (three fewer
+participants), the coordinate carry-over lands the player at the
+correct parallel offset, and the whole round trip survives a save/load
+in either scene.
 
 **Phase 2+ (explicit follow-up, NOT this task):** further district
 splits (village/amenity cluster around Market — a real Market interior
@@ -279,21 +323,24 @@ existing structure:
 - Not building any NPC homes (framework only — `InteriorBase` makes that
   cheap later, doesn't build it now).
 - Not relaying out or redesigning `World.tscn`'s existing tile art
-  beyond removing the two relocated spots — no broader map redesign.
-- Not solving TASK-353/354/356 (#199/#200/#202) — this task assumes
-  #199 (spawn-drift/facing fix) lands first or alongside, since edge
-  transitions inherit that same risk class; #200 (fade/SFX) and #202
-  (ambience/time-pause) apply equally well to edge crossings once built
-  but aren't blocking.
+  beyond removing the three relocated objects — no broader map
+  redesign.
+- Not solving TASK-354/356 (#200/#202) — those apply equally well to
+  edge crossings once built but aren't blocking. TASK-353 (#199) IS a
+  hard dependency for `EdgeTransition.gd` specifically, per the
+  sequencing decision below.
 
-## Open questions for the owner
+## Owner decisions (resolved this session — see also "Owner decisions
+locked in" above)
 
-1. Confirm `CoastalArea` as the Phase-1 proof-of-concept slice (chosen
-   because `DeepCanalSpot`/`CoastalTradingPost` already sit adjacent at
-   the map's eastern edge — no existing content needs to be relocated
-   *within* the new scene, only lifted out of `World.gd`) — or name a
-   different first slice.
-2. `SAVE_VERSION` bump to 6 is a real schema change touching every
-   existing save; confirm the migration-test-first requirement above is
-   the right bar before this ships (consistent with this project's
-   always-escalate rule for save-schema work).
+All open questions from the original draft of this spec were resolved
+directly with the owner:
+
+1. **Sequencing**: #199 and this task start in parallel; `EdgeTransition.gd`
+   specifically does not merge until #199 lands.
+2. **Phase-1 slice**: CoastalArea confirmed, `CarpenterUpgrade` added to
+   the move, `Noticeboard` stays in `World`.
+3. **Save schema**: the `SAVE_VERSION` 5→6 bump stays in scope for this
+   task (not split into a separate task), migration test written first.
+4. **Sprint order** across current follow-ups: #199 → #203 (this task)
+   → #201 → #200 → #202.
