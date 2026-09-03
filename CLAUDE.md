@@ -136,66 +136,25 @@ on a rate-limit or provider error, move to the next.
 
 ---
 
-## Sprint Planning & RACI (added 2026-09-03, project sponsor request)
+## Sprint Planning & RACI (2026-09-03)
 
-Plan in sprints that bundle several related tasks, not one task at a
-time. For each new sprint:
+- Sprints bundle multiple related tasks, not one at a time.
+- Dependency graph per sprint: no-dependency tasks → parallel (separate worktrees/dispatches); dependent tasks → chain in-sprint. Default sequential in practice (review bandwidth, merge-conflict avoidance); parallel only when sponsor wants wall-clock speed over that.
+- RACI per task, layered on the model-routing tiers above:
+  - R: tier-appropriate executor (Cline/free-model for GDScript gameplay; Claude self-exec for shaders/iOS-safe-area/narrative/save-schema).
+  - A: Claude (Code Quality Review + merge) always; owner additionally for tasks with an unresolved design question or always-escalate tier.
+  - C: Gemini for genre/external research; owner when scope can't resolve without their call — ask explicitly pre-dispatch, never default silently. See also "free-worker consult" pattern below.
+  - I: `ops/backlog-inbox.md` + GitHub issue, every task.
+  - RACI recorded in the GitHub issue body (owner pref), not a new `backlog-inbox.md` field.
+- `ops/backlog-inbox.md` `<status>` values, standardized: `SPECCED` (designed) / `DOING` (in progress) / `COMPLETED` (merged). Status-automation below reads this directly — keep it accurate, not inferred.
 
-1. **Map dependencies before assigning work.** Tasks with no dependency
-   on each other are candidates for parallel execution (separate git
-   worktrees, separate delegate dispatches running concurrently). Tasks
-   where one genuinely needs another's output chain sequentially within
-   the sprint instead. In practice on this project, independent tasks
-   have mostly been executed sequentially anyway to keep Code Quality
-   Review load manageable and avoid simultaneous merge-conflict risk
-   against `main` — parallel worktrees are the right call when the
-   sponsor explicitly wants wall-clock speed over review bandwidth;
-   default to sequential otherwise.
-2. **Assign RACI per task**, layered on top of the model-routing tiers
-   above rather than replacing them:
-   - **Responsible** — whichever tier from "Tiered Execution & Model
-     Routing" actually fits the task (Cline/free-model delegate for
-     GDScript gameplay logic; Claude self-execution for shaders, iOS
-     safe-area UI, narrative, or save-schema migrations).
-   - **Accountable** — Claude for the Code Quality Review + merge
-     decision on every task; the project owner specifically for any
-     task that carries an unresolved design question in its own
-     description (e.g. a spec that says "decide X before implementing")
-     or that crosses into an always-escalate tier.
-   - **Consulted** — Gemini when the task benefits from external/genre
-     research (see the Gemini row above); the owner when a task's scope
-     genuinely can't be resolved without their call, surfaced as an
-     explicit question before dispatching implementation, not folded
-     silently into a default.
-   - **Informed** — `ops/backlog-inbox.md` and the task's GitHub issue,
-     every time, no exceptions.
-   Record the RACI assignment in the GitHub issue body (owner
-   preference, 2026-09-03) rather than as a new structured field in
-   `ops/backlog-inbox.md` — keep the ledger format stable.
-3. **Standardize `ops/backlog-inbox.md`'s `<status>` values** going
-   forward: `SPECCED` (designed, not started), `DOING` (actively being
-   implemented), `COMPLETED` (merged). This isn't just bookkeeping
-   style — the project-status automation below reads this field
-   directly and needs it to be reliable, not inferred.
+### Free-worker consult pattern (2026-09-03)
 
-### Project status visibility (added 2026-09-03)
+Before dispatching implementation on a task whose spec makes concrete factual claims about the existing codebase (positions, thresholds, "already-adjacent" spatial assumptions, etc.), consider a cheap read-only free-model pass to spot-check those claims against actual code — same verify-don't-trust discipline already applied to Gemini output. Motivated by two same-session incidents where a wrong spatial assumption in the TASK-357 spec (DeepCanalSpot/SacredGrove positions swapped) wasn't caught until a delegate discovered it mid-implementation, burning a dispatch cycle. Cheapest ROI: tasks with several unverified numeric/positional claims baked into the spec, not routine well-scoped tasks. Skip for tasks with no such claims — the check itself costs a dispatch too.
 
-`ops/PROJECT_STATUS.md` is auto-regenerated every 3 hours by
-`scripts/ci/update_project_status.sh`, then committed and pushed to
-`main` automatically, so the project sponsor can check a Kanban board
-(Backlog/Doing/Done), milestone rollups, and the current sprint's RACI
-table without asking the lead dev directly. The generator dispatches a
-free, low-reasoning-effort model (same Cline/OpenRouter infrastructure
-as delegated implementation work) with the full contents of
-`ops/backlog-inbox.md` plus `gh issue list` as context — this is
-deliberately a mechanical "read structured data, refill a template"
-task, not one needing judgment, so a cheap model is intentionally
-sufficient rather than a compromise. The commit step is scoped to
-touch only that one file (never a broad `git add`) and never
-force-pushes; a `git pull --ff-only` failure or a subsequent push
-failure just skips that cycle rather than retrying or forcing. Do not
-hand-edit `ops/PROJECT_STATUS.md` — it will be overwritten on the next
-run.
+### Project Status Automation (2026-09-03)
+
+`ops/PROJECT_STATUS.md`: auto-regenerated every 3h via `scripts/ci/update_project_status.sh`, committed+pushed to `main` automatically. Kanban (Backlog/Doing/Done) + milestones + current-sprint RACI, for sponsor visibility without asking the lead dev. Generator: free/low-reasoning model (Cline/OpenRouter), fed `backlog-inbox.md` + `gh issue list` — mechanical template-fill, no judgment needed, cheap model intentional not a compromise. Commit scoped to that one file only (never broad `git add`); never force-pushes; pull/push failure just skips the cycle. Don't hand-edit — overwritten next run.
 
 ---
 
