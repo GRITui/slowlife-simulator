@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/Settings.tscn" id="10_settings"]
 [ext_resource type="PackedScene" path="res://scenes/market/MarketStall.tscn" id="9_market"]
 [ext_resource type="PackedScene" path="res://scenes/ui/MarketShop.tscn" id="12_marketshop"]
-[ext_resource type="PackedScene" path="res://scenes/interactables/CarpenterUpgrade.tscn" id="13_carpenter"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/EdgeTransition.tscn" id="16_edge"]
 [ext_resource type="Texture2D" path="res://assets/characters/nok_idle_01.png" id="14_nok"]
 
 [node name="World" type="Node2D"]
@@ -57,8 +57,12 @@ position = Vector2(480, 384)
 [node name="SluiceGate" parent="." instance=ExtResource("7_sluice")]
 position = Vector2(744, 672)
 
-[node name="CarpenterUpgrade" parent="." instance=ExtResource("13_carpenter")]
-position = Vector2(864, 384)
+[node name="EastEdge" parent="." instance=ExtResource("16_edge")]
+position = Vector2(940, 384)
+target_scene_path = "res://scenes/interiors/CoastalArea.tscn"
+target_warp_id = "coastal_west_to_world"
+warp_id = "world_east_to_coastal"
+carry_axis = "y"
 
 [node name="MarketStall" parent="." instance=ExtResource("9_market")]
 position = Vector2(480, 320)

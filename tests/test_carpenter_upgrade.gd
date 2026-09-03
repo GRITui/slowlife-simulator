@@ -3,6 +3,12 @@ extends SceneTree
 # Verifies: node presence + structure_id, pre-recipe invisibility at the
 # CookingStation (gated by infrastructure), soft-fail on missing silver/wood/
 # stamina, exact-cost success, post-recipe visibility, no-op re-interact.
+# TASK-357: CarpenterUpgrade lives under CoastalArea.tscn now (Phase-1
+# cluster split), but CookingStation stays in World.tscn — the two
+# scenes need to be instantiated side by side under root. This is safe
+# because is_repaired()/get_all_craftable() read GameData's global
+# infrastructure state, not a scene-tree relationship between the two.
+const COASTAL_AREA_PATH: String = "res://scenes/interiors/CoastalArea.tscn"
 
 var _passed: int = 0
 var _failed: int = 0
@@ -26,13 +32,15 @@ func _initialize() -> void:
 	var gd: Node = root.get_node("GameData")
 	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
-	# two frames: one for World._ready to wire CookingStation, one for safety
+	var coastal: Node = (load(COASTAL_AREA_PATH) as PackedScene).instantiate()
+	root.add_child(coastal)
+	# two frames: one for World._ready/CoastalArea._ready to wire up, one for safety
 	await process_frame
 	await process_frame
 
 	# (b) node present, structure_id correct
-	var carpenter: Node = main.get_node_or_null("CarpenterUpgrade")
-	_check(carpenter != null, "CarpenterUpgrade node instanced under World.tscn")
+	var carpenter: Node = coastal.get_node_or_null("CarpenterUpgrade")
+	_check(carpenter != null, "CarpenterUpgrade node instanced under CoastalArea.tscn")
 	if carpenter != null:
 		_check(String(carpenter.structure_id) == "house_kitchen",
 			"structure_id == 'house_kitchen' (got '%s')" % String(carpenter.structure_id))
@@ -137,6 +145,7 @@ func _initialize() -> void:
 		_check(gd.is_repaired("house_kitchen"), "house_kitchen still repaired after no-op re-interact")
 
 	main.queue_free()
+	coastal.queue_free()
 	print("\n=== CARPENTER TESTS: %d passed, %d failed ===" % [_passed, _failed])
 	if _failed > 0:
 		push_error("CARPENTER GATE FAILED")

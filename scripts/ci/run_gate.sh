@@ -41,6 +41,11 @@ run_save_compat() {
 	godot --headless --path . --script res://tests/test_save_compat.gd
 }
 
+run_save_scene_restore() {
+	echo "== save-scene-restore gate: tests/test_save_scene_restore.gd =="
+	godot --headless --path . --script res://tests/test_save_scene_restore.gd
+}
+
 run_perf() {
 	echo "== perf-budget gate: tests/perf/test_mobile_budget.gd =="
 	godot --headless --path . --script res://tests/perf/test_mobile_budget.gd
@@ -56,13 +61,20 @@ run_scene_transitions() {
 	godot --headless --path . --script res://tests/test_scene_transitions.gd
 }
 
+run_area_edges() {
+	echo "== area-edges gate: tests/test_area_edges.gd =="
+	godot --headless --path . --script res://tests/test_area_edges.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
 	save) run_save_compat ;;
+	save_restore) run_save_scene_restore ;;
 	perf) run_perf ;;
 	touch) run_touch ;;
 	scenes) run_scene_transitions ;;
-	all) run_engine && run_content && run_save_compat && run_perf && run_touch && run_scene_transitions ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|touch|scenes|all)" >&2; exit 2 ;;
+	area_edges) run_area_edges ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|all)" >&2; exit 2 ;;
 esac

@@ -51,19 +51,50 @@ func _ready() -> void:
 	# historical default of (480, 384) so existing saves keep their spawn.
 	var pl := get_node_or_null("Player")
 	if pl:
-		if SignalBus.pending_warp_id != "":
-			var door_node: Node = null
-			for d in get_tree().get_nodes_in_group("door"):
-				if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
-					door_node = d
+		# TASK-357: a save/load restore takes precedence over door-warp
+		# resolution — SaveManager.load_game() sets this to the EXACT
+		# position the save was made at, which may not be anywhere near a
+		# door (a save can happen mid-farm, not just standing at an exit).
+		if SignalBus.has_pending_load_position:
+			pl.global_position = SignalBus.pending_load_position
+			SignalBus.has_pending_load_position = false
+		elif SignalBus.pending_warp_id != "":
+			# TASK-357: EdgeTransition warp-id (walk-through area edges) —
+			# mirrors InteriorBase._place_player. The player's coordinate on
+			# carry_axis is read from SignalBus.edge_carry_value so the
+			# incoming edge lands the player at the parallel offset, NOT a
+			# fixed point like a Door. Without this branch, walking off the
+			# west edge of CoastalArea.tscn would snap the player to the
+			# outdoor default (480, 384) on arrival back in World — defeating
+			# the whole point of walk-through edges.
+			var edge_node: Node = null
+			for e in get_tree().get_nodes_in_group("edge_transition"):
+				if e is Node2D and String((e as Node).get("warp_id")) == SignalBus.pending_warp_id:
+					edge_node = e
 					break
-			if door_node != null:
-				pl.global_position = (door_node as Node2D).global_position + Vector2((door_node as Node).get("spawn_offset"))
+			if edge_node != null:
+				var axis: String = String((edge_node as Node).get("carry_axis"))
+				var edge_pos: Vector2 = (edge_node as Node2D).global_position
+				if axis == "y":
+					pl.global_position = Vector2(edge_pos.x, SignalBus.edge_carry_value)
+				else:
+					pl.global_position = Vector2(SignalBus.edge_carry_value, edge_pos.y)
+				# Consume the pending warp so a later unrelated scene load
+				# doesn't misinterpret a stale value.
+				SignalBus.pending_warp_id = ""
 			else:
-				pl.global_position = Vector2(10 * 48, 8 * 48)
-			# Consume the pending warp so a later unrelated scene load
-			# doesn't misinterpret a stale value.
-			SignalBus.pending_warp_id = ""
+				var door_node: Node = null
+				for d in get_tree().get_nodes_in_group("door"):
+					if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
+						door_node = d
+						break
+				if door_node != null:
+					pl.global_position = (door_node as Node2D).global_position + Vector2((door_node as Node).get("spawn_offset"))
+				else:
+					pl.global_position = Vector2(10 * 48, 8 * 48)
+				# Consume the pending warp so a later unrelated scene load
+				# doesn't misinterpret a stale value.
+				SignalBus.pending_warp_id = ""
 		else:
 			pl.global_position = Vector2(10 * 48, 8 * 48)
 	# TASK-038 (PO_INBOX directive #1): buffalo unlock — instance the dormant
@@ -110,14 +141,15 @@ func _ready() -> void:
 	# freshly-earned cap unlocks it without a reload. Do NOT add a second
 	# minute_ticked subscription — extend the existing handler instead.
 	_ensure_deep_canal()
-	_ensure_sacred_grove()
-	# TASK-344: lotus maze shore (fishing, milestones-gated) and coastal
-	# trading post (economy, lifetime_items_shipped-gated). Same pattern:
-	# called here so a loaded save that already meets the gate shows the
-	# spot immediately at boot, and from the minute_ticked handler so a
-	# freshly-met gate unlocks it without a reload.
+	# TASK-357: sacred grove moved to CoastalArea (Phase-1 cluster split
+	# — see CoastalArea.gd). Its gating logic + minute_ticked poll now
+	# live there; removed from this file so the spot is created under
+	# CoastalArea, not under World.
+	# TASK-344: lotus maze shore (fishing, milestones-gated) — kept in
+	# World. Coastal trading post moved to CoastalArea (Phase-1 cluster
+	# split — see CoastalArea.gd); its gating logic + minute_ticked poll
+	# now live there. Removed from this file.
 	_ensure_lotus_maze_shore()
-	_ensure_coastal_trading_post()
 	SignalBus.minute_ticked.connect(_on_minute_ticked_unlocks)
 	# TASK-332: repeatable side-quest noticeboard (separate from QuestLog).
 	_ensure_noticeboard()
@@ -368,11 +400,14 @@ func _on_minute_ticked_unlocks(_day: int, _hour: int, _minute: int) -> void:
 	# spot already exists so it stays idempotent. World has no other
 	# minute_ticked subscription of its own — every other system owns
 	# its own — so this is intentionally the only one in this file.
+	# TASK-357: sacred grove and coastal trading post moved to
+	# CoastalArea; their lazy-unlock is now driven by CoastalArea's own
+	# _on_minute_ticked_unlocks() handler (subscribed once in
+	# CoastalArea._build_render). Removed from this poll so the spots
+	# are only created under their new owning area, not under World.
 	_ensure_mountain_cave()
 	_ensure_deep_canal()
-	_ensure_sacred_grove()
 	_ensure_lotus_maze_shore()
-	_ensure_coastal_trading_post()
 
 func _ensure_deep_canal() -> void:
 	# TASK-343: gated on GameData.fishing_skill >= 4 (the cap, the same
@@ -399,33 +434,6 @@ func _ensure_deep_canal() -> void:
 	# interact zone, mirroring MiningSpot/Noticeboard/MountainCaveSpot's
 	# precedent.
 	spot.position = Vector2(12 * 48 + 24, 14 * 48)
-	add_child(spot)
-
-func _ensure_sacred_grove() -> void:
-	# TASK-343 / TASK-348: gated on GameData.companion_bond_tier() >= 10
-	# (the cap, the same threshold as the inseparable milestone). The
-	# old /25.0 "tier 4" cap (100% of the 0-4 ceiling) was rescaled to
-	# the same 100% of the new 0-10 ceiling. Thematically: the cat
-	# leads you to a grove it trusts you enough to show. Derive the
-	# unlock state live each call — no persisted flag, no schema bump.
-	# Called once from _ready() and again from the minute_ticked handler.
-	if GameData.companion_bond_tier() < 10:
-		return
-	if get_node_or_null("SacredGroveSpot") != null:
-		return
-	var script: GDScript = load("res://scripts/interactables/SacredGroveSpot.gd")
-	if script == null:
-		return
-	var spot: Node2D = script.new() as Node2D
-	if spot == null:
-		return
-	spot.name = "SacredGroveSpot"
-	# Tile (19, 6) — verified via headless ground_at() probe: tile
-	# (19,6) is ground_grass, near the existing ForestTree cluster
-	# (18,3)/(18,5)/(19,4) for thematic proximity, one tile clear of
-	# ForestTree19_4. No sprite for MVP — invisible interact zone,
-	# mirroring MiningSpot/Noticeboard/MountainCaveSpot's precedent.
-	spot.position = Vector2(19 * 48 + 24, 6 * 48)
 	add_child(spot)
 
 func _ensure_lotus_maze_shore() -> void:
@@ -455,32 +463,6 @@ func _ensure_lotus_maze_shore() -> void:
 	# invisible interact zone, same precedent as MiningSpot /
 	# MountainCaveSpot / DeepCanalSpot / SacredGroveSpot.
 	spot.position = Vector2(13 * 48 + 24, 11 * 48)
-	add_child(spot)
-
-func _ensure_coastal_trading_post() -> void:
-	# TASK-344: gated on GameData.lifetime_items_shipped >= 200 — the
-	# same threshold as stamina_tier 4 (cap), framing this as the
-	# natural capstone of the shipping economy ("you ship enough that the
-	# coastal traders come looking for you"). Derive the unlock state
-	# live each call — no persisted flag, no schema bump. Called once
-	# from _ready() and again from the minute_ticked handler.
-	if int(GameData.lifetime_items_shipped) < 200:
-		return
-	if get_node_or_null("CoastalTradingPost") != null:
-		return
-	var script: GDScript = load("res://scripts/interactables/CoastalTradingPost.gd")
-	if script == null:
-		return
-	var spot: Node2D = script.new() as Node2D
-	if spot == null:
-		return
-	spot.name = "CoastalTradingPost"
-	# Tile (16, 6) — verified via headless ground_at() probe: tile
-	# (16,6) is plantable_soil, near the existing TraderNPC / market
-	# cluster (15,8) / (16,9). No sprite for MVP — invisible interact
-	# zone, same precedent as MiningSpot / MountainCaveSpot / DeepCanalSpot
-	# / SacredGroveSpot / LotusMazeShoreSpot.
-	spot.position = Vector2(16 * 48 + 24, 6 * 48)
 	add_child(spot)
 
 func _ensure_noticeboard() -> void:

@@ -56,11 +56,22 @@ ships:
 
 1. The reusable infrastructure (edge transitions, warp-id namespacing,
    an `InteriorBase`/`AreaBase` refactor, the save-schema fix below).
-2. **One** proof-of-concept split: carve the eastern water/upgrade
-   cluster — `DeepCanalSpot` (19,6), `CoastalTradingPost` (16,6), and
-   `CarpenterUpgrade` (18,8), all clustered at the map's eastern edge —
-   into a new `CoastalArea.tscn`, reachable by walking off `World.tscn`'s
-   east edge.
+2. **One** proof-of-concept split: carve the eastern cluster —
+   `CoastalTradingPost` (16,6), `SacredGrove` (19,6), and
+   `CarpenterUpgrade` (18,8) — into a new `CoastalArea.tscn`, reachable
+   by walking off `World.tscn`'s east edge.
+
+**CORRECTION (caught by the delegate during implementation, not by the
+spec author):** an earlier draft of this spec named `DeepCanalSpot`
+(19,6) as part of this cluster, swapped with `SacredGrove`'s real
+position — `DeepCanalSpot` is actually at (12,14), clustered instead
+with `LotusMazeShore` (13,11) and `MountainCaveSpot` (19,14), nowhere
+near this eastern group. `DeepCanalSpot` does NOT move in this task.
+`SacredGrove` — the thing that actually sits at (19,6) — takes its
+place in the slice instead, per an explicit owner decision accepting
+the theme mismatch (SacredGrove is a wood-gathering/companion-cat spot,
+not coastal) in exchange for a spatially clean cut with nothing
+thematically-coastal left stranded at the boundary.
 
 Every other district (village/amenity buildings, NPC homes, a
 market/temple conversion) is explicit follow-up work, tracked as
@@ -73,7 +84,8 @@ count in one diff.
 - Sequencing: #199 and #203 run in parallel; the `EdgeTransition` piece
   specifically blocks on #199 merging before it ships — do not merge
   `EdgeTransition.gd` ahead of #199.
-- Phase-1 slice: CoastalArea as above, `CarpenterUpgrade` included.
+- Phase-1 slice: CoastalArea = `CoastalTradingPost` + `CarpenterUpgrade`
+  + `SacredGrove` (corrected per above — NOT `DeepCanalSpot`).
   `Noticeboard` (16,9) stays in `World` — close to the cut zone, but a
   community/quest board belongs in the main hub, not a satellite area;
   draw the `EdgeTransition` boundary to unambiguously leave it on the
@@ -83,18 +95,26 @@ count in one diff.
 - Sprint order across current follow-ups: #199 → #203 → #201 → #200 →
   #202.
 
-### Relocation assessment (existing NPCs/objects near the cut zone)
+### Relocation assessment (existing NPCs/objects near the cut zone) — CORRECTED
 
-Checked every static and dynamically-spawned position in `World.tscn`/
-`World.gd` against the CoastalArea cut zone. Only two objects were close
-enough to be a real question:
+Re-verified every position via precise per-function parsing of
+`World.gd` (the earlier pass had `DeepCanalSpot`/`SacredGrove` swapped —
+see correction above). The real eastern cluster:
 
-- **`CarpenterUpgrade`** (18,8) — ~2.5 tiles from both DeepCanalSpot and
-  CoastalTradingPost, and already spatially isolated from the farm
-  cluster (x=4-10). **Moves to CoastalArea** (owner decision).
+- **`CoastalTradingPost`** (16,6) — anchor of the slice.
+- **`SacredGrove`** (19,6) — same row as CoastalTradingPost. **Moves to
+  CoastalArea** (owner decision, accepting the theme mismatch — see
+  correction above).
+- **`CarpenterUpgrade`** (18,8) — between the two, ~2 tiles from each.
+  **Moves to CoastalArea** (owner decision, unchanged from before).
 - **`Noticeboard`** (16,9) — same x-column as CoastalTradingPost, 3
   tiles south. **Stays in `World`** — a community/quest board should
   stay centrally reachable, not live behind an area transition.
+
+`DeepCanalSpot` (12,14) is NOT part of this cluster and does not move —
+it's actually grouped with `LotusMazeShore` (13,11) and
+`MountainCaveSpot` (19,14), a separate southern cluster, a candidate for
+a *different* future district, not this one.
 
 Everything else in the current roster (Elder, Child, Nok, Handler,
 SluiceGate, MarketStall, FarmHouseDoor, trader, goat, coop, cat, forest,
@@ -276,16 +296,18 @@ Required companion fix, in scope for this task (not deferred):
    does not merge until #199 has landed.
 
 **Phase 1 (proof-of-concept, this task):** `CoastalArea.tscn` — relocate
-`DeepCanalSpot` and `CoastalTradingPost` out of `World.gd`'s
-`_ensure_deep_canal`/`_ensure_coastal_trading_post` (dynamic spawns)
+`CoastalTradingPost` and `SacredGrove` (CORRECTED — not `DeepCanalSpot`,
+see correction above) out of `World.gd`'s
+`_ensure_coastal_trading_post`/`_ensure_sacred_grove` (dynamic spawns)
 into the new scene's `_ready()`; move `CarpenterUpgrade` (currently a
 static `.tscn`-instanced child of `World.tscn`, per its
 `instance=ExtResource("13_carpenter")` node) into `CoastalArea.tscn` as
 a static child there instead. Add a matching `EdgeTransition` pair at
 `World.tscn`'s east edge / `CoastalArea.tscn`'s west edge. `Noticeboard`
-stays in `World` (see relocation assessment above). Confirms: the
-Y-sort budget measurably drops on `World.tscn` (three fewer
-participants), the coordinate carry-over lands the player at the
+stays in `World` (see relocation assessment above); `DeepCanalSpot`
+stays in `World` too (it was never actually part of this cluster).
+Confirms: the Y-sort budget measurably drops on `World.tscn` (three
+fewer participants), the coordinate carry-over lands the player at the
 correct parallel offset, and the whole round trip survives a save/load
 in either scene.
 

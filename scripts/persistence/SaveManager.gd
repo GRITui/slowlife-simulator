@@ -12,7 +12,7 @@ extends Node
 # including all of it added across TASK-321..326. v3 persists all of it.
 
 const SAVE_PATH: String = "user://savegame.json"
-const SAVE_VERSION: int = 5
+const SAVE_VERSION: int = 6
 
 # Dynamic autoload helpers — safe in main scene, --script, and packaged export.
 func _gd() -> Node:
@@ -21,11 +21,33 @@ func _gd() -> Node:
 func _sb() -> Node:
 	return Engine.get_main_loop().root.get_node("SignalBus")
 
+func _tree() -> SceneTree:
+	return Engine.get_main_loop() as SceneTree
+
+# TASK-357: real player position + the scene the player is actually in.
+# Previously "player_pos" was a hardcoded [480, 384] literal, never the
+# player's actual position, and there was no scene field at all — harmless
+# while the game had exactly one scene, silently wrong the moment a second
+# scene (FarmHouse, and TASK-357's planned CoastalArea) exists.
+func _current_player_pos() -> Array:
+	var player: Node = _tree().get_first_node_in_group("player")
+	if player is Node2D:
+		var p: Vector2 = (player as Node2D).global_position
+		return [p.x, p.y]
+	return [480, 384] # no player in the tree (e.g. some test setups) — historical default
+
+func _current_scene_path() -> String:
+	var cur: Node = _tree().current_scene
+	if cur != null and cur.scene_file_path != "":
+		return cur.scene_file_path
+	return String(ProjectSettings.get_setting("application/run/main_scene", "res://scenes/core/World.tscn"))
+
 func save_game() -> bool:
 	var gd: Node = _gd()
 	var data: Dictionary = {
 		"version": SAVE_VERSION,
-		"player_pos": [480, 384],
+		"scene_path": _current_scene_path(),
+		"player_pos": _current_player_pos(),
 		"inventory": gd.inventory,
 		"harmony": gd.harmony,
 		"season": gd.current_season,
@@ -188,6 +210,18 @@ func migrate(data: Dictionary) -> Dictionary:
 		if not out.has("rival_confessed"):
 			out["rival_confessed"] = {}
 		out["version"] = 5
+	# v5 -> v6: TASK-357 scene_path field. A save from before this task has
+	# no scene_path at all (every save was implicitly "in the main scene" —
+	# there was only ever one). Default it to the project's actual main
+	# scene rather than a hardcoded literal, so this stays correct even if
+	# run/main_scene ever changes. player_pos already defaulted to
+	# [480, 384] in every prior version, which is exactly the right
+	# fallback for a save with no real recorded position.
+	if version < 6:
+		if not out.has("scene_path"):
+			out["scene_path"] = String(ProjectSettings.get_setting(
+				"application/run/main_scene", "res://scenes/core/World.tscn"))
+		out["version"] = 6
 	return out
 
 func load_game() -> bool:
@@ -248,6 +282,18 @@ func load_game() -> bool:
 		gd.rival_progress = (data.get("rival_progress", {}) as Dictionary).duplicate(true)
 		gd.rival_friendship = (data.get("rival_friendship", {}) as Dictionary).duplicate(true)
 		gd.rival_confessed = (data.get("rival_confessed", {}) as Dictionary).duplicate(true)
+		# TASK-357: restore the actual scene + position the save was made in,
+		# instead of leaving the player wherever they currently are (which,
+		# before this fix, was always whatever the main scene's own default
+		# spawn happened to be -- silently wrong for a save made in FarmHouse
+		# or any future area).
+		var target_scene: String = String(data.get("scene_path",
+			String(ProjectSettings.get_setting("application/run/main_scene", "res://scenes/core/World.tscn"))))
+		var pp: Array = data.get("player_pos", [480, 384]) as Array
+		var target_pos: Vector2 = Vector2(float(pp[0]), float(pp[1])) if pp.size() == 2 else Vector2(480, 384)
+		sb.pending_load_position = target_pos
+		sb.has_pending_load_position = true
+		sb.scene_transition_requested.emit(target_scene, "")
 		sb.show_dialogue.emit("System", "Game loaded.")
 		return true
 	return false

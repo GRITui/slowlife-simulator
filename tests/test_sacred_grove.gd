@@ -6,6 +6,10 @@ extends SceneTree
 # the rich-vein framing: yield is higher than ForestTree's (3 base + axe
 # bonus, vs ForestTree's 1 base + axe bonus). Also asserts the "inseparable"
 # milestone is NOT re-triggered (the companion system owns that).
+# TASK-357: SacredGroveSpot lives under CoastalArea.tscn now (Phase-1
+# cluster split). This test instantiates CoastalArea instead of World —
+# the spot's parent changed, but the gating logic + behavior is identical.
+const COASTAL_AREA_PATH: String = "res://scenes/interiors/CoastalArea.tscn"
 
 var _passed: int = 0
 var _failed: int = 0
@@ -25,14 +29,19 @@ func _initialize() -> void:
 	# after boot. Mirrors test_mountain_cave.gd's SceneTree + World.tscn
 	# pattern.
 	gd.companion_bond = 0
-	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
+	var main: Node = (load(COASTAL_AREA_PATH) as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	# Also assert it's NOT in World.tscn (would mean someone hard-coded it).
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
-	_check(not tscn_text.contains("[node name=\"SacredGroveSpot\""),
-		"SacredGroveSpot is NOT hard-authored in World.tscn (dynamic only)")
+	# Also assert it's NOT hard-authored in either scene file (would mean
+	# someone hard-coded it back into World after the Phase-1 split, or
+	# bypassed the dynamic spawn entirely).
+	var world_tscn: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
+	_check(not world_tscn.contains("[node name=\"SacredGroveSpot\""),
+		"SacredGroveSpot is NOT hard-authored in World.tscn (lives under CoastalArea now)")
+	var coastal_tscn: String = FileAccess.get_file_as_string(COASTAL_AREA_PATH)
+	_check(not coastal_tscn.contains("[node name=\"SacredGroveSpot\""),
+		"SacredGroveSpot is NOT hard-authored in CoastalArea.tscn (dynamic only)")
 	_check(main.get_node_or_null("SacredGroveSpot") == null,
 		"SacredGroveSpot absent at default companion_bond_tier=0")
 	_check(int(gd.companion_bond_tier()) == 0, "companion_bond_tier starts at 0 for this test")
@@ -50,7 +59,7 @@ func _initialize() -> void:
 	main.queue_free()
 	await process_frame
 	gd.companion_bond = 100
-	var main2: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
+	var main2: Node = (load(COASTAL_AREA_PATH) as PackedScene).instantiate()
 	root.add_child(main2)
 	await process_frame
 	await process_frame
@@ -60,14 +69,12 @@ func _initialize() -> void:
 		await process_frame
 		quit(1)
 		return
-	# 4) Spot should be at the verified-clear position (tile 19, 6) —
-	# the spec verified via headless ground_at() probe that tile (19,6)
-	# is ground_grass, near the existing ForestTree cluster
-	# (18,3)/(18,5)/(19,4) for thematic proximity, one tile clear of
-	# ForestTree19_4.
+	# 4) TASK-357: SacredGroveSpot now lives at CoastalArea's own local
+	# tile (3,2) — CoastalArea.gd places it there, area-local coordinates,
+	# not the old World-relative (19,6) tile.
 	var pos: Vector2 = (grove2 as Node2D).position
-	_check(is_equal_approx(pos.x, 19 * 48 + 24) and is_equal_approx(pos.y, 6 * 48),
-		"SacredGroveSpot positioned near ForestTree cluster (936, 288)")
+	_check(is_equal_approx(pos.x, 3 * 48 + 24) and is_equal_approx(pos.y, 2 * 48 + 24),
+		"SacredGroveSpot positioned at CoastalArea local tile (3,2) — (168, 120)")
 	# 5) Chop: succeeds, grants 3 wood (no axe — the rich-vein yield,
 	# higher than ForestTree's 1 base). Wood has no rarity tiers to
 	# invert; the daily yield IS the "richer vein" framing.

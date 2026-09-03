@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://coastalarea357"]
+
+[ext_resource type="Script" path="res://scenes/interiors/CoastalArea.gd" id="1_coastal"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/CarpenterUpgrade.tscn" id="2_carpenter"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/EdgeTransition.tscn" id="3_edge"]
+
+[node name="CoastalArea" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_coastal")
+
+[node name="CarpenterUpgrade" parent="." instance=ExtResource("2_carpenter")]
+position = Vector2(120, 216)
+
+[node name="WestEdge" parent="." instance=ExtResource("3_edge")]
+position = Vector2(0, 0)
+target_scene_path = "res://scenes/core/World.tscn"
+target_warp_id = "world_east_to_coastal"
+warp_id = "coastal_west_to_world"
+carry_axis = "y"
