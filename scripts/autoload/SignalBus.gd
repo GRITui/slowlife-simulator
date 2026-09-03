@@ -26,6 +26,14 @@ var market_shop: Node = null # TASK-327: MarketShop UI panel registry slot.
 var rival_clock: Node = null # TASK-347: RivalClock registry slot (festival tie-in reads this).
 var world_render: Node = null # TASK-352: per-area render registry (was get_parent().get_node("WorldRender")).
 var pending_warp_id: String = "" # TASK-352: set by SceneLoader before change_scene_to_file(); consumed by the target area on _ready().
+# TASK-357: set by SaveManager.load_game() before it fires a scene
+# transition to the saved scene, so the destination places the player at
+# the EXACT saved position instead of resolving pending_warp_id against a
+# door (a save can be made anywhere, not just standing at a door). Takes
+# precedence over pending_warp_id when both would otherwise apply — an
+# area's spawn resolution should check has_pending_load_position first.
+var has_pending_load_position: bool = false
+var pending_load_position: Vector2 = Vector2.ZERO
 
 # --- Extended signals (backward-compat with existing codebase) ---
 signal village_harmony_changed(new_harmony: int)

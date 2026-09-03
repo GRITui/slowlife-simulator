@@ -86,7 +86,14 @@ func _spawn_player() -> void:
 		return
 	pl.name = "Player"
 	add_child(pl)
-	if SignalBus.pending_warp_id != "":
+	# TASK-357: a save/load restore takes precedence over door-warp
+	# resolution — see World.gd's identical check for why. NOTE for the
+	# planned InteriorBase.gd refactor (TASK-357): this check must be
+	# carried over into the shared base, not dropped during extraction.
+	if SignalBus.has_pending_load_position:
+		pl.global_position = SignalBus.pending_load_position
+		SignalBus.has_pending_load_position = false
+	elif SignalBus.pending_warp_id != "":
 		var door_node: Node = null
 		for d in get_tree().get_nodes_in_group("door"):
 			if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:

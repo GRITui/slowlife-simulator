@@ -41,6 +41,11 @@ run_save_compat() {
 	godot --headless --path . --script res://tests/test_save_compat.gd
 }
 
+run_save_scene_restore() {
+	echo "== save-scene-restore gate: tests/test_save_scene_restore.gd =="
+	godot --headless --path . --script res://tests/test_save_scene_restore.gd
+}
+
 run_perf() {
 	echo "== perf-budget gate: tests/perf/test_mobile_budget.gd =="
 	godot --headless --path . --script res://tests/perf/test_mobile_budget.gd
@@ -60,9 +65,10 @@ case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
 	save) run_save_compat ;;
+	save_restore) run_save_scene_restore ;;
 	perf) run_perf ;;
 	touch) run_touch ;;
 	scenes) run_scene_transitions ;;
-	all) run_engine && run_content && run_save_compat && run_perf && run_touch && run_scene_transitions ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|touch|scenes|all)" >&2; exit 2 ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|all)" >&2; exit 2 ;;
 esac

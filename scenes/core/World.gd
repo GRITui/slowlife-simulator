@@ -51,7 +51,14 @@ func _ready() -> void:
 	# historical default of (480, 384) so existing saves keep their spawn.
 	var pl := get_node_or_null("Player")
 	if pl:
-		if SignalBus.pending_warp_id != "":
+		# TASK-357: a save/load restore takes precedence over door-warp
+		# resolution — SaveManager.load_game() sets this to the EXACT
+		# position the save was made at, which may not be anywhere near a
+		# door (a save can happen mid-farm, not just standing at an exit).
+		if SignalBus.has_pending_load_position:
+			pl.global_position = SignalBus.pending_load_position
+			SignalBus.has_pending_load_position = false
+		elif SignalBus.pending_warp_id != "":
 			var door_node: Node = null
 			for d in get_tree().get_nodes_in_group("door"):
 				if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
