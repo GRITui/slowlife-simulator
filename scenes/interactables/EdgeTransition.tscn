@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://edgetransition357"]
+
+[ext_resource type="Script" path="res://scenes/interactables/EdgeTransition.gd" id="1_edge"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_edge"]
+size = Vector2(48, 864)
+
+[node name="EdgeTransition" type="Area2D" groups=["edge_transition"]]
+collision_layer = 0
+collision_mask = 1
+monitorable = true
+monitoring = true
+script = ExtResource("1_edge")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_edge")
+debug_color = Color(0.6, 0.7, 0.3, 0.32)

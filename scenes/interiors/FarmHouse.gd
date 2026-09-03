@@ -1,12 +1,20 @@
-extends Node2D
+extends InteriorBase
 ## FarmHouse — TASK-352. The ONE proof-of-concept interior for the
 ## scene-transition foundation. Minimal: a 6x5-tile room with a static
 ## structure_floor + structure_wall tile render, a Player instanced as a
-## child, and one Door back to the outdoor World. Self-registers
-## SignalBus.grid_manager + SignalBus.world_render in _ready() and
-## tears the registration down in _exit_tree(), exactly like
-## GridManager.gd does today. No crops, no seasons — interiors don't
-## inherit the outdoor tile-state model.
+## child, and one Door back to the outdoor World.
+##
+## TASK-357: extends InteriorBase (the shared skeleton every interior
+## uses) — _ready/_exit_tree/_register_self/_spawn_player/_place_player
+## all live on the base now, not duplicated here. This file only owns
+## the FarmHouse-specific render (the 6x5 tile room + walls), its
+## default spawn point (room center), and the no-op plant/water/harvest
+## contract (interiors have no plantable soil). Behavior is bit-for-bit
+## preserved: the same door-warp resolution, the same
+## has_pending_load_position precedence, the same default room-center
+## fallback (3*TILE, 3*TILE) — now expressed as an override of
+## InteriorBase's default_spawn export instead of a hardcoded literal
+## in a duplicated _spawn_player().
 
 const TILE: int = 48
 const GRID: Vector2i = Vector2i(6, 5)
@@ -14,18 +22,12 @@ const FLOOR_TILE: String = "res://assets/tilesets/structure_floor.png"
 const WALL_TILE: String = "res://assets/tilesets/structure_wall.png"
 
 @onready var _ground_layer: TileMapLayer = null
-@onready var _player: Node2D = null
 
-func _ready() -> void:
-	_build_render()
-	_register_self()
-	_spawn_player()
-
-func _exit_tree() -> void:
-	if SignalBus.grid_manager == self:
-		SignalBus.grid_manager = null
-	if SignalBus.world_render == self:
-		SignalBus.world_render = null
+func _init() -> void:
+	# GDScript doesn't allow redeclaring an inherited @export member, so
+	# the room-center override happens here instead of a re-declaration —
+	# runs before InteriorBase._ready() reads default_spawn.
+	default_spawn = Vector2(3 * TILE, 3 * TILE)
 
 func _build_render() -> void:
 	# Interior's own minimal render — a single TileMapLayer with the floor
@@ -65,49 +67,6 @@ func _build_render() -> void:
 			side.centered = false
 			side.position = Vector2(x_off * TILE - TILE, y * TILE)
 			add_child(side)
-
-func _register_self() -> void:
-	# Interiors self-register with the same slots the outdoor area uses,
-	# so scripts that read SignalBus.grid_manager / SignalBus.world_render
-	# (e.g. FishingSpot/DeepCanalSpot/LotusMazeShoreSpot) keep working
-	# without caring which area is current.
-	SignalBus.grid_manager = self
-	SignalBus.world_render = self
-
-func _spawn_player() -> void:
-	# TASK-352: same pending-warp lookup convention as World.gd — find
-	# the door whose warp_id matches the pending value and place the player
-	# at door + spawn_offset, then clear pending_warp_id.
-	var player_scene: PackedScene = load("res://scenes/entities/Player.tscn")
-	if player_scene == null:
-		return
-	var pl: Node2D = player_scene.instantiate() as Node2D
-	if pl == null:
-		return
-	pl.name = "Player"
-	add_child(pl)
-	# TASK-357: a save/load restore takes precedence over door-warp
-	# resolution — see World.gd's identical check for why. NOTE for the
-	# planned InteriorBase.gd refactor (TASK-357): this check must be
-	# carried over into the shared base, not dropped during extraction.
-	if SignalBus.has_pending_load_position:
-		pl.global_position = SignalBus.pending_load_position
-		SignalBus.has_pending_load_position = false
-	elif SignalBus.pending_warp_id != "":
-		var door_node: Node = null
-		for d in get_tree().get_nodes_in_group("door"):
-			if d is Node2D and String((d as Node).get("warp_id")) == SignalBus.pending_warp_id:
-				door_node = d
-				break
-		if door_node != null:
-			pl.global_position = (door_node as Node2D).global_position + Vector2((door_node as Node).get("spawn_offset"))
-		else:
-			# No matching door (fresh boot into interior) — default to the
-			# room's center so the player isn't clipped into a wall.
-			pl.global_position = Vector2(3 * TILE, 3 * TILE)
-		SignalBus.pending_warp_id = ""
-	else:
-		pl.global_position = Vector2(3 * TILE, 3 * TILE)
 
 ## BUGFIX (Code Quality Review): Player.gd's _try_grid_interact() and
 ## _mounted_interact_3x3() call gm.plant()/water()/harvest() DIRECTLY, with

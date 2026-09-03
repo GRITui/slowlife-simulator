@@ -1,4 +1,5 @@
 extends Node2D
+class_name InteriorBase
 ## InteriorBase — TASK-357. Shared skeleton for every interior/area scene:
 ## self-register into SignalBus.grid_manager / SignalBus.world_render,
 ## resolve pending_warp_id to a door-relative or edge-relative spawn,
