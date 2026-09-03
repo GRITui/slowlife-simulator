@@ -468,7 +468,7 @@ Recommended order if approved, best cost/impact ratio first:
 <task_item>
   <id>TASK-357</id>
   <source>OWNER</source>
-  <status>SPECCED</status>
+  <status>DOING</status>
   <priority>P1 (architecture decision every future world-expansion task builds on)</priority>
   <title>Multi-scene world topology framework (screen-graph)</title>
   <description>Spec: docs/research/TASK-357-spec.md. Follow-up from TASK-352 and a HM:BTN world-map gap analysis: HM:BTN's world is a graph of ~20 small connected screens (building entry and area-to-area travel are the same warp mechanic); ours is one monolithic World.tscn with ~20+ NPCs and zero enterable homes, and a Y-sort budget raised 8 times as content accumulated in that one scene. Scope: EdgeTransition.gd (walk-through area transitions, distinct from the interact-required Door.gd), warp-id namespacing + gate-enforced uniqueness, an InteriorBase.gd refactor extracting FarmHouse.gd's pattern, a required save-schema fix (SAVE_VERSION 5-&gt;6, scene_path field), and ONE proof-of-concept split (CoastalArea: DeepCanalSpot + CoastalTradingPost + CarpenterUpgrade, carved out of World.gd). GitHub issue #203.</description>
