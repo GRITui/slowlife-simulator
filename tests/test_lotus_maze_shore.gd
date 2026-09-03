@@ -43,39 +43,39 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	var gd: Node = root.get_node("GameData")
 	# 1) Default state (no milestones) — LotusMazeShoreSpot NOT present
-	# under Main after boot. Mirrors test_mountain_cave.gd's SceneTree
-	# + Main.tscn-instantiation pattern. Force the autoload into a known
+	# under World after boot. Mirrors test_mountain_cave.gd's SceneTree
+	# + World.tscn-instantiation pattern. Force the autoload into a known
 	# state so the "no spot at default milestones" assertion is unambiguous.
 	_clear_milestones()
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	# Also assert it's NOT in Main.tscn (would mean someone hard-coded it).
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/Main.tscn")
+	# Also assert it's NOT in World.tscn (would mean someone hard-coded it).
+	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
 	_check(not tscn_text.contains("[node name=\"LotusMazeShoreSpot\""),
-		"LotusMazeShoreSpot is NOT hard-authored in Main.tscn (dynamic only)")
+		"LotusMazeShoreSpot is NOT hard-authored in World.tscn (dynamic only)")
 	_check(main.get_node_or_null("LotusMazeShoreSpot") == null,
 		"LotusMazeShoreSpot absent at default milestones_earned (0 of 5)")
 	_check(int((gd.milestones_earned as Dictionary).size()) == 0,
 		"milestones_earned starts empty for this test")
 	# 2) Earning all 5 milestones and emitting one minute_ticked tick —
-	# the spot should appear (lazy unlock via Main's minute_ticked handler).
+	# the spot should appear (lazy unlock via World's minute_ticked handler).
 	_earn_all_5_milestones()
 	sb.minute_ticked.emit(1, 6, 0)
 	await process_frame
 	var shore: Node = main.get_node_or_null("LotusMazeShoreSpot")
 	_check(shore != null, "LotusMazeShoreSpot appears after milestones_earned=5 + minute_ticked")
-	# 3) Fresh boot with all 5 milestones already earned: a brand-new Main
+	# 3) Fresh boot with all 5 milestones already earned: a brand-new World
 	# instance must show the spot immediately, no tick required (proves
 	# the _ready() call path covers loaded saves).
 	main.queue_free()
 	await process_frame
 	_clear_milestones()
 	_earn_all_5_milestones()
-	var main2: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main2: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main2)
-	# The default-skill check at the top of Main._ready() reads
+	# The default-skill check at the top of World._ready() reads
 	# GameData state synchronously, but the freshly-earned milestones
 	# were set BEFORE add_child — so this should work on the first
 	# process frame after add_child. Yield a few frames for safety

@@ -15,17 +15,17 @@ func _check(cond: bool, label: String) -> void:
 
 func _initialize() -> void:
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	# 1) Dynamically instanced, not authored in Main.tscn.
+	# 1) Dynamically instanced, not authored in World.tscn.
 	var spot: Node = main.get_node_or_null("MiningSpot")
-	_check(spot != null, "MiningSpot instanced as runtime child of Main")
-	# Also assert it's NOT in Main.tscn (would mean someone hard-coded it).
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/Main.tscn")
+	_check(spot != null, "MiningSpot instanced as runtime child of World")
+	# Also assert it's NOT in World.tscn (would mean someone hard-coded it).
+	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
 	_check(not tscn_text.contains("[node name=\"MiningSpot\""),
-		"MiningSpot is NOT hard-authored in Main.tscn (dynamic only)")
+		"MiningSpot is NOT hard-authored in World.tscn (dynamic only)")
 	_check(int(gd.get("mining_skill")) == 1, "mining_skill starts at 1")
 	if spot == null:
 		await process_frame

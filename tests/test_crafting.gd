@@ -20,7 +20,7 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	_check(sb.has_signal("craft_completed"), "SignalBus.craft_completed exists")
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

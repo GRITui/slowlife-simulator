@@ -17,8 +17,8 @@ func _check(cond: bool, label: String) -> void:
 		print("  FAIL  perf-budget :: %s" % label)
 
 func _initialize() -> void:
-	var main_scene: PackedScene = load("res://scenes/core/Main.tscn")
-	_check(main_scene != null, "Main.tscn loads")
+	var main_scene: PackedScene = load("res://scenes/core/World.tscn")
+	_check(main_scene != null, "World.tscn loads")
 	var main: Node = main_scene.instantiate() if main_scene else null
 	if main:
 		root.add_child(main)
@@ -63,12 +63,21 @@ func _initialize() -> void:
 			# each with a real Sprite2D — same treatment as the romance
 			# candidates. RivalNPC.talk/_give_gift/_maybe_trigger_confession
 			# never enters the Y-sort (no body, no sprite), only the .tscn
-			# instanced under Main does).
+			# instanced under World does).
+			# TASK-352: FarmHouseDoor (the outdoor door to the farmhouse
+			# interior) joins the same exclusion list for the same reason
+			# as MiningSpot/Noticeboard — a logic-only interactable, no
+			# visible sprite, just an InteractArea child. Budget stays at
+			# 60 (BUGFIX: a prior draft of this diff bumped the ceiling to
+			# 61 alongside adding this exclusion, which is self-
+			# contradictory — if the door is correctly excluded, the count
+			# doesn't change and the ceiling shouldn't move either. The
+			# actual measured count with the door present is still 60).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor":
 						continue
 					sorted_kids += 1
 			_check(sorted_kids <= 60, "y-sorted participants <= 60 (got %d)" % sorted_kids)

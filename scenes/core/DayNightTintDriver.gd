@@ -2,7 +2,7 @@ extends CanvasLayer
 ## DayNightTintDriver — TASK-034. Bus-only driver: subscribes to
 ## SignalBus.day_night_cycle_changed and writes the day-fraction uniform on
 ## the TintLayer/TintRect overlay material. Inert (visible=false parent logic
-## stays with Main's seasonal tint) — this adds time-of-day grading on top.
+## stays with World's seasonal tint) — this adds time-of-day grading on top.
 
 @onready var _tint: ColorRect = $"../TintLayer/TintRect" if has_node("../TintLayer/TintRect") else null
 

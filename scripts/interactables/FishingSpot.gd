@@ -5,7 +5,7 @@ extends Node2D
 ## Zero-combat catch-and-relax: no fail states, soft "nothing biting" only.
 ##
 ## Phase 3 audit (2026-09-02): this spot is instanced dynamically via
-## Main.gd's _ensure_fishing_spot() (script.new(), no .tscn), which never
+## World.gd's _ensure_fishing_spot() (script.new(), no .tscn), which never
 ## added an InteractArea child — @onready $InteractArea was always null,
 ## so _player_in_range never became true and cast_line() could only ever
 ## be triggered by direct method calls (as every existing test does), never
@@ -80,8 +80,11 @@ func eligible_fish() -> Array:
 	return out
 
 func _water_adjacent() -> bool:
-	var main: Node = get_parent()
-	var wr: Node = main.get_node_or_null("WorldRender") if main != null else null
+	# TASK-352: prefer the SignalBus.world_render registry slot so this
+	# works identically in the outdoor World scene AND in any future
+	# interior (FarmHouse etc.) without depending on a hardcoded child
+	# node path.
+	var wr: Node = SignalBus.world_render
 	if wr == null or not wr.has_method("ground_at"):
 		return false
 	var origin := Vector2i(int(global_position.x / 48.0), int(global_position.y / 48.0))

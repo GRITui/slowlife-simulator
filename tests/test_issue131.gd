@@ -5,7 +5,7 @@ func _check(cond: bool, label: String) -> void:
 	if cond: _passed += 1; print("  PASS  issue131 :: %s" % label)
 	else: _failed += 1; print("  FAIL  issue131 :: %s" % label)
 func _initialize() -> void:
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

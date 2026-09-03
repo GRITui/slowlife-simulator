@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Slowlife game"
-run/main_scene="res://scenes/core/Main.tscn"
+run/main_scene="res://scenes/core/World.tscn"
 config/features=PackedStringArray("4.7")
 boot_splash/bg_color=Color(0.9607843, 0.9411765, 0.9098039, 1)
 name="Thai Rural Countryside Sim"
@@ -25,6 +25,8 @@ name="Thai Rural Countryside Sim"
 SignalBus="*res://scripts/autoload/SignalBus.gd"
 GameData="*res://scripts/autoload/GameData.gd"
 FrameCap="*res://scripts/core/FrameCap.gd"
+TimeManager="*res://scenes/core/TimeManager.tscn"
+SceneLoader="*res://scripts/autoload/SceneLoader.gd"
 AudioManager="*res://scripts/autoload/AudioManager.gd"
 
 [config]

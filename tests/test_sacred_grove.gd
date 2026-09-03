@@ -21,36 +21,36 @@ func _check(cond: bool, label: String) -> void:
 func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	var gd: Node = root.get_node("GameData")
-	# 1) Default bond (0, tier 0) — SacredGroveSpot NOT present under Main
-	# after boot. Mirrors test_mountain_cave.gd's SceneTree + Main.tscn
+	# 1) Default bond (0, tier 0) — SacredGroveSpot NOT present under World
+	# after boot. Mirrors test_mountain_cave.gd's SceneTree + World.tscn
 	# pattern.
 	gd.companion_bond = 0
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	# Also assert it's NOT in Main.tscn (would mean someone hard-coded it).
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/Main.tscn")
+	# Also assert it's NOT in World.tscn (would mean someone hard-coded it).
+	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
 	_check(not tscn_text.contains("[node name=\"SacredGroveSpot\""),
-		"SacredGroveSpot is NOT hard-authored in Main.tscn (dynamic only)")
+		"SacredGroveSpot is NOT hard-authored in World.tscn (dynamic only)")
 	_check(main.get_node_or_null("SacredGroveSpot") == null,
 		"SacredGroveSpot absent at default companion_bond_tier=0")
 	_check(int(gd.companion_bond_tier()) == 0, "companion_bond_tier starts at 0 for this test")
 	# 2) Setting bond to cap (100, tier 4) and emitting one minute_ticked
-	# tick — the spot should appear (lazy unlock via Main's minute_ticked
+	# tick — the spot should appear (lazy unlock via World's minute_ticked
 	# handler).
 	gd.companion_bond = 100
 	sb.minute_ticked.emit(1, 6, 0)
 	await process_frame
 	var grove: Node = main.get_node_or_null("SacredGroveSpot")
 	_check(grove != null, "SacredGroveSpot appears after companion_bond_tier=4 + minute_ticked")
-	# 3) Fresh boot with tier already at 4: a brand-new Main instance
+	# 3) Fresh boot with tier already at 4: a brand-new World instance
 	# must show the spot immediately, no tick required (proves the
 	# _ready() call path covers loaded saves).
 	main.queue_free()
 	await process_frame
 	gd.companion_bond = 100
-	var main2: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main2: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main2)
 	await process_frame
 	await process_frame

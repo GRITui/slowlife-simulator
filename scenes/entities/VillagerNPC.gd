@@ -98,7 +98,7 @@ func _physics_process(_delta: float) -> void:
 				var tex: Texture2D = load(path) as Texture2D
 				if tex:
 					_sprite.texture = tex
-	# Seasonal tint sync is handled by Main; NPCs just idle.
+	# Seasonal tint sync is handled by World; NPCs just idle.
 	# Ensure collision shape is enabled.
 	if has_node("CollisionShape2D"):
 		($CollisionShape2D as CollisionShape2D).disabled = false
@@ -130,7 +130,7 @@ func talk() -> void:
 	# trader. Missing a week only forfeits that week's bonus and resets
 	# the streak — it never reduces affinity already earned. Granted
 	# silently (no separate dialogue line) — show_dialogue has no queue
-	# (Main._on_show_dialogue overwrites dialogue_label.text directly), so
+	# (World._on_show_dialogue overwrites dialogue_label.text directly), so
 	# a line emitted here would just get instantly overwritten by
 	# whichever branch below emits its own line next.
 	if npc_id != "trader":

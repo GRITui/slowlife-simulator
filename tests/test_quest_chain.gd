@@ -15,12 +15,12 @@ func _check(cond: bool, label: String) -> void:
 func _initialize() -> void:
 	var gd: Node = root.get_node("GameData")
 	gd.active_quests.clear()
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var log: Node = main.get_node_or_null("QuestLog")
-	_check(log != null, "QuestLog instanced under Main")
+	_check(log != null, "QuestLog instanced under World")
 	_check(log != null and log.get_chain("first_catch").get("display_name", "") == "First Catch",
 		"chain data loaded from quests.json")
 	if log == null:

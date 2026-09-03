@@ -1,5 +1,5 @@
 extends SceneTree
-# TASK-038 buffalo unlock gate — dormant TASK-020 scene is live in Main.
+# TASK-038 buffalo unlock gate — dormant TASK-020 scene is live in World.
 
 var _passed: int = 0
 var _failed: int = 0
@@ -13,12 +13,12 @@ func _check(cond: bool, label: String) -> void:
 		print("  FAIL  buffalo-unlock :: %s" % label)
 
 func _initialize() -> void:
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var buffalo: Node = main.get_node_or_null("Buffalo")
-	_check(buffalo != null, "Buffalo instanced in Main")
+	_check(buffalo != null, "Buffalo instanced in World")
 	if buffalo != null:
 		_check(buffalo.is_in_group("buffalo"), "Buffalo in 'buffalo' group")
 		var pos: Vector2 = (buffalo as Node2D).position

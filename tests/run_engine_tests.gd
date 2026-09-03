@@ -60,12 +60,16 @@ func _run_all() -> void:
 	_section = "timemanager-boot"
 	var tm_scene: PackedScene = load("res://scenes/core/TimeManager.tscn")
 	_check(tm_scene != null, "TimeManager.tscn loads")
-	var tm: Node = tm_scene.instantiate() if tm_scene else null
+	# TASK-352: TimeManager is now a true project autoload — the running
+	# instance is the one at /root/TimeManager, not a freshly instantiated
+	# child. Tests must use THAT instance, not a throwaway one that would
+	# be torn down at queue_free() and break the SignalBus.time_manager
+	# registry check downstream.
+	var tm: Node = root.get_node_or_null("TimeManager")
 	if tm and sb:
 		tm.auto_tick = false
 		sb.minute_ticked.connect(_on_minute_ticked)
 		sb.season_changed.connect(_on_season_changed)
-		root.add_child(tm)
 		await process_frame
 		_check(tm.day == tm.start_day and tm.hour == tm.start_hour, "TimeManager boots at configured start time")
 		_check(_minute_hits >= 1, "minute_ticked emitted on ready (initial sync)")
@@ -92,21 +96,27 @@ func _run_all() -> void:
 		_check(not tm.is_morning_bin_thabat_window(), "12:00 is outside binthabat window")
 
 		_check(is_equal_approx(tm.get_day_fraction(), 0.5), "get_day_fraction at noon == 0.5")
-		tm.queue_free()
 
 	_section = "gridmanager-bounds"
-	var main_scene: PackedScene = load("res://scenes/core/Main.tscn")
+	var main_scene: PackedScene = load("res://scenes/core/World.tscn")
 	var main: Node = main_scene.instantiate() if main_scene else null
 	if main:
 		root.add_child(main)
 		await process_frame
 		var gm: Node = main.get_node_or_null("GridManager")
-		_check(gm != null, "GridManager present in Main")
+		_check(gm != null, "GridManager present in World")
 
 		_section = "signalbus-registry"
 		_check(sb.grid_manager == gm, "SignalBus.grid_manager registers GridManager on ready (ENGINE-006)")
-		var tm_in_main: Node = main.get_node_or_null("TimeManager")
-		_check(sb.time_manager == tm_in_main, "SignalBus.time_manager registers TimeManager on ready (ENGINE-006)")
+		# TASK-352: TimeManager is now a true project autoload, not a child
+		# of World — confirm it survives independently of the scene tree by
+		# checking the registry directly. sb.time_manager should still be
+		# the autoload's TimeManager instance (not null, not a child of
+		# `main`).
+		var tm_reg: Node = sb.time_manager
+		_check(tm_reg != null, "SignalBus.time_manager registered (ENGINE-006 + TASK-352 autoload)")
+		_check(tm_reg != null and tm_reg.get_parent() != main, "SignalBus.time_manager is NOT a child of World (TASK-352)")
+		_check(tm_reg == tm, "SignalBus.time_manager is the running autoload instance (TASK-352)")
 
 		_section = "gridmanager-bounds"
 		if gm:

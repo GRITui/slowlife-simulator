@@ -54,9 +54,9 @@ func _initialize() -> void:
 	_check(int(gd.harmony) == h_before + 10, "different id grants its own reward")
 	gd.milestones_earned.clear()
 
-	# Boot Main scene so MiningSpot / FishingSpot / Companion / Buffalo /
+	# Boot World scene so MiningSpot / FishingSpot / Companion / Buffalo /
 	# ChickenCoop are available as live nodes.
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

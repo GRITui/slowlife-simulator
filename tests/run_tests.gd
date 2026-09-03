@@ -6,7 +6,7 @@ extends SceneTree
 #  null headlessly and worldrender checks below can false-fail. See
 #  scripts/ci/run_gate.sh.)
 # Exit 0 = all green, exit 1 = failures. Covers: autoloads, GameData economy,
-# CropData resource, Main scene boot (player spawn + camera), GridManager round-trip.
+# CropData resource, World scene boot (player spawn + camera), GridManager round-trip.
 
 var _passed: int = 0
 var _failed: int = 0
@@ -68,13 +68,13 @@ func _run_all() -> void:
 		_check(crop.get_growth_minutes(0, "monsoon") == int(1440.0 / 1.25), "monsoon growth speed")
 
 	_section = "main-boot"
-	var main_scene: PackedScene = load("res://scenes/core/Main.tscn")
-	_check(main_scene != null, "Main.tscn loads")
+	var main_scene: PackedScene = load("res://scenes/core/World.tscn")
+	_check(main_scene != null, "World.tscn loads")
 	var main: Node = main_scene.instantiate() if main_scene else null
 	if main:
 		root.add_child(main)
 		# In --script mode _ready propagation lands on the next process frame(s):
-		# let the tree run so Main._ready fires (WorldRender build) before checks.
+		# let the tree run so World._ready fires (WorldRender build) before checks.
 		await process_frame
 		await process_frame
 		var player := main.get_node_or_null("Player")
@@ -94,7 +94,7 @@ func _run_all() -> void:
 		var wr: Node = main.get_node_or_null("WorldRender")
 		_check(wr != null, "WorldRender present")
 		if wr:
-			_check(main.y_sort_enabled, "Main Y-sort enabled (3/4 canon REV 2)")
+			_check(main.y_sort_enabled, "World Y-sort enabled (3/4 canon REV 2)")
 			_check(wr.ground_at(Vector2i(5, 5)) == "plantable_soil", "paddy center is plantable soil")
 			_check(wr.ground_at(Vector2i(10, 6)) == "plantable_soil", "paddy core plantable")
 			_check(wr.ground_at(Vector2i(2, 1)) == "water_lotuspond", "lotus pond NW")
@@ -103,7 +103,7 @@ func _run_all() -> void:
 			_check(wr.ground_at(Vector2i(17, 3)) == "structure_floor", "temple lane E floor")
 			_check(wr.ground_at(Vector2i(6, 13)) == "ground_grass", "buffalo pasture S grass")
 			_check(wr.ring_count() == 76, "bamboo ring 1 tile outside 20x16 map (76 walls)")
-			_check(wr.prop_count() >= 15, "standing props added under Main for Y-sort")
+			_check(wr.prop_count() >= 15, "standing props added under World for Y-sort")
 			var bounds: Node = main.get_node_or_null("Bounds")
 			_check(bounds != null and bounds.get_child_count() == 4, "bounds colliders: 4 walls matching Player clamp")
 			var bd: Node = main.get_node_or_null("Backdrop")
@@ -229,9 +229,9 @@ func _run_all() -> void:
 	_check(sb != null and sb.has_signal("settings_changed"), "SignalBus has settings_changed")
 	var settings_scene: PackedScene = load("res://scenes/ui/Settings.tscn")
 	_check(settings_scene != null, "Settings.tscn loads")
-	# Main was queue_freed in the gridmanager section; boot a fresh instance
+	# World was queue_freed in the gridmanager section; boot a fresh instance
 	# so the HUD methods can be exercised against a live scene.
-	var main2: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main2: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main2)
 	await process_frame
 	var hud_node: Node = main2.get_node_or_null("HUD")

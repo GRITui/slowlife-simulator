@@ -39,7 +39,7 @@ func _initialize() -> void:
 	_check(int(gd.record_weekly_engagement("fah", 0)) == 0, "different npc: independent streak, starts fresh")
 
 	# --- end-to-end: VillagerNPC.talk() grants the bonus silently ---
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame

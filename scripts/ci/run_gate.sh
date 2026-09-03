@@ -51,12 +51,18 @@ run_touch() {
 	godot --headless --path . --script res://tests/ui/test_touch_targets.gd
 }
 
+run_scene_transitions() {
+	echo "== scene-transitions gate: tests/test_scene_transitions.gd =="
+	godot --headless --path . --script res://tests/test_scene_transitions.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
 	save) run_save_compat ;;
 	perf) run_perf ;;
 	touch) run_touch ;;
-	all) run_engine && run_content && run_save_compat && run_perf && run_touch ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|touch|all)" >&2; exit 2 ;;
+	scenes) run_scene_transitions ;;
+	all) run_engine && run_content && run_save_compat && run_perf && run_touch && run_scene_transitions ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|perf|touch|scenes|all)" >&2; exit 2 ;;
 esac

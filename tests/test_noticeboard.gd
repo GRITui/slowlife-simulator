@@ -29,16 +29,16 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	sb.show_dialogue.connect(_on_dialogue)
 	sb.silver_changed.connect(_on_silver)
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
-	# 1) Dynamically instanced, not authored in Main.tscn.
+	# 1) Dynamically instanced, not authored in World.tscn.
 	var board: Node = main.get_node_or_null("Noticeboard")
-	_check(board != null, "Noticeboard instanced as runtime child of Main")
-	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/Main.tscn")
+	_check(board != null, "Noticeboard instanced as runtime child of World")
+	var tscn_text: String = FileAccess.get_file_as_string("res://scenes/core/World.tscn")
 	_check(not tscn_text.contains("[node name=\"Noticeboard\""),
-		"Noticeboard is NOT hard-authored in Main.tscn (dynamic only)")
+		"Noticeboard is NOT hard-authored in World.tscn (dynamic only)")
 	if board == null:
 		await process_frame
 		quit(1)

@@ -1,6 +1,6 @@
 extends Node
 # FestivalManager — TASK-022 Loy Krathong, cozy no-fail, SignalBus.
-# TASK-040 (PO_INBOX directive #3): now wired live — instances under Main,
+# TASK-040 (PO_INBOX directive #3): now wired live — instances under World,
 # subscribes to minute_ticked via the time_manager registry, emits
 # festival_triggered (spec: docs/research/TASK-022-spec.md).
 

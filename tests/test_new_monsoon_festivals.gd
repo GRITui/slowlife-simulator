@@ -1,7 +1,7 @@
 extends SceneTree
 # TASK-330 monsoon festival density gate — Asalha Bucha (monsoon day 5,
 # 17:00-21:00) and Ok Phansa (monsoon day 28, 18:00-22:00). Both triggers
-# boot under Main, fire festival_triggered with the correct id exactly once
+# boot under World, fire festival_triggered with the correct id exactly once
 # inside their window (year-season dedupe), and stay silent outside the
 # season/day/hour window.
 
@@ -28,14 +28,14 @@ func _initialize() -> void:
 	var sb: Node = root.get_node("SignalBus")
 	sb.festival_triggered.connect(_on_festival)
 	var gd: Node = root.get_node("GameData")
-	var main: Node = (load("res://scenes/core/Main.tscn") as PackedScene).instantiate()
+	var main: Node = (load("res://scenes/core/World.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await process_frame
 	await process_frame
 	var asalha: Node = main.get_node_or_null("AsalhaBuchaTrigger")
-	_check(asalha != null, "AsalhaBuchaTrigger instanced under Main")
+	_check(asalha != null, "AsalhaBuchaTrigger instanced under World")
 	var ok_phansa: Node = main.get_node_or_null("OkPhansaTrigger")
-	_check(ok_phansa != null, "OkPhansaTrigger instanced under Main")
+	_check(ok_phansa != null, "OkPhansaTrigger instanced under World")
 	_check(_asalha_hits == 0 and _ok_hits == 0, "no trigger outside festival window")
 	var tm: Node = sb.time_manager
 	if tm != null:
