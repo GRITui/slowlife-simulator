@@ -125,6 +125,10 @@ func save_game() -> bool:
 		# which is bit-identical to a fresh start (see the spec's
 		# "absence means default style" contract).
 		"decor_choices": gd.decor_choices,
+		# TASK-374: placed furniture (location -> list of {item_id, cell}).
+		# No SAVE_VERSION bump: empty {} matches GameData.placed_furniture's init exactly,
+		# so old saves load as if no furniture was ever placed.
+		"placed_furniture": gd.placed_furniture,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -328,6 +332,10 @@ func load_game() -> bool:
 		# old-saves case is the same as "never picked a style" — no
 		# behaviour change for saves that predate this task.
 		gd.decor_choices = (data.get("decor_choices", {}) as Dictionary).duplicate(true)
+		# TASK-374: restore placed furniture. Default {} matches
+		# GameData.placed_furniture's initializer exactly, so a save from
+		# before this task loads as if no furniture was ever placed.
+		gd.placed_furniture = (data.get("placed_furniture", {}) as Dictionary).duplicate(true)
 		gd.rival_progress = (data.get("rival_progress", {}) as Dictionary).duplicate(true)
 		gd.rival_friendship = (data.get("rival_friendship", {}) as Dictionary).duplicate(true)
 		gd.rival_confessed = (data.get("rival_confessed", {}) as Dictionary).duplicate(true)

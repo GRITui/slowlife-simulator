@@ -20,6 +20,9 @@ var inventory: Dictionary = {}
 # Infrastructure: structure_id -> repaired bool
 var infrastructure: Dictionary = {}
 
+# Placed furniture: location_id -> Array<{item_id: String, cell: Vector2i}>
+var placed_furniture: Dictionary = {}
+
 # Season helper — mirrors TimeManager.season
 var current_season: String = "cool"  # hot | monsoon | cool
 var current_weather: String = "clear"
@@ -689,6 +692,46 @@ func repair_infrastructure(structure_id: String) -> void:
 
 func is_repaired(structure_id: String) -> bool:
 	return infrastructure.get(structure_id, false)
+
+# --- Placed furniture API (TASK-374) ---
+func add_placed_furniture(location_id: String, item_id: String, cell: Vector2i) -> bool:
+	# Returns false if the cell is invalid or already occupied.
+	var list: Array = placed_furniture.get(location_id, [])
+	for entry in list:
+		if entry.cell == cell:
+			return false # already occupied
+	# Optionally enforce grid bounds and occupied tile restrictions (caller should validate).
+	list.append({"item_id": item_id, "cell": cell})
+	placed_furniture[location_id] = list
+	SignalBus.placed_furniture_changed.emit(location_id, item_id, cell, true)
+	return true
+
+func remove_placed_furniture(location_id: String, item_id: String, cell: Vector2i) -> bool:
+	var list: Array = placed_furniture.get(location_id, [])
+	for i in range(list.size()):
+		var entry = list[i]
+		if entry.cell == cell and entry.item_id == item_id:
+			list.remove_at(i)
+			placed_furniture[location_id] = list
+			if list.is_empty():
+				placed_furniture.erase(location_id)
+			SignalBus.placed_furniture_changed.emit(location_id, item_id, cell, false)
+			return true
+	return false
+
+func get_placed_furniture_at(location_id: String, cell: Vector2i) -> Dictionary:
+	var list: Array = placed_furniture.get(location_id, [])
+	for entry in list:
+		if entry.cell == cell:
+			return entry
+	return {}
+
+func has_placed_furniture_at(location_id: String, cell: Vector2i) -> bool:
+	var list: Array = placed_furniture.get(location_id, [])
+	for entry in list:
+		if entry.cell == cell:
+			return true
+	return false
 
 # --- TASK-025 Market Stall 1:1 barter ---
 
