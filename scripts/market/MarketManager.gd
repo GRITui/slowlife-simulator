@@ -59,6 +59,11 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "seed_soybean", "price": 12},
 		{"item": "seed_sticky_rice", "price": 15},
 		{"item": "seed_basil", "price": 12},
+		# TASK-374: floor_rug placeable decor for FarmHouse interior. Reuses
+		# existing cloth textures (mohom_cloth.png or pha_khao_ma.png). Not
+		# season-gated (a decor item, unlike seeds) -- price sits between
+		# the basic seeds (8-15) and tools (30-50) to be accessible early.
+		{"item": "floor_rug", "price": 25},
 		{"item": "seed_yardlong_bean", "price": 12},
 	],
 	"hot": [
@@ -66,6 +71,7 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "shrimp_paste", "price": 16},
 		{"item": "fishing_rod", "price": 40},
 		{"item": "ornate_shrine_blueprint", "price": 50},
+		{"item": "floor_rug", "price": 25},
 		{"item": "seed_banana", "price": 15},
 		{"item": "seed_chili", "price": 9},
 		{"item": "seed_durian", "price": 30},
@@ -86,6 +92,7 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "fish_sauce", "price": 12},
 		{"item": "shrimp_paste", "price": 14},
 		{"item": "ornate_shrine_blueprint", "price": 50},
+		{"item": "floor_rug", "price": 25},
 		{"item": "seed_ginger", "price": 10},
 		{"item": "seed_lotus", "price": 12},
 		{"item": "seed_taro", "price": 10},
