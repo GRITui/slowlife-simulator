@@ -18,6 +18,16 @@ var _market: Node = null
 var _season: String = "cool"
 var _current_offer: Dictionary = {}
 
+## Item ids are snake_case ("fish_sauce") and this panel only ever
+## title-cases them into display text at the START of a label/sentence
+## (e.g. "Fish sauce for 3 silver") -- sentence case, not every word, per
+## owner request (2026-09-04). Mid-sentence item names (e.g. inside
+## "Bought fish sauce for...") are intentionally left alone.
+static func _cap(s: String) -> String:
+	if s.is_empty():
+		return s
+	return s[0].to_upper() + s.substr(1)
+
 func _ready() -> void:
 	visible = false
 	SignalBus.market_shop = self
@@ -93,7 +103,7 @@ func _refresh_barter_row() -> void:
 	else:
 		var have_id: String = String(_current_offer.get("have", ""))
 		var want_id: String = String(_current_offer.get("want", ""))
-		_barter_label.text = "%s -> %s" % [have_id.replace("_", " "), want_id.replace("_", " ")]
+		_barter_label.text = "%s -> %s" % [_cap(have_id.replace("_", " ")), want_id.replace("_", " ")]
 		_barter_button.disabled = false
 
 func _refresh_sell_row() -> void:
@@ -103,7 +113,7 @@ func _refresh_sell_row() -> void:
 		_sell_button.disabled = true
 	else:
 		var price: int = GameData.get_sell_price(sellable, "market")
-		_sell_label.text = "%s for %d silver" % [sellable.replace("_", " "), price]
+		_sell_label.text = "%s for %d silver" % [_cap(sellable.replace("_", " ")), price]
 		_sell_button.disabled = false
 
 func _refresh_buy_list() -> void:
@@ -122,7 +132,7 @@ func _refresh_buy_list() -> void:
 		# row -- a single "item — N silver" string left prices ragged and
 		# harder to scan at a glance.
 		var product_label: Label = Label.new()
-		product_label.text = item_id.replace("_", " ")
+		product_label.text = _cap(item_id.replace("_", " "))
 		product_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		product_label.add_theme_color_override("font_color", Color(0.42745098, 0.14509805, 0.16862746, 1))
 		var price_label: Label = Label.new()
