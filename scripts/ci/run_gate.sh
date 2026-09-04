@@ -92,6 +92,16 @@ run_fish_almanac() {
 	godot --headless --path . --script res://tests/test_fish_almanac.gd
 }
 
+run_carpenter_upgrade() {
+	# TASK-322 carpenter house-kitchen upgrade + TASK-362 silver_ore sink.
+	# Was an orphaned standalone test (existed since TASK-322, never wired
+	# into this gate) — found and fixed 2026-09-04 while merging TASK-362,
+	# same category of gap this project has caught before (test_touch_
+	# targets.gd was orphaned the same way, see SHIP_PLAN.md Phase 3).
+	echo "== carpenter-upgrade gate: tests/test_carpenter_upgrade.gd =="
+	godot --headless --path . --script res://tests/test_carpenter_upgrade.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -105,6 +115,7 @@ case "$GATE" in
 	farmhouse_decor) run_farmhouse_decor ;;
 	transition_fade) run_transition_fade ;;
 	fish_almanac) run_fish_almanac ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|all)" >&2; exit 2 ;;
+	carpenter_upgrade) run_carpenter_upgrade ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|all)" >&2; exit 2 ;;
 esac
