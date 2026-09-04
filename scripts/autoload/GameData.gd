@@ -188,6 +188,51 @@ func record_catch(species_id: String, size: String) -> bool:
 #   sickle: harvest yield +1 per tier above 1.
 var tool_tiers: Dictionary = {"watering_can": 1, "hoe": 1, "sickle": 1}
 
+# TASK-378: unified completion tracker (perfection % / checklist screen).
+# Purely computed-on-demand aggregation of existing data sources — no new
+# persisted schema fields (matches project's default-on-add discipline).
+# Simple even-weighted formula: categories completed / categories total.
+# Categories: 1) milestones_earned (5 known), 2) fish_almanac (any catches),
+# 3) recipe_unlocks (any unlocked), 4) decor_choices (any choices),
+# 5) romance completion (spouse non-empty), 6) romance candidates roster
+# completion (romanced how many of 6 candidates). Total = 6 categories.
+
+const ROMANCE_CANDIDATE_IDS: Array[String] = ["ek", "fah", "ploy", "klong", "chang", "yaa"]
+
+func completion_percentage() -> float:
+	# Plain instance method — GameData is the autoload itself, so this
+	# already runs with direct access to its own vars. The original
+	# draft used a static method that re-fetched the singleton via
+	# Engine.get_main_loop().root.get_node("GameData") as GameData —
+	# pointless indirection, and `as GameData` doesn't even parse (no
+	# `class_name GameData` exists), which made this whole autoload
+	# fail to compile and crash the entire game on boot.
+	var milestones_done: int = 0
+	for id in ["deep_miner", "master_angler", "inseparable", "herd_keeper", "storm_catch"]:
+		if milestones_earned.get(id, false):
+			milestones_done += 1
+
+	var completed_categories: int = 0
+	if milestones_done == 5:
+		completed_categories += 1
+	if not fish_almanac.is_empty():
+		completed_categories += 1
+	if not recipe_unlocks.is_empty():
+		completed_categories += 1
+	if not decor_choices.is_empty():
+		completed_categories += 1
+	if spouse != "":
+		completed_categories += 1
+
+	var romance_candidates_done: int = 0
+	for candidate_id in ROMANCE_CANDIDATE_IDS:
+		if affinity.has(candidate_id) and level_for(int(affinity[candidate_id])) >= 5:
+			romance_candidates_done += 1
+	if romance_candidates_done >= 1:
+		completed_categories += 1
+
+	return float(completed_categories) / 6.0 * 100.0
+
 func tool_tier(tool_id: String) -> int:
 	return int(tool_tiers.get(tool_id, 1))
 

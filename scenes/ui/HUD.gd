@@ -19,6 +19,8 @@ extends CanvasLayer
 # TASK-350 — seed indicator widget (visible both desktop + mobile, but the
 # touch-to-cycle path is mobile-only and lives on the SeedIndicator Control).
 @onready var seed_label: Label = find_child("SeedLabel", true, false) as Label
+# TASK-378 — perfection tracker button.
+@onready var completion_tracker_button: Button = $Margin/Root/StatPanel/HBox/TimeBox/CompletionTrackerRow/CompletionTrackerButton if has_node("Margin/Root/StatPanel/HBox/TimeBox/CompletionTrackerRow/CompletionTrackerButton") else null
 
 var _max_stamina: float = 100.0
 var _max_harmony: int = 100
@@ -217,6 +219,12 @@ func _ready() -> void:
 	SignalBus.chicken_affinity_changed.connect(_on_farm_hearts_changed)
 	SignalBus.companion_bond_changed.connect(_on_farm_hearts_changed)
 	SignalBus.tool_upgraded.connect(_on_tool_upgraded)
+	# TASK-378: the button existed in HUD.tscn but nothing connected its
+	# pressed signal to open_completion_tracker() — same orphan-wiring
+	# class as this session's other found bugs, just for a UI control
+	# instead of a scene node.
+	if completion_tracker_button:
+		completion_tracker_button.pressed.connect(open_completion_tracker)
 	# TASK-027: restore persisted a11y prefs (defaults keep legacy behavior).
 	set_font_scale(GameData.font_scale)
 	set_high_contrast(GameData.high_contrast)
@@ -313,6 +321,19 @@ func update_prompt_for_proximity(has_target: bool, action: String = "Press [E] t
 # For manual testing
 func set_mobile(v: bool) -> void:
 	is_mobile = v
+# TASK-378: open completion tracker screen (perfection % / checklist)
+func open_completion_tracker() -> void:
+	var tracker_scene: PackedScene = load("res://scenes/ui/CompletionTracker.tscn")
+	if tracker_scene == null:
+		return
+	var tracker: Node = tracker_scene.instantiate()
+	add_child(tracker)
+	# `tracker` stays typed as Node — casting to CanvasLayer here would
+	# lose the attached CompletionTracker.gd script's own open() method
+	# from the static type checker's view (CanvasLayer itself has no
+	# open()). Node's dynamic dispatch calls it fine at runtime.
+	if tracker.has_method("open"):
+		tracker.call("open")
 
 # TASK-018 Inventory UI — display GameData.inventory
 func refresh_inventory() -> void:

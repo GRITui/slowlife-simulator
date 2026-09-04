@@ -195,6 +195,17 @@ theme_override_colors/font_color = Color(0.95, 0.56, 0.69, 1)
 theme_override_font_sizes/font_size = 10
 horizontal_alignment = 1
 
+[node name="CompletionTrackerRow" type="HBoxContainer" parent="Margin/Root/StatPanel/HBox/TimeBox"]
+layout_mode = 2
+size_flags_vertical = 4
+grow_horizontal = 2
+
+[node name="CompletionTrackerButton" type="Button" parent="Margin/Root/StatPanel/HBox/TimeBox/CompletionTrackerRow"]
+custom_minimum_size = Vector2(140, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Perfection"
+tooltip_text = "Open completion tracker (perfection % / checklist)"
 [node name="SkillsLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "Skills: Fish Lv1 | Mine Lv1"
