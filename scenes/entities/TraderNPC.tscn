@@ -7,11 +7,10 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_interact"]
 radius = 48.0
 
+; Cart is a sibling prop sprite, not a separate node, so it moves with the
+; Trader if a schedule is added. Ready for engine-lane to wire the evening
+; farm-visit trigger (issue #161).
 [node name="TraderNPC" type="CharacterBody2D" groups=["villager_npc"]]
-## Visual scaffold — script-less content beyond the shared VillagerNPC.gd
-## behavior all other generic NPCs use. Cart is a sibling prop sprite, not
-## a separate node, so it moves with the Trader if a schedule is added.
-## Ready for engine-lane to wire the evening farm-visit trigger (issue #161).
 script = ExtResource("9_vnpc")
 npc_id = "trader"
 display_name = "Trader"
