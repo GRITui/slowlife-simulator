@@ -31,6 +31,10 @@ func _load_recipes() -> void:
 
 ## TASK-055: every recipe craftable right now (first-match callers use
 ## get_craftable; ordering follows recipes.json content curation).
+## TASK-363: one extra filter — if a recipe is listed in any NPC's
+## RECIPE_UNLOCKS_BY_NPC entry (a "gated" recipe) but isn't yet in
+## GameData.recipe_unlocks, skip it. Recipes that don't appear in
+## RECIPE_UNLOCKS_BY_NPC at all are completely unaffected.
 func get_all_craftable() -> Array:
 	var out: Array = []
 	var season: String = String(GameData.current_season)
@@ -38,6 +42,15 @@ func get_all_craftable() -> Array:
 		if String(r.get("season", "")) != "" and String(r.get("season")) != season:
 			continue
 		if String(r.get("requires_infrastructure", "")) != "" and not GameData.is_repaired(String(r["requires_infrastructure"])):
+			continue
+		# TASK-363: gate by villager-friendship unlock. Gated recipes
+		# are listed in GameData.RECIPE_UNLOCKS_BY_NPC under some
+		# npc_id; non-gated recipes (e.g. rice_flour, khai_jiao,
+		# khao_soi, etc.) are always-craftable regardless of
+		# relationship, matching the spec's "early cooking isn't
+		# gated behind relationships" requirement.
+		var rid: String = String(r.get("id", ""))
+		if rid != "" and GameData.is_recipe_gated(rid) and not GameData.recipe_unlocks.get(rid, false):
 			continue
 		var ok: bool = true
 		var inputs: Dictionary = r.get("inputs", {}) as Dictionary
@@ -50,12 +63,16 @@ func get_all_craftable() -> Array:
 	return out
 
 ## First recipe craftable right now (season + infrastructure + inventory).
+## TASK-363: same gating filter as get_all_craftable() — see above.
 func get_craftable() -> Dictionary:
 	var season: String = String(GameData.current_season)
 	for r: Dictionary in _recipes:
 		if String(r.get("season", "")) != "" and String(r.get("season")) != season:
 			continue
 		if String(r.get("requires_infrastructure", "")) != "" and not GameData.is_repaired(String(r["requires_infrastructure"])):
+			continue
+		var rid: String = String(r.get("id", ""))
+		if rid != "" and GameData.is_recipe_gated(rid) and not GameData.recipe_unlocks.get(rid, false):
 			continue
 		var ok: bool = true
 		var inputs: Dictionary = r.get("inputs", {}) as Dictionary

@@ -16,6 +16,11 @@ extends Node
 
 const SAVE_PATH: String = "user://savegame.json"
 const SAVE_VERSION: int = 7
+# TASK-363: recipe_unlocks is the latest additive-Dict-of-bool field
+# saved on top of v7. Saved but not gated by a SAVE_VERSION bump —
+# see the per-line save/load comments in save_game() and load_game()
+# below for the rationale (additive, defaults to {} which is
+# bit-identical to a fresh start).
 
 # Dynamic autoload helpers — safe in main scene, --script, and packaged export.
 func _gd() -> Node:
@@ -104,6 +109,14 @@ func save_game() -> bool:
 		# (v6's scene_path lives at the top of the data dict alongside
 		# player_pos; see load_game() and the v5->v6 migration block below.)
 		"fish_almanac": gd.fish_almanac,
+		# TASK-363: per-recipe unlock state (recipe_id -> true once
+		# unlocked by a villager friendship level crossing). Same
+		# primitives-only Dict-of-bool shape as milestones_earned and
+		# fish_almanac. Additive field, NO SAVE_VERSION bump: the
+		# initializer is `{}` and an absent key already means "nothing
+		# unlocked yet", which is bit-identical to a fresh start —
+		# matching the spec's backward-compat contract.
+		"recipe_unlocks": gd.recipe_unlocks,
 		# TASK-360: per-slot decor style choice (slot -> style). Additive
 		# field, no SAVE_VERSION bump: an absent key is the exact default
 		# GameData.decor_choices starts at ({}), and decor_choice() already
@@ -243,9 +256,15 @@ func migrate(data: Dictionary) -> Dictionary:
 	# so default to {} for any save from before this task: a player who
 	# never had a fish_almanac starts with an empty one, fully
 	# backward-compatible, no behavior change for existing saves.
+	# TASK-363: recipe_unlocks is a NEW additive-Dict-of-bool field saved
+	# on top of v7 with NO SAVE_VERSION bump — also default to {} for
+	# any save from before this task: a player who never had any recipe
+	# unlocks starts with an empty one, fully backward-compatible.
 	if version < 7:
 		if not out.has("fish_almanac"):
 			out["fish_almanac"] = {}
+		if not out.has("recipe_unlocks"):
+			out["recipe_unlocks"] = {}
 		out["version"] = 7
 	return out
 
@@ -316,6 +335,13 @@ func load_game() -> bool:
 		# for any save from before v7 (the v6->v7 migration block supplies
 		# that exact default).
 		gd.fish_almanac = (data.get("fish_almanac", {}) as Dictionary).duplicate(true)
+		# TASK-363: per-recipe unlock state. Default {} matches
+		# GameData.recipe_unlocks' initializer exactly, so the
+		# absence-on-old-saves case is the same as "never unlocked
+		# anything" — no behaviour change for saves that predate
+		# this task. (No SAVE_VERSION bump: additive-safe per
+		# task spec.)
+		gd.recipe_unlocks = (data.get("recipe_unlocks", {}) as Dictionary).duplicate(true)
 		# TASK-357: restore the actual scene + position the save was made in,
 		# instead of leaving the player wherever they currently are (which,
 		# before this fix, was always whatever the main scene's own default

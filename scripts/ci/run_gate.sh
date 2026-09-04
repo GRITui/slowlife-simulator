@@ -102,6 +102,17 @@ run_carpenter_upgrade() {
 	godot --headless --path . --script res://tests/test_carpenter_upgrade.gd
 }
 
+run_recipe_unlocks() {
+	# TASK-363 recipe discovery via villager friendship. Covers
+	# GameData.unlock_recipe()/is_recipe_gated() idempotency,
+	# CookingStation.get_all_craftable()'s new gating filter, and the
+	# add_affinity() level-crossing unlock hook. The save/load round-trip
+	# for recipe_unlocks itself lives in tests/test_save_compat.gd
+	# alongside the other milestones_earned-style entries.
+	echo "== recipe-unlocks gate: tests/test_recipe_unlocks.gd =="
+	godot --headless --path . --script res://tests/test_recipe_unlocks.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -116,6 +127,7 @@ case "$GATE" in
 	transition_fade) run_transition_fade ;;
 	fish_almanac) run_fish_almanac ;;
 	carpenter_upgrade) run_carpenter_upgrade ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|all)" >&2; exit 2 ;;
+	recipe_unlocks) run_recipe_unlocks ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|all)" >&2; exit 2 ;;
 esac
