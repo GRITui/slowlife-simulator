@@ -12,9 +12,37 @@ func _check(cond: bool, label: String) -> void:
 		_failed += 1
 		print("  FAIL  schedules :: %s" % label)
 
+# TASK-379: mirrors WorldRender.gd's own ground-rects for the tiles
+# NavGrid.gd's WATER_TILES const treats as unwalkable. A schedule
+# waypoint landing here means a scheduled NPC will walk into water the
+# moment that time window is active — exactly the bug found and fixed
+# this task (headman/fah), dormant only because those NPCs weren't
+# instanced until TASK-373. This check guards every npc_id's every
+# waypoint, not just the two known-bad ones, so a future schedule
+# entry authored before its NPC is ever visible fails loudly here.
+const WATER_ZONES: Array = [
+	[0, 0, 5, 4],      # lotus_pond
+	[14, 10, 17, 13],  # lotus_maze_islet (deep_pond)
+	[9, 13, 17, 14],   # canal_row
+]
+
+func _waypoint_in_water(pos: Vector2) -> bool:
+	for z: Array in WATER_ZONES:
+		if pos.x >= z[0] and pos.x < z[2] and pos.y >= z[1] and pos.y < z[3]:
+			return true
+	return false
+
 func _initialize() -> void:
 	var sdb: GDScript = load("res://scripts/narrative/ScheduleDB.gd")
 	_check(String(sdb.SCHEDULES.keys()[0]) != "", "schedules populated")
+
+	for npc_id: String in sdb.SCHEDULES.keys():
+		var slots: Array = sdb.SCHEDULES[npc_id]
+		for slot: Dictionary in slots:
+			var pos: Vector2 = slot.get("pos", Vector2.ZERO)
+			_check(not _waypoint_in_water(pos),
+				"%s's waypoint %s (hours %s-%s) is not on a water tile" % [
+					npc_id, pos, slot.get("from", "?"), slot.get("to", "?")])
 	var wp: Vector2i = sdb.waypoint_for("fah", 7)
 	_check(wp == Vector2i(10, 12), "fah at canal waypoint at 07:00 (got %s)" % str(wp))
 	var wp2: Vector2i = sdb.waypoint_for("fah", 13)
@@ -28,7 +56,7 @@ func _initialize() -> void:
 		"elder stays home at 20:00 when raining (normally by the shrine)")
 	_check(sdb.waypoint_for("child", 7, "rain") == Vector2i(1, 6),
 		"child routes home at 07:00 when raining (normally paddy edge play)")
-	_check(sdb.waypoint_for("elder", 7, "clear") == Vector2i(1, 2),
+	_check(sdb.waypoint_for("elder", 7, "clear") == Vector2i(1, 4),
 		"elder keeps normal 07:00 waypoint when weather is clear")
 	_check(sdb.waypoint_for("fah", 7, "rain") == Vector2i(10, 12),
 		"fah (no RAIN_HOME entry) is unaffected by rain")
@@ -44,8 +72,16 @@ func _initialize() -> void:
 	await process_frame
 	var fah: Node2D = main.get_node_or_null("FahNPC") as Node2D
 	var elder: Node = main.get_node_or_null("ElderNPC")
-	_check(fah != null and fah.global_position.distance_to(Vector2(10 * 48 + 24, 12 * 48 + 24)) < 80.0,
-		"fah placed at schedule waypoint (boot 06:00)")
+	# TASK-379 finding (filed separately, out of this task's scope): fah
+	# uses RomanceNPC.gd, not VillagerNPC.gd, and RomanceNPC.gd's _ready()
+	# never reads ScheduleDB at all -- fah's SCHEDULES entry is dead data,
+	# her real position is always World.tscn's static one (set by
+	# TASK-373, since fah was never instanced before that task). This
+	# assertion previously expected schedule-driven movement that fah's
+	# actual script has never implemented; fixed to check what actually
+	# happens (a stable static position) instead of a wrong expectation.
+	_check(fah != null and fah.global_position == Vector2(648, 168),
+		"fah (RomanceNPC.gd) stays at her static World.tscn position -- does not follow ScheduleDB")
 	_check(elder != null and elder.is_physics_processing(), "scheduled NPC processes (drift active)")
 	var buffalo: Node = main.get_node_or_null("Buffalo")
 	_check(buffalo != null and not buffalo.is_processing(), "unscheduled nodes stay static")

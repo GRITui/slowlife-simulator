@@ -12,19 +12,31 @@ extends RefCounted
 
 const SCHEDULES: Dictionary = {
 	"elder": [
-		{"from": 5, "to": 11, "pos": Vector2(1, 2)},   # temple lane at dawn
+		# TASK-379: (1,2) and (1,3) both landed inside the lotus_pond water
+		# zone (0,0)-(5,4) -- found by this task's own regression test
+		# while fixing headman/fah's identical bug. Moved to (1,4)/(2,4),
+		# just outside the pond's y<4 boundary, staying in the same
+		# home-adjacent corner the original comments describe.
+		{"from": 5, "to": 11, "pos": Vector2(1, 4)},   # temple lane at dawn
 		{"from": 11, "to": 17, "pos": Vector2(1, 5)},  # home courtyard
-		{"from": 17, "to": 24, "pos": Vector2(1, 3)},  # evening by the shrine
+		{"from": 17, "to": 24, "pos": Vector2(2, 4)},  # evening by the shrine
 	],
 	"child": [
-		{"from": 6, "to": 12, "pos": Vector2(4, 3)},   # paddy edge play
-		{"from": 12, "to": 18, "pos": Vector2(2, 1)},  # lotus pond
+		# TASK-379: (4,3) was one row short of paddy_core's own y>=4
+		# boundary; (2,1) was inside the lotus_pond water zone. Moved to
+		# (4,4) (the paddy edge the comment actually describes) and (5,1)
+		# (the pond's walkable x>=5 edge, same fix shape as fah's).
+		{"from": 6, "to": 12, "pos": Vector2(4, 4)},   # paddy edge play
+		{"from": 12, "to": 18, "pos": Vector2(5, 1)},  # lotus pond
 		{"from": 18, "to": 24, "pos": Vector2(1, 6)},  # home
 	],
 	"handler": [
-		{"from": 5, "to": 12, "pos": Vector2(11, 13)}, # canal check
+		# TASK-379: (11,13) is inside canal_row's water zone (9,13)-(17,14)
+		# -- moved to (11,12), the canal's own north bank, preserving the
+		# "checking the canal" intent without standing in it.
+		{"from": 5, "to": 12, "pos": Vector2(11, 12)}, # canal check
 		{"from": 12, "to": 18, "pos": Vector2(3, 14)}, # pasture
-		{"from": 18, "to": 24, "pos": Vector2(11, 13)},
+		{"from": 18, "to": 24, "pos": Vector2(11, 12)},
 	],
 	"ek": [
 		{"from": 6, "to": 12, "pos": Vector2(13, 5)},  # paddy rivalry
