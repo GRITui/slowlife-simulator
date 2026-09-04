@@ -93,12 +93,17 @@ func _refresh_buy_list() -> void:
 		var product_label: Label = Label.new()
 		product_label.text = item_id.replace("_", " ")
 		product_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		product_label.add_theme_color_override("font_color", Color(0.42745098, 0.14509805, 0.16862746, 1))
 		var price_label: Label = Label.new()
 		price_label.text = "%d silver" % price
 		price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		price_label.add_theme_color_override("font_color", Color(0.42745098, 0.14509805, 0.16862746, 1))
 		var buy_btn: Button = Button.new()
 		buy_btn.text = "Buy"
-		buy_btn.custom_minimum_size = Vector2(60, 44)
+		# Same footprint as BarterButton/SellButton (88x44) -- was 60x44,
+		# the odd one out among this dialog's three CTA buttons, which
+		# made the row of per-item Buy buttons look uneven against them.
+		buy_btn.custom_minimum_size = Vector2(88, 44)
 		buy_btn.disabled = GameData.silver < price
 		buy_btn.pressed.connect(_on_buy_pressed.bind(item_id, price))
 		_buy_list.add_child(product_label)
