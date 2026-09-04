@@ -313,6 +313,15 @@ func update_prompt_for_proximity(has_target: bool, action: String = "Press [E] t
 # For manual testing
 func set_mobile(v: bool) -> void:
 	is_mobile = v
+# TASK-378: open completion tracker screen (perfection % / checklist)
+func open_completion_tracker() -> void:
+    # Instantiate the CompletionTracker scene and add as child
+    var tracker_scene: PackedScene = load("res://scenes/ui/CompletionTracker.tscn")
+    if tracker_scene:
+        var tracker: Node = tracker_scene.instantiate()
+        add_child(tracker)
+        var completion_tracker: CanvasLayer = tracker as CanvasLayer
+        completion_tracker.open()
 
 # TASK-018 Inventory UI — display GameData.inventory
 func refresh_inventory() -> void:

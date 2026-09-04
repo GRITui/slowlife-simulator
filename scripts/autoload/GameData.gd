@@ -185,6 +185,68 @@ func record_catch(species_id: String, size: String) -> bool:
 #   sickle: harvest yield +1 per tier above 1.
 var tool_tiers: Dictionary = {"watering_can": 1, "hoe": 1, "sickle": 1}
 
+# TASK-378: unified completion tracker (perfection % / checklist screen).
+# Purely computed-on-demand aggregation of existing data sources — no new
+# persisted schema fields (matches project's default-on-add discipline).
+# Simple even-weighted formula: categories completed / categories total.
+# Categories: 1) milestones_earned (5 known), 2) fish_almanac (any catches),
+# 3) recipe_unlocks (any unlocked), 4) decor_choices (any choices),
+# 5) romance completion (spouse non-empty), 6) romance candidates roster
+# completion (romanced how many of 6 candidates). Total = 6 categories.
+
+static func completion_percentage() -> float:
+	# Static method needs to read from GameData through engine main loop like SaveManager
+	var main: Node = Engine.get_main_loop().root.get_node("GameData") as GameData
+	if not main:
+		return 0.0
+	
+	# 1) milestones_earned (5 known: deep_miner, master_angler, inseparable, herd_keeper, storm_catch)
+	var milestones_done: int = 0
+	for id in ["deep_miner", "master_angler", "inseparable", "herd_keeper", "storm_catch"]:
+		if main.milestones_earned.get(id, false):
+			milestones_done += 1
+	
+	# 2) fish_almanac (any catches at all)
+	var fish_almanac_done: bool = false
+	for key in main.fish_almanac.keys():
+		fish_almanac_done = true
+		break
+	
+	# 3) recipe_unlocks (any unlocked)
+	var recipe_unlocks_done: bool = false
+	for _ in main.recipe_unlocks.keys():
+		recipe_unlocks_done = true
+		break
+	
+	# 4) decor_choices (any choices)
+	var decor_choices_done: bool = false
+	for _ in main.decor_choices.keys():
+		decor_choices_done = true
+		break
+	
+	# 5) romance completion (spouse non-empty)
+	var romance_spouse_done: bool = main.spouse != ""
+	
+	# 6) romance candidates roster completion (romanced how many of 6 candidates)
+	# The 6 romance candidates are: ek, fah, ploy, klong, chang, yaa (from NEW_NPCS)
+	var romance_candidates: Array[String] = ["ek", "fah", "ploy", "klong", "chang", "yaa"]
+	var romance_candidates_done: int = 0
+	for candidate in romance_candidates:
+		if main.affinity.has(candidate) and GameData.level_for(int(main.affinity[candidate])) >= 5:
+			# Level 5+ means romantic tier reached (25+ affinity). This is a proxy for being "romanced".
+			romance_candidates_done += 1
+
+	var completed_categories: int = 0
+	if milestones_done == 5: completed_categories += 1
+	if fish_almanac_done: completed_categories += 1
+	if recipe_unlocks_done: completed_categories += 1
+	if decor_choices_done: completed_categories += 1
+	if romance_spouse_done: completed_categories += 1
+	if romance_candidates_done >= 1: completed_categories += 1  # At least one candidate romanced
+	
+	var percentage: float = float(completed_categories) / 6.0
+	return percentage * 100.0
+
 func tool_tier(tool_id: String) -> int:
 	return int(tool_tiers.get(tool_id, 1))
 

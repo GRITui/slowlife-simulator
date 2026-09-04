@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://completiontracker000001"]
+
+[ext_resource type="Script" path="res://scripts/ui/CompletionTracker.gd" id="1_completiontracker"]
+
+[node name="CompletionTracker" type="CanvasLayer"]
+layer = 20
+visible = false
+script = ExtResource("1_completiontracker")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -110.0
+offset_right = 180.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -12.0
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Perfection Tracker"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 20
+
+[node name="PercentageLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "0% Complete"
+theme_override_font_sizes/font_size = 28
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ChecklistGrid" type="GridContainer" parent="Panel/VBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 1
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+
+[node name="CloseButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+text = "Close"
