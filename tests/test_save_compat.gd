@@ -61,6 +61,14 @@ func _initialize() -> void:
 	# TASK-358: v6->v7 default-adds the fish_almanac first-catch log.
 	_check((m.get("fish_almanac", {"x": 1}) as Dictionary).is_empty(),
 		"v1->v7 default-adds fish_almanac={}")
+	# TASK-363: recipe_unlocks is a NEW additive-Dict-of-bool field saved
+	# on top of v7 with NO SAVE_VERSION bump — its initializer {} is
+	# bit-identical to "never unlocked anything", so an absent key on
+	# an old save is the same as a fresh start. (Confirms the
+	# additive-safety claim, separately from the load_game() default
+	# in load_game().)
+	_check((m.get("recipe_unlocks", {"x": 1}) as Dictionary).is_empty(),
+		"v1->v7 default-adds recipe_unlocks={}")
 
 	# --- migrate(): v1 without new v2 fields gets default-added ---
 	var v1_no_krathong: Dictionary = {
@@ -135,6 +143,13 @@ func _initialize() -> void:
 		"v6->v7 default-adds fish_almanac={}")
 	_check(String(m6.get("scene_path", "")) == "res://scenes/interiors/FarmHouse.tscn",
 		"v6 scene_path preserved across the v6->v7 bump")
+	# TASK-363: recipe_unlocks is additive on top of v7 with NO
+	# SAVE_VERSION bump — the same v6 payload above must already
+	# default to an empty recipe_unlocks (the absence-is-fresh-start
+	# contract). If this fails, the additive-safety claim in the
+	# SaveManager.gd comment has drifted.
+	_check((m6.get("recipe_unlocks", {"x": 1}) as Dictionary).is_empty(),
+		"v6->v7 default-adds recipe_unlocks={} (TASK-363 additive)")
 
 	# --- round-trip via real file IO (user://) ---
 	var gd0: Node = root.get_node("GameData")
@@ -171,6 +186,11 @@ func _initialize() -> void:
 	# must restore both pairs (mirrors the milestones_earned row above).
 	gd0.fish_almanac["pla_nin|small"] = true
 	gd0.fish_almanac["pla_duk|big"] = true
+	# TASK-363: seed recipe_unlocks with two recipe ids (one Ploy
+	# teaches, one Fah teaches). Round-trip must restore both,
+	# mirroring the fish_almanac / milestones_earned row above.
+	gd0.recipe_unlocks["mango_sticky_rice"] = true
+	gd0.recipe_unlocks["lotus_soup"] = true
 	var saved: bool = sm.save_game()
 	_check(saved, "save_game() writes user://savegame.json")
 	# Mutate state to defaults, then load must restore every field above.
@@ -200,6 +220,8 @@ func _initialize() -> void:
 	gd0.rival_confessed.clear()
 	# TASK-358: wipe fish_almanac too so the round-trip must restore it.
 	gd0.fish_almanac.clear()
+	# TASK-363: wipe recipe_unlocks too so the round-trip must restore it.
+	gd0.recipe_unlocks.clear()
 	var loaded: bool = sm.load_game()
 	_check(loaded, "load_game() reads saved file back")
 	var gd: Node = root.get_node("GameData")
@@ -233,6 +255,16 @@ func _initialize() -> void:
 		"round-trip restores fish_almanac[pla_nin|small]")
 	_check(bool(gd.fish_almanac.get("pla_duk|big", false)),
 		"round-trip restores fish_almanac[pla_duk|big]")
+	# TASK-363: recipe_unlocks round-trip — both seeded ids must come back,
+	# mirroring the fish_almanac / milestones_earned row above. Without
+	# this row, the save+seed+wipe+load above would silently drop the
+	# dict and the gate would still be green.
+	_check(gd.recipe_unlocks.size() == 2,
+		"round-trip restores recipe_unlocks (size=2)")
+	_check(bool(gd.recipe_unlocks.get("mango_sticky_rice", false)),
+		"round-trip restores recipe_unlocks[mango_sticky_rice]")
+	_check(bool(gd.recipe_unlocks.get("lotus_soup", false)),
+		"round-trip restores recipe_unlocks[lotus_soup]")
 
 	# --- saved file carries the version tag ---
 	var f: FileAccess = FileAccess.open("user://savegame.json", FileAccess.READ)

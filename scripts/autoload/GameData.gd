@@ -289,6 +289,143 @@ func owned_decor_styles(slot: String) -> Array[String]:
 # jealousy systems (explicitly out of scope per PO_INBOX r6).
 var affinity: Dictionary = {}
 const AFFINITY_CAP: int = 100
+
+# TASK-363: recipe discovery via villager friendship (gift-based unlocks).
+# Idempotent set: recipe_id -> true once unlocked. Empty by default, so
+# a fresh game / a save from before this task has no unlocks — which
+# is the exact same state as "every gated recipe is still locked", so
+# no migration is required (mirrors the milestones_earned /
+# fish_almanac / decor_choices additive-Dict discipline).
+# CookingStation filters RECIPE_UNLOCKS_BY_NPC's nested recipe keys
+# against this dict to decide which recipes are craftable.
+var recipe_unlocks: Dictionary = {}
+
+# Curated mapping: which NPC teaches which recipe at which friendship
+# level (0-10 scale via level_for()). Every triple is cross-referenced
+# against scripts/narrative/DialogueDB.gd's GIFT_PREFERENCES so each
+# NPC's "teach me X" matches a recipe they actually love/like, instead
+# of being arbitrary. Required levels stay in the reachable early-mid
+# range (2-4) — these are milestone-of-care unlocks, not end-game
+# rewards. Simple staple / ingredient-prep recipes (rice_flour,
+# sticky_rice_flour, coconut_milk, palm_sugar, tofu, khai_jiao, etc.)
+# are deliberately NOT in this table, so they stay always-craftable
+# exactly as today and early cooking is never gated behind a
+# relationship.
+#
+#  ploy    -> mango_sticky_rice  (lvl 3) — she loves it; hot-season
+#                                      festival dessert, mango season.
+#  ploy    -> banana_rice_cake   (lvl 4) — she also loves it; her
+#                                      second dessert, slightly higher
+#                                      investment than the mango one.
+#  fah     -> lotus_soup         (lvl 3) — she loves it AND lotus_root;
+#                                      monsoon, ties into the Lotus
+#                                      Maze gathering loop.
+#  elder   -> kluay_buat_chi     (lvl 3) — he likes banana; a gentle
+#                                      banana-in-coconut-milk dessert
+#                                      that fits his sweet tooth (no
+#                                      direct loved match, but the
+#                                      elder's only dessert is the
+#                                      rice_cake and ploy already
+#                                      teaches that one).
+#  klong   -> pandan_sticky_rice (lvl 3) — he loves it; monsoon
+#                                      seasonal that requires
+#                                      sluice_gate.
+#  child   -> durian_sticky_rice (lvl 3) — child loves durian; the
+#                                      festival-tier durian dessert,
+#                                      hot season.
+#  nok     -> khao_tan           (lvl 3) — nok loves sticky_rice;
+#                                      market-stall sesame rice
+#                                      crackers, any season.
+#  handler -> tom_yum            (lvl 3) — handler loves it; the
+#                                      village's sour-spicy soup, any
+#                                      season.
+const RECIPE_UNLOCKS_BY_NPC: Dictionary = {
+	"ploy":    {"mango_sticky_rice": 3, "banana_rice_cake": 4},
+	"fah":     {"lotus_soup": 3},
+	"elder":   {"kluay_buat_chi": 3},
+	"klong":   {"pandan_sticky_rice": 3},
+	"child":   {"durian_sticky_rice": 3},
+	"nok":     {"khao_tan": 3},
+	"handler": {"tom_yum": 3},
+}
+
+## Idempotent. Returns true only the first time recipe_id is unlocked;
+## returns false on every later call for the same id, with no further
+## mutation. Mirrors earn_milestone()'s shape so the unlock state
+## survives the same save/load round-trip treatment, but with NO
+## harmony side effect — the unlock IS the reward; the caller decides
+## what dialogue/feedback to fire from the true return.
+func unlock_recipe(recipe_id: String) -> bool:
+	if recipe_unlocks.get(recipe_id, false):
+		return false
+	recipe_unlocks[recipe_id] = true
+	return true
+
+# Is recipe_id gated at all (i.e. is it listed as a teachable recipe
+# for any NPC in RECIPE_UNLOCKS_BY_NPC)? Recipes that aren't gated are
+# always-craftable; recipes that are gated are craftable iff
+# recipe_unlocks[recipe_id] is true. Mirrors the shape CookingStation's
+# filter needs to do its single-line check.
+func is_recipe_gated(recipe_id: String) -> bool:
+	for npc_id: String in RECIPE_UNLOCKS_BY_NPC.keys():
+		if (RECIPE_UNLOCKS_BY_NPC[npc_id] as Dictionary).has(recipe_id):
+			return true
+	return false
+
+# Cached recipe_id -> display_name lookup, lazily loaded from
+# data/recipes/recipes.json on first use. Same path CookingStation.gd
+# already uses for its _recipes array, so we don't duplicate a full
+# JSON parse just to get a friendly name for one show_dialogue line.
+static var _recipe_display_name_cache: Dictionary = {}
+
+func _recipe_display_name(recipe_id: String) -> String:
+	# Returns the human-readable name from recipes.json for use in the
+	# "New recipe unlocked: <name>!" dialogue. Falls back to the raw
+	# id if the JSON is missing the entry (defensive: the catalogue
+	# is the source of truth, the JSON is the display layer).
+	if _recipe_display_name_cache.has(recipe_id):
+		return String(_recipe_display_name_cache[recipe_id])
+	var f: FileAccess = FileAccess.open(
+		"res://data/recipes/recipes.json", FileAccess.READ)
+	if f == null:
+		_recipe_display_name_cache[recipe_id] = recipe_id
+		return recipe_id
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	if parsed is Dictionary and (parsed as Dictionary).has("recipes"):
+		for r in (parsed as Dictionary)["recipes"]:
+			if r is Dictionary and String((r as Dictionary).get("id", "")) == recipe_id:
+				var name_str: String = String((r as Dictionary).get("display_name", recipe_id))
+				_recipe_display_name_cache[recipe_id] = name_str
+				return name_str
+	_recipe_display_name_cache[recipe_id] = recipe_id
+	return recipe_id
+
+# Internal helper: called by add_affinity() after a successful mutation.
+# For the given npc_id, fires at most ONE unlock per call: the first
+# recipe in RECIPE_UNLOCKS_BY_NPC[npc_id] whose required_level is now
+# met (post-mutation level >= required_level) but WASN'T met before
+# (pre_level < required_level), and that isn't already unlocked. On a
+# successful unlock, emits the standard "New recipe unlocked: <name>!"
+# System dialogue so the player has a one-line feedback hook without
+# needing a new UI screen.
+#
+# One-recipe-per-call is deliberate: a single +N gift can cross
+# multiple thresholds, but stacking N unlock toasts in one frame
+# would be noisy. The next add_affinity() (next gift/talk) will pick
+# up the next one naturally.
+func _check_recipe_unlocks(npc_id: String, pre_level: int) -> void:
+	if not RECIPE_UNLOCKS_BY_NPC.has(npc_id):
+		return
+	var npc_recipes: Dictionary = RECIPE_UNLOCKS_BY_NPC[npc_id] as Dictionary
+	var post_level: int = level_for(int(affinity.get(npc_id, 0)))
+	for recipe_id: String in npc_recipes.keys():
+		var required: int = int(npc_recipes[recipe_id])
+		if pre_level < required and post_level >= required:
+			if unlock_recipe(recipe_id):
+				SignalBus.show_dialogue.emit("System",
+					"New recipe unlocked: %s!" % _recipe_display_name(recipe_id))
+				return
+
 ## v1 gift rule: any of these held items is gift-able (no per-NPC table yet).
 const FOOD_ITEMS: Array[String] = [
 	"rice_grain", "sticky_rice", "mango", "durian", "banana", "egg",
@@ -514,7 +651,15 @@ func is_quest_complete(quest_id: String) -> bool:
 	return total > 0 and (q.get("objectives_done", []) as Array).size() >= total
 
 func add_affinity(npc_id: String, amount: int) -> void:
+	# TASK-363: capture the pre-mutation level so the unlock check fires
+	# ONLY on the exact add_affinity() call that crosses a recipe's
+	# required_level (i.e. we just became high enough, not the many calls
+	# that follow while staying high enough). Without this snapshot, a
+	# single +5 gift on a level-3 NPC would re-fire the unlock on every
+	# subsequent add_affinity() while they sit at level 3.
+	var pre_level: int = level_for(int(affinity.get(npc_id, 0)))
 	affinity[npc_id] = clampi(int(affinity.get(npc_id, 0)) + amount, 0, AFFINITY_CAP)
+	_check_recipe_unlocks(npc_id, pre_level)
 
 func get_affinity(npc_id: String) -> int:
 	return int(affinity.get(npc_id, 0))
