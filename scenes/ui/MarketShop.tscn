@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://marketshop000327"]
+[gd_scene load_steps=3 format=3 uid="uid://marketshop000327"]
 
 [ext_resource type="Script" path="res://scenes/ui/MarketShop.gd" id="1_marketshop"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_marketpanel"]
+; Matches HUD.tscn's StatPanel style (warm cream / brown border) for visual
+; consistency, but pushed to near-opaque (0.98 vs the HUD's 0.9) -- this
+; panel sits directly over gameplay content behind it and needs to stay
+; readable, unlike the HUD overlay which is meant to feel lighter-weight.
+bg_color = Color(0.9490196, 0.9019608, 0.76862746, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.41568628, 0.28627452, 0.18823529, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="MarketShop" type="CanvasLayer"]
 layer = 20
@@ -19,6 +35,7 @@ offset_right = 260.0
 offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_marketpanel")
 
 [node name="VBox" type="VBoxContainer" parent="Panel"]
 anchors_preset = 15
@@ -72,10 +89,12 @@ custom_minimum_size = Vector2(0, 220)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BuyList" type="VBoxContainer" parent="Panel/VBox/BuyScroll"]
+[node name="BuyList" type="GridContainer" parent="Panel/VBox/BuyScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 4
+columns = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 6
 
 [node name="CloseButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0, 44)

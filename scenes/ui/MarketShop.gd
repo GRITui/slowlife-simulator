@@ -11,7 +11,7 @@ const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.g
 @onready var _barter_button: Button = $Panel/VBox/BarterRow/BarterButton
 @onready var _sell_label: Label = $Panel/VBox/SellRow/SellLabel
 @onready var _sell_button: Button = $Panel/VBox/SellRow/SellButton
-@onready var _buy_list: VBoxContainer = $Panel/VBox/BuyScroll/BuyList
+@onready var _buy_list: GridContainer = $Panel/VBox/BuyScroll/BuyList
 @onready var _close_button: Button = $Panel/VBox/CloseButton
 
 var _market: Node = null
@@ -86,18 +86,24 @@ func _refresh_buy_list() -> void:
 		var price: int = int(offer.get("price", 0))
 		if item_id.is_empty() or price <= 0:
 			continue
-		var row: HBoxContainer = HBoxContainer.new()
-		var label: Label = Label.new()
-		label.text = "%s — %d silver" % [item_id.replace("_", " "), price]
-		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# 3 real GridContainer columns (product / price / CTA) so values line
+		# up vertically across rows, instead of one concatenated label per
+		# row -- a single "item — N silver" string left prices ragged and
+		# harder to scan at a glance.
+		var product_label: Label = Label.new()
+		product_label.text = item_id.replace("_", " ")
+		product_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var price_label: Label = Label.new()
+		price_label.text = "%d silver" % price
+		price_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		var buy_btn: Button = Button.new()
 		buy_btn.text = "Buy"
 		buy_btn.custom_minimum_size = Vector2(60, 44)
 		buy_btn.disabled = GameData.silver < price
 		buy_btn.pressed.connect(_on_buy_pressed.bind(item_id, price))
-		row.add_child(label)
-		row.add_child(buy_btn)
-		_buy_list.add_child(row)
+		_buy_list.add_child(product_label)
+		_buy_list.add_child(price_label)
+		_buy_list.add_child(buy_btn)
 
 func _on_barter_pressed() -> void:
 	if _current_offer.is_empty():
