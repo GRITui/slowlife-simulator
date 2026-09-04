@@ -81,3 +81,9 @@ signal chicken_affinity_changed(affinity: int, hearts: int)
 signal companion_bond_changed(bond: int, tier: int)
 # TASK-317: emitted on tool upgrade (tool_id, new_tier) — HUD tier display.
 signal tool_upgraded(tool_id: String, new_tier: int)
+# TASK-360: emitted when a decor style is successfully applied to its slot
+# (via GameData.set_decor_choice). (slot, style) — currently only "shrine"
+# exists in the catalogue, but the signal carries the slot id so future
+# slots (bed, kitchen, etc.) don't need new signals. Consumed by
+# FarmHouse.gd to re-skin the relevant Sprite2D on style change.
+signal decor_style_changed(slot: String, style: String)

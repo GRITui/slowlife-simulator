@@ -207,6 +207,83 @@ func upgrade_tool(tool_id: String) -> bool:
 	SignalBus.tool_upgraded.emit(tool_id, tier + 1)
 	return true
 
+# TASK-360 farmhouse decor anchor-slots. Per-slot style choice, persisted
+# alongside the rest of the inventory-style Dictionaries (tool_tiers,
+# affinity, etc.). The absence of a key for a given slot means "use the
+# base / default style" — no migration needed for existing saves that
+# have nothing chosen yet (matches tool_tiers' default-initializer shape).
+#
+# Catalogue of all valid (slot, style) pairs the player can ever own. New
+# slots/styles MUST be added here in two places: the catalogue (this file),
+# and the MarketManager.BUY_OFFERS list (so it can actually be purchased).
+# Single source of truth: the market's BUY_OFFERS rows below must use the
+# same item_id strings declared in `purchased` here — otherwise purchase
+# succeeds but the style picker silently never unlocks.
+var decor_choices: Dictionary = {}
+
+# Each entry: slot -> { "default": "<style>", "styles": { style -> item_id } }
+# `item_id` is what the market sells and what the player must own (>=1 in
+# inventory) before the style is selectable; it is *not* consumed — picking
+# a style is free, only purchasing it is gated. The first style in the
+# `styles` map is also the fallback returned by decor_choice() when no
+# explicit choice has been stored yet.
+const DECOR_CATALOGUE: Dictionary = {
+	"shrine": {
+		"default": "basic",
+		"styles": {
+			"basic": "",
+			"ornate": "ornate_shrine_blueprint",
+		},
+	},
+}
+
+func _decor_default_style(slot: String) -> String:
+	# Internal helper — the catalogue's "default" key for a slot, or
+	# "basic" if the slot isn't catalogued at all (defensive: missing
+	# catalogue entry should not break the lookup path).
+	if not DECOR_CATALOGUE.has(slot):
+		return "basic"
+	return String((DECOR_CATALOGUE[slot] as Dictionary).get("default", "basic"))
+
+func decor_choice(slot: String) -> String:
+	# Returns the stored style for `slot`, or the catalogue's default
+	# style when unset. An unset key MUST NOT be persisted (we only
+	# write on explicit set_decor_choice calls) so a save/load round
+	# trip of an untouched slot continues to return the default —
+	# matching the spec's "absence means base/default style" contract.
+	return String(decor_choices.get(slot, _decor_default_style(slot)))
+
+func set_decor_choice(slot: String, style: String) -> bool:
+	# Validates the (slot, style) pair against DECOR_CATALOGUE and
+	# ownership before mutating. Returns true on accepted change,
+	# false on rejected (unknown slot, unknown style for the slot, or
+	# the style requires an item the player doesn't hold).
+	if not DECOR_CATALOGUE.has(slot):
+		return false
+	var styles: Dictionary = (DECOR_CATALOGUE[slot] as Dictionary).get("styles", {}) as Dictionary
+	if not styles.has(style):
+		return false
+	var required_item: String = String(styles[style])
+	if not required_item.is_empty() and not has_item(required_item, 1):
+		return false
+	decor_choices[slot] = style
+	return true
+
+## All (slot, style) pairs the player can currently select — a style is
+## "owned" when its required item is in inventory (the market blueprint is
+## never consumed, so picking a style is always free once purchased).
+## Used by the style picker interactable to drive its cycle list.
+func owned_decor_styles(slot: String) -> Array[String]:
+	var out: Array[String] = []
+	if not DECOR_CATALOGUE.has(slot):
+		return out
+	var styles: Dictionary = (DECOR_CATALOGUE[slot] as Dictionary).get("styles", {}) as Dictionary
+	for style_id: String in styles.keys():
+		var required: String = String(styles[style_id])
+		if required.is_empty() or has_item(required, 1):
+			out.append(style_id)
+	return out
+
 # TASK-051 affinity/dating MVP — npc_id -> 0..100. Tiers (25/60/90) map to
 # DialogueDB's stranger/friendly/close/romantic branches. No marriage/
 # jealousy systems (explicitly out of scope per PO_INBOX r6).

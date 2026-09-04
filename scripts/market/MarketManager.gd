@@ -38,6 +38,16 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "fish_sauce", "price": 18},
 		{"item": "shrimp_paste", "price": 20},
 		{"item": "axe", "price": 30},
+		# TASK-360: ornate_shrine_blueprint unlocks the "ornate" style for the
+		# FarmHouseShrine decor slot. item_id MUST match the string in
+		# GameData.DECOR_CATALOGUE exactly — any drift silently locks the
+		# blueprint out of every owned_decor_styles() check. Listed in all
+		# three seasons (the decor slot isn't season-gated, no reason to
+		# gate the purchase either). Price sits between the wood-cutting
+		# tools (axe=30, machete=45) and the heaviest decor so a player
+		# who's done a few carpenter upgrades can afford it without
+		# grinding a full season.
+		{"item": "ornate_shrine_blueprint", "price": 50},
 		{"item": "seed_cabbage", "price": 8},
 		{"item": "seed_garlic", "price": 8},
 		{"item": "seed_lettuce", "price": 8},
@@ -55,6 +65,7 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "fish_sauce", "price": 14},
 		{"item": "shrimp_paste", "price": 16},
 		{"item": "fishing_rod", "price": 40},
+		{"item": "ornate_shrine_blueprint", "price": 50},
 		{"item": "seed_banana", "price": 15},
 		{"item": "seed_chili", "price": 9},
 		{"item": "seed_durian", "price": 30},
@@ -74,6 +85,7 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 	"monsoon": [
 		{"item": "fish_sauce", "price": 12},
 		{"item": "shrimp_paste", "price": 14},
+		{"item": "ornate_shrine_blueprint", "price": 50},
 		{"item": "seed_ginger", "price": 10},
 		{"item": "seed_lotus", "price": 12},
 		{"item": "seed_taro", "price": 10},
