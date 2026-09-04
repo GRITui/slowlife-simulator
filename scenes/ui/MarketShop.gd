@@ -24,6 +24,37 @@ func _ready() -> void:
 	_barter_button.pressed.connect(_on_barter_pressed)
 	_sell_button.pressed.connect(_on_sell_pressed)
 	_close_button.pressed.connect(close)
+	_apply_safe_area()
+
+# iOS safe area (owner-flagged gap, 2026-09-04): this panel is centered
+# with a fixed size, unlike HUD.gd's apply_safe_area() which stretches an
+# edge-anchored MarginContainer -- so instead of resizing, nudge the
+# panel's position just enough to keep it fully inside the safe rect.
+# Same no-op-on-desktop/headless gate as HUD.gd (empty safe rect there).
+func _apply_safe_area() -> void:
+	if not (OS.has_feature("mobile") or get_viewport().get_visible_rect().size.x < 900):
+		return
+	var safe := DisplayServer.get_display_safe_area()
+	var win := DisplayServer.window_get_size()
+	if safe.size == Vector2i.ZERO or win == Vector2i.ZERO:
+		return
+	var panel: Control = $Panel
+	var rect := panel.get_global_rect()
+	var dx := 0.0
+	var dy := 0.0
+	if rect.position.x < safe.position.x:
+		dx = safe.position.x - rect.position.x
+	elif rect.position.x + rect.size.x > safe.position.x + safe.size.x:
+		dx = (safe.position.x + safe.size.x) - (rect.position.x + rect.size.x)
+	if rect.position.y < safe.position.y:
+		dy = safe.position.y - rect.position.y
+	elif rect.position.y + rect.size.y > safe.position.y + safe.size.y:
+		dy = (safe.position.y + safe.size.y) - (rect.position.y + rect.size.y)
+	if dx != 0.0 or dy != 0.0:
+		panel.offset_left += dx
+		panel.offset_right += dx
+		panel.offset_top += dy
+		panel.offset_bottom += dy
 
 func _exit_tree() -> void:
 	if SignalBus.market_shop == self:
