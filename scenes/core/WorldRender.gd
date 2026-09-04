@@ -78,6 +78,15 @@ const PROPS := [
 const FLAT_DECOR := [
 	{"tex": "res://assets/environment/bamboo_thicket.png", "cell": Vector2i(1, 12)},
 	{"tex": "res://assets/environment/bamboo_thicket.png", "cell": Vector2i(7, 15)},
+	# TASK-368: two more accents — one filling an open pasture gap (row
+	# 10-11, clear of the banana cluster at rows 12-13 and the dryearth
+	# patches), one softening the temple lane approach (row 4, clear of
+	# the temple facade's wall/cap tiles at rows 1-2). Flat decor only
+	# (not "prop" kind) — this repo's y-sort perf budget is tight (see
+	# tests/test_perf_budget.gd), and a standing "prop" entry here
+	# regressed it (60 > the 59-participant cap) on first attempt.
+	{"tex": "res://assets/environment/bamboo_thicket.png", "cell": Vector2i(8, 11)},
+	{"tex": "res://assets/environment/bamboo_thicket.png", "cell": Vector2i(16, 4)},
 ]
 
 const MAZE_ORIGIN: Vector2i = Vector2i(14, 10)
