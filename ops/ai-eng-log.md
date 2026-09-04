@@ -2239,3 +2239,72 @@ category from the role reassessment, discovered live.
 - **Stop reason**: goal met -- one integrated output (TASK-362)
   produced within the first iteration, well under the 5-iteration cap.
   No suspicious content encountered on the Gemini page.
+
+## 2026-09-04 — Run 35 (AI-ENG-001 gap-analysis loop: cooking progression vs. HM:BtN/Stardew)
+
+- **Trigger**: owner instruction to run another gap-analysis pass in
+  parallel with an in-progress live playthrough session, explicitly
+  asked to cover a different area than every prior gap-analysis run
+  (fishing depth, farmhouse decor, mining/ore utility).
+- **Topic selection**: read ops/backlog-inbox.md's completed entries +
+  docs/SHIP_PLAN.md + this log's full gap-analysis history first.
+  Noticed fishing_skill and mining_skill both exist as 1-4 tier
+  progression stats gating better results, but cooking (36 recipes,
+  the largest single content system numerically) has no skill stat at
+  all -- confirmed via scripts/interactables/CookingStation.gd and
+  scripts/resource_types/RecipeData.gd, drafted the dispatch question
+  on the premise this was a real asymmetry/gap.
+- **Worker**: Gemini (`claude-in-chrome`, Flash), role: QA/Balance +
+  Designer (genre-comparison basis this codebase has none of).
+- **Question asked**: described the fishing/mining skill-tier system
+  and cooking's flat zero-progression design, asked what HM:BtN and
+  Stardew Valley do for cooking progression specifically, whether a
+  cooking skill/mastery system is standard in the genre, and the
+  simplest additive gating mechanism if one doesn't need a skill stat.
+- **Answer summary**: Gemini stated plainly that NEITHER reference game
+  has an XP-based cooking skill -- this codebase's flat design already
+  matches genre convention on that specific axis. Both games instead
+  use recipe ACQUISITION (via TV channels, villager friendship/mail, or
+  other-skill-level rewards) as the primary cooking progression
+  mechanic, converting outputs from other skill loops rather than
+  running its own skill tree. Offered 4 lightweight gating ideas not
+  requiring a skill/minigame: infrastructure-tiered stations, social
+  recipe-unlock via relationships, ingredient-quality-based output
+  scaling, and pantry/storage slot limits. No suspicious/injected
+  content on the page.
+- **Verification correction (same discipline as Run 34, applied to my
+  OWN premise before drafting anything, not just Gemini's answer)**:
+  the original framing ("cooking needs a skill stat, it's missing one")
+  was flatly wrong per Gemini's answer -- building a cooking skill
+  would have ADDED an off-genre mechanic, not fixed a real gap. Checked
+  each of Gemini's 4 suggested alternatives against actual code before
+  deciding what to do with any of them: infrastructure gating is
+  already shipped (`requires_infrastructure` check, confirmed in
+  CookingStation.gd); an ingredient-quality concept does not exist
+  anywhere in scripts/ (confirmed via repo-wide grep), so quality-based
+  scaling would mean inventing a whole new system, not a small
+  addition; pantry/storage limits would add player-facing friction,
+  risking conflict with this project's established no-fail-state
+  design philosophy (same tension already resolved once for affinity
+  decay). The one real, verified, still-open gap: recipe
+  ACQUISITION/discovery does not exist at all in this codebase -- every
+  one of the 36 recipes is known from game start (explicitly documented
+  in CookingStation.gd since TASK-055: "every recipe craftable right
+  now"), unlike both reference games where recipe-unlocking IS the
+  primary progression axis.
+- **Integration**: filed as **TASK-363** (`status: NEEDS_OWNER_REVIEW`)
+  -- whether to add a recipe-discovery/unlock layer (e.g. tied to NPC
+  affinity milestones, mirroring this codebase's own existing
+  gift-affinity system) is a genuine scope/direction call, not a
+  bounded fix: it touches the core recipe-availability model across
+  all 36 entries and needs a real decision on unlock triggers. No
+  SPECCED companion task filed this run (unlike Run 32/33's pairs) --
+  every real option surfaced here is a genuine new-system call, no
+  small bounded slice was available the way Fish Almanac/silver_ore
+  were for their respective runs.
+- **GitHub**: no issue opened -- the GitHub MCP server is still failing
+  to connect (bad auth header, per AI-ENG-001 Open items).
+- **Stop reason**: goal met -- one integrated output (TASK-363,
+  correctly escalated rather than decided) produced within the first
+  iteration, well under the 5-iteration cap. No suspicious content
+  encountered on the Gemini page.
