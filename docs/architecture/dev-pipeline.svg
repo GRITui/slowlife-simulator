@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1150" width="1500" height="1150" font-family="Helvetica, Arial, sans-serif">
+  <!-- slowlife-game dev pipeline v4, 2026-09-04. Task-review loop's
+       mechanical scaffolding is now scripted (scripts/ci). Judgment
+       steps stay manual on purpose; only the scaffolding is automated. -->
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f7a4d"/>
+    </marker>
+    <marker id="arrD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7a3fbf"/>
+    </marker>
+    <marker id="arrOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c45a1c"/>
+    </marker>
+    <marker id="arrAmber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b8860b"/>
+    </marker>
+    <filter id="boxShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1500" height="1150" fill="#fafafa"/>
+
+  <!-- HEADER -->
+  <text x="750" y="34" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">
+    slowlife-game — dev pipeline (scripted scaffolding, 2026-09-04)
+  </text>
+  <text x="750" y="54" text-anchor="middle" font-size="12" fill="#555">
+    Green boxes = now a script, tested live this session · gray dashed = still manual (judgment) · same task-review loop shape as before
+  </text>
+
+  <!-- ZONE LABELS -->
+  <text x="330" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1c4f8b" letter-spacing="1">
+    TASK-REVIEW LOOP  (per task)
+  </text>
+  <text x="1150" y="90" text-anchor="middle" font-size="13" font-weight="bold" fill="#1f7a4d" letter-spacing="1">
+    ALWAYS-ON INFRASTRUCTURE
+  </text>
+  <line x1="720" y1="100" x2="720" y2="820" stroke="#bbb" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- ===== Stage 1: Task tracking (manual, unchanged) ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="60" y="115" width="230" height="115" rx="10" ry="10" fill="#e8e8e8" stroke="#888" stroke-width="2" stroke-dasharray="6,3"/>
+  </g>
+  <text x="175" y="138" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">1 · Task tracking</text>
+  <text x="175" y="158" text-anchor="middle" font-size="10.5" fill="#333">GitHub Issues +</text>
+  <text x="175" y="173" text-anchor="middle" font-size="10.5" fill="#333">ops/backlog-inbox.md</text>
+  <text x="175" y="192" text-anchor="middle" font-size="9.5" fill="#666" font-style="italic">judgment: spec-writing, RACI</text>
+  <text x="175" y="207" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#666">Still manual</text>
+  <text x="175" y="221" text-anchor="middle" font-size="9" fill="#888" font-style="italic">(Me + Claude)</text>
+
+  <!-- ===== Stage 2: Per-task worktree — NOW SCRIPTED ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="380" y="115" width="220" height="115" rx="10" ry="10" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2.5"/>
+  </g>
+  <text x="490" y="138" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f7a4d">2 · Worktree</text>
+  <text x="490" y="160" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">start_task.sh</text>
+  <text x="490" y="177" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">git worktree add, derives</text>
+  <text x="490" y="190" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">short dirname from branch</text>
+  <text x="490" y="207" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">NEW: scripted</text>
+  <text x="490" y="221" text-anchor="middle" font-size="9" fill="#666" font-style="italic">was: 1 manual git command</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <line x1="290" y1="172" x2="378" y2="172" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- ===== Stage 3: Delegate dispatch — NOW SCRIPTED (fallback chain) ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="690" y="110" width="250" height="140" rx="10" ry="10" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2.5"/>
+  </g>
+  <text x="815" y="132" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f7a4d">3 · Delegate dispatch</text>
+  <text x="815" y="153" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">dispatch_cline.sh</text>
+  <text x="815" y="170" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">tries the 4-model fallback</text>
+  <text x="815" y="183" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">chain automatically, detects</text>
+  <text x="815" y="196" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">"hook dispatch failed" (4/4</text>
+  <text x="815" y="209" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">hit rate on real failures)</text>
+  <text x="815" y="226" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">NEW: replaces manual retry-by-hand</text>
+  <text x="815" y="240" text-anchor="middle" font-size="9" fill="#666" font-style="italic">was: read log, pick next model, re-run — by hand, every failure</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 600 165 Q 645 148 688 158" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="640" y="140" text-anchor="middle" font-size="10" fill="#555">worktree ready</text>
+
+  <!-- 3 self-loop: internal fallback cycling -->
+  <path d="M 940 150 Q 968 180 940 210" fill="none" stroke="#b8860b" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrAmber)"/>
+  <text x="1022" y="184" text-anchor="end" font-size="9" fill="#b8860b" font-style="italic">retries next</text>
+  <text x="1022" y="196" text-anchor="end" font-size="9" fill="#b8860b" font-style="italic">model on failure</text>
+
+  <!-- ===== Stage 10: Free-worker consult (manual judgment, unchanged) ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="710" y="290" width="210" height="95" rx="10" ry="10" fill="#ecdaf2" stroke="#7a3fbf" stroke-width="2" stroke-dasharray="6,3"/>
+  </g>
+  <text x="815" y="312" text-anchor="middle" font-size="13" font-weight="bold" fill="#7a3fbf">10 · Free-worker consult</text>
+  <text x="815" y="330" text-anchor="middle" font-size="9.5" fill="#333">cheap read-only pass</text>
+  <text x="815" y="344" text-anchor="middle" font-size="9.5" fill="#333">fact-checks the spec first</text>
+  <text x="815" y="361" text-anchor="middle" font-size="9" font-weight="bold" fill="#7a3fbf">Still manual (judgment call)</text>
+  <text x="815" y="375" text-anchor="middle" font-size="9" fill="#666" font-style="italic">when to bother is a per-task decision</text>
+
+  <line x1="815" y1="290" x2="815" y2="252" stroke="#7a3fbf" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrD)"/>
+  <text x="835" y="272" font-size="9.5" fill="#7a3fbf" font-style="italic">precondition gate</text>
+
+  <!-- ===== Stage 4: Quality Review — partially scripted ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="380" y="290" width="220" height="140" rx="10" ry="10" fill="#fde4cf" stroke="#c45a1c" stroke-width="2"/>
+  </g>
+  <text x="490" y="312" text-anchor="middle" font-size="14" font-weight="bold" fill="#c45a1c">4 · Quality Review</text>
+  <text x="490" y="332" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">read the diff, judge correctness</text>
+  <text x="490" y="345" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#c45a1c">Still manual (the actual job)</text>
+  <text x="490" y="365" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">stress_gate.sh [N]</text>
+  <text x="490" y="382" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">re-runs full gate N times,</text>
+  <text x="490" y="395" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">stops on first failure</text>
+  <text x="490" y="412" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">NEW: replaces hand-typed for-loop</text>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 780 250 Q 700 270 600 320" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="605" y="255" text-anchor="middle" font-size="10" fill="#555">impl + self-tests</text>
+
+  <!-- Loop-back 4 -> 3 (fix & retry, manual judgment) -->
+  <path d="M 600 350 Q 655 350 655 200" fill="none" stroke="#c45a1c" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrOrange)"/>
+  <text x="680" y="272" font-size="10" fill="#c45a1c" font-style="italic">fix &amp; retry</text>
+
+  <!-- ===== Stage 5: Merge + push — NOW SCRIPTED ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="60" y="290" width="220" height="155" rx="10" ry="10" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2.5"/>
+  </g>
+  <text x="170" y="312" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f7a4d">5 · Merge + push</text>
+  <text x="170" y="333" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">land_task.sh</text>
+  <text x="170" y="350" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">stash main's WIP → merge</text>
+  <text x="170" y="363" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">→ stress_gate.sh 3x → push</text>
+  <text x="170" y="376" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">→ remove worktree → pop WIP</text>
+  <text x="170" y="393" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">refuses to guess on conflict/</text>
+  <text x="170" y="406" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">gate failure — reports &amp; stops</text>
+  <text x="170" y="424" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">NEW: verified live on TASK-363</text>
+  <text x="170" y="438" text-anchor="middle" font-size="9" fill="#666" font-style="italic">was: ~8 manual steps, fumbled the stash dance twice</text>
+
+  <!-- Arrow 4 -> 5 -->
+  <line x1="378" y1="365" x2="282" y2="365" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="330" y="358" text-anchor="middle" font-size="10" fill="#555">green</text>
+
+  <!-- ===== Stage 6: Close + log (manual, unchanged) ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="60" y="490" width="220" height="105" rx="10" ry="10" fill="#e8e8e8" stroke="#888" stroke-width="2" stroke-dasharray="6,3"/>
+  </g>
+  <text x="170" y="513" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">6 · Close + log</text>
+  <text x="170" y="535" text-anchor="middle" font-size="10.5" fill="#333">issue → closed</text>
+  <text x="170" y="550" text-anchor="middle" font-size="10.5" fill="#333">backlog-inbox → COMPLETED</text>
+  <text x="170" y="568" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#666">Still manual</text>
+  <text x="170" y="582" text-anchor="middle" font-size="9" fill="#888" font-style="italic">(writing the "what shipped" summary)</text>
+
+  <!-- Arrow 5 -> 6 -->
+  <line x1="170" y1="445" x2="170" y2="488" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="185" y="470" font-size="10" fill="#555">merged</text>
+
+  <!-- 6 -> feeds 7: data flow -->
+  <path d="M 280 535 Q 460 535 510 535" fill="none" stroke="#666" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="395" y="527" text-anchor="middle" font-size="10" fill="#555" font-style="italic">closed-task data → status regen</text>
+
+  <!-- ===== Dev utility: keep_awake.sh (side note, not in main loop) ===== -->
+  <g filter="url(#boxShadow)">
+    <rect x="380" y="470" width="220" height="105" rx="10" ry="10" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2.5" stroke-dasharray="7,3"/>
+  </g>
+  <text x="490" y="492" text-anchor="middle" font-size="13" font-weight="bold" fill="#1f7a4d">Dev utility (not in the loop)</text>
+  <text x="490" y="512" text-anchor="middle" font-size="12" font-weight="bold" fill="#222">keep_awake.sh</text>
+  <text x="490" y="529" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">caffeinate -d -i, run before</text>
+  <text x="490" y="542" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">any manual playtest session</text>
+  <text x="490" y="559" text-anchor="middle" font-size="9" fill="#666" font-style="italic">found the hard way: synthetic game input doesn't</text>
+  <text x="490" y="571" text-anchor="middle" font-size="9" fill="#666" font-style="italic">count as activity — screen silently locks mid-session</text>
+
+<!-- ============================================================ -->
+  <!-- ============== RIGHT SIDE: STAGES 7-9 (unchanged) ============ -->
+  <!-- ============================================================ -->
+
+  <g filter="url(#boxShadow)">
+    <rect x="1030" y="220" width="230" height="140" rx="14" ry="14" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2.5"/>
+  </g>
+  <text x="1145" y="242" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f7a4d">8 · n8n</text>
+  <text x="1145" y="261" text-anchor="middle" font-size="10.5" fill="#222">self-hosted workflow engine</text>
+  <text x="1145" y="276" text-anchor="middle" font-size="9.5" fill="#444" font-style="italic">macOS launchd service</text>
+  <text x="1145" y="294" text-anchor="middle" font-size="10" fill="#444" font-style="italic">hosts: status-update job (→7)</text>
+  <text x="1145" y="308" text-anchor="middle" font-size="10" fill="#444" font-style="italic">and Draw Things trigger (→9)</text>
+  <text x="1145" y="326" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">Unchanged this pass</text>
+  <text x="1145" y="340" text-anchor="middle" font-size="9" fill="#666" font-style="italic">(already automation from an earlier session)</text>
+
+  <g filter="url(#boxShadow)">
+    <rect x="1030" y="100" width="230" height="105" rx="10" ry="10" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2"/>
+  </g>
+  <text x="1145" y="122" text-anchor="middle" font-size="14" font-weight="bold" fill="#1f7a4d">7 · PROJECT_STATUS.md</text>
+  <text x="1145" y="142" text-anchor="middle" font-size="9.5" fill="#222">auto-regenerated periodically</text>
+  <text x="1145" y="156" text-anchor="middle" font-size="9" fill="#222" font-style="italic">reads issues + backlog → Kanban</text>
+  <text x="1145" y="174" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">Unchanged this pass</text>
+  <text x="1145" y="190" text-anchor="middle" font-size="9" fill="#666" font-style="italic">free/cheap model, n8n-dispatched</text>
+
+  <line x1="1145" y1="218" x2="1145" y2="207" stroke="#1f7a4d" stroke-width="2" marker-end="url(#arrG)"/>
+
+  <g filter="url(#boxShadow)">
+    <rect x="1010" y="430" width="400" height="170" rx="12" ry="12" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2"/>
+  </g>
+  <text x="1210" y="456" text-anchor="middle" font-size="15" font-weight="bold" fill="#1f7a4d">9 · Draw Things art-generation queue</text>
+  <text x="1210" y="478" text-anchor="middle" font-size="10.5" fill="#222">local SD-class app on iPad (M2), reached over USB via iproxy</text>
+  <text x="1210" y="496" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#1f7a4d">Unchanged this pass</text>
+  <rect x="1030" y="508" width="360" height="76" rx="6" ry="6" fill="#ffffff" stroke="#1f7a4d" stroke-width="1"/>
+  <text x="1210" y="527" text-anchor="middle" font-size="10.5" font-weight="bold" fill="#1f7a4d">tools/drawthings_queue_runner.py</text>
+  <text x="1210" y="544" text-anchor="middle" font-size="9.5" fill="#333">processes pending/*.json ONE AT A TIME</text>
+  <text x="1210" y="560" text-anchor="middle" font-size="9.5" fill="#555" font-style="italic">on success → done/ · on error → failed/</text>
+  <text x="1210" y="575" text-anchor="middle" font-size="9" fill="#555" font-style="italic">reliability gap found this session: iPad-side drops, unresolved</text>
+
+  <path d="M 1145 360 Q 1145 395 1145 428" fill="none" stroke="#1f7a4d" stroke-width="2" marker-end="url(#arrG)"/>
+  <text x="1163" y="395" font-size="10" fill="#1f7a4d">queue trigger</text>
+
+<!-- ============================================================ -->
+  <!-- ===================== LEGEND =============================== -->
+  <!-- ============================================================ -->
+  <g>
+    <rect x="60" y="620" width="1380" height="500" rx="8" ry="8" fill="#ffffff" stroke="#888" stroke-width="1"/>
+    <text x="80" y="648" font-size="15" font-weight="bold" fill="#222">Legend</text>
+
+    <rect x="80" y="668" width="26" height="18" rx="4" ry="4" fill="#d6efe1" stroke="#1f7a4d" stroke-width="2"/>
+    <text x="115" y="682" font-size="12" fill="#222"><tspan font-weight="bold">Now scripted</tspan> (green solid) — built and tested live this session (2026-09-04)</text>
+
+    <rect x="80" y="695" width="26" height="18" rx="4" ry="4" fill="#e8e8e8" stroke="#888" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="115" y="709" font-size="12" fill="#222"><tspan font-weight="bold">Still manual</tspan> (gray dashed) — judgment work that stays a human/Claude job on purpose</text>
+
+    <rect x="80" y="722" width="26" height="18" rx="4" ry="4" fill="#fde4cf" stroke="#c45a1c" stroke-width="2"/>
+    <text x="115" y="736" font-size="12" fill="#222"><tspan font-weight="bold">Partially scripted</tspan> (orange) — the judgment core stays manual, mechanical parts around it are scripted</text>
+
+    <rect x="80" y="749" width="26" height="18" rx="4" ry="4" fill="#ecdaf2" stroke="#7a3fbf" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="115" y="763" font-size="12" fill="#222"><tspan font-weight="bold">Safety / verification pattern</tspan> — stage 10, a per-task judgment call on whether to bother</text>
+
+    <text x="80" y="800" font-size="13" font-weight="bold" fill="#222">Scripts added this session (all in scripts/ci/ unless noted, all committed + pushed):</text>
+    <text x="95" y="822" font-size="11.5" fill="#333"><tspan font-weight="bold">start_task.sh</tspan> — creates the per-task worktree (was: 1 manual git command, low risk but still retyped every time)</text>
+    <text x="95" y="843" font-size="11.5" fill="#333"><tspan font-weight="bold">dispatch_cline.sh</tspan> — cycles the 4-model free-worker fallback chain automatically on "hook dispatch failed" (verified 4/4 hit rate</text>
+    <text x="115" y="861" font-size="11.5" fill="#333">against every real provider failure this session: a rate limit, a provider overload, a delisted model, an idle timeout)</text>
+    <text x="95" y="882" font-size="11.5" fill="#333"><tspan font-weight="bold">stress_gate.sh [N]</tspan> — re-runs the full test gate N times, stops on first failure (was: a hand-typed for-loop, retyped 5+ times)</text>
+    <text x="95" y="903" font-size="11.5" fill="#333"><tspan font-weight="bold">land_task.sh</tspan> — the full stash → merge → 3x gate → push → worktree cleanup → WIP-restore sequence in one call; refuses to</text>
+    <text x="115" y="921" font-size="11.5" fill="#333">guess on a merge conflict or a post-merge gate failure — reports clearly and stops instead (was: ~8 manual steps, fumbled twice by hand)</text>
+    <text x="95" y="942" font-size="11.5" fill="#333"><tspan font-weight="bold">scripts/dev/keep_awake.sh</tspan> — prevents display sleep/screensaver-lock during a manual playtest session (synthetic game input</text>
+    <text x="115" y="960" font-size="11.5" fill="#333">doesn't count as real user activity to macOS — hit a real lock screen mid-session before this existed)</text>
+
+    <text x="80" y="995" font-size="11" font-style="italic" fill="#555">
+      What stayed manual on purpose: writing the dispatch prompt itself, reading the actual diff, judging correctness, writing commit/merge messages,
+    </text>
+    <text x="80" y="1012" font-size="11" font-style="italic" fill="#555">
+      and deciding when the free-worker-consult (stage 10) gate is worth the extra dispatch. Automation removed identical-every-time scaffolding, not judgment.
+    </text>
+    <text x="80" y="1035" font-size="11" font-style="italic" fill="#555">
+      Note: stage 9 (Draw Things) is fired by n8n independently of the 1→6 task loop — its arrow originates from stage 8, not from any stage on the left.
+    </text>
+  </g>
+</svg>
