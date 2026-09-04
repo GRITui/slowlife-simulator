@@ -32,6 +32,19 @@ const DECOR_PATHS: Dictionary = {
 	"pha_khao_ma": "res://assets/environment/pha_khao_ma.png",
 	"mohom_cloth": "res://assets/environment/mohom_cloth.png",
 }
+# TASK-360: shrine decor style -> Sprite2D texture path. "basic" keeps
+# the same weathered-wood wall front the existing FarmHouseShrine.tscn
+# has used since TASK-355, so an unset choice is a visual no-op (the
+# spec's "absence means default style" extends to visuals too — no
+# flicker on first boot or after a save/load). "ornate" reuses
+# mohom_cloth.png — the mo hom sarong hanging already used as decor
+# elsewhere in this scene, a patterned Thai-rural cloth that's the
+# closest existing asset to "decorated spirit-house" without needing
+# new art. New styles append here AND in GameData.DECOR_CATALOGUE.
+const SHRINE_STYLE_PATHS: Dictionary = {
+	"basic": "res://assets/environment/structure_wall_front.png",
+	"ornate": "res://assets/environment/mohom_cloth.png",
+}
 
 @onready var _ground_layer: TileMapLayer = null
 
@@ -104,6 +117,45 @@ func _build_render() -> void:
 		sprite.centered = false
 		sprite.position = Vector2(int(cell[1]) * TILE, int(cell[2]) * TILE)
 		add_child(sprite)
+	# TASK-360: re-skin the shrine Sprite2D to match GameData.decor_choice().
+	# Done LAST so the existing FarmHouseShrine.tscn-provided Sprite2D is
+	# already a child of this scene (it is — instanced by FarmHouse.tscn's
+	# "[node name=\"Shrine\"]" entry). Catches both first-boot defaults and
+	# save/load round-trips (no Shrine-side change needed; GameData already
+	# holds the persisted choice before _ready runs).
+	_apply_shrine_style()
+	# Listen for live style changes from the new style picker interactable
+	# so re-skinning happens in real time without a scene reload.
+	SignalBus.decor_style_changed.connect(_on_decor_style_changed)
+
+func _apply_shrine_style() -> void:
+	# Resolve the current style -> path, fall back to "basic" if the
+	# catalogue has changed underneath us (defensive — should never happen
+	# at runtime but keeps a future catalog edit from breaking the room).
+	var shrine: Node = get_node_or_null("Shrine")
+	if shrine == null:
+		return
+	var sprite: Sprite2D = shrine.get_node_or_null("Sprite2D") as Sprite2D
+	if sprite == null:
+		return
+	var style: String = GameData.decor_choice("shrine")
+	var path: String = SHRINE_STYLE_PATHS.get(style, "")
+	if path == "":
+		path = String(SHRINE_STYLE_PATHS.get("basic", ""))
+	if path == "":
+		return
+	var tex: Texture2D = load(path) as Texture2D
+	if tex == null:
+		return
+	sprite.texture = tex
+
+func _on_decor_style_changed(slot: String, _style: String) -> void:
+	# Only the "shrine" slot has a visual in here today; other future
+	# slots (bed, kitchen) would gate on `slot == "shrine"` the same way.
+	# Re-applying on every event keeps this a one-liner that future slots
+	# can extend by checking their own slot id.
+	if slot == "shrine":
+		_apply_shrine_style()
 
 ## BUGFIX (Code Quality Review): Player.gd's _try_grid_interact() and
 ## _mounted_interact_3x3() call gm.plant()/water()/harvest() DIRECTLY, with

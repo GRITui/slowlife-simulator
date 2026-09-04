@@ -96,6 +96,14 @@ func save_game() -> bool:
 		"rival_progress": gd.rival_progress,
 		"rival_friendship": gd.rival_friendship,
 		"rival_confessed": gd.rival_confessed,
+		# TASK-360: per-slot decor style choice (slot -> style). Additive
+		# field, no SAVE_VERSION bump: an absent key is the exact default
+		# GameData.decor_choices starts at ({}), and decor_choice() already
+		# returns the catalogue default for any unset slot — so a save
+		# from before TASK-360 loads as if the player had picked nothing,
+		# which is bit-identical to a fresh start (see the spec's
+		# "absence means default style" contract).
+		"decor_choices": gd.decor_choices,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -279,6 +287,11 @@ func load_game() -> bool:
 		gd.lost_to_rival = (data.get("lost_to_rival", {}) as Dictionary).duplicate(true)
 		gd.rival_warning_shown = (data.get("rival_warning_shown", {}) as Dictionary).duplicate(true)
 		gd.milestones_earned = (data.get("milestones_earned", {}) as Dictionary).duplicate(true)
+		# TASK-360: restore per-slot decor choice. Default {} matches
+		# GameData.decor_choices' initializer exactly, so the absence-on-
+		# old-saves case is the same as "never picked a style" — no
+		# behaviour change for saves that predate this task.
+		gd.decor_choices = (data.get("decor_choices", {}) as Dictionary).duplicate(true)
 		gd.rival_progress = (data.get("rival_progress", {}) as Dictionary).duplicate(true)
 		gd.rival_friendship = (data.get("rival_friendship", {}) as Dictionary).duplicate(true)
 		gd.rival_confessed = (data.get("rival_confessed", {}) as Dictionary).duplicate(true)
