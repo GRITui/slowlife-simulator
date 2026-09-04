@@ -2176,3 +2176,66 @@ category from the role reassessment, discovered live.
 - **Stop reason**: goal met — one integrated output (TASK-360)
   produced within the first iteration, plus one correctly-escalated
   NEEDS_OWNER_REVIEW item (TASK-361), well under the 5-iteration cap.
+
+## 2026-09-04 — Run 34 (AI-ENG-001 gap-analysis loop: mining/ore utility vs. HM:BtN)
+
+- **Trigger**: owner instruction to run another gap-analysis pass in
+  parallel with an in-progress live playthrough session and other
+  concurrent work, explicitly asked to cover a different area than the
+  prior fishing-depth (Run 32) and farmhouse-decor (Run 33) runs.
+  Reviewed ops/backlog-inbox.md's completed TASK entries and every
+  prior gap-analysis round in this log before picking a topic, to avoid
+  repeating fishing depth, festival density, milestone collectibles,
+  side-quests, weather-reactive dialogue, tool AoE, affinity decay, or
+  farmhouse decor/furniture -- all already covered.
+- **Topic selection**: checked whether mined ore had any downstream use
+  by grepping `data/` JSON files for the 3 ore item ids (copper_ore,
+  iron_ore, silver_ore) -- found none, and drafted the dispatch question
+  on the premise that ore was a complete dead end.
+- **Worker**: Gemini (`claude-in-chrome`, Flash), role: Designer (genre
+  comparison, no existing basis in this codebase for the *correct*
+  scope of the gap -- see verification correction below).
+- **Question asked**: described mining's actual mechanic (single
+  interact -> rarity-weighted roll, 3 ore tiers, skill-gated,
+  zero-fail) and the (incorrect, see below) premise that ore has zero
+  downstream use, asking what HM:BtN/Stardew Valley do with mined ore
+  and the simplest additive fix given an existing silver-only tool-tier
+  upgrade system and carpenter building-upgrade system.
+- **Answer summary**: Gemini correctly named the standard genre
+  pattern -- both games gate tool upgrades AND building/infrastructure
+  upgrades behind ore/smelted-bar costs, not just currency -- and
+  recommended adding ore costs to both this game's existing tool-tier
+  upgrades and its carpenter building upgrades, plus a Thai-flavored
+  temple-offering option for pure flavor value. No suspicious/injected
+  content on the page.
+- **Verification correction (logged per the loop's own integrate-
+  don't-trust discipline, applied here to a mistake of my OWN drafting,
+  not just Gemini's answer)**: reading `GameData.upgrade_tool()`
+  directly (scripts/autoload/GameData.gd) AFTER getting Gemini's answer
+  revealed the original premise was wrong -- this codebase's tool-tier
+  system already consumes ore as a TASK-321 material sink (copper_ore
+  for tier 1->2, iron_ore for tier 2->3). Half of Gemini's own
+  recommendation was already shipped. Narrowed the actual gap by
+  re-checking: `silver_ore` (the rarest tier) is never consumed
+  anywhere in scripts/, and `CarpenterUpgrade.gd`'s one-time kitchen
+  upgrade requires silver+wood+stamina only, zero ore. That's the real,
+  narrower, still-genuine and still-verified gap.
+- **Integration**: filed the corrected, narrow finding as **TASK-362**
+  (`status: SPECCED`) -- add a small `repair_cost_silver_ore`
+  requirement to `CarpenterUpgrade.gd`, mirroring its existing
+  has_item-check/remove_item-on-success pattern for wood exactly. No
+  open design question, no new system, no change to the already-shipped
+  copper/iron tool-upgrade sink or MiningSpot.gd's roll logic. Gemini's
+  smelting/refining suggestion was NOT adopted (would be a genuinely
+  new system, this codebase has no smelting concept) and its temple-
+  offering/amulet flavor idea was noted as a possible future item but
+  not filed (speculative flavor content, not a verified gap) -- no
+  companion NEEDS_OWNER_REVIEW item this run, unlike Run 32/33, since
+  the corrected finding has no genuine scope/direction question left
+  once narrowed.
+- **GitHub**: no issue opened -- the GitHub MCP server is still failing
+  to connect (bad auth header, per AI-ENG-001 Open items) -- flag for
+  whoever fixes that connection to open an issue for TASK-362.
+- **Stop reason**: goal met -- one integrated output (TASK-362)
+  produced within the first iteration, well under the 5-iteration cap.
+  No suspicious content encountered on the Gemini page.
