@@ -32,7 +32,7 @@ const SCHEDULES: Dictionary = {
 		{"from": 18, "to": 24, "pos": Vector2(13, 7)},
 	],
 	"headman": [
-		{"from": 6, "to": 12, "pos": Vector2(1, 3)},
+		{"from": 6, "to": 12, "pos": Vector2(15, 0)},
 		{"from": 12, "to": 18, "pos": Vector2(17, 1)},
 		{"from": 18, "to": 24, "pos": Vector2(1, 4)},
 	],
@@ -43,7 +43,7 @@ const SCHEDULES: Dictionary = {
 	],
 	"fah": [
 		{"from": 6, "to": 12, "pos": Vector2(10, 12)}, # canal mornings
-		{"from": 12, "to": 18, "pos": Vector2(2, 1)},  # lotus pond
+		{"from": 12, "to": 18, "pos": Vector2(5, 0)},  # lotus pond
 		{"from": 18, "to": 24, "pos": Vector2(10, 11)},
 	],
 	# TASK-338: Nok, veteran farmer.

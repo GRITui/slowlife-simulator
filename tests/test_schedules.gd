@@ -18,7 +18,7 @@ func _initialize() -> void:
 	var wp: Vector2i = sdb.waypoint_for("fah", 7)
 	_check(wp == Vector2i(10, 12), "fah at canal waypoint at 07:00 (got %s)" % str(wp))
 	var wp2: Vector2i = sdb.waypoint_for("fah", 13)
-	_check(wp2 == Vector2i(2, 1), "fah at pond waypoint at 13:00 (got %s)" % str(wp2))
+	_check(wp2 == Vector2i(5, 0), "fah at pond waypoint at 13:00 (got %s)" % str(wp2))
 
 	# TASK-328: rain override — elder/child route to their existing "home"
 	# waypoint regardless of hour; NPCs with no RAIN_HOME entry are unaffected.
