@@ -8,6 +8,10 @@ extends SceneTree
 # scenes need to be instantiated side by side under root. This is safe
 # because is_repaired()/get_all_craftable() read GameData's global
 # infrastructure state, not a scene-tree relationship between the two.
+# TASK-362: silver_ore (rare ore tier) added as a fourth repair cost;
+# adds soft-fail coverage for missing silver_ore (c-4) and verifies
+# the new resource is deducted in the full-success path (d) plus not
+# double-charged on the no-op re-interact (f).
 const COASTAL_AREA_PATH: String = "res://scenes/interiors/CoastalArea.tscn"
 
 var _passed: int = 0
@@ -110,18 +114,39 @@ func _initialize() -> void:
 		_check(int(gd.inventory.get("wood", 0)) == wood_before3, "wood unchanged on stamina soft-fail")
 		_check(is_equal_approx(float(gd.current_stamina), stamina_before3), "stamina unchanged on stamina soft-fail")
 
-	# (d) full success path: 50 silver, 5 wood, 100 stamina.
+	# (c-4) TASK-362: soft-fail with insufficient silver_ore (silver + wood +
+	# stamina present, silver_ore missing). Verifies the new check sits in the
+	# existing soft-fail sequence (after silver/wood/stamina, before deduct)
+	# and that no OTHER resource is partially deducted on this soft-fail path.
+	gd.silver = 50
+	gd.add_item("wood", 5)
+	gd.current_stamina = 100.0
+	gd.inventory.erase("silver_ore")
+	if carpenter != null:
+		var silver_before_so: int = int(gd.silver)
+		var wood_before_so: int = int(gd.inventory.get("wood", 0))
+		var ok_so: bool = carpenter._try_repair()
+		_check(ok_so == false, "_try_repair() refuses with 0 silver_ore")
+		_check(not gd.is_repaired("house_kitchen"), "house_kitchen NOT repaired after silver_ore soft-fail")
+		_check(int(gd.silver) == silver_before_so, "silver unchanged on silver_ore soft-fail (got %d, expected %d)" % [int(gd.silver), silver_before_so])
+		_check(int(gd.inventory.get("wood", 0)) == wood_before_so, "wood unchanged on silver_ore soft-fail (no partial deduct)")
+		_check(not gd.inventory.has("silver_ore"), "silver_ore unchanged on silver_ore soft-fail")
+
+	# (d) full success path: 50 silver, 5 wood, 3 silver_ore, 100 stamina.
 	gd.silver = 60
 	gd.add_item("wood", 7) # extra so we can detect *exactly* 5 deducted
+	gd.add_item("silver_ore", 5) # extra so we can detect *exactly* 3 deducted
 	gd.current_stamina = 100.0
 	gd.harmony = 0
 	if carpenter != null:
 		var silver_pre: int = int(gd.silver)
 		var wood_pre: int = int(gd.inventory.get("wood", 0))
+		var silver_ore_pre: int = int(gd.inventory.get("silver_ore", 0))
 		var ok4: bool = carpenter._try_repair()
 		_check(ok4 == true, "_try_repair() succeeds with full resources")
 		_check(int(gd.silver) == silver_pre - 50, "exactly 50 silver deducted (got %d, expected %d)" % [int(gd.silver), silver_pre - 50])
 		_check(int(gd.inventory.get("wood", 0)) == wood_pre - 5, "exactly 5 wood deducted (got %d, expected %d)" % [int(gd.inventory.get("wood", 0)), wood_pre - 5])
+		_check(int(gd.inventory.get("silver_ore", 0)) == silver_ore_pre - 3, "exactly 3 silver_ore deducted (got %d, expected %d)" % [int(gd.inventory.get("silver_ore", 0)), silver_ore_pre - 3])
 		_check(gd.is_repaired("house_kitchen"), "GameData.is_repaired('house_kitchen') == true")
 		_check(int(gd.harmony) == 5, "+5 harmony awarded (got %d)" % int(gd.harmony))
 
@@ -138,10 +163,12 @@ func _initialize() -> void:
 	if carpenter != null:
 		var silver_post: int = int(gd.silver)
 		var wood_post: int = int(gd.inventory.get("wood", 0))
+		var silver_ore_post: int = int(gd.inventory.get("silver_ore", 0))
 		var ok5: bool = carpenter._try_repair()
 		_check(ok5 == false, "second _try_repair() returns false (already repaired)")
 		_check(int(gd.silver) == silver_post, "silver unchanged on second attempt (no double-charge)")
 		_check(int(gd.inventory.get("wood", 0)) == wood_post, "wood unchanged on second attempt (no double-charge)")
+		_check(int(gd.inventory.get("silver_ore", 0)) == silver_ore_post, "silver_ore unchanged on second attempt (no double-charge)")
 		_check(gd.is_repaired("house_kitchen"), "house_kitchen still repaired after no-op re-interact")
 
 	main.queue_free()

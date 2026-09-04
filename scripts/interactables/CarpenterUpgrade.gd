@@ -1,14 +1,18 @@
 extends StaticBody2D
 # CarpenterUpgrade — TASK-322 house kitchen extension.
-# Hybrid A/B: 50 silver + 5 wood + 20 stamina to extend the home into a
-# full Thai kitchen. Repairs infrastructure "house_kitchen", unlocks two
-# new recipes (khao_soi, massaman_curry). Soft-fail dialogue per missing
-# requirement (silver / wood / stamina) — no hard fail state. Mirrors
-# SluiceGate.gd's interaction contract (Area2D proximity + `interact`).
+# Hybrid A/B: 50 silver + 5 wood + 3 silver_ore + 20 stamina to extend the
+# home into a full Thai kitchen. Repairs infrastructure "house_kitchen",
+# unlocks two new recipes (khao_soi, massaman_curry). Soft-fail dialogue
+# per missing requirement (silver / wood / silver_ore / stamina) — no
+# hard fail state. Mirrors SluiceGate.gd's interaction contract (Area2D
+# proximity + `interact`).
+# TASK-362: silver_ore added as the first real consume site for the
+# rarest ore tier (MiningSpot._roll_ore weight 1.2 vs copper's 4.0).
 
 @export var structure_id: String = "house_kitchen"
 @export var repair_cost_silver: int = 50
 @export var repair_cost_wood: int = 5
+@export var repair_cost_silver_ore: int = 3
 @export var repair_cost_stamina: float = 20.0
 @export var reward_harmony: int = 5
 
@@ -53,11 +57,25 @@ func _try_repair() -> bool:
 	if GameData.current_stamina < repair_cost_stamina:
 		SignalBus.show_dialogue.emit("Carpenter", "Too tired to help build. Need %.0f stamina." % repair_cost_stamina)
 		return false
+	# TASK-362: silver_ore material sink — first real consume site for the
+	# rarest of the 3 ore tiers (see MiningSpot._roll_ore weights: silver is
+	# rare/1.2 vs copper common/4.0). Charged on top of the existing silver +
+	# wood + stamina stack, mirroring GameData.upgrade_tool()'s
+	# additive-ore-on-rice_grain precedent for spending ore via the standard
+	# has_item / remove_item API.
+	if not GameData.has_item("silver_ore", repair_cost_silver_ore):
+		SignalBus.show_dialogue.emit("Carpenter", "Need %d silver ore to forge the kitchen fittings." % repair_cost_silver_ore)
+		return false
 	# All checks passed — deduct.
 	if not GameData.spend_silver(repair_cost_silver):
 		return false
 	if not GameData.remove_item("wood", repair_cost_wood):
-		GameData.add_silver(repair_cost_silver) # only path that can still fail post-check
+		GameData.add_silver(repair_cost_silver) # wood-fail rollback: refund silver
+		return false
+	if not GameData.remove_item("silver_ore", repair_cost_silver_ore):
+		# silver_ore-fail rollback: refund silver + restore wood (TASK-362).
+		GameData.add_silver(repair_cost_silver)
+		GameData.add_item("wood", repair_cost_wood)
 		return false
 	GameData.current_stamina -= repair_cost_stamina
 	GameData.repair_infrastructure(structure_id)
@@ -90,11 +108,12 @@ func _update_prompt() -> void:
 	else:
 		var can := GameData.silver >= repair_cost_silver \
 			and GameData.has_item("wood", repair_cost_wood) \
+			and GameData.has_item("silver_ore", repair_cost_silver_ore) \
 			and GameData.current_stamina >= repair_cost_stamina
 		if can:
-			_prompt.text = "Press [E] to upgrade (%d silver, %d wood, %.0f stamina)" % [repair_cost_silver, repair_cost_wood, repair_cost_stamina]
+			_prompt.text = "Press [E] to upgrade (%d silver, %d wood, %d silver ore, %.0f stamina)" % [repair_cost_silver, repair_cost_wood, repair_cost_silver_ore, repair_cost_stamina]
 		else:
-			_prompt.text = "Need %d silver, %d wood, %.0f stamina" % [repair_cost_silver, repair_cost_wood, repair_cost_stamina]
+			_prompt.text = "Need %d silver, %d wood, %d silver ore, %.0f stamina" % [repair_cost_silver, repair_cost_wood, repair_cost_silver_ore, repair_cost_stamina]
 		_prompt.visible = true
 
 func _on_body_entered(body: Node) -> void:
