@@ -74,12 +74,16 @@ func _run_all() -> void:
 
 	# --- B. Signal-flow.
 	if sb and fog_rect:
-		# Initial baseline: TimeManager's _ready already emitted
-		# weather_changed("clear") (default current_weather). The
-		# initial-sync call inside FogDriver._ready should have left
-		# FogRect.visible == false. Confirm before driving.
+		# Initial baseline: force a known state rather than trusting
+		# TimeManager's _ready roll. TimeManager._roll_daily_weather()
+		# uses real randf() (~25% fog chance in cool season) with no
+		# fixed seed, so asserting on whatever it happened to roll at
+		# boot is flaky by design — confirmed failing ~1/64 runs in
+		# practice while landing TASK-368 (unrelated diff, same flake).
+		sb.weather_changed.emit("clear")
+		await process_frame
 		_check(fog_rect.visible == false,
-			"baseline FogRect.visible == false (initial weather='clear')")
+			"baseline FogRect.visible == false (forced weather='clear')")
 
 		sb.weather_changed.emit("fog")
 		await process_frame

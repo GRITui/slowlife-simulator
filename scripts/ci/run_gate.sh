@@ -138,6 +138,17 @@ run_fog_driver() {
 	godot --headless --path . --script res://tests/test_fog_driver.gd
 }
 
+run_dialogue_portrait() {
+	# TASK-376. World.gd's dialogue_portrait display logic was always
+	# correct, but no "Portrait" node ever existed under
+	# DialogueLayer/Panel in World.tscn — same orphan-wiring class as
+	# TASK-366/369/373 (script/logic correct, scene node missing). This
+	# instances the real World.tscn and drives SignalBus.show_dialogue
+	# to confirm the portrait actually shows/hides for real speakers.
+	echo "== dialogue-portrait gate: tests/test_dialogue_portrait.gd =="
+	godot --headless --path . --script res://tests/test_dialogue_portrait.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -155,6 +166,7 @@ case "$GATE" in
 	recipe_unlocks) run_recipe_unlocks ;;
 	particle_drivers) run_particle_drivers ;;
 	fog_driver) run_fog_driver ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|all)" >&2; exit 2 ;;
+	dialogue_portrait) run_dialogue_portrait ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|all)" >&2; exit 2 ;;
 esac
