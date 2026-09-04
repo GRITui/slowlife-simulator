@@ -45,7 +45,6 @@
 [ext_resource type="Script" path="res://scenes/core/FestivalVisualDriver.gd" id="22_fesv"]
 [ext_resource type="ParticleProcessMaterial" path="res://assets/particles/festival_lanterns.tres" id="23_lanterns"]
 [ext_resource type="Texture2D" path="res://assets/particles/lantern_glow.png" id="24_lanterntex"]
-[ext_resource type="Script" path="res://scenes/core/LeafDriver.gd" id="21_leaf"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -267,9 +266,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.878, 0.635, 0.227, 0.7)
+color = Color(0.878, 0.635, 0.227, 0.12)
 mouse_filter = 2
 visible = false
+
+[node name="FestivalVisualDriver" type="CanvasLayer" parent="."]
+layer = 3
+script = ExtResource("22_fesv")
+
+[node name="HideTimer" type="Timer" parent="FestivalVisualDriver"]
+one_shot = true
+
 [node name="RainDriver" type="CanvasLayer" parent="."]
 layer = 6
 script = ExtResource("14_rain")
