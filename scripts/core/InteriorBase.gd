@@ -81,7 +81,35 @@ func _spawn_player() -> void:
 	pl.name = "Player"
 	add_child(pl)
 	_player = pl
+	_apply_camera_bounds(pl)
 	_place_player(pl)
+
+## Bugfix found live (2026-09-04): Player.tscn's Camera2D ships with
+## limit_right/limit_bottom hardcoded to the outdoor World's size
+## (960x768, see the World camera-clamp fix) so it doesn't show
+## unrendered space past the World's own map edge. But every
+## InteriorBase subclass is a much smaller room (FarmHouse: 6x5 tiles =
+## 288x240; CoastalArea: 5x5 = 240x240) — reusing the outdoor limits let
+## the camera show the exact same "flat void past the edge" bug the
+## outdoor fix solved, just indoors. Every InteriorBase subclass already
+## defines its own GRID/TILE consts (used by its own _build_render()),
+## so read those via the script constant map -- GDScript consts aren't
+## reachable through plain `get()`/`in`. Leaves Player.tscn's default
+## limits alone if a subclass doesn't define both (defensive; not
+## expected to trigger for any current or future interior).
+func _apply_camera_bounds(pl: Node2D) -> void:
+	var cam: Camera2D = pl.get_node_or_null("Camera2D") as Camera2D
+	if cam == null:
+		return
+	var consts: Dictionary = get_script().get_script_constant_map()
+	if not (consts.has("GRID") and consts.has("TILE")):
+		return
+	var grid: Vector2i = consts["GRID"]
+	var tile: int = int(consts["TILE"])
+	cam.limit_left = 0
+	cam.limit_top = 0
+	cam.limit_right = grid.x * tile
+	cam.limit_bottom = grid.y * tile
 
 ## Resolve the spawn position and assign it. Factored out of
 ## _spawn_player so the TASK-357 edge-warp branch can share the
