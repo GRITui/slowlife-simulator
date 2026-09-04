@@ -4,6 +4,19 @@ extends CharacterBody2D
 # Stamina drain uses TimeManager stamina multiplier, syncs to SignalBus + GameData.
 
 @export var move_speed: float = 110.0
+## Movement clamp bounds -- default matches the outdoor World's own size
+## (20x16 tiles @ 48px, minus a 24px margin so the player's collision
+## shape never clips a boundary wall). InteriorBase._apply_camera_bounds()
+## overrides these to each interior's own (smaller) GRID/TILE size on
+## spawn, so a small room like FarmHouse/CoastalArea doesn't let the
+## player walk into space beyond the actual floor tiles -- found live
+## during a manual playthrough: the player sprite rendered partly below
+## the visible floor in CoastalArea because this clamp was still using
+## the outdoor World's bounds regardless of which scene was active
+## (the same root cause the earlier Camera2D bounds fix addressed, but
+## for movement rather than the camera).
+@export var bounds_min: Vector2 = Vector2(24, 24)
+@export var bounds_max: Vector2 = Vector2(20 * 48 - 24, 16 * 48 - 24)
 ## TASK-272 Wing Kwai: mounted buffalo riding (mount near buffalo, 1.6x speed,
 ## mounted interact auto-plants the held seed in a 3x3 patch).
 var mounted: bool = false
@@ -41,9 +54,11 @@ func _physics_process(delta: float) -> void:
 	if mounted and _buffalo_ref != null and is_instance_valid(_buffalo_ref):
 		(_buffalo_ref as Node2D).global_position = global_position + Vector2(0, 24)
 	_update_animation(dir)
-	# clamp to Hybrid grid bounds (20*48 approx, keep in view)
-	global_position.x = clamp(global_position.x, 24, 20 * 48 - 24)
-	global_position.y = clamp(global_position.y, 24, 16 * 48 - 24)
+	# clamp to this scene's bounds (outdoor World by default; InteriorBase
+	# overrides bounds_min/bounds_max per-interior on spawn -- see the
+	# @export declarations above for why).
+	global_position.x = clamp(global_position.x, bounds_min.x, bounds_max.x)
+	global_position.y = clamp(global_position.y, bounds_min.y, bounds_max.y)
 
 func _update_animation(dir: Vector2) -> void:
 	if dir == Vector2.ZERO:

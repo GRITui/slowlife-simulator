@@ -97,19 +97,29 @@ func _spawn_player() -> void:
 ## reachable through plain `get()`/`in`. Leaves Player.tscn's default
 ## limits alone if a subclass doesn't define both (defensive; not
 ## expected to trigger for any current or future interior).
+##
+## Also sets Player.gd's OWN bounds_min/bounds_max (a second, related bug
+## found live right after the camera fix: Player.gd's movement clamp had
+## the identical hardcoded-to-outdoor-size problem, letting the player
+## actually walk past a small interior's real floor tiles -- the camera
+## fix alone only hid the void, it didn't stop the player reaching it).
+## Same 24px margin the player's own default bounds already use, so a
+## room with no override behaves identically to before this fix existed.
 func _apply_camera_bounds(pl: Node2D) -> void:
-	var cam: Camera2D = pl.get_node_or_null("Camera2D") as Camera2D
-	if cam == null:
-		return
 	var consts: Dictionary = get_script().get_script_constant_map()
 	if not (consts.has("GRID") and consts.has("TILE")):
 		return
 	var grid: Vector2i = consts["GRID"]
 	var tile: int = int(consts["TILE"])
-	cam.limit_left = 0
-	cam.limit_top = 0
-	cam.limit_right = grid.x * tile
-	cam.limit_bottom = grid.y * tile
+	var cam: Camera2D = pl.get_node_or_null("Camera2D") as Camera2D
+	if cam != null:
+		cam.limit_left = 0
+		cam.limit_top = 0
+		cam.limit_right = grid.x * tile
+		cam.limit_bottom = grid.y * tile
+	if "bounds_min" in pl and "bounds_max" in pl:
+		pl.bounds_min = Vector2(24, 24)
+		pl.bounds_max = Vector2(grid.x * tile - 24, grid.y * tile - 24)
 
 ## Resolve the spawn position and assign it. Factored out of
 ## _spawn_player so the TASK-357 edge-warp branch can share the

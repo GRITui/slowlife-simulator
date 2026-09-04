@@ -146,18 +146,33 @@ func _run_all() -> void:
 		"CoastalArea exposes an EdgeTransition in 'edge_transition' group with warp_id=\"%s\"" % WEST_EDGE_WARP_ID)
 	if player_coastal != null and west_edge != null:
 		var west_edge_x: float = (west_edge as Node2D).global_position.x
-		# NOTE on X expectation: Player.gd._physics_process clamps the
-		# player's global_position to the outdoor 20x16 grid bounds
-		# [24, 936] x [24, 744] on every physics tick — that's WHY the
-		# player snaps to x=24 here even though the edge is at x=0.
-		# Without this clamp a real player could walk past the western
-		# map edge. The carry behavior we're testing lives on the Y axis
+		# NOTE on X/Y expectation: Player.gd._physics_process clamps the
+		# player's global_position to bounds_min/bounds_max, which
+		# InteriorBase._apply_camera_bounds sets to THIS scene's own
+		# GRID/TILE size on spawn (a bugfix, 2026-09-04 -- this clamp
+		# used to be hardcoded to the outdoor World's 20x16 bounds
+		# regardless of scene, letting the player render/move past a
+		# small interior's real floor tiles). CoastalArea is 5x5 tiles,
+		# so the real clamp range here is [24, 216] on both axes, not
+		# the outdoor [24, 936]x[24, 744] -- read CoastalArea's own
+		# consts instead of re-hardcoding a second copy of its GRID/TILE
+		# here. The carry behavior we're testing lives on the Y axis
 		# (the carry_axis for an east/west edge); the X is anchored to
 		# the edge's position, then clamped to bounds. So the X assertion
 		# checks "close to the edge X" (within clamp range), not "exactly
-		# equal to the edge X".
-		var clamped_x: float = clamp(west_edge_x, 24.0, 20.0 * 48.0 - 24.0)
-		var expected_pos: Vector2 = Vector2(clamped_x, carried_y_forward)
+		# equal to the edge X". carried_y_forward (217.5) is deliberately
+		# OUTSIDE CoastalArea's real Y range specifically so this test
+		# also proves the per-scene clamp engages, not just that the
+		# edge-carry value made it through unclamped.
+		var coastal_consts: Dictionary = coastal.get_script().get_script_constant_map()
+		var coastal_grid: Vector2i = coastal_consts["GRID"]
+		var coastal_tile: int = int(coastal_consts["TILE"])
+		var bounds_min := 24.0
+		var bounds_max_x: float = coastal_grid.x * coastal_tile - 24.0
+		var bounds_max_y: float = coastal_grid.y * coastal_tile - 24.0
+		var clamped_x: float = clamp(west_edge_x, bounds_min, bounds_max_x)
+		var clamped_y: float = clamp(carried_y_forward, bounds_min, bounds_max_y)
+		var expected_pos: Vector2 = Vector2(clamped_x, clamped_y)
 		_check(player_coastal.global_position == expected_pos,
 			"Player landed at carried Y on CoastalArea.WestEdge (X clamped to bounds, got %s, expected %s)"
 				% [str(player_coastal.global_position), str(expected_pos)])
