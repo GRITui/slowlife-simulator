@@ -87,3 +87,5 @@ signal tool_upgraded(tool_id: String, new_tier: int)
 # slots (bed, kitchen, etc.) don't need new signals. Consumed by
 # FarmHouse.gd to re-skin the relevant Sprite2D on style change.
 signal decor_style_changed(slot: String, style: String)
+# TASK-374: emitted when furniture is placed or picked up
+signal placed_furniture_changed(location_id: String, item_id: String, cell: Vector2i, is_placed: bool)

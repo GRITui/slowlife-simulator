@@ -42,6 +42,9 @@
 [ext_resource type="ParticleProcessMaterial" path="res://assets/particles/leaves.tres" id="19_leafmat"]
 [ext_resource type="Texture2D" path="res://assets/particles/pollen_dot.png" id="20_leaftex"]
 [ext_resource type="Script" path="res://scenes/core/LeafDriver.gd" id="21_leaf"]
+[ext_resource type="Script" path="res://scenes/core/FestivalVisualDriver.gd" id="22_fesv"]
+[ext_resource type="ParticleProcessMaterial" path="res://assets/particles/festival_lanterns.tres" id="23_lanterns"]
+[ext_resource type="Texture2D" path="res://assets/particles/lantern_glow.png" id="24_lanterntex"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -50,6 +53,15 @@ script = ExtResource("1_world")
 [node name="WorldRender" type="Node2D" parent="."]
 script = ExtResource("1_wr")
 
+
+[node name="FestivalLanterns" type="GPUParticles2D" parent="WorldRender"]
+position = Vector2(400, 200)
+emitting = false
+amount = 80
+lifetime = 8.0
+speed_scale = 1.0
+process_material = ExtResource("23_lanterns")
+texture = ExtResource("24_lanterntex")
 [node name="GridManager" parent="." instance=ExtResource("3_gm")]
 position = Vector2(0, 0)
 
@@ -243,6 +255,27 @@ mouse_filter = 2
 [node name="FogDriver" type="CanvasLayer" parent="."]
 layer = 3
 script = ExtResource("17_fog")
+
+
+[node name="PondGlowLayer" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="PondGlowRect" type="ColorRect" parent="PondGlowLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.878, 0.635, 0.227, 0.12)
+mouse_filter = 2
+visible = false
+
+[node name="FestivalVisualDriver" type="CanvasLayer" parent="."]
+layer = 3
+script = ExtResource("22_fesv")
+
+[node name="HideTimer" type="Timer" parent="FestivalVisualDriver"]
+one_shot = true
 
 [node name="RainDriver" type="CanvasLayer" parent="."]
 layer = 6

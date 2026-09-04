@@ -1,0 +1,86 @@
+# LiteLLM Proxy config for slowlife-game's LLM routing layer.
+#
+# Revised from an initial Gemini-sourced proposal (2026-09-04) after
+# independently verifying its three model choices against primary sources
+# -- this project's own CLAUDE.md rule: Gemini output is never treated as
+# authoritative or pasted unreviewed into specs or code. Two of the three
+# were wrong:
+#   - gemini-2.5-flash: real, but Google has already scheduled it for
+#     shutdown on 2026-10-16 -- about 6 weeks from when this was written.
+#     Standing a new pipeline stage up on a model with a known near-term
+#     retirement date just buys a break next month. Replaced with
+#     gemini-3.5-flash (current generation, no announced shutdown).
+#   - openrouter/minimax/minimax-01: real, but PAID ($0.20/$1.10 per M
+#     tokens) -- directly contradicts this config's own "free-tier"
+#     framing, and it isn't even this project's own model. This project's
+#     already-proven choice all session is minimax/minimax-m3:free (a
+#     different, newer, actually-free MiniMax model) -- swapped in.
+#   - groq/qwen-2.5-coder-32b: verified correct as originally proposed
+#     (confirmed live on GroqCloud via Groq's own docs), kept as-is.
+#
+# Also deepened heavy-code's fallback chain from a single fallback
+# (heavy-code -> fast-code) to the full 4-model chain already validated
+# in this project's own dispatch_cline.sh / CLAUDE.md free-model roster.
+# Real dispatch history tonight exhausted all 4 tiers multiple times
+# before a model actually completed the work -- a 1-deep fallback would
+# have failed outright on several of those real runs.
+#
+# SECURITY: master_key below is a literal secret, not an os.environ/ ref
+# like the api_keys are. Do not commit this file with a real key in it --
+# either .gitignore this path or move master_key to os.environ/LITELLM_MASTER_KEY
+# before this ever lands in the repo for real.
+
+model_list:
+  # Stage 10: Spec consult & read-only verification (fast, cheap fact-
+  # checking against actual code -- NOT a replacement for the Gemini-via-
+  # claude-in-chrome genre-research path already established in
+  # AI-ENG-001, which stays browser-based; this is for lighter-weight,
+  # scriptable spec-vs-code sanity checks).
+  - model_name: spec-check
+    litellm_params:
+      model: gemini/gemini-3.5-flash
+      api_key: os.environ/GEMINI_API_KEY
+
+  # Fast edits, linter checks, and fallbacks.
+  - model_name: fast-code
+    litellm_params:
+      model: groq/qwen-2.5-coder-32b
+      api_key: os.environ/GROQ_API_KEY
+
+  # Stage 3: Primary feature implementation. Chain mirrors
+  # scripts/ci/dispatch_cline.sh's own MODELS array exactly -- same
+  # roster, same order, already proven in production on this project.
+  - model_name: heavy-code
+    litellm_params:
+      model: openrouter/minimax/minimax-m3:free
+      api_key: os.environ/OPENROUTER_API_KEY
+
+  - model_name: heavy-code-fallback-1
+    litellm_params:
+      model: openrouter/nvidia/nemotron-3-ultra-550b-a55b:free
+      api_key: os.environ/OPENROUTER_API_KEY
+
+  - model_name: heavy-code-fallback-2
+    litellm_params:
+      model: openrouter/poolside/laguna-xs-2.1:free
+      api_key: os.environ/OPENROUTER_API_KEY
+
+  - model_name: heavy-code-fallback-3
+    litellm_params:
+      model: openrouter/cohere/north-mini-code:free
+      api_key: os.environ/OPENROUTER_API_KEY
+
+# Automatic failover routing on 429 rate limits or timeouts. Walks the
+# full chain before giving up, matching dispatch_cline.sh's own
+# "try next model in chain on a known provider failure" behavior --
+# though note LiteLLM's failover triggers on API-level errors (429/5xx/
+# timeout), which is a DIFFERENT signal than dispatch_cline.sh's own
+# "hook dispatch failed" log-grep trigger. These two retry mechanisms
+# are not guaranteed equivalent -- if this proxy replaces dispatch_cline.sh's
+# routing, re-verify against real failures before trusting it silently
+# catches the same failure modes dispatch_cline.sh was built to catch.
+fallbacks:
+  - heavy-code: ["heavy-code-fallback-1", "heavy-code-fallback-2", "heavy-code-fallback-3", "fast-code"]
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
