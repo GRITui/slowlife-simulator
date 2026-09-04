@@ -149,6 +149,14 @@ run_dialogue_portrait() {
 	godot --headless --path . --script res://tests/test_dialogue_portrait.gd
 }
 
+run_farmhouse_furniture() {
+	# TASK-374 Phase 1: floor_rug placement, FarmHouse-only, no rotation.
+	# Instances the real FarmHouse.tscn (not a mock) and drives the real
+	# toggle_furniture_place_mode/interact input actions.
+	echo "== farmhouse-furniture gate: tests/test_farmhouse_furniture.gd =="
+	godot --headless --path . --script res://tests/test_farmhouse_furniture.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -167,6 +175,7 @@ case "$GATE" in
 	particle_drivers) run_particle_drivers ;;
 	fog_driver) run_fog_driver ;;
 	dialogue_portrait) run_dialogue_portrait ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|all)" >&2; exit 2 ;;
+	farmhouse_furniture) run_farmhouse_furniture ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_farmhouse_furniture ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|farmhouse_furniture|all)" >&2; exit 2 ;;
 esac
