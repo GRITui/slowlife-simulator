@@ -2069,3 +2069,110 @@ category from the role reassessment, discovered live.
   only `Main.tscn`), which is a new, substantial feature area, not an
   art-asset task — tracked separately, not started yet as of this
   entry.
+
+## 2026-09-04 — Run 32 (AI-ENG-001 gap-analysis loop: fishing depth vs. HM:BtN)
+
+- **Trigger**: owner instruction "Start gap analysis loop" — no explicit
+  question queue supplied, so per AI-ENG-001's step-1 fallback, scanned
+  for a genuinely open genre-comparison gap rather than inventing one.
+- **Worker**: Gemini (`claude-in-chrome`, Flash), role: QA/Balance Tester
+  (existing system with no genre-comparison basis vs. HM:BtN).
+- **Question asked**: described FishingSpot.gd's actual current mechanic
+  verbatim (single interact → instant rarity-weighted roll, 20 species x
+  3 sizes, season + 1-4 skill gate, zero-fail/zero-minigame by design —
+  verified directly against the file before writing the prompt, not
+  assumed) and asked what specific mechanics HM:BtN/Stardew/Animal
+  Crossing use for fishing depth beyond a single roll, without requiring
+  a fail state. One bounded topic, per the spec.
+- **Answer summary**: Gemini named five categories with specific
+  game/mechanic pairs — cast-distance/charge → water-tier + quality
+  (Stardew), multi-stage bait chains and cook-to-unlock legendaries
+  (HM:BtN), fish-pond breeding/husbandry (HM:BtN), lure/tackle targeting
+  (Animal Crossing/Stardew), and collection/trophy logs (HM:BtN Fish
+  Prints, Animal Crossing museum). Full transcript not reproduced here;
+  see conversation if needed — treated as external genre knowledge, not
+  independently fact-checked claim-by-claim against the actual games,
+  per AI-ENG-001's stated limits on this role.
+- **Integration**: cross-checked every idea against this repo's actual
+  code (FishingSpot.gd, GameData.gd's `milestones_earned` pattern,
+  ChickenCoop.gd's existing breeding/hearts convention) before acting.
+  One idea — a "Fish Almanac" first-catch collection log — is purely
+  additive, reuses the existing milestone pattern exactly, and needed no
+  owner call: filed as **TASK-358**, `status: SPECCED`, ready for next
+  sprint slot. Two bigger ideas (a cast-distance/charge mechanic that
+  would change the single-press interact contract shared by every other
+  interactable in this codebase; fish-pond husbandry as a new persistent
+  structure) are genuine scope/direction calls, not engineering-scoped
+  tasks — filed separately as **TASK-359**, `status: NEEDS_OWNER_REVIEW`,
+  per the escalation rule, without blocking TASK-358.
+- **GitHub**: no issue opened for either — the GitHub MCP server is still
+  failing to connect (bad auth header, per AI-ENG-001 Open items) — flag
+  for whoever fixes that connection to open issues for TASK-358/359.
+- **Stop reason**: goal met — one integrated output (TASK-358) produced
+  within the first iteration, plus one correctly-escalated
+  NEEDS_OWNER_REVIEW item (TASK-359), well under the 5-iteration cap. No
+  suspicious content encountered on the Gemini page.
+
+## 2026-09-04 — Run 33 (AI-ENG-001 gap-analysis loop: farmhouse decor/customization vs. HM:BtN)
+
+- **Trigger**: owner instruction to run another gap-analysis pass in
+  parallel with an in-progress live playthrough session, explicitly
+  asked to cover a different area than the prior fishing-depth run
+  (Run 32). Reviewed ops/backlog-inbox.md's completed TASK entries and
+  every prior gap-analysis round in this log (Run 1, Run 16, the
+  2026-09-02 "quality/stickiness verdict") before picking a topic, to
+  avoid repeating fishing depth, festival density, milestone
+  collectibles, side-quests, weather-reactive dialogue, tool AoE, or
+  affinity decay -- all already covered.
+- **Pre-dispatch verification** (before writing the Gemini prompt, not
+  after): checked scripts/autoload/GameData.gd for an existing
+  tool-upgrade system (`tool_tiers`/`upgrade_tool()`) to confirm it was
+  a real, already-wired mechanic (confirmed: called from
+  VillagerNPC.gd, not dead code) before ruling it out as a topic, then
+  checked scenes/interiors/FarmHouse.gd directly and confirmed the
+  house has zero player-facing customization -- bed, shrine, and 4
+  decoration sprites (water_jar/clay_stove/pha_khao_ma/mohom_cloth) are
+  all hardcoded Sprite2D placements with no interact path to change
+  any of them, ever.
+- **Worker**: Gemini (`claude-in-chrome`, Flash), role: Designer (open
+  mechanic gap, no existing genre-comparison basis).
+- **Question asked**: described the farmhouse's actual current state
+  verbatim (fixed bed/shrine/decor, zero customization) and asked what
+  specific mechanics HM:BtN/Stardew Valley/Animal Crossing use for
+  house customization/furniture placement, and which would be feasible
+  without building a full drag-and-drop placement editor. One bounded
+  topic, per the spec.
+- **Answer summary**: Gemini named three tiers by mechanic and
+  implementation cost -- HM:BtN's fixed-slot carpenter-upgrade model
+  (TV-ordered items auto-instantiate at hardcoded coordinates, no
+  free placement), Stardew's free grid-based carried-furniture
+  placement with collision/layering, and Animal Crossing's evolution
+  from manual pushing to a full layout-editor mode plus a Happy-Home-
+  Academy style set-synergy score. For a codebase without an existing
+  placement/collision system, it recommended a "slot anchor" hybrid:
+  keep positions fixed but make them interactive, letting the player
+  pick any owned item per slot category from a list -- cheaper than
+  Stardew's free placement, more player-agency than HM:BtN's linear
+  unlock-only model. No suspicious/injected content on the page.
+- **Integration**: cross-checked the recommendation against this
+  repo's actual code before acting -- confirmed the "anchor slot"
+  model maps directly onto FarmHouse.gd's existing hardcoded decor
+  positions (just needs interact + a lookup dict, no new collision/
+  grid system), and that GameData.gd already has a proven small-dict
+  persistence pattern to copy (`tool_tiers`) plus a working buy-list UI
+  to sell alternate decor through (MarketShop.gd, just improved this
+  session with 3-column/readability fixes). Filed as **TASK-360**,
+  `status: SPECCED` -- purely additive, no schema-breaking change, no
+  open design question, reuses two existing patterns exactly. The
+  bigger option (full Stardew/Animal-Crossing-style free furniture
+  placement with inventory-carried items and real collision/layering)
+  is a genuine new-system scope call, not an engineering-scoped task --
+  filed separately as **TASK-361**, `status: NEEDS_OWNER_REVIEW`, per
+  the escalation rule, without blocking TASK-360.
+- **GitHub**: no issue opened for either — the GitHub MCP server is
+  still failing to connect (bad auth header, per AI-ENG-001 Open
+  items) — flag for whoever fixes that connection to open issues for
+  TASK-360/361.
+- **Stop reason**: goal met — one integrated output (TASK-360)
+  produced within the first iteration, plus one correctly-escalated
+  NEEDS_OWNER_REVIEW item (TASK-361), well under the 5-iteration cap.

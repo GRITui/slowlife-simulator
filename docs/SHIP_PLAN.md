@@ -215,19 +215,29 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       task — mechanical implementation delegated to OpenCode, dialogue
       self-executed; Code Quality Review caught and fixed a real
       alpha-channel bug in the delegate's portrait script before merge.
-- [ ] 10-level system, phases 2-3 — animals (TASK-348) and villagers
-      (TASK-349), folded into the same plan per owner request.
-- [ ] Sprint 4 — 2 more unlockable areas (Deep Canal Bend, Sacred Grove).
-      TASK-343.
-- [ ] Sprint 5 — final 2 unlockable areas (Lotus Maze Shore, Coastal
-      Trading Post), completing the set of 5. TASK-344.
+- [PAUSED] 10-level system, phases 2-3 — animals (TASK-348) and
+      villagers (TASK-349), folded into the same plan per owner request.
+      Paused 2026-09-04 (see owner decision below) — not dropped.
+- [PAUSED] Sprint 4 — 2 more unlockable areas (Deep Canal Bend, Sacred
+      Grove). TASK-343. Paused 2026-09-04.
+- [PAUSED] Sprint 5 — final 2 unlockable areas (Lotus Maze Shore,
+      Coastal Trading Post), completing the set of 5. TASK-344. Paused
+      2026-09-04.
 - [ ] **Deferred fast-follow (per Gemini second opinion + owner
       "Proceed" 2026-09-02):** 1 new scored mini-game (Harvest Race,
       Yai/Ek) + 3 rival quest chains with a 30-day bidirectional
       deadline (Note/Chang — mask-carving; Fon/Klong — festival
       performance; Boon/Yaa — remedy quest) — specced after the 8
-      sprints above ship, not before.
-- [ ] Full human playthrough pass (headless tests don't substitute for this)
+      sprints above ship, not before. Also blocked behind the
+      playthrough per the same 2026-09-04 decision.
+- [ ] **Full human playthrough pass — PROMOTED to immediate next step
+      (owner decision, 2026-09-04).** Content sprints above (TASK-343,
+      344, 348, 349) explicitly paused, not sequenced around — this is
+      the highest-leverage gap and has been flagged twice before without
+      acting on it; the one time it did happen it caught 2 real bugs
+      (permanently-opaque day/night shader, stat bars never rendering)
+      that the full headless suite missed entirely. Resume the paused
+      content sprints only after this pass and its fixes land.
 - [ ] Performance budget check on real iOS hardware (frame time/thermal,
       not just Compatibility-renderer correctness)
 - [ ] Art pass: 16-color palette consistency, texture compression sizes
@@ -243,14 +253,16 @@ window from first meeting, 3 telegraphed warnings, soft landing on loss.
       `com.gritui.slowlife-simulator`)
 - [ ] `[HOLD → RESOLVE]` Team ID / signing
 - [ ] Store listing: name, screenshots, description, age rating
-- [ ] Pricing/monetization model — **NEEDS OWNER DECISION** (no
-      monetization code exists today)
+- [ ] Pricing/monetization model — **NEEDS OWNER DECISION, explicitly
+      parked for now (2026-09-04)** — not urgent pre-playthrough; revisit
+      when Phase 4 actually starts (no monetization code exists today)
 - [ ] TestFlight build, external testers, feedback loop
 - [ ] App Store review submission
 
 ## Phase 5 — Launch
 - [ ] Release build shipped
-- [ ] Launch-day monitoring plan — **NEEDS OWNER DECISION** (no
+- [ ] Launch-day monitoring plan — **NEEDS OWNER DECISION, explicitly
+      parked for now (2026-09-04)** — not urgent pre-playthrough (no
       crash-reporting/analytics pipeline exists yet)
 
 ## Phase 6 — Post-launch / Live-ops
