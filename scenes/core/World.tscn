@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://main000001"]
+[gd_scene load_steps=16 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/World.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="15_door"]
 [ext_resource type="Script" path="res://scenes/core/DayNightTintDriver.gd" id="11_dnt"]
+[ext_resource type="Script" path="res://scenes/core/FogDriver.gd" id="17_fog"]
 [ext_resource type="Script" path="res://scenes/core/WorldRender.gd" id="1_wr"]
 [ext_resource type="PackedScene" path="res://scenes/core/GridManager.tscn" id="3_gm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/MonkNPC.tscn" id="4_monk"]
@@ -121,6 +122,23 @@ mouse_filter = 2
 [node name="DayNightTintDriver" type="CanvasLayer" parent="."]
 layer = 4
 script = ExtResource("11_dnt")
+
+[node name="FogLayer" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="FogRect" type="ColorRect" parent="FogLayer"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.88, 0.92, 0.12)
+mouse_filter = 2
+
+[node name="FogDriver" type="CanvasLayer" parent="."]
+layer = 3
+script = ExtResource("17_fog")
 
 [node name="FarmHouseDoor" parent="." instance=ExtResource("15_door")]
 position = Vector2(168, 456)

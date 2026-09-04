@@ -113,6 +113,19 @@ run_recipe_unlocks() {
 	godot --headless --path . --script res://tests/test_recipe_unlocks.gd
 }
 
+run_fog_driver() {
+	# TASK-365 fog weather VFX. Bus-only driver script toggles a sibling
+	# ColorRect's visible state on SignalBus.weather_changed ("fog" ->
+	# visible, anything else -> hidden). Same shape as RainDriver /
+	# HeatHazeDriver / DayNightTintDriver; this gate is the first test
+	# to assert the full wiring path (script + sibling nodes present in
+	# World.tscn + signal-driven toggle actually fires) — guards against
+	# the TASK-366 orphan-script class where the .gd exists but no node
+	# in the scene tree references it.
+	echo "== fog-driver gate: tests/test_fog_driver.gd =="
+	godot --headless --path . --script res://tests/test_fog_driver.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -128,6 +141,7 @@ case "$GATE" in
 	fish_almanac) run_fish_almanac ;;
 	carpenter_upgrade) run_carpenter_upgrade ;;
 	recipe_unlocks) run_recipe_unlocks ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|all)" >&2; exit 2 ;;
+	fog_driver) run_fog_driver ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_fog_driver ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|fog_driver|all)" >&2; exit 2 ;;
 esac
