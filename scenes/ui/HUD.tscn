@@ -202,6 +202,13 @@ theme_override_colors/font_color = Color(0.3, 0.5, 0.3, 1)
 theme_override_font_sizes/font_size = 10
 horizontal_alignment = 1
 
+[node name="AlmanacLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
+layout_mode = 2
+text = "Almanac: 0/60"
+theme_override_colors/font_color = Color(0.27, 0.55, 0.45, 1)
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+
 [node name="TimeLabel" type="Label" parent="Margin/Root/StatPanel/HBox/TimeBox"]
 layout_mode = 2
 text = "06:00  Day 1"

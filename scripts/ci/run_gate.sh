@@ -76,6 +76,17 @@ run_transition_fade() {
 	godot --headless --path . --script res://tests/test_transition_fade.gd
 }
 
+run_fish_almanac() {
+	# TASK-358 fish almanac — first-catch collection log for the fishing
+	# system. Covers GameData.record_catch() idempotency, the live
+	# FishingSpot.cast_line() call site that emits the first-catch
+	# dialogue, and the HUD AlmanacLabel readout. The save/load
+	# round-trip for fish_almanac itself lives in tests/test_save_compat.gd
+	# alongside the other milestones_earned-style entries.
+	echo "== fish-almanac gate: tests/test_fish_almanac.gd =="
+	godot --headless --path . --script res://tests/test_fish_almanac.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -87,6 +98,7 @@ case "$GATE" in
 	area_edges) run_area_edges ;;
 	farmhouse_content) run_farmhouse_content ;;
 	transition_fade) run_transition_fade ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_transition_fade ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|transition_fade|all)" >&2; exit 2 ;;
+	fish_almanac) run_fish_almanac ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_transition_fade && run_fish_almanac ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|transition_fade|fish_almanac|all)" >&2; exit 2 ;;
 esac

@@ -7,6 +7,9 @@ extends SceneTree
 # audit found was previously silently dropped on every save/load cycle —
 # tool tiers, skills, affinity/hearts, herd counts, quests, marriage,
 # infrastructure. See scripts/persistence/SaveManager.gd's header comment.
+# TASK-358: extended to v7, which persists the fish_almanac first-catch
+# collection log. Same primitives-only Dict-of-bool shape as v4's
+# milestones_earned (the migration block we mirror here).
 
 const SaveManagerScript: GDScript = preload("res://scripts/persistence/SaveManager.gd")
 
@@ -32,7 +35,7 @@ func _initialize() -> void:
 		"season": "cool",
 	}
 	var m: Dictionary = sm.migrate(v1)
-	_check(int(m.get("version", 0)) == 6, "migrate advances v1 all the way to version 6")
+	_check(int(m.get("version", 0)) == 7, "migrate advances v1 all the way to version 7")
 	var inv: Dictionary = m.get("inventory", {}) as Dictionary
 	_check(inv.get("rice_grain") is int and int(inv["rice_grain"]) == 3,
 		"migrate coerces inventory floats to int (rice_grain)")
@@ -55,6 +58,9 @@ func _initialize() -> void:
 	_check((m.get("rival_progress", {"x": 1}) as Dictionary).is_empty(), "v1->v5 default-adds rival_progress={}")
 	_check((m.get("rival_friendship", {"x": 1}) as Dictionary).is_empty(), "v1->v5 default-adds rival_friendship={}")
 	_check((m.get("rival_confessed", {"x": 1}) as Dictionary).is_empty(), "v1->v5 default-adds rival_confessed={}")
+	# TASK-358: v6->v7 default-adds the fish_almanac first-catch log.
+	_check((m.get("fish_almanac", {"x": 1}) as Dictionary).is_empty(),
+		"v1->v7 default-adds fish_almanac={}")
 
 	# --- migrate(): v1 without new v2 fields gets default-added ---
 	var v1_no_krathong: Dictionary = {
@@ -71,7 +77,7 @@ func _initialize() -> void:
 	# --- migrate(): a v2 payload (no v3 fields yet) advances to v3 with defaults ---
 	var v2: Dictionary = {"version": 2, "inventory": {"mango": 2}, "harmony": 5, "season": "hot"}
 	var m2: Dictionary = sm.migrate(v2)
-	_check(int(m2.get("version", 0)) == 6, "migrate advances v2 payload to version 6")
+	_check(int(m2.get("version", 0)) == 7, "migrate advances v2 payload to version 7")
 	_check((m2.get("inventory", {}) as Dictionary).get("mango") == 2, "v2 inventory preserved")
 	_check(int(m2.get("veteran_year", -1)) == 1, "v2->v3 default-adds veteran_year=1")
 	_check(int(m2.get("married_year", -1)) == 0, "v2->v3 default-adds married_year=0")
@@ -80,7 +86,7 @@ func _initialize() -> void:
 	var v3: Dictionary = {"version": 3, "inventory": {"mango": 2}, "harmony": 5, "season": "hot",
 		"fishing_skill": 3, "married": true, "spouse": "ek"}
 	var m3: Dictionary = sm.migrate(v3)
-	_check(int(m3.get("version", 0)) == 6, "migrate advances v3 payload to version 6")
+	_check(int(m3.get("version", 0)) == 7, "migrate advances v3 payload to version 7")
 	_check(int(m3.get("fishing_skill", 0)) == 3, "v3 fishing_skill preserved, not reset to default")
 	_check(bool(m3.get("married", false)) == true and String(m3.get("spouse", "")) == "ek",
 		"v3 marriage state preserved, not reset to default")
@@ -91,7 +97,7 @@ func _initialize() -> void:
 		"fishing_skill": 3, "married": true, "spouse": "ek",
 		"lost_to_rival": {"fah": true}, "milestones_earned": {"deep_miner": true}}
 	var m4: Dictionary = sm.migrate(v4)
-	_check(int(m4.get("version", 0)) == 6, "migrate advances v4 payload to version 6")
+	_check(int(m4.get("version", 0)) == 7, "migrate advances v4 payload to version 7")
 	_check(bool((m4.get("lost_to_rival", {}) as Dictionary).get("fah", false)),
 		"v4 lost_to_rival preserved, not reset to default")
 	_check(bool((m4.get("milestones_earned", {}) as Dictionary).get("deep_miner", false)),
@@ -106,13 +112,29 @@ func _initialize() -> void:
 		"lost_to_rival": {"fah": true}, "milestones_earned": {"deep_miner": true},
 		"rival_progress": {"fah": 42.5}, "rival_friendship": {"ohm": 60}, "rival_confessed": {"ohm": true}}
 	var m5: Dictionary = sm.migrate(v5)
-	_check(int(m5.get("version", 0)) == 6, "migrate advances v5 payload to version 6 (TASK-357 scene_path)")
+	_check(int(m5.get("version", 0)) == 7, "migrate advances v5 payload to version 7 (TASK-357 scene_path + TASK-358 fish_almanac)")
 	_check(is_equal_approx(float((m5.get("rival_progress", {}) as Dictionary).get("fah", 0.0)), 42.5),
 		"v5 rival_progress preserved, not reset to default")
 	_check(int((m5.get("rival_friendship", {}) as Dictionary).get("ohm", 0)) == 60,
 		"v5 rival_friendship preserved, not reset to default")
 	_check(bool((m5.get("rival_confessed", {}) as Dictionary).get("ohm", false)),
 		"v5 rival_confessed preserved, not reset to default")
+
+	# --- migrate(): a v6 payload (no v7 fish_almanac yet) advances to v7 ---
+	# Mirrors the v5->v6 case the file had pre-TASK-358. A save from
+	# before the almanac landed loads as if the player had never caught
+	# anything for the log — fully backward-compatible, no behavior change.
+	var v6: Dictionary = {"version": 6, "inventory": {"mango": 2}, "harmony": 5, "season": "hot",
+		"fishing_skill": 3, "married": true, "spouse": "ek",
+		"lost_to_rival": {"fah": true}, "milestones_earned": {"deep_miner": true},
+		"rival_progress": {"fah": 42.5}, "rival_friendship": {"ohm": 60}, "rival_confessed": {"ohm": true},
+		"scene_path": "res://scenes/interiors/FarmHouse.tscn"}
+	var m6: Dictionary = sm.migrate(v6)
+	_check(int(m6.get("version", 0)) == 7, "migrate advances v6 payload to version 7 (TASK-358 fish_almanac)")
+	_check((m6.get("fish_almanac", {"x": 1}) as Dictionary).is_empty(),
+		"v6->v7 default-adds fish_almanac={}")
+	_check(String(m6.get("scene_path", "")) == "res://scenes/interiors/FarmHouse.tscn",
+		"v6 scene_path preserved across the v6->v7 bump")
 
 	# --- round-trip via real file IO (user://) ---
 	var gd0: Node = root.get_node("GameData")
@@ -145,6 +167,10 @@ func _initialize() -> void:
 	gd0.rival_progress["fah"] = 33.3
 	gd0.rival_friendship["ohm"] = 45
 	gd0.rival_confessed["ohm"] = true
+	# TASK-358: seed fish_almanac with two first-catches — round-trip
+	# must restore both pairs (mirrors the milestones_earned row above).
+	gd0.fish_almanac["pla_nin|small"] = true
+	gd0.fish_almanac["pla_duk|big"] = true
 	var saved: bool = sm.save_game()
 	_check(saved, "save_game() writes user://savegame.json")
 	# Mutate state to defaults, then load must restore every field above.
@@ -172,6 +198,8 @@ func _initialize() -> void:
 	gd0.rival_progress.clear()
 	gd0.rival_friendship.clear()
 	gd0.rival_confessed.clear()
+	# TASK-358: wipe fish_almanac too so the round-trip must restore it.
+	gd0.fish_almanac.clear()
 	var loaded: bool = sm.load_game()
 	_check(loaded, "load_game() reads saved file back")
 	var gd: Node = root.get_node("GameData")
@@ -198,13 +226,20 @@ func _initialize() -> void:
 	_check(is_equal_approx(float(gd.rival_progress.get("fah", 0.0)), 33.3), "round-trip restores rival_progress")
 	_check(int(gd.rival_friendship.get("ohm", 0)) == 45, "round-trip restores rival_friendship")
 	_check(bool(gd.rival_confessed.get("ohm", false)), "round-trip restores rival_confessed")
+	# TASK-358: fish_almanac round-trip — both seeded pairs must come back.
+	_check(gd.fish_almanac.size() == 2,
+		"round-trip restores fish_almanac (size=2)")
+	_check(bool(gd.fish_almanac.get("pla_nin|small", false)),
+		"round-trip restores fish_almanac[pla_nin|small]")
+	_check(bool(gd.fish_almanac.get("pla_duk|big", false)),
+		"round-trip restores fish_almanac[pla_duk|big]")
 
 	# --- saved file carries the version tag ---
 	var f: FileAccess = FileAccess.open("user://savegame.json", FileAccess.READ)
 	var raw: String = f.get_as_text() if f else ""
 	var parsed: Variant = JSON.parse_string(raw)
-	_check(parsed is Dictionary and int((parsed as Dictionary).get("version", 0)) == 6,
-		"saved JSON carries version=6")
+	_check(parsed is Dictionary and int((parsed as Dictionary).get("version", 0)) == 7,
+		"saved JSON carries version=7")
 
 	sm.queue_free()
 	print("\n=== SAVE-COMPAT TESTS: %d passed, %d failed ===" % [_passed, _failed])

@@ -156,6 +156,28 @@ func earn_milestone(id: String, reward_harmony: int = 10) -> bool:
 	add_harmony(reward_harmony)
 	return true
 
+# TASK-358 fish almanac — a first-catch collection log for the fishing
+# system. Same idempotent shape as `earn_milestone` (which is a one-shot
+# per-id boolean) but tracking every unique (species_id, size) pair ever
+# caught, so a species seen as "small" still grants +5 when later caught
+# as "big". Keyed by "%s|%s" so persistence stays
+# primitives-only — matching the project's existing save-compat
+# conventions for Dictionary fields.
+var fish_almanac: Dictionary = {}
+
+## Idempotent. Records that (species_id, size) was caught at least once;
+## returns true ONLY the first time that exact pair is seen (and grants
+## +5 harmony then). All later calls for the same pair return false with
+## no further mutation. Mirrors earn_milestone()'s shape exactly so
+## SaveManager/save-compat code can treat them uniformly.
+func record_catch(species_id: String, size: String) -> bool:
+	var key: String = "%s|%s" % [species_id, size]
+	if fish_almanac.get(key, false):
+		return false
+	fish_almanac[key] = true
+	add_harmony(5)
+	return true
+
 # TASK-060 tool upgrade tiers (1=basic, 2=bronze, 3=iron). Effects:
 #   watering_can: watered plots also pre-advance growth (tier*30 effective
 #   minutes) and watering costs no stamina above tier 1.

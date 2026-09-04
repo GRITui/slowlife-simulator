@@ -10,9 +10,12 @@ extends Node
 # affinity, herd counts, NPC affinity, quests, marriage, infrastructure
 # repairs, veteran year) was silently dropped on every save/load cycle,
 # including all of it added across TASK-321..326. v3 persists all of it.
+# v7 (TASK-358): fish_almanac — first-catch collection log for the fishing
+# system. Same idempotent-Dictionary shape as milestones_earned (added in
+# v4), so persistence follows the same default-on-add pattern.
 
 const SAVE_PATH: String = "user://savegame.json"
-const SAVE_VERSION: int = 6
+const SAVE_VERSION: int = 7
 
 # Dynamic autoload helpers — safe in main scene, --script, and packaged export.
 func _gd() -> Node:
@@ -96,6 +99,11 @@ func save_game() -> bool:
 		"rival_progress": gd.rival_progress,
 		"rival_friendship": gd.rival_friendship,
 		"rival_confessed": gd.rival_confessed,
+		# v7 additive field — TASK-358 fish_almanac — first-catch collection
+		# log. Same primitives-only Dict-of-bool shape as milestones_earned.
+		# (v6's scene_path lives at the top of the data dict alongside
+		# player_pos; see load_game() and the v5->v6 migration block below.)
+		"fish_almanac": gd.fish_almanac,
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -222,6 +230,15 @@ func migrate(data: Dictionary) -> Dictionary:
 			out["scene_path"] = String(ProjectSettings.get_setting(
 				"application/run/main_scene", "res://scenes/core/World.tscn"))
 		out["version"] = 6
+	# v6 -> v7: TASK-358 fish_almanac — first-catch collection log.
+	# Pure additive Dict-of-bool (same shape as v4's milestones_earned),
+	# so default to {} for any save from before this task: a player who
+	# never had a fish_almanac starts with an empty one, fully
+	# backward-compatible, no behavior change for existing saves.
+	if version < 7:
+		if not out.has("fish_almanac"):
+			out["fish_almanac"] = {}
+		out["version"] = 7
 	return out
 
 func load_game() -> bool:
@@ -282,6 +299,10 @@ func load_game() -> bool:
 		gd.rival_progress = (data.get("rival_progress", {}) as Dictionary).duplicate(true)
 		gd.rival_friendship = (data.get("rival_friendship", {}) as Dictionary).duplicate(true)
 		gd.rival_confessed = (data.get("rival_confessed", {}) as Dictionary).duplicate(true)
+		# TASK-358: fish_almanac first-catch collection log. Defaults to {}
+		# for any save from before v7 (the v6->v7 migration block supplies
+		# that exact default).
+		gd.fish_almanac = (data.get("fish_almanac", {}) as Dictionary).duplicate(true)
 		# TASK-357: restore the actual scene + position the save was made in,
 		# instead of leaving the player wherever they currently are (which,
 		# before this fix, was always whatever the main scene's own default
