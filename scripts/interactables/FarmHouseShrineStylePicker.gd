@@ -20,28 +20,6 @@ extends Node2D
 ## style picker's own Sprite2D is intentionally tiny/invisible — the
 ## "decor" lives on the adjacent FarmHouseShrine node (FarmHouse.gd
 ## drives its texture from GameData.decor_choice()).
-##
-## FarmHouseBedStylePicker — TASK-367 farmhouse decor anchor-slots.
-## A small sibling interactable that sits next to the existing
-## FarmHouseBed and lets the player cycle through the bed's
-## currently-owned styles. Each press of `interact` advances one slot
-## in `GameData.owned_decor_styles("bed")` and calls
-## `GameData.set_decor_choice("bed", next_style)`. On success the
-## new style name is announced via SignalBus.show_dialogue and the
-## SignalBus.decor_style_changed signal fires so any area's bed
-## sprite can re-skin itself.
-##
-## Deliberately NOT a full picker UI: a single interact-to-cycle is the
-## right scope for TASK-367 (following TASK-360's pattern). The list
-## it cycles over is `owned_decor_styles()`, so unowned styles are
-## silently absent — the player cannot reach them without first buying
-## the matching blueprint at the market.
-##
-## Same InteractArea + `interact` action convention as
-## FarmHouseShrineStylePicker.gd. The
-## style picker's own Sprite2D is intentionally tiny/invisible — the
-## "decor" lives on the adjacent FarmHouseBed node (FarmHouse.gd
-## drives its texture from GameData.decor_choice()).
 
 const SLOT: String = "shrine"
 

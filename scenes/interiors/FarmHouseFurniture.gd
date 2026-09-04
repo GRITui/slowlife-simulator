@@ -28,6 +28,7 @@ const OCCUPIED_CELLS: Array = [
 	Vector2i(1, 1),  # Bed (72, 72)
 	Vector2i(4, 1),  # Shrine (216, 72)
 	Vector2i(5, 2),  # ShrineStylePicker (264, 120)
+	Vector2i(1, 2),  # BedStylePicker (72, 120) -- TASK-367
 ]
 
 var _place_mode: bool = false

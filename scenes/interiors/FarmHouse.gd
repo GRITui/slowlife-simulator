@@ -135,6 +135,8 @@ func _build_render() -> void:
 	# save/load round-trips (no Shrine-side change needed; GameData already
 	# holds the persisted choice before _ready runs).
 	_apply_shrine_style()
+	# TASK-367: same re-skin-on-ready treatment for the bed slot.
+	_apply_bed_style()
 	# Listen for live style changes from the new style picker interactable
 	# so re-skinning happens in real time without a scene reload.
 	SignalBus.decor_style_changed.connect(_on_decor_style_changed)
@@ -182,12 +184,12 @@ func _apply_bed_style() -> void:
 	sprite.texture = tex
 
 func _on_decor_style_changed(slot: String, _style: String) -> void:
-	# Only the "shrine" slot has a visual in here today; other future
-	# slots (bed, kitchen) would gate on `slot == "shrine"` the same way.
-	# Re-applying on every event keeps this a one-liner that future slots
-	# can extend by checking their own slot id.
+	# TASK-367: bed is now a second live slot alongside shrine. Future
+	# slots (kitchen, etc.) extend this the same way.
 	if slot == "shrine":
 		_apply_shrine_style()
+	elif slot == "bed":
+		_apply_bed_style()
 
 ## BUGFIX (Code Quality Review): Player.gd's _try_grid_interact() and
 ## _mounted_interact_3x3() call gm.plant()/water()/harvest() DIRECTLY, with
