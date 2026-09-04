@@ -294,3 +294,78 @@ func _run_all() -> void:
 	# Leave GameData in a clean state for any test that runs after us.
 	gd_node.decor_choices.clear()
 	gd_node.inventory.clear()
+
+	await _run_bed_checks(gd_node, sb_node)
+
+# TASK-367: second decor slot (bed), extending TASK-360's pattern. Slimmer
+# than the shrine block above -- the generic decor_choices/set_decor_choice/
+# owned_decor_styles machinery and the save/load round-trip are already
+# proven slot-agnostic there; this covers only what's actually NEW: the
+# "bed" catalogue entry, the FarmHouseBedStylePicker interactable, the
+# market gate for ornate_bed_blueprint, and FarmHouse.gd's live re-skin of
+# the Bed sprite (which Code Quality Review found was never wired to
+# either _ready() or _on_decor_style_changed() in the original diff).
+const BED_PICKER_PATH: String = "res://scenes/interactables/FarmHouseBedStylePicker.tscn"
+
+func _run_bed_checks(gd_node: Node, sb_node: Node) -> void:
+	gd_node.decor_choices.clear()
+	gd_node.inventory.clear()
+
+	_check(String(gd_node.decor_choice("bed")) == "basic",
+		"decor_choice('bed') defaults to 'basic' when unset (got '%s')"
+			% String(gd_node.decor_choice("bed")))
+	_check(gd_node.set_decor_choice("bed", "ornate") == false,
+		"set_decor_choice('bed', 'ornate') REJECTS when blueprint unowned")
+
+	gd_node.add_item("ornate_bed_blueprint", 1)
+	_check(gd_node.set_decor_choice("bed", "ornate") == true,
+		"set_decor_choice('bed', 'ornate') ACCEPTS when blueprint owned")
+	_check(String(gd_node.decor_choice("bed")) == "ornate",
+		"decor_choice('bed') now returns 'ornate'")
+
+	var picker_scene: PackedScene = load(BED_PICKER_PATH) as PackedScene
+	_check(picker_scene != null, "FarmHouseBedStylePicker.tscn loads as a PackedScene")
+
+	var farm_scene: PackedScene = load(FARMHOUSE_PATH) as PackedScene
+	_check(farm_scene != null, "FarmHouse.tscn loads as a PackedScene (bed check)")
+	if farm_scene == null:
+		return
+	var farm_node: Node = farm_scene.instantiate()
+	root.add_child(farm_node)
+	await process_frame
+
+	# FarmHouse._ready() should have already applied the persisted "ornate"
+	# choice on boot -- this is the _apply_bed_style() call-on-ready path
+	# Code Quality Review added (it was missing entirely in the original diff).
+	var bed: Node = farm_node.get_node_or_null("Bed")
+	var bed_sprite: Sprite2D = bed.get_node_or_null("Sprite2D") as Sprite2D if bed != null else null
+	_check(bed_sprite != null, "FarmHouse's Bed node has a Sprite2D")
+	if bed_sprite != null:
+		var tex_on_boot: String = bed_sprite.texture.resource_path if bed_sprite.texture != null else ""
+		_check(tex_on_boot == "res://assets/environment/mohom_cloth.png",
+			"on _ready(): Bed Sprite2D already reflects the persisted 'ornate' choice (got '%s')"
+				% tex_on_boot)
+
+		# Live re-skin path: FarmHouse.gd's _on_decor_style_changed() must
+		# gate on slot == "bed" too, not just "shrine" -- Code Quality
+		# Review found the original diff's listener silently ignored bed
+		# events entirely.
+		gd_node.set_decor_choice("bed", "basic")
+		sb_node.decor_style_changed.emit("bed", "basic")
+		await process_frame
+		var tex_after: String = bed_sprite.texture.resource_path if bed_sprite.texture != null else ""
+		_check(tex_after == "res://assets/environment/pha_khao_ma.png",
+			"on decor_style_changed('bed', ...): Bed Sprite2D swaps to pha_khao_ma (got '%s')"
+				% tex_after)
+
+	# BedStylePicker must actually be instanced in the real scene, not
+	# just exist as an orphaned .tscn file (same class of bug this
+	# project keeps finding -- see TASK-366/369/373/376/378).
+	var bed_picker: Node = farm_node.get_node_or_null("BedStylePicker")
+	_check(bed_picker != null,
+		"FarmHouse.tscn actually instances a BedStylePicker node (not orphaned)")
+
+	farm_node.queue_free()
+
+	gd_node.decor_choices.clear()
+	gd_node.inventory.clear()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://farmhouse352"]
+[gd_scene load_steps=8 format=3 uid="uid://farmhouse352"]
 
 [ext_resource type="Script" path="res://scenes/interiors/FarmHouse.gd" id="1_farm"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="2_door"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/interactables/FarmHouseShrine.tscn" id="4_shrine"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/FarmHouseShrineStylePicker.tscn" id="5_picker"]
 [ext_resource type="Script" path="res://scenes/interiors/FarmHouseFurniture.gd" id="6_furniture"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/FarmHouseBedStylePicker.tscn" id="7_bedpicker"]
 
 [node name="FarmHouse" type="Node2D"]
 y_sort_enabled = true
@@ -26,6 +27,9 @@ position = Vector2(216, 72)
 
 [node name="ShrineStylePicker" parent="." instance=ExtResource("5_picker")]
 position = Vector2(264, 120)
+
+[node name="BedStylePicker" parent="." instance=ExtResource("7_bedpicker")]
+position = Vector2(72, 120)
 
 [node name="FarmHouseFurniture" type="Node2D" parent="."]
 script = ExtResource("6_furniture")

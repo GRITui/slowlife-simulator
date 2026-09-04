@@ -48,6 +48,11 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		# who's done a few carpenter upgrades can afford it without
 		# grinding a full season.
 		{"item": "ornate_shrine_blueprint", "price": 50},
+		# TASK-367: ornate_bed_blueprint unlocks the "ornate" style for the
+		# FarmHouseBed decor slot -- same convention as ornate_shrine_blueprint
+		# above (item_id must match GameData.DECOR_CATALOGUE exactly, not
+		# season-gated, listed in all three seasons).
+		{"item": "ornate_bed_blueprint", "price": 50},
 		{"item": "seed_cabbage", "price": 8},
 		{"item": "seed_garlic", "price": 8},
 		{"item": "seed_lettuce", "price": 8},
@@ -71,6 +76,7 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "shrimp_paste", "price": 16},
 		{"item": "fishing_rod", "price": 40},
 		{"item": "ornate_shrine_blueprint", "price": 50},
+		{"item": "ornate_bed_blueprint", "price": 50},
 		{"item": "floor_rug", "price": 25},
 		{"item": "seed_banana", "price": 15},
 		{"item": "seed_chili", "price": 9},
@@ -92,6 +98,7 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "fish_sauce", "price": 12},
 		{"item": "shrimp_paste", "price": 14},
 		{"item": "ornate_shrine_blueprint", "price": 50},
+		{"item": "ornate_bed_blueprint", "price": 50},
 		{"item": "floor_rug", "price": 25},
 		{"item": "seed_ginger", "price": 10},
 		{"item": "seed_lotus", "price": 12},

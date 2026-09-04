@@ -283,6 +283,13 @@ const DECOR_CATALOGUE: Dictionary = {
 			"ornate": "ornate_shrine_blueprint",
 		},
 	},
+	"bed": {
+		"default": "basic",
+		"styles": {
+			"basic": "",
+			"ornate": "ornate_bed_blueprint",
+		},
+	},
 }
 
 func _decor_default_style(slot: String) -> String:
