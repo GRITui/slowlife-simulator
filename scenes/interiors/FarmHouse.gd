@@ -45,6 +45,17 @@ const SHRINE_STYLE_PATHS: Dictionary = {
 	"basic": "res://assets/environment/structure_wall_front.png",
 	"ornate": "res://assets/environment/mohom_cloth.png",
 }
+# TASK-367: bed decor style -> Sprite2D texture path. \"basic\" keeps
+# the existing weathered-wood texture (pha_khao_ma.png) used as the bed
+# default, so an unset choice is a visual no-op. \"ornate\" reuses
+# mohom_cloth.png — the mo hom sarong hanging already used as decor
+# elsewhere in this scene, a patterned Thai-rural cloth that's the
+# closest existing asset to \"ornate\" bed styling without needing
+# new art. New styles append here AND in GameData.DECOR_CATALOGUE.
+const BED_STYLE_PATHS: Dictionary = {
+	"basic": "res://assets/environment/pha_khao_ma.png",
+	"ornate": "res://assets/environment/mohom_cloth.png",
+}
 
 @onready var _ground_layer: TileMapLayer = null
 
@@ -142,6 +153,27 @@ func _apply_shrine_style() -> void:
 	var path: String = SHRINE_STYLE_PATHS.get(style, "")
 	if path == "":
 		path = String(SHRINE_STYLE_PATHS.get("basic", ""))
+	if path == "":
+		return
+	var tex: Texture2D = load(path) as Texture2D
+	if tex == null:
+		return
+	sprite.texture = tex
+
+func _apply_bed_style() -> void:
+	# Resolve the current style -> path, fall back to "basic" if the
+	# catalogue has changed underneath us (defensive — should never happen
+	# at runtime but keeps a future catalog edit from breaking the room).
+	var bed: Node = get_node_or_null("Bed")
+	if bed == null:
+		return
+	var sprite: Sprite2D = bed.get_node_or_null("Sprite2D") as Sprite2D
+	if sprite == null:
+		return
+	var style: String = GameData.decor_choice("bed")
+	var path: String = BED_STYLE_PATHS.get(style, "")
+	if path == "":
+		path = String(BED_STYLE_PATHS.get("basic", ""))
 	if path == "":
 		return
 	var tex: Texture2D = load(path) as Texture2D

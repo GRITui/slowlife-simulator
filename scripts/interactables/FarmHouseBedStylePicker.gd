@@ -1,26 +1,4 @@
 extends Node2D
-## FarmHouseShrineStylePicker — TASK-360 farmhouse decor anchor-slots.
-## A small sibling interactable that sits next to the existing
-## FarmHouseShrine and lets the player cycle through the shrine's
-## currently-owned styles. Each press of `interact` advances one slot
-## in `GameData.owned_decor_styles("shrine")` and calls
-## `GameData.set_decor_choice("shrine", next_style)`. On success the
-## new style name is announced via SignalBus.show_dialogue and the
-## SignalBus.decor_style_changed signal fires so any area's shrine
-## sprite can re-skin itself.
-##
-## Deliberately NOT a full picker UI: a single interact-to-cycle is the
-## right scope for TASK-360 (the spec already settled this). The list
-## it cycles over is `owned_decor_styles()`, so unowned styles are
-## silently absent — the player cannot reach them without first buying
-## the matching blueprint at the market.
-##
-## Same InteractArea + `interact` action convention as
-## FarmHouseShrine.gd / CarpenterUpgrade.gd / FishingSpot.gd. The
-## style picker's own Sprite2D is intentionally tiny/invisible — the
-## "decor" lives on the adjacent FarmHouseShrine node (FarmHouse.gd
-## drives its texture from GameData.decor_choice()).
-##
 ## FarmHouseBedStylePicker — TASK-367 farmhouse decor anchor-slots.
 ## A small sibling interactable that sits next to the existing
 ## FarmHouseBed and lets the player cycle through the bed's
@@ -43,7 +21,7 @@ extends Node2D
 ## "decor" lives on the adjacent FarmHouseBed node (FarmHouse.gd
 ## drives its texture from GameData.decor_choice()).
 
-const SLOT: String = "shrine"
+const SLOT: String = "bed"
 
 var _player_in_range: bool = false
 var _owned_styles: Array[String] = []
@@ -65,7 +43,7 @@ func _ready() -> void:
 	_refresh_owned_styles()
 	if _prompt:
 		_prompt.visible = false
-		_prompt.text = "Press [E] to change shrine style"
+		_prompt.text = "Press [E] to change bed style"
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _player_in_range:
@@ -80,7 +58,7 @@ func _cycle_style() -> void:
 	# at the old tail.
 	_refresh_owned_styles()
 	if _owned_styles.is_empty():
-		SignalBus.show_dialogue.emit("Farmer", "The shrine sits quietly.")
+		SignalBus.show_dialogue.emit("Farmer", "The bed sits quietly.")
 		return
 	_cycle_index = (_cycle_index + 1) % _owned_styles.size()
 	var next_style: String = _owned_styles[_cycle_index]
@@ -89,7 +67,7 @@ func _cycle_style() -> void:
 		# but guard anyway — never crash on a UI edge case.
 		SignalBus.show_dialogue.emit("Farmer", "That style isn't available right now.")
 		return
-	SignalBus.show_dialogue.emit("Farmer", "Shrine style: %s." % _style_label(next_style))
+	SignalBus.show_dialogue.emit("Farmer", "Bed style: %s." % _style_label(next_style))
 	SignalBus.decor_style_changed.emit(SLOT, next_style)
 
 func _style_label(style: String) -> String:
