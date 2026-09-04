@@ -3,6 +3,10 @@
 [ext_resource type="Script" path="res://scenes/core/World.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="15_door"]
 [ext_resource type="Script" path="res://scenes/core/DayNightTintDriver.gd" id="11_dnt"]
+
+[ext_resource type="Script" path="res://scenes/core/RainDriver.gd" id="14_rain"]
+[ext_resource type="Script" path="res://scenes/core/HeatHazeDriver.gd" id="13_heat"]
+
 [ext_resource type="Script" path="res://scenes/core/WorldRender.gd" id="1_wr"]
 [ext_resource type="PackedScene" path="res://scenes/core/GridManager.tscn" id="3_gm"]
 [ext_resource type="PackedScene" path="res://scenes/entities/MonkNPC.tscn" id="4_monk"]
@@ -15,6 +19,11 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/MarketShop.tscn" id="12_marketshop"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/EdgeTransition.tscn" id="16_edge"]
 [ext_resource type="Texture2D" path="res://assets/characters/nok_idle_01.png" id="14_nok"]
+[ext_resource type="ParticleProcessMaterial" path="res://assets/particles/rain.tres" id="17_rainmat"]
+[ext_resource type="Texture2D" path="res://assets/particles/rain_streak.png" id="18_raintex"]
+[ext_resource type="ParticleProcessMaterial" path="res://assets/particles/leaves.tres" id="19_leafmat"]
+[ext_resource type="Texture2D" path="res://assets/particles/pollen_dot.png" id="20_leaftex"]
+[ext_resource type="Script" path="res://scenes/core/LeafDriver.gd" id="21_leaf"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -121,6 +130,49 @@ mouse_filter = 2
 [node name="DayNightTintDriver" type="CanvasLayer" parent="."]
 layer = 4
 script = ExtResource("11_dnt")
+
+[node name="HazeLayer" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="HazeRect" type="ColorRect" parent="HazeLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.85, 0.55, 0.25, 0.08)
+mouse_filter = 2
+visible = false
+
+[node name="HeatHazeDriver" type="CanvasLayer" parent="."]
+layer = 3
+script = ExtResource("13_heat")
+
+[node name="RainDriver" type="CanvasLayer" parent="."]
+layer = 6
+script = ExtResource("14_rain")
+
+[node name="RainParticles" type="GPUParticles2D" parent="RainDriver"]
+position = Vector2(800, -20)
+emitting = false
+amount = 200
+lifetime = 1.5
+speed_scale = 1.0
+process_material = ExtResource("17_rainmat")
+texture = ExtResource("18_raintex")
+
+[node name="LeafDriver" type="CanvasLayer" parent="."]
+layer = 6
+script = ExtResource("21_leaf")
+
+[node name="LeafParticles" type="GPUParticles2D" parent="LeafDriver"]
+position = Vector2(800, -20)
+emitting = false
+amount = 40
+lifetime = 6.0
+speed_scale = 1.0
+process_material = ExtResource("19_leafmat")
+texture = ExtResource("20_leaftex")
 
 [node name="FarmHouseDoor" parent="." instance=ExtResource("15_door")]
 position = Vector2(168, 456)

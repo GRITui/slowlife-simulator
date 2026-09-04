@@ -113,6 +113,18 @@ run_recipe_unlocks() {
 	godot --headless --path . --script res://tests/test_recipe_unlocks.gd
 }
 
+run_particle_drivers() {
+	# TASK-366 — RainDriver/HeatHazeDriver were complete, correct scripts
+	# that were never actually instanced as nodes in World.tscn (a real
+	# bug: the effects never ran in any real session despite passing
+	# review). This test instances the real World.tscn, not just the
+	# driver script in isolation, specifically so the same class of bug
+	# (script correct, node missing) fails loudly here in the future.
+	# Also covers the new always-on LeafDriver ambiance.
+	echo "== particle-drivers gate: tests/test_particle_drivers.gd =="
+	godot --headless --path . --script res://tests/test_particle_drivers.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -128,6 +140,7 @@ case "$GATE" in
 	fish_almanac) run_fish_almanac ;;
 	carpenter_upgrade) run_carpenter_upgrade ;;
 	recipe_unlocks) run_recipe_unlocks ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|all)" >&2; exit 2 ;;
+	particle_drivers) run_particle_drivers ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|all)" >&2; exit 2 ;;
 esac
