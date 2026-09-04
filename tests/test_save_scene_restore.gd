@@ -91,7 +91,7 @@ func _run_all() -> void:
 		_check(pp.size() == 2 and is_equal_approx(float(pp[0]), 111.0) and is_equal_approx(float(pp[1]), 137.0),
 			"saved JSON player_pos is the REAL position (111,137), not the old [480,384] literal (got %s)"
 				% str(pp))
-		_check(int(d.get("version", 0)) == 6, "saved JSON carries version=6")
+		_check(int(d.get("version", 0)) == 7, "saved JSON carries version=7")
 
 	# --- 3. Reset to World (simulating a fresh boot / different session),
 	# putting the player far from the FarmHouse-saved position, THEN load.
@@ -127,7 +127,7 @@ func _run_all() -> void:
 		"harmony": 0,
 	}
 	var m: Dictionary = sm.migrate(v5)
-	_check(int(m.get("version", 0)) == 6, "migrate advances a v5 payload to version 6")
+	_check(int(m.get("version", 0)) == 7, "migrate advances a v5 payload to version 7 (TASK-357 scene_path + TASK-358 fish_almanac)")
 	_check(String(m.get("scene_path", "")) == WORLD_PATH,
 		"migrate defaults a v5 (pre-TASK-357) save's scene_path to the main scene (got %s)"
 			% str(m.get("scene_path", "")))

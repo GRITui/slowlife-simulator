@@ -165,6 +165,15 @@ func cast_line() -> bool:
 	SignalBus.craft_completed.emit(item, 1) # reuse item-gained signal (no new orphan)
 	SignalBus.show_dialogue.emit(spot_name, "Caught a %s %s! (+%d harmony)" % [
 		String(catch_data["size"]), String(species.get("display_name", "fish")), int(size.get("harmony_value", 1))])
+	# TASK-358 fish almanac — first time this exact (species, size) pair is
+	# caught, fire one extra "first catch" dialogue and grant the +5 bonus.
+	# record_catch() is idempotent on its own (mirrors earn_milestone's
+	# shape), so a repeat of the same pair never re-grants or re-speaks.
+	var species_id: String = String(species.get("id", ""))
+	if species_id != "" and GameData.record_catch(species_id, String(catch_data["size"])):
+		SignalBus.show_dialogue.emit("System",
+			"Fish Almanac: first catch of a %s %s! (+5 harmony)" % [
+				String(catch_data["size"]), String(species.get("display_name", "fish"))])
 	# TASK-331 storm_catch milestone — monsoon + rain + catch in one cast.
 	if String(GameData.current_season) == "monsoon" and String(GameData.current_weather) == "rain":
 		if GameData.earn_milestone("storm_catch"):

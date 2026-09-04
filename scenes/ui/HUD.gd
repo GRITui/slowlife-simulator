@@ -29,6 +29,9 @@ const _BASE_FONT_SIZES: Dictionary = {
 	"SeasonLabel": 13, "TimeLabelHeader": 12, "TimeLabel": 13,
 	"CropLabel": 12, "PromptLabel": 13,
 	"FarmHeartsLabel": 10, "SkillsLabel": 10,
+	# TASK-358 fish almanac — same 10pt baseline as SkillsLabel so the
+	# accessibility font-scaler covers it without a new code path.
+	"AlmanacLabel": 10,
 }
 @export var font_scale: float = 1.0
 @export var high_contrast: bool = false
@@ -114,6 +117,19 @@ func _update_skills_label() -> void:
 	var lbl: Label = find_child("SkillsLabel", true, false) as Label
 	if lbl:
 		lbl.text = "Skills: Fish Lv%d | Mine Lv%d" % [GameData.fishing_skill, GameData.mining_skill]
+
+## TASK-358 — first-catch collection log read-out. Total denominator is
+## fixed at 60 (= 20 species x 3 sizes from data/fish/fish.json);
+## verifying the actual count is part of the test gate (tests/test_fish_
+## almanac.gd). Same poll-on-minute-tick approach as _update_skills_label
+## above — the almanac only changes on a catch (an event the player just
+## got dialogue feedback for), so eventual-consistent at the minute
+## boundary is fine without a dedicated signal.
+const FISH_ALMANAC_TOTAL: int = 60
+func _update_almanac_label() -> void:
+	var lbl: Label = find_child("AlmanacLabel", true, false) as Label
+	if lbl:
+		lbl.text = "Almanac: %d/%d" % [GameData.fish_almanac.size(), FISH_ALMANAC_TOTAL]
 
 ## TASK-350 — read Player._primed_seed_id and update the SeedLabel. Same
 ## poll-on-minute-tick approach as _update_skills_label above: the primed
@@ -210,6 +226,9 @@ func _ready() -> void:
 	_update_tool_tier_label()
 	_on_farm_hearts_changed(0, 0)
 	_update_skills_label()
+	# TASK-358 — first-catch collection log read-out. Same eventual-consistent
+	# minute-tick refresh; prime it now so the label is correct on boot.
+	_update_almanac_label()
 	_update_seed_label()
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
@@ -261,6 +280,7 @@ func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 	if time_label:
 		time_label.text = "%02d:%02d  Day %d" % [hour, minute, day]
 	_update_skills_label()
+	_update_almanac_label()
 	_update_seed_label()
 
 func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
