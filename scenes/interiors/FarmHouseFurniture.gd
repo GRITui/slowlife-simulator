@@ -263,17 +263,20 @@ func _texture_path_for(item_id: String) -> String:
 		"floor_rug": return "res://assets/environment/mohom_cloth.png"
 		"floor_cushion": return "res://assets/environment/pha_khao_ma.png"
 		"small_table": return "res://assets/environment/clay_stove.png"
-		# TASK-391: placeholder art for the five new catalogue entries --
-		# same precedent as small_table reusing clay_stove.png (nothing
-		# purpose-drawn exists yet, so reuse the closest neutral prop):
-		# portrait hangs -> tall wall piece; chair/bench are wooden blocks
-		# -> stall / tall stove; vase is a jar -> water_jar (best fit of
-		# the five); radio is a small box -> wall cap trim.
-		"wall_portrait": return "res://assets/environment/bamboo_wall_tall.png"
-		"wooden_chair": return "res://assets/environment/market_stall.png"
-		"wooden_bench": return "res://assets/environment/clay_stove_tall.png"
+		# TASK-391 art cleanup (2026-09-05, owner playtest finding): the
+		# original placeholder reuses (portrait->bamboo_wall_tall,
+		# chair->market_stall, bench->clay_stove_tall, radio->
+		# structure_wall_cap) were genuinely jarring mismatches. Generated
+		# real dedicated sprites via Draw Things txt2img (confirmed
+		# working, unlike the earlier-diagnosed broken img2img path),
+		# background-removed + cropped + resized to this project's 48px-
+		# wide convention. ceramic_vase keeps water_jar.png -- that reuse
+		# was already a good fit, no replacement needed.
+		"wall_portrait": return "res://assets/environment/wall_portrait.png"
+		"wooden_chair": return "res://assets/environment/wooden_chair.png"
+		"wooden_bench": return "res://assets/environment/wooden_bench.png"
 		"ceramic_vase": return "res://assets/environment/water_jar.png"
-		"transistor_radio": return "res://assets/environment/structure_wall_cap.png"
+		"transistor_radio": return "res://assets/environment/transistor_radio.png"
 	return "res://assets/environment/mohom_cloth.png"
 
 # TASK-391: interact with an already-placed piece (outside place mode).
