@@ -149,6 +149,18 @@ run_dialogue_portrait() {
 	godot --headless --path . --script res://tests/test_dialogue_portrait.gd
 }
 
+run_dialogue_mood_portraits() {
+	# TASK-377 — mood-aware variant of the TASK-376 dialogue portrait.
+	# Covers the new show_dialogue_with_mood signal, the nested
+	# PORTRAIT_PATHS data structure (12 speakers x their locked mood
+	# sets), the "don't regress the 6 already-shipped neutrals" rule,
+	# the fallback-to-neutral behavior for in-flight art, the
+	# missing-art hide behavior, and a regression guard that the plain
+	# show_dialogue path still works identically.
+	echo "== dialogue-mood-portraits gate: tests/test_dialogue_mood_portraits.gd =="
+	godot --headless --path . --script res://tests/test_dialogue_mood_portraits.gd
+}
+
 run_farmhouse_furniture() {
 	# TASK-374 Phase 1: floor_rug placement, FarmHouse-only, no rotation.
 	# Instances the real FarmHouse.tscn (not a mock) and drives the real
@@ -205,10 +217,11 @@ case "$GATE" in
 	particle_drivers) run_particle_drivers ;;
 	fog_driver) run_fog_driver ;;
 	dialogue_portrait) run_dialogue_portrait ;;
+	dialogue_mood_portraits) run_dialogue_mood_portraits ;;
 	farmhouse_furniture) run_farmhouse_furniture ;;
 	schedules) run_schedules ;;
 	festival_visual_driver) run_festival_visual_driver ;;
 	completion_tracker) run_completion_tracker ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|all)" >&2; exit 2 ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|all)" >&2; exit 2 ;;
 esac
