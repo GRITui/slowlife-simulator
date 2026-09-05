@@ -36,6 +36,16 @@ The village runs on three things: the harvest, the harmony, and the calendar. No
 
 **Fah** — the canal's fisherfolk, quieter than the village gives her credit for, keeper of the deep-water spots she doesn't share with just anyone. Where Niran is loud about affection, Fah shows it by what she's willing to say only to you.
 
+### The ones who live alone (locked 2026-09-05)
+
+Three villagers who keep their own company by choice, not misfortune — each holding a different flavor of thing worth knowing, if you bother to ask.
+
+**The Ferryman** — lives alone at a small dock past the working end of the canal, where the paddies give way to open water. Rarely seen before dusk, minds his own nets and his own business. He's the one person in the valley for whom the canal maze's origin isn't a story that changes with the telling — he remembers who actually dug it, and why, and has simply never seen a reason to correct the Elder's version.
+
+**The Fish-Keeper** — an old woman who lives alone in a cabin up past the tree line, further out than most villagers bother to walk. She loves fish more than she loves company, by her own admission, and spends her days working out how to keep a catch longer than a single day — salting, smoking over banana leaf, curing in clay jars the way it was done before anyone had a cold box. What she knows isn't a village secret, it's a nearly-lost practical craft: real food-preservation technique nobody else left in the valley still does properly.
+
+**The Scrap Collector** — never sleeps in the same place twice, camping at whichever field edge is empty that week. Nobody thinks much of a scavenger sifting through what people throw away, which is exactly why he ends up knowing the most about everyone's small discarded regrets — an old letter never sent, a gift someone couldn't bring themselves to keep. Gossip and quiet intrigue rather than lore or craft, and the only one of the three who'd actually enjoy being asked about it.
+
 *(Both are designed romance candidates per this round's request — see `docs/research` / `PO_INBOX.md` for the affinity-system spec needed to make that mechanical. The dialogue in `DialogueDB.gd`'s `niran`/`fah` branches is written in four tiers — stranger, friendly, close, romantic — ready for whichever affinity value gates them.)*
 
 ### Romance candidate persona/flaw archetypes (locked 2026-09-05)
