@@ -77,6 +77,44 @@ shipped as if they were straightforward:
 - `canal` is on the dark/murky side of the palette — acceptable but also
   a candidate for a lighter follow-up pass if it reads too dark in-game.
 
+## 16-bit pipeline redo, pass 2: batches 5+6 (2026-09-05)
+
+Owner request: after seeing the batch 3+4 redo, extend the strict
+16-bit pipeline to everything else that shipped under the old
+soft-shaded style — batch 5 (3 files), batch 6 (~25 files), the 2
+farmhouse interior tiles, and the 13 NPC/animal portraits (at a 64x64
+dialogue-portrait grid per spec). Full gap-analysis and pipeline
+diagram now live at `docs/art/pixel_art_pipeline.md` — read that before
+dispatching further sub-runs, it documents every failure mode hit so
+far and the fix applied.
+
+**Grid amendment (owner directive, mid-pass)**: tiles stay strict
+16x16, no exceptions. Compound/complex non-tile objects (carts,
+buildings, stands, and by extension characters/animals in later
+batches) may use a larger authoring grid (24x24 or 32x32) instead of
+forcing a 16x16 icon that loses its silhouette — this fixed
+`merchant_cart`, which was unreadable at 16x16 (gap-analysis failure
+mode #6) but reads correctly at 24x24.
+
+**Run 1** (2026-09-05): merchant_cart (24x24, after a 16x16 attempt
+failed), wing_kwai_flag, wing_kwai_official_stand (both 16x16, clean
+first pass), structure_wall_cap, structure_wall_front (16x16, needed
+one retry each — first pass washed out per failure mode #7, fixed with
+explicit "bold saturated color, vivid not pale" language), lotus_maze,
+dock, lotus_pond (16x16, clean first pass). All 8 files.
+
+**Incident during run 1's gate pass**: `dialogue-portrait` tests failed
+on an unrelated file (`assets/ui/portraits/elder.png` missing). Found
+517 tracked files deleted from the working tree across
+`assets/items/`, `assets/characters/`, and `assets/ui/portraits/` —
+none touched by this session's own commands. Restored via
+`git restore --source=HEAD -- assets/` (0 deletions remaining, gate
+green after). Root cause NOT determined — flagged to the owner as a
+possible concurrent process/session touching the same working tree.
+**No data was lost** (everything was already committed on `main`), but
+this is worth the owner's attention before it happens with uncommitted
+work in play.
+
 ## Batch 6 caveats (2026-09-05)
 
 - `rice_paddy_stage1-4`: the model reliably produced a scene composition
