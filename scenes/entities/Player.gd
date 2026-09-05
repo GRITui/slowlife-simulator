@@ -79,6 +79,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	# TASK-350: cycle which held seed is "primed" for planting (Q key).
 	if event.is_action_pressed("cycle_seed"):
 		cycle_primed_seed()
+	# TASK-359: cycle which fishing gear (rod vs net) is "primed" (G key).
+	# Default "fishing_rod" is kept if the player never owns a net, so the
+	# cycle is a no-op for the existing single-rod player path.
+	if event.is_action_pressed("cycle_fishing_gear"):
+		cycle_primed_gear()
 	# TASK-272: R mounts/dismounts the buffalo (dedicated key avoids the
 	# buffalo-milk interact conflict).
 	if event is InputEventKey and event.pressed and event.keycode == KEY_R:
@@ -255,6 +260,72 @@ static var _seed_lookup: Dictionary = {}
 ## planting will use next. Lives on Player (not GameData) so it's not
 ## accidentally serialized by SaveManager later.
 var _primed_seed_id: String = ""
+
+## TASK-359 — session-only, not persisted (same precedent as _primed_seed_id
+## above; explicitly absent from SaveManager.gd's save/load payload). The
+## currently-active fishing gear that FishingSpot.cast_line() reads. Cycles
+## through ["fishing_rod", "fishing_net"] but only includes gear the player
+## actually owns (has count > 0); when only the rod is held this defaults
+## to "fishing_rod" and cycling is a no-op (preserves existing single-rod
+## behavior exactly — TASK-359 regression contract).
+var _primed_gear_id: String = "fishing_rod"
+
+## TASK-359: cycle which fishing gear_* item is "primed" for casting.
+## Wraps around; falls back to "fishing_rod" if the player holds none of
+## the eligible gear (single-rod default — no behavior change at all for
+## players who never buy a net). Mirrors cycle_primed_seed()'s shape
+## above so future keyboard/touch/controller work finds one underlying
+## pattern, not two parallel cycles.
+func cycle_primed_gear() -> void:
+	# TASK-359: restrict to the gear ids this task introduces — rod first,
+	# net second — both already real items the world knows about. Adding
+	# more gear in future tasks means appending to this array, nothing
+	# else changes (same precedent cycle_primed_seed() set by inferring
+	# from GameData.inventory keys).
+	const _GEAR_IDS: Array[String] = ["fishing_rod", "fishing_net"]
+	var held: Array[String] = []
+	for gear_id: String in _GEAR_IDS:
+		if int(GameData.inventory.get(gear_id, 0)) > 0:
+			held.append(gear_id)
+	# Default: if the player owns none of the eligible gear at all (shouldn't
+	# happen in normal play — the starter inventory gives a rod, see
+	# World.gd:_ensure_fishing_spot), keep the rod so cast_line()'s rod
+	# gate still surfaces its standard "A fishing rod would help." line
+	# instead of an unrelated one.
+	if held.is_empty():
+		_primed_gear_id = "fishing_rod"
+		SignalBus.show_dialogue.emit("Farmer", "No fishing gear to select.")
+		return
+	# Single-gear ownership: cycling is a no-op for the player — the
+	# primed gear already matches the only one they own. Matches the
+	# TASK-359 regression contract: "no behavior change at all for
+	# players who never buy a net." Sort first so order is deterministic
+	# regardless of which gear was added first.
+	held.sort()
+	if held.size() == 1:
+		_primed_gear_id = held[0]
+		return
+	# Multi-gear: advance cyclically (idx+1) % size, matching
+	# cycle_primed_seed()'s wraparound pattern.
+	var cur_idx: int = held.find(_primed_gear_id)
+	if cur_idx == -1:
+		# Stale primed after losing the held one (e.g. dropping or never
+		# initialized to one no longer owned). Snap to first sorted.
+		_primed_gear_id = held[0]
+	else:
+		_primed_gear_id = held[(cur_idx + 1) % held.size()]
+	SignalBus.show_dialogue.emit("Farmer", "Gear: %s." % _humanize_gear(_primed_gear_id))
+
+static func _humanize_gear(gear_id: String) -> String:
+	# Strip the "fishing_" prefix and replace underscores with spaces for
+	# a clean "Rod" / "Net" label in the dialogue line. Matches the
+	# one-line label convention of cycle_primed_seed()'s crop-name lookup
+	# but doesn't need a Resource lookup (no gear .tres files exist —
+	# gear is data-only today).
+	var pretty: String = gear_id
+	if pretty.begins_with("fishing_"):
+		pretty = pretty.substr("fishing_".length())
+	return pretty.capitalize()
 
 func _on_season_changed(s: String) -> void:
 	if SignalBus.time_manager:

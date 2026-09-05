@@ -92,6 +92,18 @@ run_fish_almanac() {
 	godot --headless --path . --script res://tests/test_fish_almanac.gd
 }
 
+run_fishing_gear() {
+	# TASK-359 fishing gear choice: Rod (single, rare chance) vs Net
+	# (multi-catch, no rare, more stamina). Covers: net casts yield 3-4
+	# fish each, never rare/legendary; net deducts exactly 8.0 stamina
+	# (rod stays 0); net soft-fails below 8.0 stamina; cycle_fishing_gear
+	# toggles rod<->net when both owned, no-op with rod only;
+	# _primed_gear_id is session-only (not persisted); fishing_net is a
+	# real BUY_OFFERS item; rod-only behavior is completely unchanged.
+	echo "== fishing-gear gate: tests/test_fishing_gear.gd =="
+	godot --headless --path . --script res://tests/test_fishing_gear.gd
+}
+
 run_carpenter_upgrade() {
 	# TASK-322 carpenter house-kitchen upgrade + TASK-362 silver_ore sink.
 	# Was an orphaned standalone test (existed since TASK-322, never wired
@@ -222,6 +234,7 @@ case "$GATE" in
 	farmhouse_decor) run_farmhouse_decor ;;
 	transition_fade) run_transition_fade ;;
 	fish_almanac) run_fish_almanac ;;
+	fishing_gear) run_fishing_gear ;;
 	carpenter_upgrade) run_carpenter_upgrade ;;
 	recipe_unlocks) run_recipe_unlocks ;;
 	particle_drivers) run_particle_drivers ;;
@@ -233,6 +246,6 @@ case "$GATE" in
 	festival_visual_driver) run_festival_visual_driver ;;
 	completion_tracker) run_completion_tracker ;;
 	relationship_status) run_relationship_status ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|all)" >&2; exit 2 ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|all)" >&2; exit 2 ;;
 esac

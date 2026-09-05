@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://hud000001"]
+[gd_scene load_steps=12 format=3 uid="uid://hud000001"]
 
 [ext_resource type="Script" path="res://scenes/ui/HUD.gd" id="1_hud"]
 [ext_resource type="Script" path="res://scenes/ui/VirtualJoystick.gd" id="7_joy"]
 [ext_resource type="Script" path="res://scenes/ui/InteractTap.gd" id="8_tap"]
 [ext_resource type="Script" path="res://scenes/ui/SeedIndicator.gd" id="10_seed"]
+[ext_resource type="Script" path="res://scenes/ui/GearIndicator.gd" id="11_gear"]
 [ext_resource type="Texture2D" path="res://assets/ui/energy_bar.png" id="2_energy"]
 [ext_resource type="Texture2D" path="res://assets/ui/harmony_bar.png" id="3_harmony"]
 [ext_resource type="Texture2D" path="res://assets/ui/season_display.png" id="4_season"]
@@ -334,6 +335,27 @@ script = ExtResource("10_seed")
 [node name="SeedLabel" type="Label" parent="SeedIndicator"]
 layout_mode = 2
 text = "No seed"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_colors/font_color = Color(0.42745098, 0.14509805, 0.16862746, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="GearIndicator" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(88, 88)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 176.0
+offset_right = -16.0
+offset_bottom = 264.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_statpanel")
+script = ExtResource("11_gear")
+
+[node name="GearLabel" type="Label" parent="GearIndicator"]
+layout_mode = 2
+text = "Rod"
 horizontal_alignment = 1
 vertical_alignment = 1
 theme_override_colors/font_color = Color(0.42745098, 0.14509805, 0.16862746, 1)
