@@ -1,23 +1,58 @@
 extends InteriorBase
 ## FarmHouse — TASK-352. The ONE proof-of-concept interior for the
-## scene-transition foundation. Minimal: a 6x5-tile room with a static
-## structure_floor + structure_wall tile render, a Player instanced as a
-## child, and one Door back to the outdoor World.
+## scene-transition foundation. Originally a single 6x5-tile box; owner
+## request (2026-09-05) redesigned it into 4 real rooms (kitchen, living
+## area, bathroom, bedroom) on a 12x10 grid, using a real floor-plan
+## reference purely for room-zoning proportions -- no copyrighted
+## document content reproduced, this is an original tile layout.
 ##
 ## TASK-357: extends InteriorBase (the shared skeleton every interior
 ## uses) — _ready/_exit_tree/_register_self/_spawn_player/_place_player
 ## all live on the base now, not duplicated here. This file only owns
-## the FarmHouse-specific render (the 6x5 tile room + walls), its
-## default spawn point (room center), and the no-op plant/water/harvest
-## contract (interiors have no plantable soil). Behavior is bit-for-bit
-## preserved: the same door-warp resolution, the same
-## has_pending_load_position precedence, the same default room-center
-## fallback (3*TILE, 3*TILE) — now expressed as an override of
-## InteriorBase's default_spawn export instead of a hardcoded literal
-## in a duplicated _spawn_player().
+## the FarmHouse-specific render (the room shapes + interior walls), its
+## default spawn point (living-area center, the room the front door
+## opens into), and the no-op plant/water/harvest contract (interiors
+## have no plantable soil). Door-warp resolution, has_pending_load_
+## position precedence, and the default-spawn fallback mechanism itself
+## are all still InteriorBase's — only the actual spawn COORDINATE moved
+## to match the new layout.
 
 const TILE: int = 48
-const GRID: Vector2i = Vector2i(6, 5)
+const GRID: Vector2i = Vector2i(12, 10)
+
+## Room zones (cell rects [x, y, w, h]), for reference/future use (e.g.
+## per-room decor). Kitchen top-left, Living Area top-right (the room
+## the front door opens into, biggest -- matches its role as the main
+## room), Bathroom bottom-left (small), Bedroom bottom-right (spans the
+## rest of the bottom row, private).
+const ROOMS: Dictionary = {
+	"kitchen": Rect2i(0, 0, 5, 5),
+	"living": Rect2i(5, 0, 7, 5),
+	"bathroom": Rect2i(0, 5, 3, 5),
+	"bedroom": Rect2i(3, 5, 9, 5),
+}
+
+## Interior dividing walls, as explicit cell lists (not a perimeter
+## loop -- these need doorway gaps so rooms are actually reachable from
+## each other). Each entry is a full wall run; DOORWAY_GAP_CELLS below
+## are excluded when drawing.
+const INTERIOR_WALL_CELLS: Array = [
+	# Kitchen | Living Area (vertical, x=5, spans the kitchen/living row height)
+	Vector2i(5, 0), Vector2i(5, 1), Vector2i(5, 2), Vector2i(5, 3), Vector2i(5, 4),
+	# Kitchen | Bathroom (horizontal, y=5, spans kitchen's width)
+	Vector2i(0, 5), Vector2i(1, 5), Vector2i(2, 5), Vector2i(3, 5), Vector2i(4, 5),
+	# Living Area | Bedroom (horizontal, y=5, spans living's width)
+	Vector2i(5, 5), Vector2i(6, 5), Vector2i(7, 5), Vector2i(8, 5), Vector2i(9, 5), Vector2i(10, 5), Vector2i(11, 5),
+	# Bathroom | Bedroom (vertical, x=3, spans the bathroom/bedroom row height)
+	Vector2i(3, 5), Vector2i(3, 6), Vector2i(3, 7), Vector2i(3, 8), Vector2i(3, 9),
+]
+## Doorway openings -- one per room-pair, wide enough to walk through.
+const DOORWAY_GAP_CELLS: Array = [
+	Vector2i(5, 2),  # Kitchen <-> Living Area
+	Vector2i(1, 5),  # Kitchen <-> Bathroom
+	Vector2i(8, 5),  # Living Area <-> Bedroom
+	Vector2i(3, 7),  # Bathroom <-> Bedroom
+]
 # Owner request (2026-09-05): distinct farmhouse interior look instead of
 # the generic structure_floor/wall.png shared across every building's
 # interior potential. Warm wood-plank floor + woven bamboo wall panel,
@@ -68,7 +103,11 @@ func _init() -> void:
 	# GDScript doesn't allow redeclaring an inherited @export member, so
 	# the room-center override happens here instead of a re-declaration —
 	# runs before InteriorBase._ready() reads default_spawn.
-	default_spawn = Vector2(3 * TILE, 3 * TILE)
+	# 4-room redesign (2026-09-05): default spawn moved to the Living
+	# Area's center -- the room the front door actually opens into, so
+	# a fresh boot with no pending warp lands somewhere sensible instead
+	# of the old single-room's geometric center.
+	default_spawn = Vector2(8 * TILE, 2 * TILE)
 
 func _build_render() -> void:
 	# Interior's own minimal render — a single TileMapLayer with the floor
@@ -90,8 +129,10 @@ func _build_render() -> void:
 		for y in GRID.y:
 			ground.set_cell(Vector2i(x, y), 0, Vector2i(0, 0))
 	_ground_layer = ground
-	# Walls as plain Sprites around the perimeter (top + sides + bottom).
-	# Spans the full 6x5 floor for a 1-tile-thick ring.
+	# Walls: outer perimeter (top + sides + bottom, 1-tile-thick ring
+	# around the whole 12x10 footprint) PLUS interior dividing walls
+	# between the 4 rooms, with DOORWAY_GAP_CELLS left open so every
+	# room is actually reachable. 4-room redesign (2026-09-05).
 	var wall_tex: Texture2D = load(WALL_TILE) as Texture2D
 	for x in GRID.x:
 		# top wall
@@ -108,17 +149,28 @@ func _build_render() -> void:
 			side.centered = false
 			side.position = Vector2(x_off * TILE - TILE, y * TILE)
 			add_child(side)
-	# TASK-355: a few extra decoration sprites so the room doesn't read
-	# as an empty box. Placed away from the bed (72, 72) and shrine
-	# (216, 72) positions and away from the door at (144, 240) so the
-	# walkable interior cells stay reachable. Failed texture loads are
-	# silently skipped — better an empty room than a parse error.
+	for cell: Vector2i in INTERIOR_WALL_CELLS:
+		if cell in DOORWAY_GAP_CELLS:
+			continue
+		var iwall := Sprite2D.new()
+		iwall.texture = wall_tex
+		iwall.centered = false
+		iwall.position = Vector2(cell.x * TILE, cell.y * TILE)
+		add_child(iwall)
+	# Decoration sprites, one per room so each reads as a distinct space
+	# rather than a shared box: clay stove in the kitchen, a water jar in
+	# the bathroom (thematically fitting -- water in the wet room), the
+	# mo hom cloth and white offering cloth as bedroom linens. Positions
+	# checked against INTERIOR_WALL_CELLS/DOORWAY_GAP_CELLS and the
+	# repositioned Bed/Shrine/pickers below so nothing overlaps. Failed
+	# texture loads are silently skipped — better an empty spot than a
+	# parse error.
 	var decor_cells: Array = [
 		# [name, column, row] — column/row in tile units, 0-indexed.
-		["clay_stove", 4, 3],     # back-right corner, near the door
-		["water_jar", 1, 4],      # bottom-left, against the back wall
-		["mohom_cloth", 4, 4],    # bottom-right, mo hom sarong hanging
-		["pha_khao_ma", 1, 3],    # left-center, white offering cloth
+		["clay_stove", 2, 2],     # kitchen, center-ish
+		["water_jar", 1, 7],      # bathroom
+		["mohom_cloth", 6, 7],    # bedroom
+		["pha_khao_ma", 4, 8],    # bedroom, second linen spot
 	]
 	for cell in decor_cells:
 		var key: String = cell[0]

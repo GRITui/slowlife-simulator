@@ -13,23 +13,23 @@ y_sort_enabled = true
 script = ExtResource("1_farm")
 
 [node name="OutsideDoor" parent="." instance=ExtResource("2_door")]
-position = Vector2(144, 240)
+position = Vector2(336, 192)
 target_scene_path = "res://scenes/core/World.tscn"
 target_warp_id = "farmhouse_entry"
 warp_id = "farmhouse_exit"
 spawn_offset = Vector2(0, -48)
 
 [node name="Bed" parent="." instance=ExtResource("3_bed")]
-position = Vector2(72, 72)
+position = Vector2(384, 336)
 
 [node name="Shrine" parent="." instance=ExtResource("4_shrine")]
-position = Vector2(216, 72)
+position = Vector2(432, 96)
 
 [node name="ShrineStylePicker" parent="." instance=ExtResource("5_picker")]
-position = Vector2(264, 120)
+position = Vector2(480, 96)
 
 [node name="BedStylePicker" parent="." instance=ExtResource("7_bedpicker")]
-position = Vector2(72, 120)
+position = Vector2(432, 336)
 
 [node name="FarmHouseFurniture" type="Node2D" parent="."]
 script = ExtResource("6_furniture")

@@ -59,7 +59,10 @@ func _run_all() -> void:
 	if player == null:
 		farmhouse.queue_free()
 		return
-	player.global_position = Vector2(2 * 48 + 24, 2 * 48 + 24) # cell (2,2), open
+	# 4-room redesign (2026-09-05): cell (2,2) is now occupied by the
+	# kitchen's clay_stove decor sprite -- use (2,3), still open kitchen
+	# floor, clear of decor/walls/doorway gaps.
+	player.global_position = Vector2(2 * 48 + 24, 3 * 48 + 24) # cell (2,3), open
 	await process_frame
 
 	# --- A. Placement requires ownership ---
@@ -75,29 +78,31 @@ func _run_all() -> void:
 	gd.add_item(RUG_ID, 1)
 	_dispatch_action("interact")
 	await process_frame
-	_check(gd.has_placed_furniture_at(LOCATION_ID, Vector2i(2, 2)),
-		"placing at cell (2,2) records it in GameData.placed_furniture")
+	_check(gd.has_placed_furniture_at(LOCATION_ID, Vector2i(2, 3)),
+		"placing at cell (2,3) records it in GameData.placed_furniture")
 	_check(not gd.has_item(RUG_ID, 1), "placing consumes the rug from inventory")
-	_check(furniture.has_node("Rug_2_2"), "a visible rug sprite is spawned at (2,2)")
+	_check(furniture.has_node("Rug_2_3"), "a visible rug sprite is spawned at (2,3)")
 
-	# --- C. Occupied-tile safety: Bed sits at cell (1,1) ---
-	player.global_position = Vector2(1 * 48 + 24, 1 * 48 + 24)
+	# --- C. Occupied-tile safety: Bed sits at cell (8,7) after the
+	# 4-room redesign (2026-09-05) -- was (1,1) on the old single-room
+	# layout. ---
+	player.global_position = Vector2(8 * 48 + 24, 7 * 48 + 24)
 	gd.add_item(RUG_ID, 1)
 	_dispatch_action("interact")
 	await process_frame
-	_check(not gd.has_placed_furniture_at(LOCATION_ID, Vector2i(1, 1)),
-		"cannot place on Bed's occupied cell (1,1)")
+	_check(not gd.has_placed_furniture_at(LOCATION_ID, Vector2i(8, 7)),
+		"cannot place on Bed's occupied cell (8,7)")
 	_check(gd.has_item(RUG_ID, 1), "a failed placement does not consume the rug")
 
 	# --- D. Pick back up ---
-	player.global_position = Vector2(2 * 48 + 24, 2 * 48 + 24)
+	player.global_position = Vector2(2 * 48 + 24, 3 * 48 + 24)
 	_dispatch_action("interact")
 	await process_frame
 	await process_frame # queue_free() is deferred -- one frame isn't reliably enough
-	_check(not gd.has_placed_furniture_at(LOCATION_ID, Vector2i(2, 2)),
+	_check(not gd.has_placed_furniture_at(LOCATION_ID, Vector2i(2, 3)),
 		"picking up removes it from GameData.placed_furniture")
 	_check(gd.has_item(RUG_ID, 2), "picking up returns the rug to inventory")
-	_check(not furniture.has_node("Rug_2_2"), "the rug sprite is removed on pickup")
+	_check(not furniture.has_node("Rug_2_3"), "the rug sprite is removed on pickup")
 
 	# --- E. Save/load round trip ---
 	_dispatch_action("interact") # place it again for the round-trip check
