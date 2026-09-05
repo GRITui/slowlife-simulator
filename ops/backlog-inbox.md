@@ -898,7 +898,7 @@ SHIPPED (2026-09-05): `FamilyLabel` added, `FAMILY_INFO` lookup lives in `Relati
 <task_item>
   <id>TASK-388</id>
   <source>AI-LOOP</source>
-  <status>SPECCED</status>
+  <status>COMPLETED</status>
   <priority>P3</priority>
   <title>NPC birthdays + birthday-gift affinity bonus</title>
   <description>Gap-analysis finding (2026-09-05, HM:BTN public-research comparison): Harvest Moon: Back to Nature's affinity system includes a birthday-gift bonus (a gift given on a candidate's birthday counts for extra affinity) and an in-game way to learn/track those dates. slowlife-game's affinity system (`GameData.gd`/`DialogueDB.GIFT_PREFERENCES`) has no birthday concept anywhere. Scope: (1) add a `NPC_BIRTHDAYS` const (season + day-of-season per romance candidate -- pick dates that don't collide with existing festival trigger days) to `DialogueDB.gd`, (2) in the existing `_give_gift()` path, apply a one-time-per-year bonus multiplier (or flat bonus) when the gift's day matches the candidate's birthday, (3) surface the birthday somewhere the player can actually learn it in-game (e.g. a line in `RelationshipStatus.tscn`'s overlay, or a hint dialogue near the date) rather than requiring out-of-game knowledge -- the discovery mechanism is as much the point as the bonus itself. No mechanical reward beyond the affinity bonus (no new items) -- consistent with the project's exploration-friendly philosophy.
@@ -909,8 +909,10 @@ LOCKED DATES (2026-09-05, checked against every existing festival trigger day --
   - Ploy (npc_id `ploy`): monsoon, day 12
   - Kwan (npc_id `chang`): monsoon, day 20
   - Rin (npc_id `klong`): cool, day 18
-  - Yaa (npc_id `yaa`): cool, day 24</description>
-  <researcher_notes>Small/cheap per the gap analysis -- reuses the existing gift-affinity pipeline, one new const table. Needs a one-time pick of 6 actual birthday dates (owner call or delegate's reasonable choice spread across the 3-season, 90-day year, avoiding existing festival-trigger days) before dispatch -- not a design-blocking decision, just needs concrete values locked before content-writing.</researcher_notes>
+  - Yaa (npc_id `yaa`): cool, day 24
+
+SHIPPED (2026-09-05): `DialogueDB.NPC_BIRTHDAYS` + `is_birthday()` static, all 6 locked dates verbatim. `RomanceNPC._give_gift()` doubles the affinity delta on a birthday match and shows a birthday-specific line instead of the tier line (VillagerNPC/FlavorNPC gift paths untouched). `RelationshipStatus`'s new `BirthdayLabel` (mirrors `FamilyLabel`) is the in-game discovery path -- hidden for any NPC without an entry. No persisted state: a (season, day) birthday occurs once a year, so no cooldown tracking was needed. Merged `31f46ab`, pushed, full 3x gate green (70 new checks, 1417 total). Dispatched via OpenCode/muse-spark-1.3-contributor-free -- one retry needed after an unrelated disk-full environment failure interrupted the first attempt mid-run (no code lost). Code Quality Review found no issues.</description>
+  <researcher_notes>Small/cheap per the gap analysis -- reuses the existing gift-affinity pipeline, one new const table. Needs a one-time pick of 6 actual birthday dates (owner call or delegate's reasonable choice spread across the 3-season, 90-day year, avoiding existing festival-trigger days) before dispatch -- not a design-blocking decision, just needs concrete values locked before content-writing. RESOLVED: dates picked directly (see LOCKED DATES above).</researcher_notes>
 </task_item>
 
 <task_item>
