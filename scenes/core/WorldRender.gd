@@ -76,6 +76,12 @@ const PROPS := [
 	{"tex": "res://assets/environment/banana_tree_tall.png", "cell": Vector2i(3, 13), "kind": "prop"},
 	# Central cooking hearth beside home
 	{"tex": "res://assets/environment/clay_stove_tall.png", "cell": Vector2i(2, 9), "kind": "prop"},
+	# Owner request (2026-09-05): farmhouse landscaping -- nothing grew
+	# near the house at all before this. Small potted garden accents,
+	# flanking the front door area (cells (0,9)/(1,9), open -- clay_stove
+	# already occupies (2,9)).
+	{"tex": "res://assets/environment/garden_bush.png", "cell": Vector2i(0, 9), "kind": "prop"},
+	{"tex": "res://assets/environment/garden_flowers.png", "cell": Vector2i(1, 9), "kind": "prop"},
 ]
 
 # Flat decor (grass-level, never y-sorted): bamboo thicket accents in pasture.

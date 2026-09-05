@@ -18,8 +18,13 @@ extends InteriorBase
 
 const TILE: int = 48
 const GRID: Vector2i = Vector2i(6, 5)
-const FLOOR_TILE: String = "res://assets/tilesets/structure_floor.png"
-const WALL_TILE: String = "res://assets/tilesets/structure_wall.png"
+# Owner request (2026-09-05): distinct farmhouse interior look instead of
+# the generic structure_floor/wall.png shared across every building's
+# interior potential. Warm wood-plank floor + woven bamboo wall panel,
+# generated via Draw Things (Transparent Image LoRA confirmed working
+# this session, same pipeline as the exterior wall/furniture art).
+const FLOOR_TILE: String = "res://assets/tilesets/farmhouse_floor.png"
+const WALL_TILE: String = "res://assets/tilesets/farmhouse_wall_interior.png"
 # TASK-355: extra furniture/decoration sprites so the room doesn't
 # read as an empty box. Each points at an existing environment texture
 # already in the project — no new art generated, just reused

@@ -114,6 +114,10 @@ func _initialize() -> void:
 			# (WorldRender.PROPS' mango/banana tree entries). Budget stays
 			# at 76 -- these were invisible collision infra, not new
 			# visible content.
+			# 76->78 (owner request, 2026-09-05: farmhouse landscaping --
+			# garden_bush.png + garden_flowers.png at cells (0,9)/(1,9),
+			# each a real Sprite2D "prop" kind entry, same treatment as
+			# CarpenterUpgrade/Ploy/Nok before them -- legitimately counts).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
@@ -121,7 +125,7 @@ func _initialize() -> void:
 					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge" or cn == "FishKeeperForageNode" or cn == "ScrapCollectorForageNode" or cn == "MarigoldForageNode" or cn == "WaterCollision" or cn.begins_with("TreeCollision_"):
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 76, "y-sorted participants <= 76 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 78, "y-sorted participants <= 78 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)
