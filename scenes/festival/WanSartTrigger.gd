@@ -11,6 +11,15 @@ extends Node
 @export var festival_day: int = 5
 var _triggered_keys: Dictionary = {}
 
+# TASK-387: variety on the trigger line -- one names a real NPC
+# relationship from the locked roster (Charoen and Fah preparing the
+# offering together, fitting Wan Sart's ancestor-honoring theme).
+# Picked by year parity.
+const LINES: Array[String] = [
+	"Wan Sart — prepare kra yasat for those who tended these fields before us.",
+	"Charoen and Fah are already down at the dock, folding banana leaf together for the offering.",
+]
+
 func _ready() -> void:
 	add_to_group("festival_manager")
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
@@ -38,7 +47,7 @@ func _on_minute_ticked(day: int, hour: int, _minute: int) -> void:
 		return
 	_triggered_keys[key] = true
 	SignalBus.festival_triggered.emit("wan_sart")
-	SignalBus.show_dialogue.emit("Elder", "Wan Sart — prepare kra yasat for those who tended these fields before us.")
+	SignalBus.show_dialogue.emit("Elder", LINES[year % LINES.size()])
 
 ## Crafting recipe injected into the seasonal offer flow via recipes.json;
 ## this helper is the release interaction (mirror of release_krathong).

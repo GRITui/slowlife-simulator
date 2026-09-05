@@ -7,6 +7,15 @@ extends Node
 @export var festival_day: int = 7
 var _triggered_seasons: Dictionary = {}
 
+# TASK-387: variety on top of the original line -- one names a real
+# NPC relationship from the locked roster (Boonchu/Rin, grandfather and
+# granddaughter, both established festival drummers). Picked by year
+# parity so it's deterministic but still varies year to year.
+const LINES: Array[String] = [
+	"Krathongs drift on the lotus pond tonight.",
+	"Boonchu leads the drums tonight, and Rin never lets him rest for long.",
+]
+
 func _ready() -> void:
 	add_to_group("festival_manager")
 	SignalBus.minute_ticked.connect(_on_minute_ticked)
@@ -39,7 +48,7 @@ func try_trigger_festival(day: int, season: String) -> bool:
 		return false
 	_triggered_seasons[key] = true
 	SignalBus.festival_triggered.emit("loy_krathong")
-	SignalBus.show_dialogue.emit("Elder", "Krathongs drift on the lotus pond tonight.")
+	SignalBus.show_dialogue.emit("Elder", LINES[year % LINES.size()])
 	return true
 
 func craft_krathong() -> bool:

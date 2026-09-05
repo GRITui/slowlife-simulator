@@ -19,6 +19,14 @@ const RECIPES_PATH: String = "res://data/recipes/recipes.json"
 
 @export var festival_day: int = 3
 var _triggered_keys: Dictionary = {}
+
+# TASK-387: variety on the second (visible) line -- one names a real NPC
+# relationship from the locked roster (Nam brings Monk his favorite
+# curry before the water-throwing starts). Picked by year parity.
+const ELDER_LINES: Array[String] = [
+	"Rod Nam Dum Hua — the scented water honors those who came before us.",
+	"Nam's already brought Monk his favorite curry, ahead of the water throwing. He pretends to be surprised every year.",
+]
 var _splash: GPUParticles2D = null
 var _recipe_harmony: Dictionary = {} # recipe_id -> harmony_reward, for scoring
 var _cook_active: bool = false
@@ -82,7 +90,7 @@ func _on_minute_ticked(day: int, hour: int, _minute: int) -> void:
 	_spawn_splash()
 	SignalBus.festival_triggered.emit("songkran")
 	SignalBus.show_dialogue.emit("Child", "Songkran! Happy New Year — you're soaked!")
-	SignalBus.show_dialogue.emit("Elder", "Rod Nam Dum Hua — the scented water honors those who came before us.")
+	SignalBus.show_dialogue.emit("Elder", ELDER_LINES[year % ELDER_LINES.size()])
 
 func _spawn_splash() -> void:
 	if _splash != null:
