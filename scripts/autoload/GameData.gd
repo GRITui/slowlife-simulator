@@ -671,6 +671,13 @@ var married: bool = false
 var married_year: int = 0
 var child_stage: int = 0
 
+# TASK-384: one-shot family marriage reactions (npc_id -> true once shown).
+# Empty {} default matches "never shown yet", so no SAVE_VERSION bump is
+# needed — same additive-Dictionary reasoning as placed_furniture /
+# decor_choices: an absent key on an old save loads as {} which is
+# bit-identical to a fresh start.
+var family_marriage_reaction_shown: Dictionary = {}
+
 # TASK-340 rival win/loss system. npc_first_met_day: npc_id -> day the
 # player first ever interacted with them (clock start). lost_to_rival:
 # npc_id -> true once the rival has won (permanent, one-way). No other

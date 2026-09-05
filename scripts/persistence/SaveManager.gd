@@ -125,6 +125,12 @@ func save_game() -> bool:
 		# which is bit-identical to a fresh start (see the spec's
 		# "absence means default style" contract).
 		"decor_choices": gd.decor_choices,
+		# TASK-384: one-shot family marriage reactions (npc_id -> true once
+		# shown). Additive field, NO SAVE_VERSION bump: the initializer is
+		# {} and an absent key already means "never shown yet", which is
+		# bit-identical to a fresh start — same reasoning pattern as
+		# placed_furniture / decor_choices above.
+		"family_marriage_reaction_shown": gd.family_marriage_reaction_shown,
 		# TASK-374/375: placed furniture (location -> list of {item_id, cell,
 		# facing}). No SAVE_VERSION bump: empty {} matches GameData.
 		# placed_furniture's init exactly, so old saves load as if no
@@ -374,6 +380,11 @@ func load_game() -> bool:
 		# this task. (No SAVE_VERSION bump: additive-safe per
 		# task spec.)
 		gd.recipe_unlocks = (data.get("recipe_unlocks", {}) as Dictionary).duplicate(true)
+		# TASK-384: one-shot family marriage reactions. Default {} matches
+		# GameData.family_marriage_reaction_shown's initializer exactly, so
+		# a save from before this task loads as if no reaction was ever
+		# shown. (No SAVE_VERSION bump: additive-safe per task spec.)
+		gd.family_marriage_reaction_shown = (data.get("family_marriage_reaction_shown", {}) as Dictionary).duplicate(true)
 		# TASK-357: restore the actual scene + position the save was made in,
 		# instead of leaving the player wherever they currently are (which,
 		# before this fix, was always whatever the main scene's own default

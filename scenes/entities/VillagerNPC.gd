@@ -160,6 +160,16 @@ func talk() -> void:
 	# trader stays transactional, no gifting.
 	if npc_id != "trader" and _give_gift():
 		return
+	# TASK-384: Somchai's one-time marriage reaction (Kwan's mentor/uncle
+	# figure). Replaces the normal seasonal line the FIRST time the player
+	# talks to him after marrying chang, then reverts forever after.
+	# Idempotent — never shows twice. Only npc_id "somchai" is affected.
+	if npc_id == "somchai":
+		var shown: Dictionary = GameData.family_marriage_reaction_shown as Dictionary
+		if GameData.married and String(GameData.spouse) == "chang" and not bool(shown.get("somchai", false)):
+			shown["somchai"] = true
+			SignalBus.show_dialogue.emit(display_name, "Chang told me over the workbench, like it was just another piece of news. I had to put the chisel down for a minute.")
+			return
 	var season: String = GameData.current_season if "current_season" in GameData else "cool"
 	var tm: Node = SignalBus.time_manager
 	var day: int = 1
