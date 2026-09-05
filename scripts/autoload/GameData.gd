@@ -375,14 +375,14 @@ var recipe_unlocks: Dictionary = {}
 #  fah     -> lotus_soup         (lvl 3) — she loves it AND lotus_root;
 #                                      monsoon, ties into the Lotus
 #                                      Maze gathering loop.
-#  elder   -> kluay_buat_chi     (lvl 3) — he likes banana; a gentle
+#  elder   -> kluay_buat_chi     (lvl 3) — she likes banana; a gentle
 #                                      banana-in-coconut-milk dessert
-#                                      that fits his sweet tooth (no
+#                                      that fits her sweet tooth (no
 #                                      direct loved match, but the
 #                                      elder's only dessert is the
 #                                      rice_cake and ploy already
 #                                      teaches that one).
-#  klong   -> pandan_sticky_rice (lvl 3) — he loves it; monsoon
+#  klong   -> pandan_sticky_rice (lvl 3) — she loves it; monsoon
 #                                      seasonal that requires
 #                                      sluice_gate.
 #  child   -> durian_sticky_rice (lvl 3) — child loves durian; the
