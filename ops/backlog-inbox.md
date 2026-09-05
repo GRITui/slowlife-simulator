@@ -797,3 +797,36 @@ Scope note: the "avatar" and "overworld sprite" art assets this screen's avatar 
   Scope: rewrite each candidate's existing 4-5 dialogue tiers in `DialogueDB.gd` (stranger/friendly/close/rival/romantic -- exact tier list already established per-candidate, read each candidate's current entries first) to actually voice these personas, and script specific "flaw" beats into the tier progression (e.g. a rival-tier or milestone-tier line where the flaw surfaces for comedic/intimacy effect, per the master brief's "trigger flaws during key plot events" instruction). Do NOT change gift preferences, affinity thresholds, schedule data, or any other mechanical system -- this is dialogue TEXT only. Use the established Siamese terminology naturally where it fits the existing setting (sabai, chong kraben, ruan thai, phi) but do not force vocabulary that clashes with this project's already-established simpler, warmer prose style (see existing DialogueDB.gd lines for tone reference) -- adapt, don't paste the source brief's register wholesale.</description>
   <researcher_notes>Self-executed tier per CLAUDE.md ("Narrative/dialogue writing... voice consistency across 6+ romance candidates is also a judgment call a cheap model tends to flatten") -- do not delegate this to Cline/OpenCode. Gemini's original brief is a starting creative brief, not a spec to transcribe verbatim; the persona/flaw MATCHING is locked, but the actual line-by-line dialogue voice is this task's own writing work, calibrated against this project's existing tone (cozy, non-punishing, understated humor) rather than the source brief's more overtly "gap moe" anime-dating-sim register.</researcher_notes>
 </task_item>
+
+<task_item>
+  <id>TASK-383</id>
+  <source>OWNER</source>
+  <status>DOING</status>
+  <priority>P2 (owner-directed village-liveliness pass)</priority>
+  <title>14 new neutral background NPCs -- family for existing characters + pure-flavor wanderers</title>
+  <description>Owner request (2026-09-05): "each character should have family, and I want more neutral NPC for richer game and make village more lively." Locked scope (AskUserQuestion): real instanced NPCs (not lore-only), bigger pass covering both the 6 romance candidates AND the older core cast, plus a few pure-flavor wanderers -- 14 new NPCs total. Full roster, relationships, and dialogue LOCKED by this task filing (Claude's own narrative-writing pass, self-executed per the same CLAUDE.md tier as TASK-382 -- not delegated):
+
+FAMILY (11, each tied to an existing character):
+  - Charoen (npc_id `charoen`) -- Fah's father, retired fisherman.
+  - Somsri (npc_id `somsri`) -- Ploy's mother, taught her the dessert recipes.
+  - Gaew (npc_id `gaew`) -- Mali's older sister, works the paddies too.
+  - Boonchu (npc_id `boonchu`) -- Rin's grandfather, taught her festival drumming.
+  - Ampai (npc_id `ampai`) -- Yaa's mother, also a herbalist.
+  - Ying (npc_id `ying`) -- Handler's wife.
+  - Nam (npc_id `nam`) -- Monk's sister, visits the temple lane.
+  - Tong (npc_id `tong`) -- Trader's nephew, apprentice.
+  - Kham (npc_id `kham`) -- Headman's wife.
+  - Kaew (npc_id `kaew`) -- Vet's younger sibling, apprentice.
+  - Buppha (npc_id `buppha`) -- Nok's mother.
+  (Kwan/chang's family tie already exists in canon -- Somchai, an existing NPC, is her mentor "uncle" per DialogueDB.gd's established line. Elder/Child's tie: formalize Child as Elder's grandchild, both already-existing NPCs. Neither needs a new NPC.)
+
+PURE-FLAVOR WANDERERS (3, no family tie):
+  - Daeng (npc_id `daeng`) -- lazy dock friend of Fah's, fishes badly on purpose.
+  - Ploen (npc_id `ploen`) -- village gossip, hangs around the market.
+  - Add (npc_id `add`) -- village kid, plays near the canal/Kwan's workshop.
+
+Each gets exactly 3 rotating flavor lines (no dialogue tiers, no affinity/gift system -- these are pure ambience, distinct from the romance-candidate/rival system). Full dialogue text is written and locked -- see the dispatch prompt / commit for the exact lines, not reproduced here to keep this entry scannable.
+
+Scope: (1) a new minimal `FlavorNPC.gd` script (NOT a copy of VillagerNPC.gd's full schedule/tier machinery -- these NPCs are static, no schedule, no affinity; interact just cycles through the 3 fixed lines round-robin, matching this project's existing "cozy, no fail-state" interaction feel) (2) a `FLAVOR_LINES: Dictionary` in DialogueDB.gd (or a new `FlavorDialogue.gd` if that's cleaner -- delegate's call, but must follow this project's existing preload/const conventions) keyed by npc_id -> Array[String] (3) 14 new minimal `.tscn` files (mirror the simplest existing VillagerNPC-style structure: Sprite2D + InteractArea + CollisionShape2D, no schedule-related nodes) (4) instanced in World.tscn at SAFE positions -- MUST check against `WorldRender.gd`'s real `GROUND_TILES`/water-zone rects and every existing NPC's position first (this project has hit the water-tile/overlap bug repeatedly -- TASK-373/379 -- do not repeat it; the delegate must show its position-safety check, not just assert positions are fine) (5) tests following `tests/test_npc_roster_wiring.gd`'s exact established pattern (script/group/npc_id present, position safety, no water/farmland-zone overlap, minimum spacing from every other NPC) extended to cover all 14 new NPCs, wired into `run_gate.sh`.</description>
+  <researcher_notes>Roster count (14) and the family-vs-wanderer split were both explicit owner picks via AskUserQuestion, not defaults. Occupations/relationships were chosen to reinforce existing established characters' own canon rather than invent unrelated new lore (e.g. Somsri teaching Ploy her dessert recipes ties directly into Ploy's existing GIFT_PREFERENCES; Charoen as a retired fisherman reinforces Fah's canal setting) -- this was a deliberate design choice to make the village feel more connected rather than just more populated. Dispatched to the free-model chain per this tier's delegate-first discipline (mechanical scene/script wiring once the creative content was locked, not a judgment-heavy narrative task) -- Code Quality Review still required per standard discipline before landing, position-safety in particular given this project's repeated history of exactly that bug class.</researcher_notes>
+</task_item>
