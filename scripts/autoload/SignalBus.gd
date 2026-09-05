@@ -29,6 +29,11 @@ signal show_dialogue(speaker_name: String, text: String)
 # plumbing only in this task; no gameplay code emits it yet (that's a
 # follow-up task once the mood art finishes generating).
 signal show_dialogue_with_mood(speaker_name: String, text: String, mood: String)
+# TASK-381: pressing "view_relationship" while near a romance candidate
+# opens a full-screen status overlay (affinity hearts, loved/liked gifts,
+# a larger avatar image). display_name is passed alongside npc_id so the
+# UI doesn't need its own separate id->display-name lookup table.
+signal show_relationship_status(npc_id: String, display_name: String)
 signal barter_completed(have_id: String, want_id: String)
 # TASK-352: every scene transition (doors now; save/load, debug teleport,
 # festival cutscenes later) goes through SceneLoader via this one signal.

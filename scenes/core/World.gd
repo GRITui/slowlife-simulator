@@ -221,6 +221,7 @@ func _ready() -> void:
 	# plumbing only in this task and will start receiving emissions once
 	# future gameplay code opts into the new signal.
 	SignalBus.show_dialogue_with_mood.connect(_on_show_dialogue_with_mood)
+	SignalBus.show_relationship_status.connect(_on_show_relationship_status)
 	SignalBus.season_changed.connect(_on_season_tint)
 	SignalBus.weather_changed.connect(_on_weather)
 	# init tint
@@ -984,6 +985,12 @@ func _on_show_dialogue_with_mood(speaker: String, text: String, mood: String) ->
 			dialogue_portrait.visible = true
 		else:
 			dialogue_portrait.visible = false
+
+# TASK-381: opens the RelationshipStatus overlay for a romance candidate.
+func _on_show_relationship_status(npc_id: String, display_name: String) -> void:
+	var status: Node = get_node_or_null("RelationshipStatus")
+	if status != null and status.has_method("open"):
+		status.call("open", npc_id, display_name)
 
 func _on_season_tint(season: String) -> void:
 	if tint_rect == null:

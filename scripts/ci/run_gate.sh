@@ -199,6 +199,16 @@ run_completion_tracker() {
 	godot --headless --path . --script res://tests/test_completion_tracker.gd
 }
 
+run_relationship_status() {
+	# TASK-381 romance-candidate status overlay (hearts, loved/liked
+	# gifts, married flag, avatar). Covers the direct signal path AND the
+	# real RomanceNPC "view_relationship" input wiring, since this
+	# project's orphan-wiring bug class (logic correct, node/wiring
+	# missing) has recurred repeatedly (TASK-366/369/373/376/378/367).
+	echo "== relationship-status gate: tests/test_relationship_status.gd =="
+	godot --headless --path . --script res://tests/test_relationship_status.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -222,6 +232,7 @@ case "$GATE" in
 	schedules) run_schedules ;;
 	festival_visual_driver) run_festival_visual_driver ;;
 	completion_tracker) run_completion_tracker ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|all)" >&2; exit 2 ;;
+	relationship_status) run_relationship_status ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|all)" >&2; exit 2 ;;
 esac

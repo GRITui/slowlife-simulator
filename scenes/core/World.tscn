@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://main000001"]
+[gd_scene load_steps=17 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/World.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="15_door"]
@@ -45,6 +45,7 @@
 [ext_resource type="Script" path="res://scenes/core/FestivalVisualDriver.gd" id="22_fesv"]
 [ext_resource type="ParticleProcessMaterial" path="res://assets/particles/festival_lanterns.tres" id="23_lanterns"]
 [ext_resource type="Texture2D" path="res://assets/particles/lantern_glow.png" id="24_lanterntex"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RelationshipStatus.tscn" id="25_relstatus"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -309,3 +310,5 @@ target_scene_path = "res://scenes/interiors/FarmHouse.tscn"
 target_warp_id = "farmhouse_exit"
 warp_id = "farmhouse_entry"
 spawn_offset = Vector2(0, -48)
+
+[node name="RelationshipStatus" parent="." instance=ExtResource("25_relstatus")]

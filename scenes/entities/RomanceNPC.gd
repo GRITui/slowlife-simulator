@@ -68,6 +68,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		try_interact()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("view_relationship"):
+		# TASK-381: separate from try_interact()'s gift/talk flow — opens
+		# the RelationshipStatus overlay instead.
+		SignalBus.show_relationship_status.emit(npc_id, display_name)
+		get_viewport().set_input_as_handled()
 
 ## Gift first, then specialty sell (close tier, +45% premium, 3/week), then proposal check (romantic + krathong held), else talk.
 func try_interact() -> bool:
