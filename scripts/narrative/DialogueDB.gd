@@ -171,6 +171,7 @@ const DIALOGUE: Dictionary = {
 			"Heat tests patience. A small kindness cools the heart.",
 			"Walk slowly in the hot season, farmer.",
 			"Pour water gently over the Buddha image this Songkran — cleanse, don't drench.",
+			"Nam brings me curry every Songkran morning. I've told her she doesn't need to. She brings it anyway.",
 		],
 		"monsoon": [
 			"Rain feeds the rice. Patience feeds the soul.",
@@ -504,6 +505,7 @@ const DIALOGUE: Dictionary = {
 		"1": [
 			"Come to see the drumming? Stick around, it gets louder.",
 			"New face! Careful, I might drag you into the dance circle.",
+			"Boonchu taught me every festival rhythm I know. I've been trying to out-drum him since I was seven. Still haven't managed it.",
 		],
 		"2": [
 			"You clapped along last time. I saw that.",
