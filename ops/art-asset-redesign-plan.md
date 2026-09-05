@@ -19,7 +19,7 @@ particle resources excluded — those aren't image-generation targets).
 | 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE (2026-09-05) — heart_empty/full/silver_coin needed a re-gen (first pass's Draw Things output wasn't real alpha, baked-in background) + local flood-fill removal, not a straight copy-in like the other 7 |
 | 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE (2026-09-05) — see caveats below |
 | 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | DONE (2026-09-05) — clean first-pass generations, no retries needed |
-| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | pending |
+| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | IN PROGRESS (2026-09-05) — sub-batch A (structure_wall_cap/front, lotus_maze, dock, lotus_pond, 5 files, seamless-tile style) DONE; sub-batch B (rice_paddy_stage1-4, 4 files) DONE but see caveat below; sub-batch C (9 structure/object props), D (mohom_cloth/pha_khao_ma), E (5 trees) still pending |
 | 7 | Crops (growth stages, ~84 files) | ~84 | pending, large — may need its own sub-batches |
 | 8 | Items (~155 files) | ~155 | pending, large — may need its own sub-batches |
 | 9 | Characters (sprites, ~87 files) | ~87 | pending, large — sprite sheets, not single portraits; needs its own prompt approach (multi-frame, not single bust) |
@@ -76,6 +76,17 @@ shipped as if they were straightforward:
   but a candidate for a follow-up regen if it looks off in-engine.
 - `canal` is on the dark/murky side of the palette — acceptable but also
   a candidate for a lighter follow-up pass if it reads too dark in-game.
+
+## Batch 6 caveats (2026-09-05)
+
+- `rice_paddy_stage1-4`: the model reliably produced a scene composition
+  (horizon band / tiled reflection artifacts) for these specific "rice
+  clump" prompts across 2 full retry rounds -- only `stage1` came out
+  clean. Rather than keep burning generation attempts, derived stages
+  2-4 locally from the clean stage1 art via the modular-kit convention
+  (scale + hue-shift toward gold) instead of independent generations.
+  Reads as a coherent small-to-mature progression; flag for a real
+  regen pass later if a genuinely distinct silhouette per stage matters.
 
 ## Notes
 - Batches 7-9 are large enough that they should be split into sub-batches
