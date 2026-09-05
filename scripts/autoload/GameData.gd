@@ -71,6 +71,12 @@ const BARTER_PAIRS: Dictionary = {
 
 # Village dialogue / seasonal quest state (TASK-012) — cozy, no heavy exposition
 var villager_talked_days: Dictionary = {} # npc_id -> last_day talked
+# TASK-385: family gift-hint cooldown (npc_id -> last_day the hint was
+# shown). Additive Dictionary field, NO SAVE_VERSION bump: the initializer
+# is {} and an absent key already means "hint never shown", which is
+# bit-identical to a fresh start — same pattern as villager_talked_days
+# itself and the other additive Dict fields (recipe_unlocks, decor_choices).
+var family_gift_hint_last_day: Dictionary = {} # npc_id -> last_day hint shown
 var binthabat_streak: int = 0
 var last_binthabat_day: int = -1
 

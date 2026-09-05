@@ -71,6 +71,12 @@ func save_game() -> bool:
 		"daily_offerings": gd.daily_offerings,
 		"last_offering_day": gd.last_offering_day,
 		"villager_talked_days": gd.villager_talked_days,
+		# TASK-385: family gift-hint cooldown (npc_id -> last_day). Additive
+		# field, NO SAVE_VERSION bump: the initializer is {} and load_game()
+		# below defaults a missing key to {} — an old save loads as if no
+		# hint was ever shown, bit-identical to a fresh start (same pattern
+		# as recipe_unlocks / decor_choices / placed_furniture).
+		"family_gift_hint_last_day": gd.family_gift_hint_last_day,
 		"binthabat_streak": gd.binthabat_streak,
 		"last_binthabat_day": gd.last_binthabat_day,
 		"fishing_skill": gd.fishing_skill,
@@ -326,6 +332,10 @@ func load_game() -> bool:
 		gd.daily_offerings = int(data.get("daily_offerings", 0))
 		gd.last_offering_day = int(data.get("last_offering_day", -1))
 		gd.villager_talked_days = (data.get("villager_talked_days", {}) as Dictionary).duplicate(true)
+		# TASK-385: family gift-hint cooldown. Defaults to {} for any save
+		# from before this task (no SAVE_VERSION bump — see the save-site
+		# comment above for the rationale).
+		gd.family_gift_hint_last_day = (data.get("family_gift_hint_last_day", {}) as Dictionary).duplicate(true)
 		gd.binthabat_streak = int(data.get("binthabat_streak", 0))
 		gd.last_binthabat_day = int(data.get("last_binthabat_day", -1))
 		gd.fishing_skill = int(data.get("fishing_skill", 1))
