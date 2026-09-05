@@ -19,7 +19,7 @@ particle resources excluded — those aren't image-generation targets).
 | 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE (2026-09-05) — heart_empty/full/silver_coin needed a re-gen (first pass's Draw Things output wasn't real alpha, baked-in background) + local flood-fill removal, not a straight copy-in like the other 7 |
 | 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE (2026-09-05) — see caveats below |
 | 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | DONE (2026-09-05) — clean first-pass generations, no retries needed |
-| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | IN PROGRESS (2026-09-05) — sub-batch A (structure_wall_cap/front, lotus_maze, dock, lotus_pond, 5 files, seamless-tile style) DONE; sub-batch B (rice_paddy_stage1-4, 4 files) DONE but see caveat below; sub-batch C (9 structure/object props), D (mohom_cloth/pha_khao_ma), E (5 trees) still pending |
+| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | IN PROGRESS (2026-09-05) — sub-batches A, B, C DONE (14/25 files); D (mohom_cloth/pha_khao_ma) and E (5 trees) still pending |
 | 7 | Crops (growth stages, ~84 files) | ~84 | pending, large — may need its own sub-batches |
 | 8 | Items (~155 files) | ~155 | pending, large — may need its own sub-batches |
 | 9 | Characters (sprites, ~87 files) | ~87 | pending, large — sprite sheets, not single portraits; needs its own prompt approach (multi-frame, not single bust) |
@@ -87,6 +87,22 @@ shipped as if they were straightforward:
   (scale + hue-shift toward gold) instead of independent generations.
   Reads as a coherent small-to-mature progression; flag for a real
   regen pass later if a genuinely distinct silhouette per stage matters.
+
+Sub-batch C (water_jar, clay_stove, clay_stove_tall, sluice_gate,
+sluice_gate_tall, bamboo_wall_tall, bamboo_thicket, market_stall,
+banana_circle): clean first-pass generations for all 9, though 3
+(clay_stove, clay_stove_tall, market_stall) included an extra unwanted
+object in frame (a paddle, a second pot, a lamppost+bin) that needed a
+manual pre-crop before the usual flood-fill + content-bbox-fit step.
+`sluice_gate_tall` reads more like a wooden crib/fence than a gate
+mechanism -- usable but a weaker match to the intended subject, flagged
+as a possible follow-up.
+
+A `scene-transitions` gate failure was hit while landing sub-batch C and
+investigated before proceeding: reproduced with `git stash` (changes
+removed) and still failed, confirming it's a pre-existing timing flake
+under system load (not caused by this batch), then passed cleanly on
+the next run with the changes restored.
 
 ## Notes
 - Batches 7-9 are large enough that they should be split into sub-batches
