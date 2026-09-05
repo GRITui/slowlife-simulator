@@ -16,15 +16,15 @@ The village runs on three things: the harvest, the harmony, and the calendar. No
 
 ## The village, by who's in it
 
-**Grandmother-figure, "Elder"** — keeper of planting wisdom and half-true stories about the canal maze's origin. The one villager old enough to remember the valley before the sluice gate was fixed for good.
+**Grandmother-figure, "Elder"** — keeper of planting wisdom and half-true stories about the canal maze's origin. The one villager old enough to remember the valley before the sluice gate was fixed for good. Trader's mother.
 
-**"Child"** — young enough to still find the flooded paths after monsoon genuinely magical rather than an inconvenience. Wants mango sticky rice and kite weather in roughly equal measure.
+**"Child"** — young enough to still find the flooded paths after monsoon genuinely magical rather than an inconvenience. Wants mango sticky rice and kite weather in roughly equal measure. Handler's younger sister — the one person who can drag him away from the sluice gate to go looking for kite weather.
 
-**"Handler"** — minds the sluice gate and the water's temperament. Practical, unromantic about the valley, and the person actually responsible for it not flooding the wrong fields.
+**"Handler"** — minds the sluice gate and the water's temperament. Practical, unromantic about the valley, and the person actually responsible for it not flooding the wrong fields. Child's older brother.
 
-**"Monk"** (Phra Somchai) — keeps the 05:00–07:30 alms window at the temple lane. Accepts rice or fruit "with care," which is the closest thing the village has to a moral center.
+**"Monk"** (Phra Wichai) — keeps the 05:00–07:30 alms window at the temple lane. Accepts rice or fruit "with care," which is the closest thing the village has to a moral center. Ampai's older brother, which makes him Yaa's uncle — the two rarely mention it, since a monk's alms line isn't the place for family favor.
 
-**"Trader"** — runs the evening market stall, one seasonal barter offer at a time. Knows exactly what the village has too much of and too little of, and never says so directly.
+**"Trader"** — runs the evening market stall, one seasonal barter offer at a time. Knows exactly what the village has too much of and too little of, and never says so directly. Elder's son.
 
 **The buffalo** — pasture-kept, milk-giving, asks nothing of anyone. The valley's oldest resident by temperament if not by years.
 
