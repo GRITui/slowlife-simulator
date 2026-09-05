@@ -41,4 +41,4 @@ offset_right = 100.0
 offset_bottom = -184.0
 horizontal_alignment = 1
 visible = false
-text = "Place mode — [E] place/pick up rug, [F] exit"
+text = "Place mode — [E] place/pick up, [T] rotate, [Y] cycle item, [F] exit"
