@@ -1,8 +1,10 @@
 extends Node2D
 ## DeepCanalSpot — TASK-343. A secondary, unlockable fishing spot at the deep
 ## canal bend, gated behind GameData.fishing_skill reaching its cap (4).
-## Reuses data/fish/fish.json's existing 20 species verbatim (no new fish);
-## the "richer vein, harder to reach" framing lives in the rarity weights,
+## Reuses data/fish/fish.json's species verbatim (no new fish invented
+## here — TASK-390's moon_prawn is dock-exclusive via exclusive_cell, so
+## it never enters this spot's pool.
+## The "richer vein, harder to reach" framing lives in the rarity weights,
 ## inverted from FishingSpot.gd so the legendary species (pla_buk /
 ## pla_sai_rung) are the MOST likely result here instead of the least.
 ## Canal casts here do NOT bump fishing_skill (the gate already held) and
@@ -15,6 +17,11 @@ const _WATER := ["canal", "water_lotuspond", "deep_pond"]
 @export var spot_name: String = "Deep Canal Bend"
 ## Proximity radius (matches SluiceGate/CarpenterUpgrade/MiningSpot InteractArea).
 @export var interact_radius: float = 56.0
+## TASK-390: this spot's own map cell (defaults to deriving from
+## global_position). Entries with exclusive_cell set (e.g. moon_prawn's
+## dock-only [13, 13]) are only eligible on a matching cell — this spot
+## is at (12, 14), so the Moon Prawn stays dock-exclusive.
+@export var spot_cell: Vector2i = Vector2i(-1, -1)
 
 var _player_in_range: bool = false
 var _roster: Array = []
@@ -63,6 +70,22 @@ func _current_season() -> String:
 		return String(tm.current_season)
 	return String(GameData.current_season)
 
+## TASK-390: location-gated species check — same shape as
+## FishingSpot.gd's _is_cell_eligible(). Entries WITHOUT exclusive_cell
+## skip the gate entirely (backward compatible).
+func _own_cell() -> Vector2i:
+	if spot_cell != Vector2i(-1, -1):
+		return spot_cell
+	return Vector2i(int(global_position.x / 48.0), int(global_position.y / 48.0))
+
+func _is_cell_eligible(f: Dictionary) -> bool:
+	if not f.has("exclusive_cell"):
+		return true
+	var ec: Array = f.get("exclusive_cell", []) as Array
+	if ec.size() != 2:
+		return true
+	return _own_cell() == Vector2i(int(ec[0]), int(ec[1]))
+
 ## Eligible species: season matches + skill requirement met.
 func eligible_fish() -> Array:
 	var season: String = _current_season()
@@ -72,6 +95,8 @@ func eligible_fish() -> Array:
 		if not seasons.has(season):
 			continue
 		if int(f.get("skill_required", 1)) > _skill():
+			continue
+		if not _is_cell_eligible(f):
 			continue
 		out.append(f)
 	return out
@@ -91,9 +116,7 @@ func _water_adjacent() -> bool:
 
 ## Roll a catch weighted by rarity — inverted from FishingSpot.gd's
 ## common 4.0 / uncommon 2.5 / rare 1.2 / legendary 0.4 weighting so the
-## legendary species (pla_buk, pla_sai_rung) are the MOST likely result
-## here at the deep canal bend, instead of the least likely. Same 20
-## species, just a richer vein.
+## canal (legendary weight 4.0). Same shared roster, just a richer vein.
 func _roll_catch() -> Dictionary:
 	var pool: Array = eligible_fish()
 	if pool.is_empty():

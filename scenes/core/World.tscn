@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://main000001"]
+[gd_scene load_steps=34 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/World.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="15_door"]
@@ -60,6 +60,9 @@
 [ext_resource type="PackedScene" path="res://scenes/entities/DaengNPC.tscn" id="43_daeng"]
 [ext_resource type="PackedScene" path="res://scenes/entities/PloenNPC.tscn" id="44_ploen"]
 [ext_resource type="PackedScene" path="res://scenes/entities/AddNPC.tscn" id="45_add"]
+[ext_resource type="PackedScene" path="res://scenes/entities/FerrymanNPC.tscn" id="46_ferryman"]
+[ext_resource type="PackedScene" path="res://scenes/entities/FishKeeperNPC.tscn" id="47_fishkeeper"]
+[ext_resource type="PackedScene" path="res://scenes/entities/ScrapCollectorNPC.tscn" id="48_scrap"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -197,6 +200,15 @@ position = Vector2(840, 456)
 
 [node name="AddNPC" parent="." instance=ExtResource("45_add")]
 position = Vector2(840, 696)
+
+[node name="FerrymanNPC" parent="." instance=ExtResource("46_ferryman")]
+position = Vector2(600, 576)
+
+[node name="FishKeeperNPC" parent="." instance=ExtResource("47_fishkeeper")]
+position = Vector2(744, 432)
+
+[node name="ScrapCollectorNPC" parent="." instance=ExtResource("48_scrap")]
+position = Vector2(936, 600)
 
 [node name="Player" parent="." instance=ExtResource("5_pl")]
 position = Vector2(480, 384)

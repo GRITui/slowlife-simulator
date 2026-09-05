@@ -315,6 +315,10 @@ func _ready() -> void:
 	_ensure_fishing_spot()
 	# TASK-321: mining spot — stamina-gated, no tool requirement, always-on.
 	_ensure_mining_spot()
+	# TASK-390: lone-NPC forage nodes (Fish-Keeper's wild turmeric +
+	# Scrap Collector's salvaged scrap). Same _ensure_* programmatic
+	# pattern as the fishing/mining spots above — script.new(), no .tscn.
+	_ensure_forage_nodes()
 	# TASK-337: mountain cave — secondary unlockable spot, gated on
 	# GameData.mining_skill reaching cap. Run once at boot so a loaded save
 	# with mining_skill already at 3 gets the spot immediately, then again
@@ -538,6 +542,9 @@ func _ensure_fishing_spot() -> void:
 		return
 	spot.name = "FishingSpot"
 	spot.position = Vector2(11 * 48 + 24, 13 * 48 - 48) # canal row north bank
+	# TASK-390: this spot's own map cell, so FishingSpot's exclusive_cell
+	# gate (e.g. moon_prawn's dock-only [13, 13]) can filter correctly.
+	spot.set("spot_cell", Vector2i(11, 12))
 	add_child(spot)
 	if GameData.inventory.is_empty() or not GameData.has_item("fishing_rod", 1):
 		GameData.add_item("fishing_rod", 1)
@@ -557,6 +564,27 @@ func _ensure_mining_spot() -> void:
 	# for MVP — invisible interact zone, mirroring FishingSpot's own precedent.
 	spot.position = Vector2(1 * 48 + 24, 3 * 48 + 24)
 	add_child(spot)
+
+func _ensure_forage_nodes() -> void:
+	# TASK-390: lone-NPC wild-produce nodes. Close to (but not overlapping)
+	# their NPC's locked World.tscn position; item_id per instance so one
+	# ForageNode script serves both.
+	_ensure_forage_node("FishKeeperForageNode", Vector2(768, 456), "wild_turmeric")
+	_ensure_forage_node("ScrapCollectorForageNode", Vector2(912, 624), "salvaged_scrap")
+
+func _ensure_forage_node(node_name: String, pos: Vector2, item_id: String) -> void:
+	if get_node_or_null(node_name) != null:
+		return
+	var script: GDScript = load("res://scripts/interactables/ForageNode.gd")
+	if script == null:
+		return
+	var node: Node2D = script.new() as Node2D
+	if node == null:
+		return
+	node.name = node_name
+	node.position = pos
+	node.set("item_id", item_id)
+	add_child(node)
 
 func _ensure_mountain_cave() -> void:
 	# TASK-337: gated on GameData.mining_skill >= 3 (the cap). Derive the

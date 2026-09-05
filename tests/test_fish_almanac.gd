@@ -6,7 +6,7 @@ extends SceneTree
 #      SignalBus.show_dialogue (System speaker, "Fish Almanac:" prefix).
 #   3. The dict keying scheme "%s|%s" makes "small" and "big" of the
 #      same species count as two separate entries.
-#   4. The HUD's AlmanacLabel reads "Almanac: N/60" with N=fish_almanac.size()
+#   4. The HUD's AlmanacLabel reads "Almanac: N/63" with N=fish_almanac.size()
 #      after a minute-tick refresh.
 #   5. SaveManager round-trip (extended test_save_compat.gd covers this
 #      for the full dict — see that file's v6->v7 migration block).
@@ -149,7 +149,7 @@ func _initialize() -> void:
 			gd.fish_almanac["pla_nin|small"] = true
 			gd.fish_almanac["pla_duk|big"] = true
 			gd.fish_almanac["pla_mor|mid"] = true
-			var expected_total: int = 60
+			var expected_total: int = 63 # TASK-390: 21 species x 3 sizes (was 60; +moon_prawn)
 			sb.minute_ticked.emit(1, 6, 0)
 			await process_frame
 			var expected_text: String = "Almanac: %d/%d" % [int(gd.fish_almanac.size()), expected_total]
@@ -173,10 +173,10 @@ func _initialize() -> void:
 			if entry is Dictionary:
 				var sizes: Dictionary = (entry as Dictionary).get("sizes", {}) as Dictionary
 				combo_count += sizes.size()
-	_check(species_count == 20,
-		"data/fish/fish.json has exactly 20 species")
-	_check(combo_count == 60,
-		"data/fish/fish.json has exactly 60 (species x size) combos")
+	_check(species_count == 21,
+		"data/fish/fish.json has exactly 21 species (TASK-390 +moon_prawn)")
+	_check(combo_count == 63,
+		"data/fish/fish.json has exactly 63 (species x size) combos (TASK-390 +moon_prawn)")
 
 	sb.show_dialogue.disconnect(_on_show_dialogue)
 	print("\n=== FISH-ALMANAC TESTS: %d passed, %d failed ===" % [_passed, _failed])

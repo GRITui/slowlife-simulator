@@ -494,6 +494,34 @@
         }
       },
       "elder_hint": "At high noon in the hot season, something flashes every color in the sun near the lotus maze. I've only seen it once."
+    },
+    {
+      "id": "moon_prawn",
+      "display_name": "Moon Prawn",
+      "thai_name": "กุ้งเดือน",
+      "seasons": [
+        "cool",
+        "hot",
+        "monsoon"
+      ],
+      "rarity": "rare",
+      "skill_required": 3,
+      "sizes": {
+        "small": {
+          "item_id": "moon_prawn_small",
+          "harmony_value": 5
+        },
+        "mid": {
+          "item_id": "moon_prawn_mid",
+          "harmony_value": 8
+        },
+        "big": {
+          "item_id": "moon_prawn_big",
+          "harmony_value": 13
+        }
+      },
+      "exclusive_cell": [13, 13],
+      "elder_hint": "Something pale moves in the deep water off the old dock after dusk. Nobody else fishes it up."
     }
   ]
 }

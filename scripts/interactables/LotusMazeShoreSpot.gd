@@ -7,7 +7,8 @@ extends Node2D
 ## TASK-331 milestone earned (deep_miner, master_angler, inseparable,
 ## herd_keeper, storm_catch). The "completionist" capstone, not a
 ## single-skill gate. Reuses data/fish/fish.json verbatim (no new
-## species); the rarity weighting is biased toward legendary even
+## species invented here — TASK-390's moon_prawn is dock-exclusive via
+## exclusive_cell, so it never enters this spot's pool); the rarity weighting is biased toward legendary even
 ## harder than DeepCanalSpot.gd, since this is the "ultimate" spot
 ## that ties into the elder's "fishing_hint" flavor line about
 ## "something flashes every color in the sun near the lotus maze."
@@ -23,6 +24,11 @@ const _WATER := ["canal", "water_lotuspond", "deep_pond"]
 @export var spot_name: String = "Lotus Maze Shore"
 ## Proximity radius (matches SluiceGate/CarpenterUpgrade/MiningSpot InteractArea).
 @export var interact_radius: float = 56.0
+## TASK-390: this spot's own map cell (defaults to deriving from
+## global_position). Entries with exclusive_cell set (e.g. moon_prawn's
+## dock-only [13, 13]) are only eligible on a matching cell — this spot
+## is at (13, 11), so the Moon Prawn stays dock-exclusive.
+@export var spot_cell: Vector2i = Vector2i(-1, -1)
 
 var _player_in_range: bool = false
 var _roster: Array = []
@@ -71,6 +77,22 @@ func _current_season() -> String:
 		return String(tm.current_season)
 	return String(GameData.current_season)
 
+## TASK-390: location-gated species check — same shape as
+## FishingSpot.gd's _is_cell_eligible(). Entries WITHOUT exclusive_cell
+## skip the gate entirely (backward compatible).
+func _own_cell() -> Vector2i:
+	if spot_cell != Vector2i(-1, -1):
+		return spot_cell
+	return Vector2i(int(global_position.x / 48.0), int(global_position.y / 48.0))
+
+func _is_cell_eligible(f: Dictionary) -> bool:
+	if not f.has("exclusive_cell"):
+		return true
+	var ec: Array = f.get("exclusive_cell", []) as Array
+	if ec.size() != 2:
+		return true
+	return _own_cell() == Vector2i(int(ec[0]), int(ec[1]))
+
 ## Eligible species: season matches + skill requirement met.
 func eligible_fish() -> Array:
 	var season: String = _current_season()
@@ -80,6 +102,8 @@ func eligible_fish() -> Array:
 		if not seasons.has(season):
 			continue
 		if int(f.get("skill_required", 1)) > _skill():
+			continue
+		if not _is_cell_eligible(f):
 			continue
 		out.append(f)
 	return out
@@ -100,7 +124,7 @@ func _water_adjacent() -> bool:
 ## Roll a catch weighted by rarity — biased toward legendary even harder
 ## than DeepCanalSpot.gd. This is the "ultimate" spot, framing itself
 ## as the capstone: common 0.2 / uncommon 0.8 / rare 2.5 / legendary
-## 5.0. Same 20 species as FishingSpot/DeepCanalSpot — the rarity
+## 5.0. Same shared roster as FishingSpot/DeepCanalSpot — the rarity
 ## weights do all the differentiation. Effective legendary share
 ## dwarfs both the regular spot (legendary weight 0.4) and the deep
 ## canal (legendary weight 4.0).

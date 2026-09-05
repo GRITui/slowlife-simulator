@@ -130,13 +130,14 @@ func _update_skills_label() -> void:
 		lbl.text = "Skills: Fish Lv%d | Mine Lv%d" % [GameData.fishing_skill, GameData.mining_skill]
 
 ## TASK-358 — first-catch collection log read-out. Total denominator is
-## fixed at 60 (= 20 species x 3 sizes from data/fish/fish.json);
+## fixed at 63 (= 21 species x 3 sizes from data/fish/fish.json, TASK-390
+## added the dock-exclusive moon_prawn);
 ## verifying the actual count is part of the test gate (tests/test_fish_
 ## almanac.gd). Same poll-on-minute-tick approach as _update_skills_label
 ## above — the almanac only changes on a catch (an event the player just
 ## got dialogue feedback for), so eventual-consistent at the minute
 ## boundary is fine without a dedicated signal.
-const FISH_ALMANAC_TOTAL: int = 60
+const FISH_ALMANAC_TOTAL: int = 63 # TASK-390: 21 species x 3 sizes (was 60; +moon_prawn)
 func _update_almanac_label() -> void:
 	var lbl: Label = find_child("AlmanacLabel", true, false) as Label
 	if lbl:

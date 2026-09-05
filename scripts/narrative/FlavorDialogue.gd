@@ -78,4 +78,19 @@ const FLAVOR_LINES: Dictionary = {
 		"I'm going to be a wood carver too. Or a festival drummer. Haven't decided.",
 		"Race you to the canal! ...okay maybe not today, my legs are tired.",
 	],
+	"ferryman": [
+		"Mind the deep water off the dock. It doesn't give things back.",
+		"I fish at dusk. Mornings belong to everyone else.",
+		"The Elder tells it her way. I let her.",
+	],
+	"fish_keeper": [
+		"Bring me a fresh catch and I'll show you what salt and patience can do.",
+		"Wild turmeric grows thick around my cabin — helps the jars keep. Take some if you pass by.",
+		"A kept fish feeds you twice: once today, once when the season turns.",
+	],
+	"scrap_collector": [
+		"One field's rubbish is another week's roof patch. I just carry it between.",
+		"I sleep wherever the edge is empty. The whole valley's my spare room.",
+		"People throw away the most interesting things. Not judging — just collecting.",
+	],
 }
