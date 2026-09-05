@@ -850,10 +850,12 @@ Scope: (1) a new minimal `FlavorNPC.gd` script (NOT a copy of VillagerNPC.gd's f
 <task_item>
   <id>TASK-384</id>
   <source>AI-LOOP</source>
-  <status>SPECCED</status>
+  <status>COMPLETED</status>
   <priority>P3 (UNBLOCKED -- TASK-383 landed 2026-09-05, family NPCs now exist)</priority>
   <title>Family reacts to marriage proposal/wedding</title>
-  <description>Gap-analysis finding (2026-09-05): the marriage/wedding system (RomanceNPC.gd's proposal check, test_wedding.gd) has zero family tie-in today -- no dialogue from a candidate's parent/sibling (TASK-383) when she gets engaged or married, despite family now being real, named, locked lore for every candidate. Scope: when GameData.spouse is set for a candidate whose family NPC exists (Charoen/Fah, Somsri/Ploy, Gaew/Mali, Boonchu/Rin, Ampai/Yaa -- Kwan's "family" is Somchai, already an existing NPC), that family NPC's next `talk()` line (or a one-time triggered dialogue on the wedding festival event, delegate's call on which trigger point reads better) should be a specific, LOCKED reaction line acknowledging the marriage -- NOT a generic congratulations. Write these 5 reaction lines directly in this task's own dispatch (this is content-locking work, not something to leave to a delegate's judgment) matching each family member's already-established voice from TASK-383's roster. Idempotent -- fires once per wedding, matches this project's earn_milestone-style one-shot convention.</description>
+  <description>Gap-analysis finding (2026-09-05): the marriage/wedding system (RomanceNPC.gd's proposal check, test_wedding.gd) has zero family tie-in today -- no dialogue from a candidate's parent/sibling (TASK-383) when she gets engaged or married, despite family now being real, named, locked lore for every candidate. Scope: when GameData.spouse is set for a candidate whose family NPC exists (Charoen/Fah, Somsri/Ploy, Gaew/Mali, Boonchu/Rin, Ampai/Yaa -- Kwan's "family" is Somchai, already an existing NPC), that family NPC's next `talk()` line (or a one-time triggered dialogue on the wedding festival event, delegate's call on which trigger point reads better) should be a specific, LOCKED reaction line acknowledging the marriage -- NOT a generic congratulations. Write these 5 reaction lines directly in this task's own dispatch (this is content-locking work, not something to leave to a delegate's judgment) matching each family member's already-established voice from TASK-383's roster. Idempotent -- fires once per wedding, matches this project's earn_milestone-style one-shot convention.
+
+SHIPPED (2026-09-05): all 6 locked reaction lines implemented (5 via FlavorNPC.gd + Somchai via VillagerNPC.gd), tracked via new additive `GameData.family_marriage_reaction_shown` dict. Merged `f174b02`, pushed, full 3x gate green (34 checks). Dispatched via OpenCode/muse-spark-1.3-contributor-free.</description>
   <researcher_notes>Blocked until TASK-383 lands (the family NPCs don't exist yet). Do not dispatch before that lands and is Code-Quality-Reviewed.</researcher_notes>
 </task_item>
 
@@ -870,10 +872,12 @@ Scope: (1) a new minimal `FlavorNPC.gd` script (NOT a copy of VillagerNPC.gd's f
 <task_item>
   <id>TASK-386</id>
   <source>AI-LOOP</source>
-  <status>SPECCED</status>
+  <status>COMPLETED</status>
   <priority>P3 (UNBLOCKED -- TASK-383 landed 2026-09-05)</priority>
   <title>RelationshipStatus overlay (TASK-381) shows family info</title>
-  <description>Gap-analysis finding (2026-09-05): `scenes/ui/RelationshipStatus.tscn`/`.gd` (TASK-381, already shipped) shows hearts/gifts/married status but nothing about family, even though every candidate now has locked family lore (TASK-383/VILLAGE_LORE.md). Scope: add a `FamilyLabel` to the existing VBox (mirror `LovedLabel`/`LikedLabel`'s exact styling/wrapping convention) showing the family member's name + relationship (e.g. "Family: Somsri (mother)") for the currently-open candidate. Needs a small id->family-member lookup table (npc_id -> {name, relation} -- add it to `RelationshipStatus.gd` itself or `DialogueDB.gd`, delegate's call on placement, but do NOT duplicate the family roster VILLAGE_LORE.md already locked -- reference the same names). Kwan (chang) shows "Somchai (mentor)" rather than a blood-family relation, matching her actual established tie.</description>
+  <description>Gap-analysis finding (2026-09-05): `scenes/ui/RelationshipStatus.tscn`/`.gd` (TASK-381, already shipped) shows hearts/gifts/married status but nothing about family, even though every candidate now has locked family lore (TASK-383/VILLAGE_LORE.md). Scope: add a `FamilyLabel` to the existing VBox (mirror `LovedLabel`/`LikedLabel`'s exact styling/wrapping convention) showing the family member's name + relationship (e.g. "Family: Somsri (mother)") for the currently-open candidate. Needs a small id->family-member lookup table (npc_id -> {name, relation} -- add it to `RelationshipStatus.gd` itself or `DialogueDB.gd`, delegate's call on placement, but do NOT duplicate the family roster VILLAGE_LORE.md already locked -- reference the same names). Kwan (chang) shows "Somchai (mentor)" rather than a blood-family relation, matching her actual established tie.
+
+SHIPPED (2026-09-05): `FamilyLabel` added, `FAMILY_INFO` lookup lives in `RelationshipStatus.gd` (not duplicated in `DialogueDB.gd`). Merged `37feddc`, pushed, full 3x gate green (20 checks). Dispatched via OpenCode/muse-spark-1.3-contributor-free, zero Code Quality Review issues.</description>
   <researcher_notes>Blocked until TASK-383 lands (needs the real family names to reference). Small, additive UI change to an already-shipped, already-tested screen -- extend tests/test_relationship_status.gd rather than writing a new test file.</researcher_notes>
 </task_item>
 
