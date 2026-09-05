@@ -166,8 +166,15 @@ func _run_all() -> void:
 		"FerrymanNPC at locked position Vector2(600, 576)")
 	_check((keeper as Node2D).position == Vector2(744, 432),
 		"FishKeeperNPC at locked position Vector2(744, 432)")
-	_check((scrap as Node2D).position == Vector2(936, 600),
-		"ScrapCollectorNPC at locked position Vector2(936, 600)")
+	# TASK-390 fix (manual playtest, 2026-09-05): moved from (936, 600) --
+	# that position sat inside EastEdge's scene-transition trigger
+	# (RectangleShape2D 48x864 at x=940, spanning x=916-964 across nearly
+	# the full map height), so a real player walking up to interact would
+	# get warped to CoastalArea.tscn before ever reaching him. Direct
+	# _player_in_range assertions like this file's never exercised the
+	# EastEdge Area2D, so the automated gate never caught it.
+	_check((scrap as Node2D).position == Vector2(850, 528),
+		"ScrapCollectorNPC at locked position Vector2(850, 528)")
 	_check(ferryman.is_in_group("flavor_npc"), "FerrymanNPC in group 'flavor_npc'")
 	_check(keeper.is_in_group("flavor_npc"), "FishKeeperNPC in group 'flavor_npc'")
 	_check(scrap.is_in_group("flavor_npc"), "ScrapCollectorNPC in group 'flavor_npc'")

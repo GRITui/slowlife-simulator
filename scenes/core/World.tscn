@@ -208,7 +208,7 @@ position = Vector2(600, 576)
 position = Vector2(744, 432)
 
 [node name="ScrapCollectorNPC" parent="." instance=ExtResource("48_scrap")]
-position = Vector2(936, 600)
+position = Vector2(850, 528)
 
 [node name="Player" parent="." instance=ExtResource("5_pl")]
 position = Vector2(480, 384)

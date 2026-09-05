@@ -570,7 +570,15 @@ func _ensure_forage_nodes() -> void:
 	# their NPC's locked World.tscn position; item_id per instance so one
 	# ForageNode script serves both.
 	_ensure_forage_node("FishKeeperForageNode", Vector2(768, 456), "wild_turmeric")
-	_ensure_forage_node("ScrapCollectorForageNode", Vector2(912, 624), "salvaged_scrap")
+	# TASK-390 fix (manual playtest, 2026-09-05): moved from (912, 624)
+	# alongside ScrapCollectorNPC's own reposition -- both were inside the
+	# EastEdge scene-transition trigger's x-range (916-964, per its
+	# 48x864 RectangleShape2D covering nearly the full map height), so a
+	# player walking up to interact would get warped to CoastalArea.tscn
+	# first. Automated tests never caught this because they set
+	# _player_in_range directly rather than physically walking through
+	# EastEdge's Area2D.
+	_ensure_forage_node("ScrapCollectorForageNode", Vector2(826, 552), "salvaged_scrap")
 
 func _ensure_forage_node(node_name: String, pos: Vector2, item_id: String) -> void:
 	if get_node_or_null(node_name) != null:
