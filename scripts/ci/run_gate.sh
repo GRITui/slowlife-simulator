@@ -248,6 +248,15 @@ run_family_gift_hints() {
 	godot --headless --path . --script res://tests/test_family_gift_hints.gd
 }
 
+run_npc_birthdays() {
+	# TASK-388: NPC birthdays + birthday-gift affinity bonus for the 6
+	# romance candidates (static NPC_BIRTHDAYS table, 2x gift delta on
+	# the exact (season, day) triple, birthday line, RelationshipStatus
+	# BirthdayLabel discovery path). No persisted state by design.
+	echo "== npc-birthdays gate: tests/test_npc_birthdays.gd =="
+	godot --headless --path . --script res://tests/test_npc_birthdays.gd
+}
+
 run_lone_npcs() {
 	# TASK-390: three "lives alone, holds a secret" NPCs (Ferryman /
 	# Fish-Keeper / Scrap Collector) with exclusive wild produce +
@@ -289,7 +298,8 @@ case "$GATE" in
 	npc_roster_wiring) run_npc_roster_wiring ;;
 	family_marriage_reactions) run_family_marriage_reactions ;;
 	family_gift_hints) run_family_gift_hints ;;
+	npc_birthdays) run_npc_birthdays ;;
 	lone_npcs) run_lone_npcs ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status && run_npc_roster_wiring && run_family_marriage_reactions && run_family_gift_hints && run_lone_npcs ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|npc_roster_wiring|family_marriage_reactions|family_gift_hints|lone_npcs|all)" >&2; exit 2 ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status && run_npc_roster_wiring && run_family_marriage_reactions && run_family_gift_hints && run_npc_birthdays && run_lone_npcs ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|npc_roster_wiring|family_marriage_reactions|family_gift_hints|npc_birthdays|lone_npcs|all)" >&2; exit 2 ;;
 esac
