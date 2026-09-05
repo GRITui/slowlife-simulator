@@ -25,6 +25,7 @@ const FLAVOR_LINES: Dictionary = {
 		"I played that same drum forty years ago. Rin plays it louder.",
 		"She used to hide under the stage during festivals. Now she won't leave it.",
 		"The rhythm's in the family. Don't ask me why.",
+		"During Loy Krathong, I still lead the opening beat. Rin takes over by the second song — she plays it louder than I ever did.",
 	],
 	"ampai": [
 		"Yaa knows the lotus roots better than I do now. I taught her to be curious first, careful second.",
@@ -40,6 +41,7 @@ const FLAVOR_LINES: Dictionary = {
 		"He gave up plenty to wear those robes. I still bring him his favorite curry anyway.",
 		"Our mother worried he'd be lonely at the temple. He's not. He just doesn't complain.",
 		"He'd never ask for help carrying anything. So I just carry it before he notices.",
+		"During Songkran, I bring the Monk his favorite curry before the water throwing starts. He always pretends to be surprised.",
 	],
 	"tong": [
 		"Uncle says a good trader never says what the village has too much of. I'm still learning not to blurt it out.",
