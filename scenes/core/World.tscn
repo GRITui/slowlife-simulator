@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://main000001"]
+[gd_scene load_steps=31 format=3 uid="uid://main000001"]
 
 [ext_resource type="Script" path="res://scenes/core/World.gd" id="1_world"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/Door.tscn" id="15_door"]
@@ -46,6 +46,20 @@
 [ext_resource type="ParticleProcessMaterial" path="res://assets/particles/festival_lanterns.tres" id="23_lanterns"]
 [ext_resource type="Texture2D" path="res://assets/particles/lantern_glow.png" id="24_lanterntex"]
 [ext_resource type="PackedScene" path="res://scenes/ui/RelationshipStatus.tscn" id="25_relstatus"]
+[ext_resource type="PackedScene" path="res://scenes/entities/CharoenNPC.tscn" id="32_charoen"]
+[ext_resource type="PackedScene" path="res://scenes/entities/SomsriNPC.tscn" id="33_somsri"]
+[ext_resource type="PackedScene" path="res://scenes/entities/GaewNPC.tscn" id="34_gaew"]
+[ext_resource type="PackedScene" path="res://scenes/entities/BoonchuNPC.tscn" id="35_boonchu"]
+[ext_resource type="PackedScene" path="res://scenes/entities/AmpaiNPC.tscn" id="36_ampai"]
+[ext_resource type="PackedScene" path="res://scenes/entities/YingNPC.tscn" id="37_ying"]
+[ext_resource type="PackedScene" path="res://scenes/entities/NamNPC.tscn" id="38_nam"]
+[ext_resource type="PackedScene" path="res://scenes/entities/TongNPC.tscn" id="39_tong"]
+[ext_resource type="PackedScene" path="res://scenes/entities/KhamNPC.tscn" id="40_kham"]
+[ext_resource type="PackedScene" path="res://scenes/entities/KaewNPC.tscn" id="41_kaew"]
+[ext_resource type="PackedScene" path="res://scenes/entities/BupphaNPC.tscn" id="42_buppha"]
+[ext_resource type="PackedScene" path="res://scenes/entities/DaengNPC.tscn" id="43_daeng"]
+[ext_resource type="PackedScene" path="res://scenes/entities/PloenNPC.tscn" id="44_ploen"]
+[ext_resource type="PackedScene" path="res://scenes/entities/AddNPC.tscn" id="45_add"]
 
 [node name="World" type="Node2D"]
 y_sort_enabled = true
@@ -141,6 +155,48 @@ position = Vector2(264, 168)
 
 [node name="TraderNPC" parent="." instance=ExtResource("31_trader")]
 position = Vector2(360, 600)
+
+[node name="CharoenNPC" parent="." instance=ExtResource("32_charoen")]
+position = Vector2(72, 216)
+
+[node name="SomsriNPC" parent="." instance=ExtResource("33_somsri")]
+position = Vector2(72, 552)
+
+[node name="GaewNPC" parent="." instance=ExtResource("34_gaew")]
+position = Vector2(168, 504)
+
+[node name="BoonchuNPC" parent="." instance=ExtResource("35_boonchu")]
+position = Vector2(168, 600)
+
+[node name="AmpaiNPC" parent="." instance=ExtResource("36_ampai")]
+position = Vector2(360, 504)
+
+[node name="YingNPC" parent="." instance=ExtResource("37_ying")]
+position = Vector2(360, 696)
+
+[node name="NamNPC" parent="." instance=ExtResource("38_nam")]
+position = Vector2(600, 72)
+
+[node name="TongNPC" parent="." instance=ExtResource("39_tong")]
+position = Vector2(648, 696)
+
+[node name="KhamNPC" parent="." instance=ExtResource("40_kham")]
+position = Vector2(696, 72)
+
+[node name="KaewNPC" parent="." instance=ExtResource("41_kaew")]
+position = Vector2(744, 696)
+
+[node name="BupphaNPC" parent="." instance=ExtResource("42_buppha")]
+position = Vector2(840, 264)
+
+[node name="DaengNPC" parent="." instance=ExtResource("43_daeng")]
+position = Vector2(840, 360)
+
+[node name="PloenNPC" parent="." instance=ExtResource("44_ploen")]
+position = Vector2(840, 456)
+
+[node name="AddNPC" parent="." instance=ExtResource("45_add")]
+position = Vector2(840, 696)
 
 [node name="Player" parent="." instance=ExtResource("5_pl")]
 position = Vector2(480, 384)
