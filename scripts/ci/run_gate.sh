@@ -270,6 +270,20 @@ run_lone_npcs() {
 	godot --headless --path . --script res://tests/test_lone_npcs.gd
 }
 
+run_interactive_furniture() {
+	# TASK-391: 4 interactive furniture pieces (portrait/chair-bench/vase/
+	# radio) on the existing FarmHouseFurniture placement system + the
+	# marigold ForageNode. Covers exact locked lines, the chair/bench
+	# once-per-day-per-instance cooldown, the vase's exactly-1-marigold
+	# fill, the radio's forecast/festival-countdown correctness at 4
+	# (day, season) states (incl. a season-boundary wraparound) plus the
+	# headman-quest hint append/omit paths, the MarigoldForageNode's
+	# presence/position/once-per-day grant, and the save/load round-trip
+	# for every new GameData field.
+	echo "== interactive-furniture gate: tests/test_interactive_furniture.gd =="
+	godot --headless --path . --script res://tests/test_interactive_furniture.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -300,6 +314,7 @@ case "$GATE" in
 	family_gift_hints) run_family_gift_hints ;;
 	npc_birthdays) run_npc_birthdays ;;
 	lone_npcs) run_lone_npcs ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status && run_npc_roster_wiring && run_family_marriage_reactions && run_family_gift_hints && run_npc_birthdays && run_lone_npcs ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|npc_roster_wiring|family_marriage_reactions|family_gift_hints|npc_birthdays|lone_npcs|all)" >&2; exit 2 ;;
+	interactive_furniture) run_interactive_furniture ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status && run_npc_roster_wiring && run_family_marriage_reactions && run_family_gift_hints && run_npc_birthdays && run_lone_npcs && run_interactive_furniture ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|npc_roster_wiring|family_marriage_reactions|family_gift_hints|npc_birthdays|lone_npcs|interactive_furniture|all)" >&2; exit 2 ;;
 esac

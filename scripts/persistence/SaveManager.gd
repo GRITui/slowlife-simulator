@@ -149,6 +149,15 @@ func save_game() -> bool:
 		"forage_node_last_day": gd.forage_node_last_day,
 		"scrap_collector_note_given": gd.scrap_collector_note_given,
 		"scrap_collector_note_returned": gd.scrap_collector_note_returned,
+		# TASK-391: interactive-furniture state (chair/bench sit cooldowns,
+		# vase flower flags). Both additive, NO SAVE_VERSION bump: the
+		# initializers are {} and load_game() below defaults a missing key
+		# to {} — an old save loads as if nothing was ever sat in or
+		# filled, bit-identical to a fresh start (same pattern as the
+		# TASK-390 lines directly above). Keys are plain "%d,%d" strings
+		# (JSON-native), never Vector2i — see GameData's own comment.
+		"furniture_sit_last_day": gd.furniture_sit_last_day,
+		"vase_has_flowers": gd.vase_has_flowers,
 		# TASK-374/375: placed furniture (location -> list of {item_id, cell,
 		# facing}). No SAVE_VERSION bump: empty {} matches GameData.
 		# placed_furniture's init exactly, so old saves load as if no
@@ -418,6 +427,12 @@ func load_game() -> bool:
 		gd.forage_node_last_day = (data.get("forage_node_last_day", {}) as Dictionary).duplicate(true)
 		gd.scrap_collector_note_given = bool(data.get("scrap_collector_note_given", false))
 		gd.scrap_collector_note_returned = bool(data.get("scrap_collector_note_returned", false))
+		# TASK-391: interactive-furniture state. Defaults match GameData's
+		# own var initializers exactly ({} = never sat / never filled), so
+		# a save from before this task loads unchanged. (No SAVE_VERSION
+		# bump: additive-safe per task spec.)
+		gd.furniture_sit_last_day = (data.get("furniture_sit_last_day", {}) as Dictionary).duplicate(true)
+		gd.vase_has_flowers = (data.get("vase_has_flowers", {}) as Dictionary).duplicate(true)
 		# TASK-357: restore the actual scene + position the save was made in,
 		# instead of leaving the player wherever they currently are (which,
 		# before this fix, was always whatever the main scene's own default
