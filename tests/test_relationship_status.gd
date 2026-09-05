@@ -78,6 +78,22 @@ func _run_all() -> void:
 	_check(married_label != null and married_label.visible == false,
 		"MarriedLabel hidden when GameData.spouse != this candidate")
 
+	# --- TASK-386: FamilyLabel ---
+	var family_label: Label = status.get_node_or_null("Panel/VBox/FamilyLabel") as Label
+	_check(family_label != null,
+		"Panel/VBox/FamilyLabel is a real node in the .tscn (not just referenced in the script)")
+	_check(family_label != null and family_label.text == "Family: Charoen (father)",
+		"FamilyLabel shows fah's family (got '%s')" % (family_label.text if family_label else "<null>"))
+
+	sb.show_relationship_status.emit("chang", "Chang")
+	await process_frame
+	_check(family_label != null and family_label.text == "Family: Somchai (mentor)",
+		"FamilyLabel shows chang's mentor relation (got '%s')" % (family_label.text if family_label else "<null>"))
+
+	# Restore fah state for the remaining section-A checks.
+	sb.show_relationship_status.emit("fah", "Fah")
+	await process_frame
+
 	var avatar: TextureRect = status.get_node_or_null("Panel/VBox/Avatar") as TextureRect
 	_check(avatar != null and avatar.visible == false,
 		"Avatar hides cleanly when no avatar art exists yet for this candidate (fah_avatar.png not on disk)")
