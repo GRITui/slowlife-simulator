@@ -149,6 +149,12 @@ func _mounted_interact_3x3(gm: Node, center: Vector2i) -> void:
 	var crop: Resource = _find_crop_for_held_seed()
 	if crop == null:
 		crop = load("res://data/crops/jasmine_rice.tres")
+	# Owner playtest finding (2026-09-05): same tool-ownership gate as the
+	# unmounted _try_grid_interact() path, applied per-category here.
+	# Checked once (not per-cell) since ownership doesn't change mid-plow.
+	var has_hoe: bool = GameData.has_item("hoe", 1)
+	var has_sickle: bool = GameData.has_item("sickle", 1)
+	var has_can: bool = GameData.has_item("watering_can", 1)
 	var planted: int = 0
 	var watered: int = 0
 	var harvested: int = 0
@@ -157,13 +163,13 @@ func _mounted_interact_3x3(gm: Node, center: Vector2i) -> void:
 			var cell: Vector2i = center + Vector2i(dx, dy)
 			var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
 			if plot == null:
-				if crop != null and gm.plant(cell, crop):
+				if has_hoe and crop != null and gm.plant(cell, crop):
 					planted += 1
 			elif plot.stage >= plot.crop.total_stages - 1:
-				if gm.harvest(cell) > 0:
+				if has_sickle and gm.harvest(cell) > 0:
 					harvested += 1
 			else:
-				if gm.water(cell):
+				if has_can and gm.water(cell):
 					watered += 1
 	var parts: Array[String] = []
 	if planted > 0:
@@ -186,6 +192,13 @@ func _try_grid_interact() -> void:
 		return
 	var plot = gm.get_plot(cell) if gm.has_method("get_plot") else null
 	if plot == null:
+		# Owner playtest finding (2026-09-05): tilling/planting had no tool
+		# gate at all. Mirrors FishingSpot.gd's canonical "you need a
+		# fishing rod" soft-fail -- friendly line, no punishment, matches
+		# this project's no-fail-state convention.
+		if not GameData.has_item("hoe", 1):
+			SignalBus.show_dialogue.emit("Farmer", "A hoe would help. The handler's shop carries them.")
+			return
 		# TASK-043: seed-driven planting — first owned seed_* item maps to its
 		# CropData; falls back to jasmine_rice when no seeds are held (demo).
 		# TASK-350: _find_crop_for_held_seed() now prefers _primed_seed_id
@@ -213,12 +226,22 @@ func _try_grid_interact() -> void:
 	else:
 		# has plot: if harvest-ready -> harvest, else water
 		if plot.stage >= plot.crop.total_stages - 1:
+			# Owner playtest finding (2026-09-05): same tool-gate as the
+			# hoe check above, applied to harvesting.
+			if not GameData.has_item("sickle", 1):
+				SignalBus.show_dialogue.emit("Farmer", "A sickle would help. The handler's shop carries them.")
+				return
 			var y: int = gm.harvest(cell)
 			if y > 0:
 				SignalBus.show_dialogue.emit("Farmer", "Harvested +%d %s." % [y, plot.crop.yield_item_id])
 			else:
 				SignalBus.show_dialogue.emit("Farmer", "Not ready or too tired.")
 		else:
+			# Owner playtest finding (2026-09-05): same tool-gate, applied
+			# to watering.
+			if not GameData.has_item("watering_can", 1):
+				SignalBus.show_dialogue.emit("Farmer", "A watering can would help. The handler's shop carries them.")
+				return
 			if gm.water(cell):
 				SignalBus.show_dialogue.emit("Farmer", "Watered plot.")
 			else:

@@ -548,6 +548,17 @@ func _ensure_fishing_spot() -> void:
 	add_child(spot)
 	if GameData.inventory.is_empty() or not GameData.has_item("fishing_rod", 1):
 		GameData.add_item("fishing_rod", 1)
+	# Owner playtest finding (2026-09-05): tilling/watering/harvesting had
+	# no tool-ownership gate at all -- GameData.tool_tiers (hoe/
+	# watering_can/sickle, all starting at tier 1) only ever scaled an
+	# efficiency bonus, never gated the action itself. Grant the 3 base
+	# tools as real inventory items (same idempotent pattern as
+	# fishing_rod above) so Player._try_grid_interact() has something
+	# real to check -- existing saves get them retroactively on next
+	# boot, same as fishing_rod already does.
+	for tool_id: String in ["hoe", "watering_can", "sickle"]:
+		if not GameData.has_item(tool_id, 1):
+			GameData.add_item(tool_id, 1)
 
 func _ensure_mining_spot() -> void:
 	if get_node_or_null("MiningSpot") != null:
