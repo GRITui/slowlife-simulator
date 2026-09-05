@@ -103,6 +103,20 @@ one retry each — first pass washed out per failure mode #7, fixed with
 explicit "bold saturated color, vivid not pale" language), lotus_maze,
 dock, lotus_pond (16x16, clean first pass). All 8 files.
 
+**Run 2** (2026-09-05, quality pass — aspect-aware generation dims +
+richer rim-light/AO prompt language + steps bumped 4→6, cfg 1.0→1.3,
+per owner request for higher visual polish within the pipeline's real
+constraints): water_jar, sluice_gate, bamboo_thicket, banana_circle,
+rice_paddy_stage1 (clean first pass, all 16x16). clay_stove_tall,
+market_stall, bamboo_wall_tall, sluice_gate_tall all had GOOD raw
+generations but were mangled by a background-removal bug — found and
+fixed, see `docs/art/pixel_art_pipeline.md` gap-analysis failure mode
+#8 (border-seeded flood-fill deletes edge-touching subjects; switched
+to global corner-sampled color-key removal). clay_stove needed a full
+regeneration (original had 2 competing objects in frame). rice_paddy_
+stage2-4 derived locally from stage1 via scale+hue-shift, same as the
+soft-shaded pass. All 13 files (9 props + 4 rice stages).
+
 **Incident during run 1's gate pass**: `dialogue-portrait` tests failed
 on an unrelated file (`assets/ui/portraits/elder.png` missing). Found
 517 tracked files deleted from the working tree across

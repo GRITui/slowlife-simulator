@@ -160,6 +160,34 @@ not pale" into the prompt template from the START rather than waiting
 for a washed-out first attempt — this is now a known-risky subject
 class, not a surprise.
 
+### 8. Border-seeded flood-fill deletes the subject when it touches the frame edge
+**Symptom**: `clay_stove_tall`, `market_stall`, `bamboo_wall_tall`,
+`sluice_gate_tall` all had genuinely good raw generations, but came out
+badly mangled (missing chunks, wrong regions kept) after the automated
+background-removal step.
+**Root cause**: `flood_remove_bg()` seeds its flood-fill from every
+border pixel and treats everything color-connected to those seeds as
+background. When the subject's own dark pixels touch or nearly touch
+the image edge (a tall prop's silhouette reaching close to the frame,
+or a stray black letterbox bar the model added), the flood fill walks
+from the border INTO the subject through that connected dark region and
+deletes real content instead of background.
+**Fix**: for any raw generation where the subject is full-height/full-
+width (touches or nearly touches the frame edge) or a letterbox-style
+artifact is visible, use a **global color-key removal** instead:
+sample the actual 4 corner pixel colors (not just "the border"), average
+them into a background color estimate, and remove any pixel within a
+color-distance tolerance of that average, regardless of connectivity.
+This has no failure mode from edge-touching content since it doesn't
+rely on flood connectivity at all. Tradeoff: risks removing legitimately
+background-colored interior pixels (e.g. a white highlight inside the
+subject) — check the result before committing, same as any bg-removal
+pass.
+**Recommendation**: don't default to flood-fill for every asset. If a
+raw generation's subject silhouette reaches within ~10px of any edge,
+switch to color-key removal proactively rather than discovering the
+flood-fill failure after the fact.
+
 ## Recommendations for the next batch (portraits, batch 7-9)
 
 1. **Portraits (64×64, outline-first)**: given #6 above, a face has
