@@ -15,3 +15,10 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Draw Things art-generation queue (working state, not source) — a
+# background batch actively reads/writes this directory; `git stash -u`
+# (used by scripts/ci/land_task.sh) must not sweep it up mid-run. Ignored
+# paths are excluded from `-u` (only `-a` includes them), so this keeps
+# in-flight generation safe from any stash during a task landing.
+tools/drawthings_queue/
