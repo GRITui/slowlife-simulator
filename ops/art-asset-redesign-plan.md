@@ -16,8 +16,8 @@ particle resources excluded — those aren't image-generation targets).
 |---|---|---|---|
 | 1 | NPC/animal portraits (part 1) | 6 (elder, child, handler, monk, trader, buffalo) | DONE (2026-09-03) |
 | 2 | NPC/animal portraits (part 2) | 7 (fah, headman, niran, vet, somchai, nong_ton, monkey) | DONE (2026-09-05, all 7 in assets/ui/portraits/) |
-| 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE (2026-09-05) — heart_empty/full/silver_coin needed a re-gen (first pass's Draw Things output wasn't real alpha, baked-in background) + local flood-fill removal, not a straight copy-in like the other 7 |
-| 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE (2026-09-05) — see caveats below |
+| 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE, REDONE 2026-09-05 under the strict 16-bit pipeline — see "16-bit pipeline redo" below |
+| 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE, REDONE 2026-09-05 under the strict 16-bit pipeline — see "16-bit pipeline redo" below |
 | 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | DONE (2026-09-05) — clean first-pass generations, no retries needed |
 | 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | DONE (2026-09-05) — all 25 files, sub-batches A-E, see caveats below |
 | 7 | Crops (growth stages, ~84 files) | ~84 | pending, large — may need its own sub-batches |
@@ -111,6 +111,44 @@ more as "stylized fruit-topped icon" than a literal tree render (e.g.
 mango_tree looks like a bunch of mangoes on a small frond crown), but
 this matches the existing soft-shaded pixel-art convention used
 throughout and is a clear improvement over the flat-color placeholders.
+
+## 16-bit pipeline redo (2026-09-05, batches 3+4)
+
+Owner request: adopt a strict 16-bit/SNES-style pixel-art pipeline
+(outline-first for sprites/icons, block-first for seamless tiles;
+selective outlining — never pure black; cluster shading, no gradients/
+AA) going forward, and redo the already-shipped batches 3 (UI) and 4
+(tilesets) under it as a first test. Kept the project's `TILE = 48`
+grid as-is (no engine-level migration) — assets are authored at a
+16x16 (icons) or 16x16 (tile block, upscaled x3) grid and NEAREST-
+upscaled to the existing in-game display size, so this is a visual
+style change only, not a resolution/architecture change.
+
+**Pipeline**: Draw Things high-res render (256x256) → flood-fill bg
+removal (icons only) → content-bbox crop (icons only) → NEAREST
+downscale to the 16-px authoring grid (this is what actually locks the
+pixels — everything before it is just getting a clean high-res source)
+→ palette quantization (8-12 colors, RGB channel only, alpha handled
+separately) → NEAREST upscale to final in-game size. Tiles skip the
+crop/bg-removal steps since they're full-bleed, not isolated subjects.
+
+**UI chrome (7 of batch 3's 10 files) was hand-authored in PIL, not
+AI-generated**: action_prompt, inventory_slot, season_display, and the
+4 bar sprites (crop_progress_bar_fill/under, energy_bar, harmony_bar)
+are flat rounded panels / hard-stepped color bars — pure geometry, and
+this session's repeated experience is that the model reliably fights
+"flat" and adds unwanted gradient/texture noise for plain-geometry
+prompts. Procedural generation is both cheaper and more correct here.
+The 3 remaining batch-3 files (heart_full, heart_empty, silver_coin)
+and all 9 batch-4 tileset files went through the actual AI pipeline.
+
+**Caveats**: `heart_empty` — the model rendered a FILLED heart despite
+explicit "hollow outline only" prompting (same failure mode hit twice).
+Derived it locally instead: eroded `heart_full`'s pixel art down to
+just its outline ring. `ground_ricepaddy` needed one retry (first pass
+was too dark/muddy to read as a paddy field; brighter prompt fixed it).
+Every other file was a clean first-pass generation under the new
+pipeline.
 
 ## Notes
 - Batches 7-9 are large enough that they should be split into sub-batches
