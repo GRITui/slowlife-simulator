@@ -579,6 +579,12 @@ func _ensure_forage_nodes() -> void:
 	# _player_in_range directly rather than physically walking through
 	# EastEdge's Area2D.
 	_ensure_forage_node("ScrapCollectorForageNode", Vector2(826, 552), "salvaged_scrap")
+	# TASK-391: marigold node for the ceramic-vase interaction (temple-yard
+	# flower, feeds FarmHouseFurniture._interact_vase). Pre-verified
+	# position Vector2(840, 24): temple_yard, walkable, clear of every
+	# existing NPC and of EastEdge's scene-transition trigger collision
+	# zone (x=916-964) -- use as-is, do not repick.
+	_ensure_forage_node("MarigoldForageNode", Vector2(840, 24), "marigold")
 
 func _ensure_forage_node(node_name: String, pos: Vector2, item_id: String) -> void:
 	if get_node_or_null(node_name) != null:

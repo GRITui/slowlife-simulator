@@ -542,6 +542,10 @@ const SELL_PRICES: Dictionary = {
 	# yet (known follow-up, out of scope for this task — just sellable).
 	# ploen_note is deliberately NOT sellable (a plain quest token).
 	"wild_turmeric": 6, "preserved_fish": 18, "salvaged_scrap": 3,
+	# TASK-391: marigold for the ceramic-vase interaction (gathered from a
+	# ForageNode near the temple yard, main use is the vase). Modest price
+	# in wild_turmeric's tier so it has a sell fallback like every item.
+	"marigold": 5,
 }
 
 func add_silver(amount: int) -> void:
@@ -703,6 +707,18 @@ var fish_keeper_recipe_unlocked: bool = false
 var forage_node_last_day: Dictionary = {} # node instance name -> last_day foraged
 var scrap_collector_note_given: bool = false
 var scrap_collector_note_returned: bool = false
+
+# TASK-391: interactive farmhouse furniture (chair/bench sit cooldown, vase
+# flower state). Both additive with safe defaults, NO SAVE_VERSION bump:
+# absent key = default {} = "never sat / never filled", bit-identical to a
+# fresh start — same pattern as forage_node_last_day above. Keys are
+# "%d,%d" cell STRINGS, never raw Vector2i: SaveManager's TASK-375 review
+# documented that Vector2i stringifies to "(x, y)" through JSON and never
+# parses back, so a Vector2i key would silently break every lookup
+# post-reload. Day source mirrors forage_node_last_day
+# (SignalBus.time_manager.day).
+var furniture_sit_last_day: Dictionary = {} # cell-string -> last_day sat
+var vase_has_flowers: Dictionary = {} # cell-string -> true once filled
 
 # TASK-340 rival win/loss system. npc_first_met_day: npc_id -> day the
 # player first ever interacted with them (clock start). lost_to_rival:

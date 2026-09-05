@@ -83,6 +83,19 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		# furniture piece, but still below the heavy tools (45) so
 		# it's an attainable mid-game home improvement.
 		{"item": "small_table", "price": 30},
+		# TASK-391: five interactive-furniture catalogue entries (portrait,
+		# chair, bench, vase, radio -- see FarmHouseFurniture.
+		# DISPLAY_NAMES). Same acquisition path as the existing three
+		# furniture items (market purchase, not season-gated, listed in all
+		# three seasons): portrait 35 (largest wall piece, above the table),
+		# chair 20 / bench 25 (seating pair around the rug/cushion tier),
+		# vase 20 (small accent), radio 40 (the priciest -- it delivers
+		# daily forecast/festival/quest intel, not just decor).
+		{"item": "wall_portrait", "price": 35},
+		{"item": "wooden_chair", "price": 20},
+		{"item": "wooden_bench", "price": 25},
+		{"item": "ceramic_vase", "price": 20},
+		{"item": "transistor_radio", "price": 40},
 		{"item": "seed_yardlong_bean", "price": 12},
 	],
 	"hot": [
@@ -106,6 +119,14 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "floor_cushion", "price": 15},
 		# TASK-375: small_table — see the cool-season entry above.
 		{"item": "small_table", "price": 30},
+		# TASK-391: interactive furniture — see the cool-season entry above
+		# for the price-reasoning comment (identical placement across all
+		# three seasons because decor is not season-gated).
+		{"item": "wall_portrait", "price": 35},
+		{"item": "wooden_chair", "price": 20},
+		{"item": "wooden_bench", "price": 25},
+		{"item": "ceramic_vase", "price": 20},
+		{"item": "transistor_radio", "price": 40},
 		{"item": "seed_banana", "price": 15},
 		{"item": "seed_chili", "price": 9},
 		{"item": "seed_durian", "price": 30},
@@ -132,6 +153,14 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "floor_cushion", "price": 15},
 		# TASK-375: small_table — see the cool-season entry above.
 		{"item": "small_table", "price": 30},
+		# TASK-391: interactive furniture — see the cool-season entry above
+		# (identical placement across all three seasons because decor is
+		# not season-gated).
+		{"item": "wall_portrait", "price": 35},
+		{"item": "wooden_chair", "price": 20},
+		{"item": "wooden_bench", "price": 25},
+		{"item": "ceramic_vase", "price": 20},
+		{"item": "transistor_radio", "price": 40},
 		{"item": "seed_ginger", "price": 10},
 		{"item": "seed_lotus", "price": 12},
 		{"item": "seed_taro", "price": 10},

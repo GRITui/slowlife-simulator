@@ -42,11 +42,47 @@ const RUG_ITEM_ID: String = "floor_rug"
 # the same grid without node-name collisions and the same sprite node
 # can be looked up by either name). Texture paths are defined inline
 # at the spawn site below -- this dict owns the node-name side only.
+#
+# TASK-391: five new catalogue entries (portrait, chair, bench, vase,
+# radio). Placeable through the exact same owned-via-inventory /
+# primed-item flow as the original three -- no new placement path.
 const DISPLAY_NAMES: Dictionary = {
 	"floor_rug": "Rug",
 	"floor_cushion": "Cushion",
 	"small_table": "Table",
+	"wall_portrait": "Portrait",
+	"wooden_chair": "Chair",
+	"wooden_bench": "Bench",
+	"ceramic_vase": "Vase",
+	"transistor_radio": "Radio",
 }
+
+# TASK-391: locked interaction lines -- verbatim, do not paraphrase.
+const PORTRAIT_LINE: String = "You look at the portrait for a moment longer than you meant to."
+const SIT_LINE: String = "You sit a while. The day feels a little less long."
+const VASE_FILLED_LINE: String = "The marigold brightens the room."
+# Companion lines written for this task (not locked, but kept in the
+# same quiet register): the sit cooldown, the vase's already-filled
+# state, and the vase's empty-and-no-flower prompt.
+const SIT_COOLDOWN_LINE: String = "You already rested here today. Best leave the seat a while."
+const VASE_HAS_FLOWER_LINE: String = "The marigold is still there, keeping the room company."
+const VASE_NEEDS_FLOWER_LINE: String = "The vase stands empty. A marigold would suit it."
+
+# TASK-391: (festival_day, season, display name) for the radio countdown.
+# Day/season pairs read from each trigger's ACTUAL @export value +
+# season gate (verified 2026-09-05), not guessed:
+# SongkranTrigger festival_day=3/hot, FishingCompetitionTrigger=15/hot,
+# LopburiRaid=9/hot, AsalhaBuchaTrigger=5/monsoon, OkPhansaTrigger=28/
+# monsoon, FestivalManager (Loy Krathong)=7/cool, WanSartTrigger=5/cool.
+const FESTIVAL_DATES: Array = [
+	{"day": 3, "season": "hot", "name": "Songkran"},
+	{"day": 15, "season": "hot", "name": "the Fishing Competition"},
+	{"day": 9, "season": "hot", "name": "the Lopburi Raid"},
+	{"day": 5, "season": "monsoon", "name": "Asalha Bucha"},
+	{"day": 28, "season": "monsoon", "name": "Ok Phansa"},
+	{"day": 7, "season": "cool", "name": "Loy Krathong"},
+	{"day": 5, "season": "cool", "name": "Wan Sart"},
+]
 
 # Cells already occupied by other FarmHouse interactables (from
 # FarmHouse.tscn's own node positions) — never a valid placement target.
@@ -83,6 +119,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 	if not _place_mode:
+		# TASK-391: outside place mode, interact talks to / uses whatever
+		# placed piece the player is standing on (portrait, chair, vase,
+		# radio...). Empty cells fall through WITHOUT consuming the event
+		# so every other interact handler keeps working exactly as before.
+		_try_interact_with_furniture()
 		return
 	if event.is_action_pressed("cycle_furniture_item"):
 		_try_cycle_primed_furniture()
@@ -222,7 +263,217 @@ func _texture_path_for(item_id: String) -> String:
 		"floor_rug": return "res://assets/environment/mohom_cloth.png"
 		"floor_cushion": return "res://assets/environment/pha_khao_ma.png"
 		"small_table": return "res://assets/environment/clay_stove.png"
+		# TASK-391: placeholder art for the five new catalogue entries --
+		# same precedent as small_table reusing clay_stove.png (nothing
+		# purpose-drawn exists yet, so reuse the closest neutral prop):
+		# portrait hangs -> tall wall piece; chair/bench are wooden blocks
+		# -> stall / tall stove; vase is a jar -> water_jar (best fit of
+		# the five); radio is a small box -> wall cap trim.
+		"wall_portrait": return "res://assets/environment/bamboo_wall_tall.png"
+		"wooden_chair": return "res://assets/environment/market_stall.png"
+		"wooden_bench": return "res://assets/environment/clay_stove_tall.png"
+		"ceramic_vase": return "res://assets/environment/water_jar.png"
+		"transistor_radio": return "res://assets/environment/structure_wall_cap.png"
 	return "res://assets/environment/mohom_cloth.png"
+
+# TASK-391: interact with an already-placed piece (outside place mode).
+# Only consumes the input event when the player is actually standing on
+# a placed piece; empty cells return quietly so other systems (bed,
+# shrine, doors) keep receiving the event untouched.
+func _try_interact_with_furniture() -> void:
+	var cell: Vector2i = _player_cell()
+	if not GameData.has_placed_furniture_at(LOCATION_ID, cell):
+		return
+	var entry: Dictionary = GameData.get_placed_furniture_at(LOCATION_ID, cell)
+	interact_with_furniture(String(entry.get("item_id", "")), cell)
+	get_viewport().set_input_as_handled()
+
+# TASK-391: interaction dispatch for placed furniture. Mirrors
+# FlavorNPC._talk()'s established shape: one shared function, several
+# `if item_id == "x"` special-cased branches layered above a generic
+# fallback for pieces with no interaction (rug/cushion/table).
+func interact_with_furniture(item_id: String, cell: Vector2i) -> void:
+	if item_id == "wall_portrait":
+		SignalBus.show_dialogue.emit("Farmer", PORTRAIT_LINE)
+		return
+	if item_id == "wooden_chair" or item_id == "wooden_bench":
+		_interact_sit(cell)
+		return
+	if item_id == "ceramic_vase":
+		_interact_vase(cell)
+		return
+	if item_id == "transistor_radio":
+		_interact_radio()
+		return
+	SignalBus.show_dialogue.emit("Farmer", "The %s sits where you left it." %
+		_display_name_for(item_id).to_lower())
+
+func _current_day() -> int:
+	# Same "once per day" day-source as FlavorNPC._current_day() and
+	# ForageNode._current_day() -- SignalBus.time_manager's current day.
+	var tm: Node = SignalBus.time_manager
+	if tm != null and "day" in tm:
+		return int(tm.day)
+	return 1
+
+# TASK-391: per-instance dict key. A plain "%d,%d" STRING, never a raw
+# Vector2i -- SaveManager's TASK-375 review documented that Vector2i
+# stringifies to "(x, y)" through JSON and never parses back, which
+# would silently break every lookup after a save/load round-trip.
+func _cell_key(cell: Vector2i) -> String:
+	return "%d,%d" % [cell.x, cell.y]
+
+# TASK-391: sit on a placed chair/bench. Once per real day PER PLACED
+# INSTANCE (mirrors ForageNode's day-cooldown shape via
+# GameData.furniture_sit_last_day). Success grants a small flat +5
+# harmony -- the modest capped-small-bonus feel of
+# GameData.record_weekly_engagement()'s +1..+5 range, deliberately not
+# a stat swing that could compete with the bed's full-restore sleep.
+func _interact_sit(cell: Vector2i) -> void:
+	var key: String = _cell_key(cell)
+	var day: int = _current_day()
+	if int(GameData.furniture_sit_last_day.get(key, -1)) == day:
+		SignalBus.show_dialogue.emit("Farmer", SIT_COOLDOWN_LINE)
+		return
+	GameData.furniture_sit_last_day[key] = day
+	GameData.add_harmony(5)
+	SignalBus.show_dialogue.emit("Farmer", SIT_LINE)
+
+# TASK-391: put a marigold in a placed vase. Per-instance flower state in
+# GameData.vase_has_flowers (string-keyed, see _cell_key). Filling
+# consumes exactly 1 marigold, once; a filled vase stays filled (repeat
+# interacts show the already-done line, mirroring FlavorNPC's
+# post-one-shot normal-cycle fallback register); an empty vase with no
+# marigold held prompts for a flower instead of silently doing nothing.
+func _interact_vase(cell: Vector2i) -> void:
+	var key: String = _cell_key(cell)
+	if bool(GameData.vase_has_flowers.get(key, false)):
+		SignalBus.show_dialogue.emit("Farmer", VASE_HAS_FLOWER_LINE)
+		return
+	if not GameData.has_item("marigold", 1):
+		SignalBus.show_dialogue.emit("Farmer", VASE_NEEDS_FLOWER_LINE)
+		return
+	GameData.remove_item("marigold", 1)
+	GameData.vase_has_flowers[key] = true
+	SignalBus.show_dialogue.emit("Farmer", VASE_FILLED_LINE)
+
+# TASK-391: listen to a placed radio. Repeatable, no cooldown -- the
+# message is assembled from LIVE state on every call (forecast, festival
+# countdown, headman quest hint), never memoized. Exactly ONE
+# show_dialogue emit (this project has no dialogue queue -- a second
+# emit would overwrite the first).
+func _interact_radio() -> void:
+	SignalBus.show_dialogue.emit("Radio", _radio_message())
+
+# TASK-391: build the radio's combined message from live state: (1)
+# tomorrow's forecast read directly off SignalBus.time_manager.
+# next_weather (already rolled and kept current -- no other query
+# needed), (2) days until the next festival across all 7 (day, season)
+# pairs in FESTIVAL_DATES, (3) a hint about a currently-active
+# headman-given quest if one exists, omitted entirely otherwise.
+# Written as one natural message, not three labeled fields.
+func _radio_message() -> String:
+	var tm: Node = SignalBus.time_manager
+	var forecast: String = ""
+	if tm != null and "next_weather" in tm:
+		forecast = String(tm.next_weather)
+	var parts: Array[String] = []
+	if forecast == "":
+		parts.append("The forecast is just static tonight.")
+	else:
+		parts.append("Tomorrow looks %s." % forecast)
+	var next: Dictionary = _next_festival()
+	if not next.is_empty():
+		var days: int = int(next.get("days", 0))
+		var fname: String = String(next.get("name", "the festival"))
+		if days <= 0:
+			parts.append("%s is today." % fname)
+		else:
+			parts.append("%s comes in %d %s." % [fname, days, "day" if days == 1 else "days"])
+	var hint: String = _headman_quest_hint()
+	if hint != "":
+		parts.append(hint)
+	return " ".join(parts)
+
+# TASK-391: minimum days-from-now across all 7 (festival_day, season)
+# pairs, given the CURRENT day/season. Uses TimeManager's real season
+# order (seasons Array) and season length, so the wraparound is correct
+# across a season boundary AND a full year wraparound -- not just the
+# same-season case. Each (day, season) pair recurs once per year, so a
+# same-season festival whose day already passed is ~a year away, not
+# negative. Returns {"name": String, "days": int}.
+func _next_festival() -> Dictionary:
+	var tm: Node = SignalBus.time_manager
+	var day: int = 1
+	var season: String = "cool"
+	if tm != null:
+		if "day" in tm:
+			day = int(tm.day)
+		if "current_season" in tm:
+			season = String(tm.current_season)
+	var season_len: int = 30
+	if tm != null and "season_duration_days" in tm:
+		season_len = maxi(int(tm.season_duration_days), 1)
+	var order: Array = ["hot", "monsoon", "cool"]
+	if tm != null and "seasons" in tm:
+		var live: Array = (tm.seasons as Array).duplicate()
+		if not live.is_empty():
+			order = live
+	var dos: int = ((day - 1) % season_len) + 1
+	if tm != null and tm.has_method("day_of_season"):
+		dos = int(tm.call("day_of_season"))
+	var cur_idx: int = maxi(order.find(season), 0)
+	var year_len: int = season_len * maxi(order.size(), 1)
+	var best: Dictionary = {}
+	for entry: Dictionary in FESTIVAL_DATES:
+		var fday: int = int(entry.get("day", 1))
+		var fseason: String = String(entry.get("season", "cool"))
+		var ahead: int = (order.find(fseason) - cur_idx + order.size()) % order.size()
+		var delta: int
+		if ahead == 0:
+			delta = fday - dos
+			if delta < 0:
+				# Already passed this season -- next occurrence is a
+				# full year out (rest of this season + the other two
+				# full seasons + fday into the next occurrence).
+				delta = (season_len - dos) + (order.size() - 1) * season_len + fday
+		else:
+			# Rest of this season + full seasons in between + fday.
+			delta = (season_len - dos) + (ahead - 1) * season_len + fday
+		if best.is_empty() or delta < int(best.get("days", 0)):
+			best = {"name": String(entry.get("name", "the festival")), "days": delta}
+	return best
+
+# TASK-391: short hint about a currently-active headman-given quest, or
+# "" when there is none (the caller omits this part entirely -- no
+# placeholder). Active-quest state is GameData.active_quests (quest_id
+# -> {...}); giver lookup goes through the live QuestLog's chains
+# (group "quest_log", loaded from data/quests/quests.json), never a
+# hardcoded quest id. Completed quests are skipped -- a paid-out quest
+# is not "currently active" even though it lingers in active_quests
+# (see QuestLog's own Phase 3 audit note on that).
+# Verified 2026-09-05: no quest in quests.json currently has
+# giver_npc_id "headman", so the omit-path is the live behavior until a
+# headman quest ships -- the hint path is covered by tests via an
+# injected chain, not live data.
+func _headman_quest_hint() -> String:
+	var active: Dictionary = GameData.active_quests
+	if active.is_empty():
+		return ""
+	if not is_inside_tree():
+		return ""
+	var ql: Node = get_tree().get_first_node_in_group("quest_log")
+	if ql == null or not ql.has_method("get_chain"):
+		return ""
+	for quest_id: String in active.keys():
+		if GameData.is_quest_complete(quest_id):
+			continue
+		var chain: Dictionary = ql.call("get_chain", quest_id) as Dictionary
+		if String(chain.get("giver_npc_id", "")) != "headman":
+			continue
+		var title: String = String(chain.get("display_name", String(quest_id).replace("_", " ")))
+		return "The headman still waits on '%s'." % title
+	return ""
 
 func _on_furniture_changed(location_id: String, item_id: String, cell: Vector2i, is_placed: bool) -> void:
 	if location_id != LOCATION_ID:

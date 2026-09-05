@@ -103,11 +103,14 @@ func _initialize() -> void:
 			# same treatment). The 2 ForageNodes join the exclusion
 			# list below instead (logic-only interactables, no visible
 			# sprite — same treatment as MiningSpot/Noticeboard).
+			# TASK-391: MarigoldForageNode joins the same exclusion list
+			# for the same reason (third ForageNode.gd instance, no
+			# visible sprite — budget stays at 76).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge" or cn == "FishKeeperForageNode" or cn == "ScrapCollectorForageNode":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge" or cn == "FishKeeperForageNode" or cn == "ScrapCollectorForageNode" or cn == "MarigoldForageNode":
 						continue
 					sorted_kids += 1
 			_check(sorted_kids <= 76, "y-sorted participants <= 76 (got %d)" % sorted_kids)
