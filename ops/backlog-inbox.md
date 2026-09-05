@@ -838,3 +838,43 @@ Each gets exactly 3 rotating flavor lines (no dialogue tiers, no affinity/gift s
 Scope: (1) a new minimal `FlavorNPC.gd` script (NOT a copy of VillagerNPC.gd's full schedule/tier machinery -- these NPCs are static, no schedule, no affinity; interact just cycles through the 3 fixed lines round-robin, matching this project's existing "cozy, no fail-state" interaction feel) (2) a `FLAVOR_LINES: Dictionary` in DialogueDB.gd (or a new `FlavorDialogue.gd` if that's cleaner -- delegate's call, but must follow this project's existing preload/const conventions) keyed by npc_id -> Array[String] (3) 14 new minimal `.tscn` files (mirror the simplest existing VillagerNPC-style structure: Sprite2D + InteractArea + CollisionShape2D, no schedule-related nodes) (4) instanced in World.tscn at SAFE positions -- MUST check against `WorldRender.gd`'s real `GROUND_TILES`/water-zone rects and every existing NPC's position first (this project has hit the water-tile/overlap bug repeatedly -- TASK-373/379 -- do not repeat it; the delegate must show its position-safety check, not just assert positions are fine) (5) tests following `tests/test_npc_roster_wiring.gd`'s exact established pattern (script/group/npc_id present, position safety, no water/farmland-zone overlap, minimum spacing from every other NPC) extended to cover all 14 new NPCs, wired into `run_gate.sh`.</description>
   <researcher_notes>Roster count (14) and the family-vs-wanderer split were both explicit owner picks via AskUserQuestion, not defaults. Occupations/relationships were chosen to reinforce existing established characters' own canon rather than invent unrelated new lore (e.g. Somsri teaching Ploy her dessert recipes ties directly into Ploy's existing GIFT_PREFERENCES; Charoen as a retired fisherman reinforces Fah's canal setting) -- this was a deliberate design choice to make the village feel more connected rather than just more populated. Dispatched to the free-model chain per this tier's delegate-first discipline (mechanical scene/script wiring once the creative content was locked, not a judgment-heavy narrative task) -- Code Quality Review still required per standard discipline before landing, position-safety in particular given this project's repeated history of exactly that bug class.</researcher_notes>
 </task_item>
+
+<task_item>
+  <id>TASK-384</id>
+  <source>AI-LOOP</source>
+  <status>SPECCED</status>
+  <priority>P3 (BLOCKED on TASK-383 landing -- needs the family NPCs to exist by name)</priority>
+  <title>Family reacts to marriage proposal/wedding</title>
+  <description>Gap-analysis finding (2026-09-05): the marriage/wedding system (RomanceNPC.gd's proposal check, test_wedding.gd) has zero family tie-in today -- no dialogue from a candidate's parent/sibling (TASK-383) when she gets engaged or married, despite family now being real, named, locked lore for every candidate. Scope: when GameData.spouse is set for a candidate whose family NPC exists (Charoen/Fah, Somsri/Ploy, Gaew/Mali, Boonchu/Rin, Ampai/Yaa -- Kwan's "family" is Somchai, already an existing NPC), that family NPC's next `talk()` line (or a one-time triggered dialogue on the wedding festival event, delegate's call on which trigger point reads better) should be a specific, LOCKED reaction line acknowledging the marriage -- NOT a generic congratulations. Write these 5 reaction lines directly in this task's own dispatch (this is content-locking work, not something to leave to a delegate's judgment) matching each family member's already-established voice from TASK-383's roster. Idempotent -- fires once per wedding, matches this project's earn_milestone-style one-shot convention.</description>
+  <researcher_notes>Blocked until TASK-383 lands (the family NPCs don't exist yet). Do not dispatch before that lands and is Code-Quality-Reviewed.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-385</id>
+  <source>AI-LOOP</source>
+  <status>SPECCED</status>
+  <priority>P3 (BLOCKED on TASK-383 landing)</priority>
+  <title>Family NPCs surface a gift hint for their candidate</title>
+  <description>Gap-analysis finding (2026-09-05): TASK-383's family dialogue already gestures at gift knowledge (Somsri: "I'm still teaching her the palm sugar trick"; Ampai: "she brings me tea from her garden") but isn't mechanically tied to `DialogueDB.GIFT_PREFERENCES` at all. Scope: talking to a family NPC (Charoen/Somsri/Gaew/Boonchu/Ampai) for the first time each day surfaces ONE hint naming a real loved-or-liked item from their candidate's actual `GIFT_PREFERENCES` entry (e.g. "She's always going on about mango sticky rice" for Somsri/Ploy), picked from the real data (not hardcoded text that could drift from GIFT_PREFERENCES later). Cooldown: once per real-day per family NPC (mirror `villager_talked_days`' existing once-per-day dialogue-variety pattern already used elsewhere in this codebase -- check `DialogueDB.gd`/`VillagerNPC.gd` for that exact mechanism before inventing a new one). No mechanical reward (no free affinity) -- purely an information/discovery aid, consistent with this project's "no fail-state, exploration-friendly" design philosophy.</description>
+  <researcher_notes>Blocked until TASK-383 lands. Kwan (npc_id chang) has no dedicated family NPC of her own (Somchai is a shared mentor/uncle figure, not exclusively hers) -- scope this one candidate's gift-hint source to Somchai too, or skip her, delegate's call once TASK-383's actual shipped roster is confirmed.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-386</id>
+  <source>AI-LOOP</source>
+  <status>SPECCED</status>
+  <priority>P3 (BLOCKED on TASK-383 landing)</priority>
+  <title>RelationshipStatus overlay (TASK-381) shows family info</title>
+  <description>Gap-analysis finding (2026-09-05): `scenes/ui/RelationshipStatus.tscn`/`.gd` (TASK-381, already shipped) shows hearts/gifts/married status but nothing about family, even though every candidate now has locked family lore (TASK-383/VILLAGE_LORE.md). Scope: add a `FamilyLabel` to the existing VBox (mirror `LovedLabel`/`LikedLabel`'s exact styling/wrapping convention) showing the family member's name + relationship (e.g. "Family: Somsri (mother)") for the currently-open candidate. Needs a small id->family-member lookup table (npc_id -> {name, relation} -- add it to `RelationshipStatus.gd` itself or `DialogueDB.gd`, delegate's call on placement, but do NOT duplicate the family roster VILLAGE_LORE.md already locked -- reference the same names). Kwan (chang) shows "Somchai (mentor)" rather than a blood-family relation, matching her actual established tie.</description>
+  <researcher_notes>Blocked until TASK-383 lands (needs the real family names to reference). Small, additive UI change to an already-shipped, already-tested screen -- extend tests/test_relationship_status.gd rather than writing a new test file.</researcher_notes>
+</task_item>
+
+<task_item>
+  <id>TASK-387</id>
+  <source>AI-LOOP</source>
+  <status>SPECCED</status>
+  <priority>P3 (BLOCKED on TASK-383 landing)</priority>
+  <title>Festival dialogue mentions specific named NPCs</title>
+  <description>Gap-analysis finding (2026-09-05): Loy Krathong/Songkran festival dialogue (`DialogueDB.gd`) is entirely generic today -- no line ever names a specific villager, despite the roster now being 20+ named NPCs deep once TASK-383 lands. Scope: add a small number (3-5) of festival-specific flavor lines that name a real NPC relationship from the locked roster -- e.g. a line about Boonchu leading the festival drums while Rin plays alongside him (grandfather/granddaughter, both real, both festival-appropriate -- Rin is a "festival drummer" by trade), or Nam bringing Monk his favorite curry during Songkran. These are ADDITIONAL flavor lines woven into the existing festival dialogue pools (`DialogueDB.gd`'s existing Loy Krathong/Songkran line arrays), not a new dialogue system -- keep the existing generic lines too, this just adds variety.</description>
+  <researcher_notes>Blocked until TASK-383 lands (the named NPCs referenced don't exist yet). Smallest/lowest-risk of the 4 gap-analysis follow-ups -- pure additive dialogue-pool content, no new mechanics, no new UI, no new persisted state.</researcher_notes>
+</task_item>
