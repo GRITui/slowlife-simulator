@@ -4,12 +4,14 @@ extends CharacterBody2D
 ## VillagerNPC contract mirror (Area2D proximity + interact), SignalBus-only.
 
 const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.gd")
+const ScheduleDBScript: GDScript = preload("res://scripts/narrative/ScheduleDB.gd")
 
 @export var npc_id: String = "ek"
 @export var display_name: String = "Ek"
 
 var _player_in_range: bool = false
 var _talk_count: int = 0
+var _schedule_pos: Vector2 = Vector2.ZERO
 
 @onready var _area: Area2D = $InteractArea if has_node("InteractArea") else null
 
@@ -19,6 +21,46 @@ func _ready() -> void:
 	if _area != null:
 		_area.body_entered.connect(_on_body_entered)
 		_area.body_exited.connect(_on_body_exited)
+	# TASK-380: drift toward the schedule waypoint (only for scheduled NPCs) —
+	# ported from VillagerNPC.gd's _ready() so fah/ek move per their
+	# existing ScheduleDB entries, same as elder/child/handler/headman/vet.
+	# Unscheduled romance candidates (ploy/chang/klong/yaa) skip this and
+	# stay static, falling out of the has() check automatically.
+	if ScheduleDBScript.SCHEDULES.has(npc_id):
+		_schedule_pos = ScheduleDBScript.waypoint_for(npc_id, _current_hour(), _current_weather()) * 48.0 + Vector2(24, 24)
+		global_position = _schedule_pos
+		set_physics_process(true)
+	else:
+		set_physics_process(false)
+
+func _current_hour() -> int:
+	var tm: Node = SignalBus.time_manager
+	if tm != null and "hour" in tm:
+		return int(tm.hour)
+	return 6
+
+func _current_weather() -> String:
+	if "current_weather" in GameData:
+		return String(GameData.current_weather)
+	return "clear"
+
+## TASK-380: cozy waypoint drift — ported from VillagerNPC.gd. Static
+## NPCs (unscheduled) skip this entirely via set_physics_process(false) in
+## _ready(). Mirrors only the drift block; the trader-visibility and
+## sprite/idle_texture branches below that in VillagerNPC.gd are
+## VillagerNPC-specific and don't apply here.
+func _physics_process(_delta: float) -> void:
+	var tm: Node = SignalBus.time_manager
+	if tm != null:
+		var target: Vector2 = ScheduleDBScript.waypoint_for(npc_id, int(tm.hour), _current_weather()) * 48.0 + Vector2(24, 24)
+		if target != _schedule_pos:
+			_schedule_pos = target
+		var dist: float = global_position.distance_to(_schedule_pos)
+		if dist > 8.0:
+			velocity = (_schedule_pos - global_position).normalized() * 40.0
+			move_and_slide()
+		else:
+			velocity = Vector2.ZERO
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _player_in_range:

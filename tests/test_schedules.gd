@@ -72,16 +72,27 @@ func _initialize() -> void:
 	await process_frame
 	var fah: Node2D = main.get_node_or_null("FahNPC") as Node2D
 	var elder: Node = main.get_node_or_null("ElderNPC")
-	# TASK-379 finding (filed separately, out of this task's scope): fah
-	# uses RomanceNPC.gd, not VillagerNPC.gd, and RomanceNPC.gd's _ready()
-	# never reads ScheduleDB at all -- fah's SCHEDULES entry is dead data,
-	# her real position is always World.tscn's static one (set by
-	# TASK-373, since fah was never instanced before that task). This
-	# assertion previously expected schedule-driven movement that fah's
-	# actual script has never implemented; fixed to check what actually
-	# happens (a stable static position) instead of a wrong expectation.
-	_check(fah != null and fah.global_position == Vector2(648, 168),
-		"fah (RomanceNPC.gd) stays at her static World.tscn position -- does not follow ScheduleDB")
+	# TASK-380: fah (RomanceNPC.gd) now follows her ScheduleDB waypoint, same
+	# as the VillagerNPC.gd-backed NPCs. At boot TimeManager defaults to
+	# hour=6 (StartHour=6 in TimeManager.gd), which falls in fah's
+	# 6:00-12:00 "canal mornings" window -- expected cell (10, 12), which
+	# is a real walkable tile (lotus_pond's WATER_ZONES exclude x>=5, and
+	# TASK-379 already verified (10, 12) is not on water). _ready() snaps
+	# exactly to that waypoint before any physics-process drift can run, so
+	# distance tolerance < 60px comfortably catches both the exact snap
+	# AND any one-physics-frame drift still in the easing window.
+	if fah != null:
+		var sb: Node = root.get_node("SignalBus")
+		var tm: Node = sb.time_manager
+		var boot_hour: int = int(tm.hour) if tm != null and "hour" in tm else 6
+		var sdb_script: GDScript = load("res://scripts/narrative/ScheduleDB.gd")
+		var expected_cell: Vector2i = sdb_script.waypoint_for("fah", boot_hour)
+		var expected_pos: Vector2 = expected_cell * 48.0 + Vector2(24, 24)
+		_check(fah.global_position.distance_to(expected_pos) < 60.0,
+			"fah (RomanceNPC.gd) follows her ScheduleDB waypoint at hour %d (expected near %s, got %s)"
+				% [boot_hour, str(expected_pos), str(fah.global_position)])
+		_check(fah.is_physics_processing(),
+			"fah (RomanceNPC.gd) is physics-processing (schedule drift enabled)")
 	_check(elder != null and elder.is_physics_processing(), "scheduled NPC processes (drift active)")
 	var buffalo: Node = main.get_node_or_null("Buffalo")
 	_check(buffalo != null and not buffalo.is_processing(), "unscheduled nodes stay static")
