@@ -92,6 +92,12 @@ func _initialize() -> void:
 			# CoastalArea. EastEdge is added to the list (no sprite).
 			# MEASURED actual count is 59 — do not change this ceiling
 			# without re-running and matching the printed "got N".
+			# TASK-383: 59->73 (+14 flavor NPCs: charoen/somsri/gaew/
+			# boonchu/ampai/ying/nam/tong/kham/kaew/buppha/daeng/ploen/
+			# add). Each is a real CharacterBody2D + Sprite2D pair (same
+			# shape as the 17 TASK-373 NPCs that bumped the budget
+			# historically), so all 14 legitimately count. Measured
+			# post-add count is exactly 73.
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
@@ -99,7 +105,7 @@ func _initialize() -> void:
 					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 59, "y-sorted participants <= 59 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 73, "y-sorted participants <= 73 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)
