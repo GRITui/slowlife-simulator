@@ -727,6 +727,26 @@ static func gift_affinity(tier: String) -> int:
 		"liked": return 10
 		_: return 5
 
+## TASK-388: per-candidate birthdays (season + day). Static const — no
+## persisted state, no cooldown tracking: a (season, day) birthday occurs
+## once a year, so the RomanceNPC gift bonus needs no further gating.
+const NPC_BIRTHDAYS: Dictionary = {
+	"ek": {"season": "hot", "day": 12},
+	"fah": {"season": "hot", "day": 24},
+	"ploy": {"season": "monsoon", "day": 12},
+	"chang": {"season": "monsoon", "day": 20},
+	"klong": {"season": "cool", "day": 18},
+	"yaa": {"season": "cool", "day": 24},
+}
+
+## True only when (season, day) exactly matches the candidate's birthday.
+## False for any npc_id without an entry (family/flavor NPCs, rivals).
+static func is_birthday(npc_id: String, season: String, day: int) -> bool:
+	var entry: Dictionary = NPC_BIRTHDAYS.get(npc_id, {})
+	if entry.is_empty():
+		return false
+	return String(entry.get("season", "")) == season and int(entry.get("day", -1)) == day
+
 ## TASK-342: rival dialogue, tier-keyed by RivalClock.WARNING_FRACTIONS
 ## progress (0-3, matching GameData.rival_warning_shown) plus a "won" pool
 ## once GameData.lost_to_rival is true for that rival's candidate.

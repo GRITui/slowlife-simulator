@@ -25,6 +25,7 @@ const FAMILY_INFO: Dictionary = {
 @onready var _loved_label: Label = $Panel/VBox/LovedLabel
 @onready var _liked_label: Label = $Panel/VBox/LikedLabel
 @onready var _family_label: Label = $Panel/VBox/FamilyLabel
+@onready var _birthday_label: Label = $Panel/VBox/BirthdayLabel
 @onready var _married_label: Label = $Panel/VBox/MarriedLabel
 @onready var _close_button: Button = $Panel/VBox/CloseButton
 
@@ -57,6 +58,17 @@ func open(npc_id: String, display_name: String) -> void:
 		_family_label.text = "Family: %s (%s)" % [info["name"], info["relation"]]
 	else:
 		_family_label.text = "Family: ?"
+
+	# TASK-388: primary in-game birthday discovery path — every candidate
+	# with an NPC_BIRTHDAYS entry shows her date; anyone without one
+	# (family/flavor NPCs, if ever opened here) hides the label instead
+	# of showing a placeholder.
+	if DialogueDBScript.NPC_BIRTHDAYS.has(npc_id):
+		var bday: Dictionary = DialogueDBScript.NPC_BIRTHDAYS[npc_id]
+		_birthday_label.text = "Birthday: %s, day %d" % [String(bday["season"]).capitalize(), int(bday["day"])]
+		_birthday_label.visible = true
+	else:
+		_birthday_label.visible = false
 
 	_married_label.visible = (GameData.spouse == npc_id)
 	visible = true

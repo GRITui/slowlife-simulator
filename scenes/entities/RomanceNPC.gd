@@ -247,8 +247,26 @@ func _give_gift() -> bool:
 	# TASK-054: per-NPC preference table scales the affinity delta.
 	var tier: String = DialogueDBScript.gift_tier(npc_id, gift_id)
 	var delta: int = DialogueDBScript.gift_affinity(tier)
+	# TASK-388: birthday-gift bonus — flat 2x, no cooldown bookkeeping
+	# (a (season, day) birthday occurs once a year). Day/season lookup
+	# mirrors this file's established SignalBus.time_manager pattern
+	# (_try_specialty_sell() above for day, VillagerNPC.talk() for the
+	# time_manager-first / GameData-fallback season order).
+	var tm: Node = SignalBus.time_manager
+	var day: int = int(tm.day) if tm != null and "day" in tm else 1
+	var season: String = "cool"
+	if tm != null and "current_season" in tm:
+		season = String(tm.current_season)
+	elif "current_season" in GameData:
+		season = String(GameData.current_season)
+	var is_birthday: bool = DialogueDBScript.is_birthday(npc_id, season, day)
+	if is_birthday:
+		delta *= 2
 	GameData.add_affinity(npc_id, delta)
 	var affinity: int = GameData.get_affinity(npc_id)
+	if is_birthday:
+		SignalBus.show_dialogue.emit(display_name, "%s — and on your birthday! (affinity %d)" % [gift_id.replace("_", " "), affinity])
+		return true
 	match tier:
 		"loved":
 			SignalBus.show_dialogue.emit(display_name, "%s — you remembered! (affinity %d)" % [gift_id.replace("_", " "), affinity])
