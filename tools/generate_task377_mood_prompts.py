@@ -66,18 +66,18 @@ STYLE_SUFFIX = (
 #     monastic convention (bhikkhu) -- reasonable default, not a guess.
 #   - Buffalo: an animal, not a human -- no gender descriptor needed.
 BASES = {
-    "elder": "pixel art portrait, elderly Thai woman, village elder, traditional conical straw hat, warm wrinkled kind face, silver hair tied back",
-    "child": "pixel art portrait, young Thai girl, village child, round cheerful face, simple traditional rural clothing, carrying a small woven basket",
-    "handler": "pixel art portrait, Thai man, buffalo handler, sturdy weathered face, traditional headwrap and rolled sleeves, farmer clothing",
-    "monk": "pixel art portrait, Thai Buddhist monk, man, shaved head, orange and saffron colored robes, gentle face",
+    "elder": "pixel art portrait, elderly Thai woman, village elder, traditional conical straw hat, silver hair tied back, wrinkled skin",
+    "child": "pixel art portrait, young Thai girl, village child, simple traditional rural clothing, carrying a small woven basket",
+    "handler": "pixel art portrait, Thai man, buffalo handler, sturdy build, traditional headwrap and rolled sleeves, farmer clothing",
+    "monk": "pixel art portrait, Thai Buddhist monk, man, shaved head, orange and saffron colored robes",
     "trader": "pixel art portrait, Thai man, traveling market trader, colorful traditional vest, small round hat, gold jewelry accent",
-    "buffalo": "pixel art portrait, friendly water buffalo face, large curved horns, gray weathered hide",
+    "buffalo": "pixel art portrait, water buffalo face, large curved horns, gray weathered hide",
     "ek": "pixel art portrait, young Thai woman, rice-paddy farmer, sturdy build, sun-tanned skin, straw sun hat hanging behind neck, rolled-up work sleeves",
-    "fah": "pixel art portrait, young Thai woman, fisher, composed face, wide-brim woven hat, simple boatman's clothes, coiled fishing net over one shoulder",
-    "ploy": "pixel art portrait, young Thai woman, dessert vendor, confident charming smile, warm expressive eyes, colorful sabai sash over traditional dress, flower tucked in her hair, apron dusted with sticky rice flour",
-    "chang": "pixel art portrait, young Thai woman, wood carver, steady focused eyes, wood shavings dusting her shoulders, simple apprentice clothes, holding a small chisel",
-    "klong": "pixel art portrait, young Thai woman, festival drummer, bright energetic eyes, colorful festival headband, holding a pair of drumsticks",
-    "yaa": "pixel art portrait, young Thai woman, herbalist and gardener, serene gentle face, a flower tucked behind one ear, earth-toned garden clothes, small herb basket",
+    "fah": "pixel art portrait, young Thai woman, fisher, wide-brim woven hat, simple boatman's clothes, coiled fishing net over one shoulder",
+    "ploy": "pixel art portrait, young Thai woman, dessert vendor, colorful sabai sash over traditional dress, flower tucked in her hair, apron dusted with sticky rice flour",
+    "chang": "pixel art portrait, young Thai woman, wood carver, wood shavings dusting her shoulders, simple apprentice clothes, holding a small chisel",
+    "klong": "pixel art portrait, young Thai woman, festival drummer, colorful festival headband, holding a pair of drumsticks",
+    "yaa": "pixel art portrait, young Thai woman, herbalist and gardener, a flower tucked behind one ear, earth-toned garden clothes, small herb basket",
 }
 
 # Mood -> expression modifier. Kept gentle/cozy even for negative moods
