@@ -19,7 +19,7 @@ particle resources excluded — those aren't image-generation targets).
 | 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE, REDONE 2026-09-05 under the strict 16-bit pipeline — see "16-bit pipeline redo" below |
 | 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE, REDONE 2026-09-05 under the strict 16-bit pipeline — see "16-bit pipeline redo" below |
 | 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | DONE (2026-09-05) — clean first-pass generations, no retries needed |
-| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | DONE (2026-09-05) — all 25 files, sub-batches A-E, see caveats below |
+| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | DONE, REDONE 2026-09-05/06 under the 16-bit pipeline — see "16-bit pipeline redo, pass 2" below (all sub-batches A-E now on 16-bit) |
 | 7 | Crops (growth stages, ~84 files) | ~84 | pending, large — may need its own sub-batches |
 | 8 | Items (~155 files) | ~155 | pending, large — may need its own sub-batches |
 | 9 | Characters (sprites, ~87 files) | ~87 | pending, large — sprite sheets, not single portraits; needs its own prompt approach (multi-frame, not single bust) |
@@ -128,6 +128,26 @@ possible concurrent process/session touching the same working tree.
 **No data was lost** (everything was already committed on `main`), but
 this is worth the owner's attention before it happens with uncommitted
 work in play.
+
+**Run 3** (2026-09-05/06): mohom_cloth, pha_khao_ma (16x16, clean first
+pass), durian_tree_mature (24x32, clean first pass), durian_tree_sapling
+(24x32, needed one retry — first pass too washed out), mango_tree
+(24x24), mango_tree_tall, banana_tree_tall (both 24x32, clean first
+pass with the retry's stronger "rich saturated color" language applied
+proactively), farmhouse_floor, farmhouse_wall_interior (16x16 strict,
+block-first, clean first pass). All 9 files.
+
+Mid-run-3, the generation script was killed by the harness due to
+system memory pressure (not a content/logic problem) after 4 of 9
+items — resumed cleanly with a second script for the remaining 5 plus
+one retry, no data lost, `git status` confirmed clean before and after.
+
+**This completes the 16-bit redo for everything except the 13 NPC/
+animal portraits** — batches 3, 4, 5, 6, and the 2 farmhouse interior
+tiles are now fully on the new pipeline. Portraits are the one
+remaining piece (batches 7/8/9 — crops, items, character sprites —
+were never on the old soft-shaded style to begin with; they're still
+unbuilt, tracked separately below).
 
 ## Batch 6 caveats (2026-09-05)
 
