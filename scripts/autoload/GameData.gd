@@ -20,7 +20,19 @@ var inventory: Dictionary = {}
 # Infrastructure: structure_id -> repaired bool
 var infrastructure: Dictionary = {}
 
-# Placed furniture: location_id -> Array<{item_id: String, cell: Vector2i}>
+# TASK-375: Placed furniture: location_id -> Array<{item_id: String,
+# cell: Vector2i, facing: int}>.
+#
+# `facing` is a 0..3 rotation index (0=0°, 1=90°, 2=180°, 3=270°).
+# Stored ONLY when the player rotates a piece -- an entry without a
+# `facing` key is read as 0 everywhere (`entry.get("facing", 0)`), so
+# Phase 1's saved entries from before this task load bit-identical to
+# "facing=0". No SAVE_VERSION bump for the same additive-Dictionary
+# reason TASK-374 used: the in-place type change is
+# `entry.get("facing", 0)`-defended at every read site, the on-disk
+# payload is just a JSON Dictionary (no schema migration needed),
+# and an absent key already means "never rotated", which is the
+# default behavior on a fresh save.
 var placed_furniture: Dictionary = {}
 
 # Season helper — mirrors TimeManager.season
@@ -745,15 +757,16 @@ func repair_infrastructure(structure_id: String) -> void:
 func is_repaired(structure_id: String) -> bool:
 	return infrastructure.get(structure_id, false)
 
-# --- Placed furniture API (TASK-374) ---
-func add_placed_furniture(location_id: String, item_id: String, cell: Vector2i) -> bool:
+# --- Placed furniture API (TASK-374, TASK-375) ---
+func add_placed_furniture(location_id: String, item_id: String, cell: Vector2i, facing: int = 0) -> bool:
+	# TASK-375: `facing` is an optional 0..3 rotation index (defaults to 0).
 	# Returns false if the cell is invalid or already occupied.
 	var list: Array = placed_furniture.get(location_id, [])
 	for entry in list:
 		if entry.cell == cell:
 			return false # already occupied
 	# Optionally enforce grid bounds and occupied tile restrictions (caller should validate).
-	list.append({"item_id": item_id, "cell": cell})
+	list.append({"item_id": item_id, "cell": cell, "facing": int(facing)})
 	placed_furniture[location_id] = list
 	SignalBus.placed_furniture_changed.emit(location_id, item_id, cell, true)
 	return true
@@ -784,6 +797,29 @@ func has_placed_furniture_at(location_id: String, cell: Vector2i) -> bool:
 		if entry.cell == cell:
 			return true
 	return false
+
+# TASK-375: rotate a placed furniture entry in place. `facing` is
+# normalized to 0..3 (mod 4) so callers can pass raw +/- deltas. Returns
+# the new facing on success, or -1 if the cell is empty (the caller
+# emits a soft "nothing to rotate" dialogue -- no exception, matching
+# the no-fail-state convention used elsewhere in this GameData API).
+func set_placed_furniture_facing(location_id: String, cell: Vector2i, facing: int) -> int:
+	var list: Array = placed_furniture.get(location_id, [])
+	for i in range(list.size()):
+		var entry: Dictionary = list[i]
+		if entry.cell == cell:
+			var new_facing: int = int(facing) % 4
+			if new_facing < 0:
+				new_facing += 4
+			entry["facing"] = new_facing
+			list[i] = entry
+			placed_furniture[location_id] = list
+			var item_id: String = String(entry.get("item_id", ""))
+			# Re-emit with is_placed=true so listeners (FarmHouseFurniture)
+			# can re-apply rotation_degrees on the live sprite.
+			SignalBus.placed_furniture_changed.emit(location_id, item_id, cell, true)
+			return new_facing
+	return -1
 
 # --- TASK-025 Market Stall 1:1 barter ---
 

@@ -125,10 +125,28 @@ func save_game() -> bool:
 		# which is bit-identical to a fresh start (see the spec's
 		# "absence means default style" contract).
 		"decor_choices": gd.decor_choices,
-		# TASK-374: placed furniture (location -> list of {item_id, cell}).
-		# No SAVE_VERSION bump: empty {} matches GameData.placed_furniture's init exactly,
-		# so old saves load as if no furniture was ever placed.
-		"placed_furniture": gd.placed_furniture,
+		# TASK-374/375: placed furniture (location -> list of {item_id, cell,
+		# facing}). No SAVE_VERSION bump: empty {} matches GameData.
+		# placed_furniture's init exactly, so old saves load as if no
+		# furniture was ever placed.
+		#
+		# TASK-375 Code Quality Review fix: `cell` is a Vector2i, which
+		# JSON.stringify() silently converts to the STRING "(x, y)" (not a
+		# structured value) and JSON.parse_string() never reconstructs back
+		# to Vector2i — confirmed directly (JSON.stringify({"cell":
+		# Vector2i(2,3)}) produces {"cell":"(2, 3)"}, and parsing that back
+		# yields a plain String, not a Vector2i). This was a real,
+		# pre-existing bug since TASK-374 Phase 1: EVERY save/load round
+		# trip silently broke every placed-furniture lookup afterward
+		# (get_placed_furniture_at()'s `entry.cell == cell` comparison
+		# throws "Invalid operands 'String' and 'Vector2i'"), making
+		# placed furniture permanently un-interactable after any reload.
+		# Never caught because Phase 1's own test only checked the
+		# placed_furniture list's SIZE post-reload, not that individual
+		# entries were still functionally correct. Fixed by explicitly
+		# serializing `cell` as a plain [x, y] Array (JSON-native) here,
+		# and reconstructing it back to Vector2i on load below.
+		"placed_furniture": _serialize_placed_furniture(gd.placed_furniture),
 	}
 	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if f == null:
@@ -332,10 +350,16 @@ func load_game() -> bool:
 		# old-saves case is the same as "never picked a style" — no
 		# behaviour change for saves that predate this task.
 		gd.decor_choices = (data.get("decor_choices", {}) as Dictionary).duplicate(true)
-		# TASK-374: restore placed furniture. Default {} matches
+		# TASK-374/375: restore placed furniture. Default {} matches
 		# GameData.placed_furniture's initializer exactly, so a save from
 		# before this task loads as if no furniture was ever placed.
-		gd.placed_furniture = (data.get("placed_furniture", {}) as Dictionary).duplicate(true)
+		# _deserialize_placed_furniture() reconstructs `cell` back to
+		# Vector2i from the [x, y] Array the (fixed) save side now writes
+		# — see that save-site comment for the bug this fixes. Also
+		# tolerates a save file written by the ORIGINAL buggy save code
+		# (cell stored as a "(x, y)" string) by parsing that string form
+		# too, so a save made before this fix still loads without a crash.
+		gd.placed_furniture = _deserialize_placed_furniture((data.get("placed_furniture", {}) as Dictionary).duplicate(true))
 		gd.rival_progress = (data.get("rival_progress", {}) as Dictionary).duplicate(true)
 		gd.rival_friendship = (data.get("rival_friendship", {}) as Dictionary).duplicate(true)
 		gd.rival_confessed = (data.get("rival_confessed", {}) as Dictionary).duplicate(true)
@@ -365,3 +389,49 @@ func load_game() -> bool:
 		sb.show_dialogue.emit("System", "Game loaded.")
 		return true
 	return false
+
+# TASK-375 Code Quality Review fix: Vector2i cells in placed_furniture
+# entries need explicit JSON-safe (de)serialization -- see the save/load
+# call sites' own comments above for the full bug this fixes. Matches
+# this file's existing player_pos convention (a plain [x, y] Array),
+# not a new serialization idiom.
+func _serialize_placed_furniture(pf: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for location_id in pf.keys():
+		var serialized_list: Array = []
+		for entry in (pf[location_id] as Array):
+			var e: Dictionary = (entry as Dictionary).duplicate()
+			var cell: Vector2i = e.get("cell", Vector2i.ZERO)
+			e["cell"] = [cell.x, cell.y]
+			serialized_list.append(e)
+		out[location_id] = serialized_list
+	return out
+
+func _deserialize_placed_furniture(pf: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for location_id in pf.keys():
+		var restored_list: Array = []
+		for entry in (pf[location_id] as Array):
+			var e: Dictionary = (entry as Dictionary).duplicate()
+			var raw_cell: Variant = e.get("cell", null)
+			if raw_cell is Array and (raw_cell as Array).size() == 2:
+				e["cell"] = Vector2i(int(raw_cell[0]), int(raw_cell[1]))
+			elif raw_cell is String:
+				# Tolerate a save written by the ORIGINAL buggy code,
+				# where `cell` was silently stringified to "(x, y)" by
+				# JSON.stringify() -- parse that form back to Vector2i
+				# instead of leaving it a String (which crashes every
+				# get_placed_furniture_at() lookup, per the bug this
+				# whole fix addresses).
+				var s: String = String(raw_cell).strip_edges()
+				s = s.trim_prefix("(").trim_suffix(")")
+				var parts: PackedStringArray = s.split(",")
+				if parts.size() == 2:
+					e["cell"] = Vector2i(int(parts[0].strip_edges()), int(parts[1].strip_edges()))
+				else:
+					e["cell"] = Vector2i.ZERO
+			else:
+				e["cell"] = Vector2i.ZERO
+			restored_list.append(e)
+		out[location_id] = restored_list
+	return out

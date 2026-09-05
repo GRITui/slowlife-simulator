@@ -69,6 +69,20 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		# season-gated (a decor item, unlike seeds) -- price sits between
 		# the basic seeds (8-15) and tools (30-50) to be accessible early.
 		{"item": "floor_rug", "price": 25},
+		# TASK-375: floor_cushion — a smaller cloth decor (reuses
+		# pha_khao_ma.png). Priced below floor_rug (25) because a
+		# cushion is a smaller/simpler decor piece — the rug is the
+		# "anchor" floor decor and the cushion is the secondary accent,
+		# so 15 keeps the pair together below the tool tier (axe=30,
+		# machete=45).
+		{"item": "floor_cushion", "price": 15},
+		# TASK-375: small_table — the largest decor piece in the new
+		# trio (reuses clay_stove.png as a placeholder until proper
+		# table art exists). Priced at 30 — above floor_rug (25) and
+		# floor_cushion (15) because a table is a more substantial
+		# furniture piece, but still below the heavy tools (45) so
+		# it's an attainable mid-game home improvement.
+		{"item": "small_table", "price": 30},
 		{"item": "seed_yardlong_bean", "price": 12},
 	],
 	"hot": [
@@ -78,6 +92,12 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "ornate_shrine_blueprint", "price": 50},
 		{"item": "ornate_bed_blueprint", "price": 50},
 		{"item": "floor_rug", "price": 25},
+		# TASK-375: floor_cushion — see the cool-season entry above
+		# for the price-reasoning comment (identical placement across
+		# all three seasons because decor is not season-gated).
+		{"item": "floor_cushion", "price": 15},
+		# TASK-375: small_table — see the cool-season entry above.
+		{"item": "small_table", "price": 30},
 		{"item": "seed_banana", "price": 15},
 		{"item": "seed_chili", "price": 9},
 		{"item": "seed_durian", "price": 30},
@@ -100,6 +120,10 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "ornate_shrine_blueprint", "price": 50},
 		{"item": "ornate_bed_blueprint", "price": 50},
 		{"item": "floor_rug", "price": 25},
+		# TASK-375: floor_cushion — see the cool-season entry above.
+		{"item": "floor_cushion", "price": 15},
+		# TASK-375: small_table — see the cool-season entry above.
+		{"item": "small_table", "price": 30},
 		{"item": "seed_ginger", "price": 10},
 		{"item": "seed_lotus", "price": 12},
 		{"item": "seed_taro", "price": 10},
