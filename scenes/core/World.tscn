@@ -115,7 +115,7 @@ position = Vector2(312, 72)
 position = Vector2(504, 72)
 
 [node name="PloyNPC" parent="." instance=ExtResource("17_ploy")]
-position = Vector2(840, 600)
+position = Vector2(72, 696)
 
 [node name="EkNPC" parent="." instance=ExtResource("18_ek")]
 position = Vector2(552, 168)
@@ -127,7 +127,7 @@ position = Vector2(648, 168)
 position = Vector2(552, 696)
 
 [node name="NoteNPC" parent="." instance=ExtResource("21_note")]
-position = Vector2(72, 312)
+position = Vector2(120, 312)
 
 [node name="FonNPC" parent="." instance=ExtResource("22_fon")]
 position = Vector2(264, 552)
@@ -139,13 +139,13 @@ position = Vector2(456, 696)
 position = Vector2(168, 696)
 
 [node name="RungNPC" parent="." instance=ExtResource("25_rung")]
-position = Vector2(72, 456)
+position = Vector2(840, 696)
 
 [node name="OhmNPC" parent="." instance=ExtResource("26_ohm")]
 position = Vector2(408, 120)
 
 [node name="HeadmanNPC" parent="." instance=ExtResource("27_headman")]
-position = Vector2(72, 648)
+position = Vector2(72, 600)
 
 [node name="SomchaiNPC" parent="." instance=ExtResource("28_somchai")]
 position = Vector2(264, 696)
@@ -160,10 +160,10 @@ position = Vector2(264, 168)
 position = Vector2(360, 600)
 
 [node name="CharoenNPC" parent="." instance=ExtResource("32_charoen")]
-position = Vector2(72, 216)
+position = Vector2(840, 264)
 
 [node name="SomsriNPC" parent="." instance=ExtResource("33_somsri")]
-position = Vector2(72, 552)
+position = Vector2(120, 408)
 
 [node name="GaewNPC" parent="." instance=ExtResource("34_gaew")]
 position = Vector2(168, 504)
@@ -190,16 +190,16 @@ position = Vector2(696, 72)
 position = Vector2(744, 696)
 
 [node name="BupphaNPC" parent="." instance=ExtResource("42_buppha")]
-position = Vector2(840, 264)
+position = Vector2(24, 456)
 
 [node name="DaengNPC" parent="." instance=ExtResource("43_daeng")]
-position = Vector2(840, 360)
+position = Vector2(792, 24)
 
 [node name="PloenNPC" parent="." instance=ExtResource("44_ploen")]
-position = Vector2(840, 456)
+position = Vector2(120, 216)
 
 [node name="AddNPC" parent="." instance=ExtResource("45_add")]
-position = Vector2(840, 696)
+position = Vector2(408, 24)
 
 [node name="FerrymanNPC" parent="." instance=ExtResource("46_ferryman")]
 position = Vector2(600, 576)
