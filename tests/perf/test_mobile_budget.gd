@@ -106,11 +106,19 @@ func _initialize() -> void:
 			# TASK-391: MarigoldForageNode joins the same exclusion list
 			# for the same reason (third ForageNode.gd instance, no
 			# visible sprite — budget stays at 76).
+			# Owner request (2026-09-05): water/tree impassability. New
+			# collision-only StaticBody2D nodes join the exclusion list --
+			# no Sprite2D, same "logic-only interactable" treatment:
+			# WaterCollision (one body, many CollisionShape2D children,
+			# ponds/canal/lotus-maze) and 4 TreeCollision_<cx>_<cy> bodies
+			# (WorldRender.PROPS' mango/banana tree entries). Budget stays
+			# at 76 -- these were invisible collision infra, not new
+			# visible content.
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge" or cn == "FishKeeperForageNode" or cn == "ScrapCollectorForageNode" or cn == "MarigoldForageNode":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge" or cn == "FishKeeperForageNode" or cn == "ScrapCollectorForageNode" or cn == "MarigoldForageNode" or cn == "WaterCollision" or cn.begins_with("TreeCollision_"):
 						continue
 					sorted_kids += 1
 			_check(sorted_kids <= 76, "y-sorted participants <= 76 (got %d)" % sorted_kids)

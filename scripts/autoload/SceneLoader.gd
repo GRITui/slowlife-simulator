@@ -113,6 +113,30 @@ func _on_transition_requested(target_scene_path: String, target_warp_id: String)
 	if outgoing_player != null and outgoing_player is CollisionObject2D:
 		(outgoing_player as CollisionObject2D).collision_layer = 0
 		(outgoing_player as CollisionObject2D).collision_mask = 0
+	# Owner request (2026-09-05, water/tree impassability): the same
+	# deferred-teardown race above isn't unique to the Player -- ANY
+	# collision body left in the outgoing scene (e.g. WorldRender's new
+	# WaterCollision/TreeCollision_* StaticBody2D nodes) can still be in
+	# the shared 2D physics space during the incoming scene's first few
+	# physics frames, since change_scene_to_file() only QUEUES the old
+	# scene for deferred freeing. Concretely caught this session: a
+	# FarmHouse door spawn point at (144, 192) sat exactly on the corner
+	# of a still-alive World.tscn water-collision cell, pushing the
+	# incoming FarmHouse Player off its intended spawn -- the identical
+	# depenetration-recovery race the Player-specific strip above already
+	# fixed once, just triggered by a different body this time. Strip
+	# every CollisionObject2D under the outgoing scene, not just the
+	# Player -- it's being torn down regardless, nothing needs its
+	# collision during the deferred-free window.
+	var outgoing_scene: Node = get_tree().current_scene
+	if outgoing_scene != null:
+		var stack: Array[Node] = [outgoing_scene]
+		while not stack.is_empty():
+			var n: Node = stack.pop_back()
+			if n is CollisionObject2D:
+				(n as CollisionObject2D).collision_layer = 0
+				(n as CollisionObject2D).collision_mask = 0
+			stack.append_array(n.get_children())
 	# TASK-354 fade-out: opaque over ~100ms so the player sees a brief
 	# black wash before the scene swap actually happens. Awaiting the
 	# tween guarantees change_scene_to_file() is queued only AFTER the

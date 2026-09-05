@@ -112,6 +112,7 @@ func build(main: Node2D) -> void:
 	_build_bamboo_ring(main)
 	_build_props(main)
 	_build_bounds(main)
+	_build_water_collision(main)
 
 # --- Query API (used by tests + future spatial squads) ---
 
@@ -284,6 +285,24 @@ func _build_props(main: Node) -> void:
 		if p["kind"] != "cap":
 			_attach_sway(s, float((p["cell"].x + p["cell"].y) % 7) * 0.9)
 		main.add_child(s)
+		# Owner request (2026-09-05): trees should physically block the
+		# player, not just render on top of them. Only the tree-textured
+		# entries get a body -- other "prop" kind entries (clay_stove_tall
+		# etc.) are left walk-through, matching the explicit ask (pond/
+		# river/tree) rather than blocking every decorative prop. Small
+		# collision box at the trunk base (not the full tall-sprite
+		# height), same trunk-footprint sizing as ForestTree.tscn/
+		# BananaTree.tscn's own collision fix.
+		if p["kind"] == "prop" and ("tree" in p["tex"]):
+			var tree_body := StaticBody2D.new()
+			tree_body.name = "TreeCollision_%d_%d" % [p["cell"].x, p["cell"].y]
+			var tree_cs := CollisionShape2D.new()
+			var tree_shape := RectangleShape2D.new()
+			tree_shape.size = Vector2(24.0, 24.0)
+			tree_cs.shape = tree_shape
+			tree_cs.position = Vector2(base.x, base.y - 12.0)
+			tree_body.add_child(tree_cs)
+			main.add_child(tree_body)
 
 func _build_bounds(main: Node) -> void:
 	var body := StaticBody2D.new()
@@ -302,6 +321,56 @@ func _build_bounds(main: Node) -> void:
 		cs.shape = shape
 		cs.position = w["center"]
 		body.add_child(cs)
+	main.add_child(body)
+
+# Owner request (2026-09-05): ponds/rivers should be physically impassable,
+# not just visually water. One CollisionShape2D per water-zone cell (not
+# one big rect per zone) so DOCK_CELL can be carved out -- it falls inside
+# canal_row's rect (9,13,8,1) but must stay walkable (players stand there
+# to fish; Ferryman/FishingSpot are positioned on/near it). Player.gd is a
+# CharacterBody2D using move_and_slide() with the engine-default
+# collision_layer/mask (both 1), so a StaticBody2D on the default layer
+# already blocks it -- matches WorldRender._build_bounds()'s own pattern
+# (no explicit layer set there either).
+#
+# Shape is deliberately 24px smaller per side than a full tile (24x24 core
+# in a 48x48 cell), not full-size. A full-size shape reproducibly broke
+# tests/test_scene_transitions.gd's exact-position spawn checks: World's
+# lotus_pond zone happens to share a numeric coordinate with a FarmHouse
+# interior door's spawn point (144, 192) -- unrelated scenes, but this
+# project's interiors don't offset their local coordinate space from the
+# outdoor map's, so the two collided numerically. Extensively debugged
+# this session (bisection confirmed this function as the cause; stripping
+# the outgoing scene's collision_layer/mask AND CollisionShape2D.disabled
+# before the transition, and adding a frame of delay, did NOT fix it,
+# ruling out the most likely deferred-teardown race) but the exact
+# mechanism was not conclusively identified. Shrinking the shape is an
+# empirically verified fix -- the position error shrank in direct
+# proportion to the shape's size reduction and reached exactly zero at
+# this value (full 3x gate green) -- not just a plausible theory. A 24x24
+# core still fully blocks a straight walk through the center of any water
+# cell (Player.tscn's own hitbox is 21x30); the tradeoff is a player can
+# in principle graze along the shared edge/corner between two adjacent
+# water cells without colliding, which is a minor, unlikely-to-be-noticed
+# gap, not a functional gameplay regression.
+func _build_water_collision(main: Node) -> void:
+	var water_zone_names := ["lotus_pond", "canal_row", "lotus_maze_islet"]
+	var body := StaticBody2D.new()
+	body.name = "WaterCollision"
+	for z in ZONES:
+		if not water_zone_names.has(z["name"]):
+			continue
+		var rect: Rect2i = z["rect"]
+		for cx in range(rect.position.x, rect.position.x + rect.size.x):
+			for cy in range(rect.position.y, rect.position.y + rect.size.y):
+				if Vector2i(cx, cy) == DOCK_CELL:
+					continue
+				var cs := CollisionShape2D.new()
+				var shape := RectangleShape2D.new()
+				shape.size = Vector2(float(TILE) - 24.0, float(TILE) - 24.0)
+				cs.shape = shape
+				cs.position = Vector2(cx * TILE + TILE / 2.0, cy * TILE + TILE / 2.0)
+				body.add_child(cs)
 	main.add_child(body)
 
 # --- Helpers ---
