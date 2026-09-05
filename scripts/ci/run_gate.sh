@@ -231,6 +231,14 @@ run_npc_roster_wiring() {
 	godot --headless --path . --script res://tests/test_npc_roster_wiring.gd
 }
 
+run_family_gift_hints() {
+	# TASK-385: family NPC once-per-day gift hint for their linked
+	# candidate (first talk only, no affinity reward, Somchai/Kwan
+	# deliberately excluded) + family_gift_hint_last_day save round-trip.
+	echo "== family-gift-hints gate: tests/test_family_gift_hints.gd =="
+	godot --headless --path . --script res://tests/test_family_gift_hints.gd
+}
+
 case "$GATE" in
 	engine) run_engine ;;
 	content) run_content ;;
@@ -257,6 +265,7 @@ case "$GATE" in
 	completion_tracker) run_completion_tracker ;;
 	relationship_status) run_relationship_status ;;
 	npc_roster_wiring) run_npc_roster_wiring ;;
-	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status && run_npc_roster_wiring ;;
-	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|npc_roster_wiring|all)" >&2; exit 2 ;;
+	family_gift_hints) run_family_gift_hints ;;
+	all) run_engine && run_content && run_save_compat && run_save_scene_restore && run_perf && run_touch && run_scene_transitions && run_area_edges && run_farmhouse_content && run_farmhouse_decor && run_transition_fade && run_fish_almanac && run_fishing_gear && run_carpenter_upgrade && run_recipe_unlocks && run_particle_drivers && run_fog_driver && run_dialogue_portrait && run_dialogue_mood_portraits && run_farmhouse_furniture && run_schedules && run_festival_visual_driver && run_completion_tracker && run_relationship_status && run_npc_roster_wiring && run_family_gift_hints ;;
+	*) echo "unknown gate '$GATE' (want: engine|content|save|save_restore|perf|touch|scenes|area_edges|farmhouse_content|farmhouse_decor|transition_fade|fish_almanac|fishing_gear|carpenter_upgrade|recipe_unlocks|particle_drivers|fog_driver|dialogue_portrait|dialogue_mood_portraits|farmhouse_furniture|schedules|festival_visual_driver|completion_tracker|relationship_status|npc_roster_wiring|family_gift_hints|all)" >&2; exit 2 ;;
 esac

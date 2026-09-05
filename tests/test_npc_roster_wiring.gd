@@ -284,14 +284,31 @@ func _run_flavor_dialogue_cycle_tests(world: Node) -> void:
 		var disp_name: String = String(npc.get("display_name"))
 		_check(String(captured[0][0]) == disp_name,
 			"%s: show_dialogue speaker == display_name '%s' (got '%s')" % [npc_name, disp_name, String(captured[0][0])])
-		_check(String(captured[0][1]) == String(pool[0]),
-			"%s: line 0 matches pool[0]" % npc_name)
-		_check(String(captured[1][1]) == String(pool[1]),
-			"%s: line 1 matches pool[1]" % npc_name)
-		_check(String(captured[2][1]) == String(pool[2]),
-			"%s: line 2 matches pool[2]" % npc_name)
-		_check(String(captured[3][1]) == String(pool[0]),
-			"%s: line 3 wraps to pool[0]" % npc_name)
+		# TASK-385: Charoen is a family NPC — its FIRST talk of the day is
+		# the once-per-day gift hint (for Fah), and the hint consumes no
+		# flavor-cycle step, so presses 2-4 are pool[0..2] in order.
+		if npc_id == "charoen":
+			var db: GDScript = load("res://scripts/narrative/DialogueDB.gd") as GDScript
+			var prefs: Dictionary = db.GIFT_PREFERENCES.get("fah", {})
+			var loved: Array = prefs.get("loved", [])
+			var want_hint: String = "She's always going on about %s." % String(loved[0]).replace("_", " ")
+			_check(String(captured[0][1]) == want_hint,
+				"%s: line 0 is the once-per-day Fah gift hint" % npc_name)
+			_check(String(captured[1][1]) == String(pool[0]),
+				"%s: line 1 matches pool[0] (hint consumed no cycle step)" % npc_name)
+			_check(String(captured[2][1]) == String(pool[1]),
+				"%s: line 2 matches pool[1]" % npc_name)
+			_check(String(captured[3][1]) == String(pool[2]),
+				"%s: line 3 matches pool[2]" % npc_name)
+		else:
+			_check(String(captured[0][1]) == String(pool[0]),
+				"%s: line 0 matches pool[0]" % npc_name)
+			_check(String(captured[1][1]) == String(pool[1]),
+				"%s: line 1 matches pool[1]" % npc_name)
+			_check(String(captured[2][1]) == String(pool[2]),
+				"%s: line 2 matches pool[2]" % npc_name)
+			_check(String(captured[3][1]) == String(pool[0]),
+				"%s: line 3 wraps to pool[0]" % npc_name)
 
 		# Out-of-range guard — same shape as the picker test's.
 		npc.set("_player_in_range", false)
