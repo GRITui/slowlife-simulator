@@ -98,14 +98,19 @@ func _initialize() -> void:
 			# shape as the 17 TASK-373 NPCs that bumped the budget
 			# historically), so all 14 legitimately count. Measured
 			# post-add count is exactly 73.
+			# TASK-390: 73->76 (+3 lone NPCs: ferryman/fish_keeper/
+			# scrap_collector — real CharacterBody2D + Sprite2D pairs,
+			# same treatment). The 2 ForageNodes join the exclusion
+			# list below instead (logic-only interactables, no visible
+			# sprite — same treatment as MiningSpot/Noticeboard).
 			var sorted_kids: int = 0
 			for c in main.get_children():
 				if c is Node2D and (c as Node2D).z_index >= 0:
 					var cn: String = String(c.get("name"))
-					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge":
+					if cn == "WorldRender" or cn == "Bounds" or cn == "GridManager" or cn == "MiningSpot" or cn == "Noticeboard" or cn == "MountainCaveSpot" or cn == "DeepCanalSpot" or cn == "SacredGroveSpot" or cn == "LotusMazeShoreSpot" or cn == "CoastalTradingPost" or cn == "FarmHouseDoor" or cn == "EastEdge" or cn == "FishKeeperForageNode" or cn == "ScrapCollectorForageNode":
 						continue
 					sorted_kids += 1
-			_check(sorted_kids <= 73, "y-sorted participants <= 73 (got %d)" % sorted_kids)
+			_check(sorted_kids <= 76, "y-sorted participants <= 76 (got %d)" % sorted_kids)
 		# Draw-call ceiling (meaningful on device; headless reports 0).
 		var draws: int = RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
 		_check(draws <= 120, "idle draw calls <= 120 budget (got %d)" % draws)

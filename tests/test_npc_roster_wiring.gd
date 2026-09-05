@@ -226,8 +226,15 @@ func _run_flavor_dialogue_cycle_tests(world: Node) -> void:
 	if FlavorDialogueScript == null:
 		return
 	var lines: Dictionary = FlavorDialogueScript.FLAVOR_LINES
-	_check(lines.size() == 14,
-		"FlavorDialogue.FLAVOR_LINES has exactly 14 npc_ids (got %d)" % lines.size())
+	# TASK-390: 14 TASK-383 lines + 3 lone-NPC lines (ferryman /
+	# fish_keeper / scrap_collector). The 3 newcomers' presence, exact
+	# positions, and dialogue cycles are covered in tests/test_lone_npcs.gd
+	# instead — their locked World.tscn positions sit on plantable-soil
+	# tiles by design (dock-side / tree-line / field-edge flavor), so they
+	# are deliberately NOT in NEW_NPCS above: this file's coarse
+	# WATER_ZONES/FARMLAND_ZONES approximations would flag them.
+	_check(lines.size() == 17,
+		"FlavorDialogue.FLAVOR_LINES has exactly 17 npc_ids (got %d)" % lines.size())
 
 	# SignalBus is an autoload — reach it via the SceneTree root, not as
 	# a bare identifier (the parser doesn't see it as a global in
@@ -237,7 +244,7 @@ func _run_flavor_dialogue_cycle_tests(world: Node) -> void:
 	if sb == null:
 		return
 
-	# Pick 2 of the 14 for the cycling + input-wiring check. Use one
+	# Pick 2 of the 17 for the cycling + input-wiring check. Use one
 	# from the family set (charoen) and one from the wanderer set (add)
 	# to cover both halves of the roster.
 	for npc_name: String in ["CharoenNPC", "AddNPC"]:

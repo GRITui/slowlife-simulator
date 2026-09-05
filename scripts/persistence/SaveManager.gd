@@ -137,6 +137,18 @@ func save_game() -> bool:
 		# bit-identical to a fresh start — same reasoning pattern as
 		# placed_furniture / decor_choices above.
 		"family_marriage_reaction_shown": gd.family_marriage_reaction_shown,
+		# TASK-390: lone-NPC one-shots (Ferryman / Fish-Keeper / Scrap
+		# Collector + Ploen vignette + forage cooldowns). All additive,
+		# NO SAVE_VERSION bump: every initializer default (false / 0 / {})
+		# is what .get(key, default) already returns for an old save —
+		# bit-identical to a fresh start, same pattern as the TASK-384
+		# line directly above.
+		"ferryman_secret_shown": gd.ferryman_secret_shown,
+		"fish_keeper_fish_given": gd.fish_keeper_fish_given,
+		"fish_keeper_recipe_unlocked": gd.fish_keeper_recipe_unlocked,
+		"forage_node_last_day": gd.forage_node_last_day,
+		"scrap_collector_note_given": gd.scrap_collector_note_given,
+		"scrap_collector_note_returned": gd.scrap_collector_note_returned,
 		# TASK-374/375: placed furniture (location -> list of {item_id, cell,
 		# facing}). No SAVE_VERSION bump: empty {} matches GameData.
 		# placed_furniture's init exactly, so old saves load as if no
@@ -395,6 +407,17 @@ func load_game() -> bool:
 		# a save from before this task loads as if no reaction was ever
 		# shown. (No SAVE_VERSION bump: additive-safe per task spec.)
 		gd.family_marriage_reaction_shown = (data.get("family_marriage_reaction_shown", {}) as Dictionary).duplicate(true)
+		# TASK-390: lone-NPC one-shots. Defaults match GameData's own var
+		# initializers exactly, so a save from before this task loads as if
+		# no secret was ever shown, no fish ever given, no node ever
+		# foraged, and no note ever passed along. (No SAVE_VERSION bump:
+		# additive-safe per task spec.)
+		gd.ferryman_secret_shown = bool(data.get("ferryman_secret_shown", false))
+		gd.fish_keeper_fish_given = int(data.get("fish_keeper_fish_given", 0))
+		gd.fish_keeper_recipe_unlocked = bool(data.get("fish_keeper_recipe_unlocked", false))
+		gd.forage_node_last_day = (data.get("forage_node_last_day", {}) as Dictionary).duplicate(true)
+		gd.scrap_collector_note_given = bool(data.get("scrap_collector_note_given", false))
+		gd.scrap_collector_note_returned = bool(data.get("scrap_collector_note_returned", false))
 		# TASK-357: restore the actual scene + position the save was made in,
 		# instead of leaving the player wherever they currently are (which,
 		# before this fix, was always whatever the main scene's own default

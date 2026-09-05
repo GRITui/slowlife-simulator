@@ -35,6 +35,11 @@ const NET_CATCH_MAX: int = 4
 @export var spot_name: String = "Fishing Spot"
 ## Proximity radius (matches SluiceGate/CarpenterUpgrade/MiningSpot InteractArea).
 @export var interact_radius: float = 56.0
+## TASK-390: which map cell this spot sits on. Defaults to (-1,-1) =
+## "derive from global_position at roll time" so spots instanced without
+## an explicit cell (legacy tests, older World.gd paths) keep working;
+## World.gd's _ensure_fishing_spot() sets this explicitly.
+@export var spot_cell: Vector2i = Vector2i(-1, -1)
 var fishing_rolls: int = 0 ## lifetime catches, +1 skill per 5 rolls (cap 4)
 
 var _player_in_range: bool = false
@@ -82,6 +87,26 @@ func _current_season() -> String:
 		return String(tm.current_season)
 	return String(GameData.current_season)
 
+## TASK-390: this spot's own map cell — the explicit spot_cell export when
+## set, otherwise derived from global_position (same /48.0 math as
+## _water_adjacent() below). Fish entries WITHOUT exclusive_cell skip the
+## gate entirely (backward compatible).
+func _own_cell() -> Vector2i:
+	if spot_cell != Vector2i(-1, -1):
+		return spot_cell
+	return Vector2i(int(global_position.x / 48.0), int(global_position.y / 48.0))
+
+## TASK-390: location-gated species check. A fish entry with exclusive_cell
+## set (a [x, y] Array, e.g. moon_prawn's [13, 13] dock cell) is ONLY
+## eligible when this spot's own cell equals that value.
+func _is_cell_eligible(f: Dictionary) -> bool:
+	if not f.has("exclusive_cell"):
+		return true
+	var ec: Array = f.get("exclusive_cell", []) as Array
+	if ec.size() != 2:
+		return true
+	return _own_cell() == Vector2i(int(ec[0]), int(ec[1]))
+
 ## Eligible species: season matches + skill requirement met.
 func eligible_fish() -> Array:
 	var season: String = _current_season()
@@ -91,6 +116,8 @@ func eligible_fish() -> Array:
 		if not seasons.has(season):
 			continue
 		if int(f.get("skill_required", 1)) > _skill():
+			continue
+		if not _is_cell_eligible(f):
 			continue
 		out.append(f)
 	return out
@@ -114,6 +141,10 @@ func _eligible_fish_for_net() -> Array:
 		# two tiers." 4.0 / 2.5 weights come from _roll_catch() unchanged.
 		var rarity: String = String(f.get("rarity", "common"))
 		if rarity == "rare" or rarity == "legendary":
+			continue
+		# TASK-390: location gate (no-op for every current common/uncommon
+		# entry — none sets exclusive_cell — but future-proof if one does).
+		if not _is_cell_eligible(f):
 			continue
 		out.append(f)
 	return out

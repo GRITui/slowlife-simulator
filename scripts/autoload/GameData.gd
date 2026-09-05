@@ -533,6 +533,15 @@ const SELL_PRICES: Dictionary = {
 	"durian_sticky_rice": 18, "lotus_soup": 16, "banana_rice_cake": 12,
 	"nam_prik": 16, "som_tam": 15, "tom_yum": 18, "wan_sart_basket": 10,
 	"khao_soi": 20, "massaman_curry": 24,
+	# TASK-390: lone-NPC wild produce. wild_turmeric is a modest forageable
+	# (Fish-Keeper's node); preserved_fish is the premium payoff for her
+	# one-shot (priced above any raw fish's ~5-10, matching the "happier
+	# animal -> premium product" logic); salvaged_scrap is a low-value
+	# banked-for-later material (no consumer yet — same note as lotus_root
+	# originally shipped). preserved_fish likewise has no crafting consumer
+	# yet (known follow-up, out of scope for this task — just sellable).
+	# ploen_note is deliberately NOT sellable (a plain quest token).
+	"wild_turmeric": 6, "preserved_fish": 18, "salvaged_scrap": 3,
 }
 
 func add_silver(amount: int) -> void:
@@ -683,6 +692,17 @@ var child_stage: int = 0
 # decor_choices: an absent key on an old save loads as {} which is
 # bit-identical to a fresh start.
 var family_marriage_reaction_shown: Dictionary = {}
+
+# TASK-390: "lives alone, holds a secret" NPCs (Ferryman / Fish-Keeper /
+# Scrap Collector + Ploen vignette). All additive with safe defaults, NO
+# SAVE_VERSION bump: absent key = default False/0/{}, bit-identical to a
+# fresh start — same pattern as family_marriage_reaction_shown above.
+var ferryman_secret_shown: bool = false
+var fish_keeper_fish_given: int = 0
+var fish_keeper_recipe_unlocked: bool = false
+var forage_node_last_day: Dictionary = {} # node instance name -> last_day foraged
+var scrap_collector_note_given: bool = false
+var scrap_collector_note_returned: bool = false
 
 # TASK-340 rival win/loss system. npc_first_met_day: npc_id -> day the
 # player first ever interacted with them (clock start). lost_to_rival:
