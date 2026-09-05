@@ -10,11 +10,21 @@ extends CanvasLayer
 const DialogueDBScript: GDScript = preload("res://scripts/narrative/DialogueDB.gd")
 const AVATAR_DIR: String = "res://assets/ui/avatars/"
 
+const FAMILY_INFO: Dictionary = {
+	"fah": {"name": "Charoen", "relation": "father"},
+	"ploy": {"name": "Somsri", "relation": "mother"},
+	"ek": {"name": "Gaew", "relation": "sister"},
+	"klong": {"name": "Boonchu", "relation": "grandfather"},
+	"yaa": {"name": "Ampai", "relation": "mother"},
+	"chang": {"name": "Somchai", "relation": "mentor"},
+}
+
 @onready var _avatar: TextureRect = $Panel/VBox/Avatar
 @onready var _name_label: Label = $Panel/VBox/NameLabel
 @onready var _hearts_label: Label = $Panel/VBox/HeartsLabel
 @onready var _loved_label: Label = $Panel/VBox/LovedLabel
 @onready var _liked_label: Label = $Panel/VBox/LikedLabel
+@onready var _family_label: Label = $Panel/VBox/FamilyLabel
 @onready var _married_label: Label = $Panel/VBox/MarriedLabel
 @onready var _close_button: Button = $Panel/VBox/CloseButton
 
@@ -41,6 +51,12 @@ func open(npc_id: String, display_name: String) -> void:
 	var prefs: Dictionary = DialogueDBScript.GIFT_PREFERENCES.get(npc_id, {})
 	_loved_label.text = "Loves: %s" % _format_items(prefs.get("loved", []))
 	_liked_label.text = "Likes: %s" % _format_items(prefs.get("liked", []))
+
+	if FAMILY_INFO.has(npc_id):
+		var info: Dictionary = FAMILY_INFO[npc_id]
+		_family_label.text = "Family: %s (%s)" % [info["name"], info["relation"]]
+	else:
+		_family_label.text = "Family: ?"
 
 	_married_label.visible = (GameData.spouse == npc_id)
 	visible = true
