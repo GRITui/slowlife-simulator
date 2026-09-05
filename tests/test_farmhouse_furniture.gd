@@ -83,15 +83,15 @@ func _run_all() -> void:
 	_check(not gd.has_item(RUG_ID, 1), "placing consumes the rug from inventory")
 	_check(furniture.has_node("Rug_2_3"), "a visible rug sprite is spawned at (2,3)")
 
-	# --- C. Occupied-tile safety: Bed sits at cell (8,7) after the
-	# 4-room redesign (2026-09-05) -- was (1,1) on the old single-room
-	# layout. ---
-	player.global_position = Vector2(8 * 48 + 24, 7 * 48 + 24)
+	# --- C. Occupied-tile safety: Bed sits at cell (7,6) after the
+	# space-compaction pass (2026-09-05, 12x10 -> 10x8) -- was (8,7) on
+	# the original 4-room layout, (1,1) on the old single-room layout. ---
+	player.global_position = Vector2(7 * 48 + 24, 6 * 48 + 24)
 	gd.add_item(RUG_ID, 1)
 	_dispatch_action("interact")
 	await process_frame
-	_check(not gd.has_placed_furniture_at(LOCATION_ID, Vector2i(8, 7)),
-		"cannot place on Bed's occupied cell (8,7)")
+	_check(not gd.has_placed_furniture_at(LOCATION_ID, Vector2i(7, 6)),
+		"cannot place on Bed's occupied cell (7,6)")
 	_check(gd.has_item(RUG_ID, 1), "a failed placement does not consume the rug")
 
 	# --- D. Pick back up ---

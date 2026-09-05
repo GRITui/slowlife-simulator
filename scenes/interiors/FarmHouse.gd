@@ -18,7 +18,10 @@ extends InteriorBase
 ## to match the new layout.
 
 const TILE: int = 48
-const GRID: Vector2i = Vector2i(12, 10)
+# Owner request (2026-09-05): "less waste of space" -- shrunk from the
+# original 12x10 (120-cell) 4-room layout to 10x8 (80 cells), same room
+# proportions, ~33% less empty floor per room.
+const GRID: Vector2i = Vector2i(10, 8)
 
 ## Room zones (cell rects [x, y, w, h]), for reference/future use (e.g.
 ## per-room decor). Kitchen top-left, Living Area top-right (the room
@@ -26,10 +29,10 @@ const GRID: Vector2i = Vector2i(12, 10)
 ## room), Bathroom bottom-left (small), Bedroom bottom-right (spans the
 ## rest of the bottom row, private).
 const ROOMS: Dictionary = {
-	"kitchen": Rect2i(0, 0, 5, 5),
-	"living": Rect2i(5, 0, 7, 5),
-	"bathroom": Rect2i(0, 5, 3, 5),
-	"bedroom": Rect2i(3, 5, 9, 5),
+	"kitchen": Rect2i(0, 0, 4, 4),
+	"living": Rect2i(4, 0, 6, 4),
+	"bathroom": Rect2i(0, 4, 3, 4),
+	"bedroom": Rect2i(3, 4, 7, 4),
 }
 
 ## Interior dividing walls, as explicit cell lists (not a perimeter
@@ -37,21 +40,21 @@ const ROOMS: Dictionary = {
 ## each other). Each entry is a full wall run; DOORWAY_GAP_CELLS below
 ## are excluded when drawing.
 const INTERIOR_WALL_CELLS: Array = [
-	# Kitchen | Living Area (vertical, x=5, spans the kitchen/living row height)
-	Vector2i(5, 0), Vector2i(5, 1), Vector2i(5, 2), Vector2i(5, 3), Vector2i(5, 4),
-	# Kitchen | Bathroom (horizontal, y=5, spans kitchen's width)
-	Vector2i(0, 5), Vector2i(1, 5), Vector2i(2, 5), Vector2i(3, 5), Vector2i(4, 5),
-	# Living Area | Bedroom (horizontal, y=5, spans living's width)
-	Vector2i(5, 5), Vector2i(6, 5), Vector2i(7, 5), Vector2i(8, 5), Vector2i(9, 5), Vector2i(10, 5), Vector2i(11, 5),
+	# Kitchen | Living Area (vertical, x=4, spans the kitchen/living row height)
+	Vector2i(4, 0), Vector2i(4, 1), Vector2i(4, 2), Vector2i(4, 3),
+	# Kitchen | Bathroom (horizontal, y=4, spans kitchen's width)
+	Vector2i(0, 4), Vector2i(1, 4), Vector2i(2, 4), Vector2i(3, 4),
+	# Living Area | Bedroom (horizontal, y=4, spans living's width)
+	Vector2i(4, 4), Vector2i(5, 4), Vector2i(6, 4), Vector2i(7, 4), Vector2i(8, 4), Vector2i(9, 4),
 	# Bathroom | Bedroom (vertical, x=3, spans the bathroom/bedroom row height)
-	Vector2i(3, 5), Vector2i(3, 6), Vector2i(3, 7), Vector2i(3, 8), Vector2i(3, 9),
+	Vector2i(3, 4), Vector2i(3, 5), Vector2i(3, 6), Vector2i(3, 7),
 ]
 ## Doorway openings -- one per room-pair, wide enough to walk through.
 const DOORWAY_GAP_CELLS: Array = [
-	Vector2i(5, 2),  # Kitchen <-> Living Area
-	Vector2i(1, 5),  # Kitchen <-> Bathroom
-	Vector2i(8, 5),  # Living Area <-> Bedroom
-	Vector2i(3, 7),  # Bathroom <-> Bedroom
+	Vector2i(4, 2),  # Kitchen <-> Living Area
+	Vector2i(1, 4),  # Kitchen <-> Bathroom
+	Vector2i(7, 4),  # Living Area <-> Bedroom
+	Vector2i(3, 6),  # Bathroom <-> Bedroom
 ]
 # Owner request (2026-09-05): distinct farmhouse interior look instead of
 # the generic structure_floor/wall.png shared across every building's
@@ -106,8 +109,10 @@ func _init() -> void:
 	# 4-room redesign (2026-09-05): default spawn moved to the Living
 	# Area's center -- the room the front door actually opens into, so
 	# a fresh boot with no pending warp lands somewhere sensible instead
-	# of the old single-room's geometric center.
-	default_spawn = Vector2(8 * TILE, 2 * TILE)
+	# of the old single-room's geometric center. Re-derived (2026-09-05,
+	# space-compaction pass) for the shrunk 10x8 grid's Living Area
+	# (cols 4-9, rows 0-3) -- keeps clear of the Shrine at (7,2).
+	default_spawn = Vector2(6 * TILE, 2 * TILE)
 
 func _build_render() -> void:
 	# Interior's own minimal render — a single TileMapLayer with the floor
@@ -167,10 +172,13 @@ func _build_render() -> void:
 	# parse error.
 	var decor_cells: Array = [
 		# [name, column, row] — column/row in tile units, 0-indexed.
+		# Re-derived (2026-09-05, space-compaction pass) proportionally
+		# for the shrunk 10x8 grid -- same relative room position as
+		# the 12x10 layout, checked clear of walls/doorways/furniture.
 		["clay_stove", 2, 2],     # kitchen, center-ish
-		["water_jar", 1, 7],      # bathroom
-		["mohom_cloth", 6, 7],    # bedroom
-		["pha_khao_ma", 4, 8],    # bedroom, second linen spot
+		["water_jar", 1, 6],      # bathroom
+		["mohom_cloth", 5, 6],    # bedroom
+		["pha_khao_ma", 4, 6],    # bedroom, second linen spot
 	]
 	for cell in decor_cells:
 		var key: String = cell[0]

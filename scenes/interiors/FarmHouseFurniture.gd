@@ -33,7 +33,7 @@ extends Node2D
 ## for the no-bump reasoning).
 
 const TILE: int = 48
-const GRID: Vector2i = Vector2i(12, 10)
+const GRID: Vector2i = Vector2i(10, 8)
 const LOCATION_ID: String = "farmhouse"
 const RUG_ITEM_ID: String = "floor_rug"
 
@@ -86,31 +86,30 @@ const FESTIVAL_DATES: Array = [
 
 # Cells already occupied by other FarmHouse interactables (from
 # FarmHouse.tscn's own node positions) — never a valid placement target.
-# 4-room redesign (2026-09-05): repositioned to match the new 12x10
-# layout (see FarmHouse.gd's ROOMS/INTERIOR_WALL_CELLS/DOORWAY_GAP_
-# CELLS consts). Also now includes every interior-wall cell and
-# FarmHouse.gd's own decor-sprite cells -- none of those existed as
-# real placement obstacles on the old single-room layout, but interior
-# walls are real solid geometry now and decor sprites shouldn't be
-# double-covered by player-placed furniture either.
+# Space-compaction pass (2026-09-05, 12x10 -> 10x8): re-derived to
+# match FarmHouse.gd's shrunk ROOMS/INTERIOR_WALL_CELLS/DOORWAY_GAP_
+# CELLS consts. Also includes every interior-wall cell and
+# FarmHouse.gd's own decor-sprite cells -- interior walls are real
+# solid geometry and decor sprites shouldn't be double-covered by
+# player-placed furniture either.
 const OCCUPIED_CELLS: Array = [
-	Vector2i(7, 4),  # OutsideDoor (336, 192)
-	Vector2i(8, 7),  # Bed (384, 336)
-	Vector2i(9, 2),  # Shrine (432, 96)
-	Vector2i(10, 2), # ShrineStylePicker (480, 96)
-	Vector2i(9, 7),  # BedStylePicker (432, 336)
+	Vector2i(7, 3),  # OutsideDoor (336, 144)
+	Vector2i(7, 6),  # Bed (336, 288)
+	Vector2i(7, 2),  # Shrine (336, 96)
+	Vector2i(8, 2),  # ShrineStylePicker (384, 96)
+	Vector2i(8, 6),  # BedStylePicker (384, 288)
 	# Decor sprites (FarmHouse.gd's decor_cells)
 	Vector2i(2, 2),  # clay_stove (kitchen)
-	Vector2i(1, 7),  # water_jar (bathroom)
-	Vector2i(6, 7),  # mohom_cloth (bedroom)
-	Vector2i(4, 8),  # pha_khao_ma (bedroom)
+	Vector2i(1, 6),  # water_jar (bathroom)
+	Vector2i(5, 6),  # mohom_cloth (bedroom)
+	Vector2i(4, 6),  # pha_khao_ma (bedroom)
 	# Interior dividing walls (Kitchen|Living, Kitchen|Bathroom,
 	# Living|Bedroom, Bathroom|Bedroom) -- doorway gaps are walkable so
 	# NOT included here, matching FarmHouse.gd's own DOORWAY_GAP_CELLS.
-	Vector2i(5, 0), Vector2i(5, 1), Vector2i(5, 3), Vector2i(5, 4),
-	Vector2i(0, 5), Vector2i(2, 5), Vector2i(3, 5), Vector2i(4, 5),
-	Vector2i(6, 5), Vector2i(7, 5), Vector2i(9, 5), Vector2i(10, 5), Vector2i(11, 5),
-	Vector2i(3, 6), Vector2i(3, 8), Vector2i(3, 9),
+	Vector2i(4, 0), Vector2i(4, 1), Vector2i(4, 3),
+	Vector2i(0, 4), Vector2i(2, 4), Vector2i(3, 4), Vector2i(4, 4),
+	Vector2i(5, 4), Vector2i(6, 4), Vector2i(8, 4), Vector2i(9, 4),
+	Vector2i(3, 5), Vector2i(3, 7),
 ]
 
 var _place_mode: bool = false

@@ -254,12 +254,14 @@ func _run_all() -> void:
 		"pending_warp_id cleared after the fresh-boot-into-FarmHouse load (no stale warp)")
 	var player_farm2: Node = farm2.get_node_or_null("Player")
 	if player_farm2 != null:
-		# Default interior spawn is the Living Area's center (8*TILE, 2*TILE)
+		# Default interior spawn is the Living Area's center (6*TILE, 2*TILE)
 		# -- the 4-room redesign (2026-09-05) moved this from the old
 		# single-room's geometric center (3*TILE, 3*TILE) to the room the
-		# front door actually opens into. Tolerance instead of exact
-		# equality, matching this file's own established pattern.
-		_check(player_farm2.global_position.distance_to(Vector2(8 * 48, 2 * 48)) < 5.0,
+		# front door actually opens into; the space-compaction pass
+		# (2026-09-05, 12x10 -> 10x8) re-derived it for the shrunk grid
+		# (was 8*TILE, 2*TILE). Tolerance instead of exact equality,
+		# matching this file's own established pattern.
+		_check(player_farm2.global_position.distance_to(Vector2(6 * 48, 2 * 48)) < 5.0,
 			"fresh-boot FarmHouse player spawn at Living Area center (no stale 'farmhouse_entry' warp)")
 
 	# --- 5. SceneLoader autoload is wired and listens to the signal.
