@@ -19,7 +19,7 @@ particle resources excluded — those aren't image-generation targets).
 | 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE (2026-09-05) — heart_empty/full/silver_coin needed a re-gen (first pass's Draw Things output wasn't real alpha, baked-in background) + local flood-fill removal, not a straight copy-in like the other 7 |
 | 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE (2026-09-05) — see caveats below |
 | 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | DONE (2026-09-05) — clean first-pass generations, no retries needed |
-| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | IN PROGRESS (2026-09-05) — sub-batches A, B, C DONE (14/25 files); D (mohom_cloth/pha_khao_ma) and E (5 trees) still pending |
+| 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | DONE (2026-09-05) — all 25 files, sub-batches A-E, see caveats below |
 | 7 | Crops (growth stages, ~84 files) | ~84 | pending, large — may need its own sub-batches |
 | 8 | Items (~155 files) | ~155 | pending, large — may need its own sub-batches |
 | 9 | Characters (sprites, ~87 files) | ~87 | pending, large — sprite sheets, not single portraits; needs its own prompt approach (multi-frame, not single bust) |
@@ -103,6 +103,14 @@ investigated before proceeding: reproduced with `git stash` (changes
 removed) and still failed, confirming it's a pre-existing timing flake
 under system load (not caused by this batch), then passed cleanly on
 the next run with the changes restored.
+
+Sub-batches D (mohom_cloth, pha_khao_ma) and E (durian_tree_sapling/
+mature, mango_tree, mango_tree_tall, banana_tree_tall): all 7 clean
+first-pass generations, no retries needed. Stylistically the trees read
+more as "stylized fruit-topped icon" than a literal tree render (e.g.
+mango_tree looks like a bunch of mangoes on a small frond crown), but
+this matches the existing soft-shaded pixel-art convention used
+throughout and is a clear improvement over the flat-color placeholders.
 
 ## Notes
 - Batches 7-9 are large enough that they should be split into sub-batches
