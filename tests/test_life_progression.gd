@@ -37,7 +37,7 @@ func _initialize() -> void:
 	await process_frame
 	var ek: Node = main.get_node_or_null("EkNPC")
 	var tm: Node = sb.time_manager
-	_check(ek != null, "Ek available")
+	_check(ek != null, "Mali available")
 	if ek == null or tm == null:
 		main.queue_free()
 		await process_frame
@@ -71,7 +71,7 @@ func _initialize() -> void:
 	_check(_events == 1, "anniversary event fired once (no extra event for milestone)")
 	var saw_pregnant: bool = false
 	for d in _dialogue_hits:
-		if d[0] == "Ek" and String(d[1]).contains("on the way"):
+		if d[0] == "Mali" and String(d[1]).contains("on the way"):
 			saw_pregnant = true
 	_check(saw_pregnant, "pregnancy milestone dialogue emitted")
 
@@ -85,7 +85,7 @@ func _initialize() -> void:
 	_check(_events == 2, "anniversary event count still matches call count")
 	var saw_birth: bool = false
 	for d in _dialogue_hits:
-		if d[0] == "Ek" and String(d[1]).contains("baby is here"):
+		if d[0] == "Mali" and String(d[1]).contains("baby is here"):
 			saw_birth = true
 	_check(saw_birth, "birth milestone dialogue emitted")
 
@@ -97,7 +97,7 @@ func _initialize() -> void:
 	_check(int(gd.harmony) >= harmony_before_3 + 15, "toddler stage grants >= 15 harmony")
 	var saw_toddler: bool = false
 	for d in _dialogue_hits:
-		if d[0] == "Ek" and String(d[1]).contains("walking now"):
+		if d[0] == "Mali" and String(d[1]).contains("walking now"):
 			saw_toddler = true
 	_check(saw_toddler, "toddler milestone dialogue emitted")
 
@@ -108,7 +108,7 @@ func _initialize() -> void:
 	_check(int(gd.child_stage) == 3, "child_stage stays capped at 3 (year 5)")
 	var standard_line_seen: bool = false
 	for d in _dialogue_hits:
-		if d[0] == "Ek" and String(d[1]).contains("Happy anniversary"):
+		if d[0] == "Mali" and String(d[1]).contains("Happy anniversary"):
 			standard_line_seen = true
 	_check(standard_line_seen, "standard anniversary line resumes once child_stage is terminal")
 	_check(int(gd.silver) == silver0 + 120, "silver still exactly +30 per anniversary (4 total)")

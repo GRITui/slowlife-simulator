@@ -9,7 +9,7 @@ radius = 48.0
 [node name="KlongNPC" type="CharacterBody2D" groups=["villager_npc", "romance_candidate"]]
 script = ExtResource("9_script")
 npc_id = "klong"
-display_name = "Klong"
+display_name = "Rin"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_idle")

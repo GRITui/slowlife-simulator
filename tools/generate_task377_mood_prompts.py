@@ -35,19 +35,49 @@ STYLE_SUFFIX = (
 # klong=festival drummer/energetic, yaa=herbalist/gentle) -- no prior
 # portrait art exists for 5 of these 6 (only a loose, never-wired fah.png
 # exists; regenerated here too for one consistent mood-variant set).
+# Gender audit (2026-09-05): the original TASK-376 prompts and this
+# generator's first draft specified NO gender at all -- a real prompt-
+# precision gap that leaves the model to default arbitrarily, which
+# compounds the identity-drift problem this whole img2img pipeline
+# exists to fix. Locked per owner decision, cross-checked against
+# established canon where it exists:
+#   - Elder: FEMALE ("grandmother-figure", "she tells it" --
+#     VILLAGE_LORE.md:9,19). The ALREADY-SHIPPED elder.png contradicts
+#     this (prompted with "wispy white beard") -- being regenerated here,
+#     replacing the shipped file (owner-approved correction, not a
+#     regression of TASK-376's "don't touch the 6 neutrals" rule).
+#   - Fah: FEMALE ("her", "she" -- VILLAGE_LORE.md:37). Confirmed in canon.
+#   - Ploy: FEMALE ("she loves" -- DialogueDB.gd:680, GameData.gd:370-372).
+#     Confirmed in canon.
+#   - Klong: owner rule below overrides a stale "he loves it" comment
+#     that existed in GameData.gd (now fixed to "she") -- was a leftover
+#     inconsistency, not an actual design intent.
+#   - Ek, Chang, Yaa: no established gender existed anywhere in the repo.
+#   - Owner decision (2026-09-05): ALL 6 romance candidates are female;
+#     all 6 of their paired rivals (yai/ohm/rung/note/fon/boon -- not
+#     currently in this portrait batch) are male; the player character
+#     is male.
+#   - Child/Handler/Trader: genuinely unspecified in VILLAGE_LORE.md
+#     (deliberately gender-neutral text). Owner: "just pick one" --
+#     picked Female (child), Male (handler), Male (trader). Documented
+#     here as an explicit content decision, not a silent guess, in case
+#     it needs correcting later.
+#   - Monk: not stated in lore; kept Male per real-world Thai Buddhist
+#     monastic convention (bhikkhu) -- reasonable default, not a guess.
+#   - Buffalo: an animal, not a human -- no gender descriptor needed.
 BASES = {
-    "elder": "pixel art portrait, elderly Thai village elder, traditional conical straw hat, warm wrinkled kind face, wispy white beard",
-    "child": "pixel art portrait, young Thai village child, round cheerful face, simple traditional rural clothing, carrying a small woven basket",
-    "handler": "pixel art portrait, Thai buffalo handler, sturdy weathered face, traditional headwrap and rolled sleeves, farmer clothing",
-    "monk": "pixel art portrait, Thai Buddhist monk, shaved head, orange and saffron colored robes, gentle face",
-    "trader": "pixel art portrait, traveling Thai market trader, colorful traditional vest, small round hat, gold jewelry accent",
+    "elder": "pixel art portrait, elderly Thai woman, village elder, traditional conical straw hat, warm wrinkled kind face, silver hair tied back",
+    "child": "pixel art portrait, young Thai girl, village child, round cheerful face, simple traditional rural clothing, carrying a small woven basket",
+    "handler": "pixel art portrait, Thai man, buffalo handler, sturdy weathered face, traditional headwrap and rolled sleeves, farmer clothing",
+    "monk": "pixel art portrait, Thai Buddhist monk, man, shaved head, orange and saffron colored robes, gentle face",
+    "trader": "pixel art portrait, Thai man, traveling market trader, colorful traditional vest, small round hat, gold jewelry accent",
     "buffalo": "pixel art portrait, friendly water buffalo face, large curved horns, gray weathered hide",
-    "ek": "pixel art portrait, young Thai rice-paddy farmer, sturdy build, sun-tanned skin, straw sun hat hanging behind neck, rolled-up work sleeves",
-    "fah": "pixel art portrait, young Thai fisher, composed face, wide-brim woven hat, simple boatman's clothes, coiled fishing net over one shoulder",
-    "ploy": "pixel art portrait, young Thai dessert vendor, round warm face, hair tied back with a cloth, apron dusted with sticky rice flour",
-    "chang": "pixel art portrait, young Thai wood carver, steady focused eyes, wood shavings dusting his shoulders, simple apprentice clothes, holding a small chisel",
-    "klong": "pixel art portrait, young Thai festival drummer, bright energetic eyes, colorful festival headband, holding a pair of drumsticks",
-    "yaa": "pixel art portrait, young Thai herbalist and gardener, serene gentle face, a flower tucked behind one ear, earth-toned garden clothes, small herb basket",
+    "ek": "pixel art portrait, young Thai woman, rice-paddy farmer, sturdy build, sun-tanned skin, straw sun hat hanging behind neck, rolled-up work sleeves",
+    "fah": "pixel art portrait, young Thai woman, fisher, composed face, wide-brim woven hat, simple boatman's clothes, coiled fishing net over one shoulder",
+    "ploy": "pixel art portrait, young Thai woman, dessert vendor, confident charming smile, warm expressive eyes, colorful sabai sash over traditional dress, flower tucked in her hair, apron dusted with sticky rice flour",
+    "chang": "pixel art portrait, young Thai woman, wood carver, steady focused eyes, wood shavings dusting her shoulders, simple apprentice clothes, holding a small chisel",
+    "klong": "pixel art portrait, young Thai woman, festival drummer, bright energetic eyes, colorful festival headband, holding a pair of drumsticks",
+    "yaa": "pixel art portrait, young Thai woman, herbalist and gardener, serene gentle face, a flower tucked behind one ear, earth-toned garden clothes, small herb basket",
 }
 
 # Mood -> expression modifier. Kept gentle/cozy even for negative moods

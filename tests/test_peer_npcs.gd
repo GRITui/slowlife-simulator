@@ -32,9 +32,9 @@ func _initialize() -> void:
 		await process_frame
 		quit(1)
 		return
-	_check(ek.is_in_group("romance_candidate"), "Ek tagged romance_candidate")
+	_check(ek.is_in_group("romance_candidate"), "Mali tagged romance_candidate")
 	_check(ek.has_method("try_interact"), "RomanceNPC script attached")
-	_check(String(ek.npc_id) == "ek", "Ek npc_id set")
+	_check(String(ek.npc_id) == "ek", "Mali npc_id set")
 	# Gift flow: mango -> +10 affinity, item consumed. (Picker takes the
 	# FIRST held food — clear boot-seeded rice_grain to isolate mango.)
 	gd.inventory.erase("rice_grain")
@@ -86,7 +86,7 @@ func _initialize() -> void:
 	gd.lost_to_rival.erase("fah")
 	_check(fah.call("_check_proposal") == true, "proposal succeeds normally once not lost_to_rival")
 
-	# TASK-341: 3 more romance candidates (Chang, Klong, Yaa), authored
+	# TASK-341: 3 more romance candidates (Kwan, Rin, Yaa), authored
 	# directly in TASK-346's 10-level shape.
 	var chang: Node = main.get_node_or_null("ChangNPC")
 	var klong: Node = main.get_node_or_null("KlongNPC")
@@ -95,8 +95,8 @@ func _initialize() -> void:
 	_check(klong != null, "KlongNPC instanced")
 	_check(yaa != null, "YaaNPC instanced")
 	var trio: Array = [
-		{"node": chang, "id": "chang", "name": "Chang", "loved_gift": "thai_basil_stirfry", "specialty": "wood"},
-		{"node": klong, "id": "klong", "name": "Klong", "loved_gift": "mango_sticky_rice", "specialty": "wan_sart_basket"},
+		{"node": chang, "id": "chang", "name": "Kwan", "loved_gift": "thai_basil_stirfry", "specialty": "wood"},
+		{"node": klong, "id": "klong", "name": "Rin", "loved_gift": "mango_sticky_rice", "specialty": "wan_sart_basket"},
 		{"node": yaa, "id": "yaa", "name": "Yaa", "loved_gift": "thai_basil", "specialty": "thai_basil_stirfry"},
 	]
 	for c: Dictionary in trio:

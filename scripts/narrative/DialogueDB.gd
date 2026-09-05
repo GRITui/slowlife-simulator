@@ -126,7 +126,7 @@ const DIALOGUE: Dictionary = {
 	},
 
 	# TASK-338: Nok, semi-retired veteran farmer — warm, instructive,
-	# mentoring tone. Contrasts Ek's competitive rivalry with
+	# mentoring tone. Contrasts Mali's competitive rivalry with
 	# cooperative, patient wisdom.
 	"nok": {
 		"cool": [
@@ -246,7 +246,7 @@ const DIALOGUE: Dictionary = {
 			"You're not my rival anymore. Haven't been for a long time.",
 		],
 		# TASK-345/341: the early-warning fairness fix — once a rival warning
-		# has fired (RivalClock at 25/50/75%), Ek's OWN level-1 dialogue
+		# has fired (RivalClock at 25/50/75%), Mali's OWN level-1 dialogue
 		# surfaces the threat directly, instead of leaving it to a rival NPC
 		# the player may never approach. Checked in RomanceNPC._talk() only
 		# at level 1, before the level 6-8 "rival" override below.
@@ -387,7 +387,7 @@ const DIALOGUE: Dictionary = {
 	},
 
 	# TASK-335: third romance candidate. Warm, sociable market dessert-maker
-	# near the temple lane — contrasts Ek's competitive edge and Fah's
+	# near the temple lane — contrasts Mali's competitive edge and Fah's
 	# quiet introspection with an extroverted, community-glue personality.
 	# Same 5-tier structure (stranger/friendly/close/rival/romantic).
 	# TASK-346: retrofitted to 10 numbered levels (see the "ek" comment
@@ -678,7 +678,7 @@ static func get_market_line(season: String, have_id: String, want_id: String) ->
 const GIFT_PREFERENCES: Dictionary = {
 	"ek": {"loved": ["mango_sticky_rice", "mango"], "liked": ["rice_grain", "sticky_rice", "thai_basil"]},
 	# TASK-335: Ploy is a dessert-maker — she loves being brought the finer
-	# cooked sweets rather than raw ingredients (distinct from Ek/Fah's
+	# cooked sweets rather than raw ingredients (distinct from Mali/Fah's
 	# raw-produce/fish preferences).
 	"ploy": {"loved": ["mango_sticky_rice", "banana_rice_cake"], "liked": ["banana", "coconut", "palm_sugar"]},
 	"fah": {"loved": ["pla_nin_mid", "lotus_soup", "lotus_root"], "liked": ["fish_sauce", "egg", "som_tam"]},
@@ -736,11 +736,11 @@ static func gift_affinity(tier: String) -> int:
 ## own "1_warned" pool from TASK-341 is the first half).
 const RIVAL_DIALOGUE: Dictionary = {
 	"yai": {
-		"0": ["Ek's been talking about you nonstop lately. Can't say I love hearing that.", "You're the one from the paddies? Ek won't shut up about you."],
-		"1": ["Ek and I have been talking a lot lately. More than you'd think.", "Funny how often Ek's name comes up when people mention you. Funny how often mine comes up when people mention Ek."],
-		"2": ["Ek and I understand each other pretty well by now, if you catch my meaning.", "I don't lose. Not at farming, not at this."],
-		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Ek.", "May the better rival win. I intend for that to be me."],
-		"won": ["Ek and I are happy. I hope you understand.", "No hard feelings. Well — some. But mostly happy ones."],
+		"0": ["Mali's been talking about you nonstop lately. Can't say I love hearing that.", "You're the one from the paddies? Mali won't shut up about you."],
+		"1": ["Mali and I have been talking a lot lately. More than you'd think.", "Funny how often Mali's name comes up when people mention you. Funny how often mine comes up when people mention Mali."],
+		"2": ["Mali and I understand each other pretty well by now, if you catch my meaning.", "I don't lose. Not at farming, not at this."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Mali.", "May the better rival win. I intend for that to be me."],
+		"won": ["Mali and I are happy. I hope you understand.", "No hard feelings. Well — some. But mostly happy ones."],
 	},
 	"ohm": {
 		"0": ["Fah and I talk more than people realize. Quietly, mostly.", "I've been meaning to spend more time with Fah myself."],
@@ -757,18 +757,18 @@ const RIVAL_DIALOGUE: Dictionary = {
 		"won": ["Ploy and I are happy. I hope you understand.", "Turns out charm gets you all the way, actually."],
 	},
 	"note": {
-		"0": ["Chang and I both carve. I finish faster. Chang finishes better. We talk about it.", "I've been meaning to spend more time at Chang's bench myself."],
-		"1": ["Chang and I have been talking a lot lately. About more than wood, lately.", "Chang says I rush my pieces. Maybe. I don't rush this, though."],
-		"2": ["Chang and I understand each other pretty well by now.", "Careful craft, showy craft — different approaches. Same goal, this time."],
-		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Chang.", "Chang's patient with wood. I'm hoping for patience with me, too."],
-		"won": ["Chang and I are happy. I hope you understand.", "Turns out speed wasn't the whole story after all."],
+		"0": ["Kwan and I both carve. I finish faster. Kwan finishes better. We talk about it.", "I've been meaning to spend more time at Kwan's bench myself."],
+		"1": ["Kwan and I have been talking a lot lately. About more than wood, lately.", "Kwan says I rush my pieces. Maybe. I don't rush this, though."],
+		"2": ["Kwan and I understand each other pretty well by now.", "Careful craft, showy craft — different approaches. Same goal, this time."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Kwan.", "Kwan's patient with wood. I'm hoping for patience with me, too."],
+		"won": ["Kwan and I are happy. I hope you understand.", "Turns out speed wasn't the whole story after all."],
 	},
 	"fon": {
-		"0": ["Klong and I share the festival stage. And, lately, more than the stage.", "I've been meaning to spend more time near Klong's drums myself."],
-		"1": ["Klong and I have been talking a lot lately. Rehearsals run long these days.", "I don't share the spotlight easily. Klong's the exception."],
-		"2": ["Klong and I understand each other pretty well by now.", "Everyone watches the flashiest performer. Lately I'd rather Klong watch me."],
-		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Klong.", "I've never wanted the spotlight less than I want this."],
-		"won": ["Klong and I are happy. I hope you understand.", "Turns out the best performance wasn't on stage at all."],
+		"0": ["Rin and I share the festival stage. And, lately, more than the stage.", "I've been meaning to spend more time near Rin's drums myself."],
+		"1": ["Rin and I have been talking a lot lately. Rehearsals run long these days.", "I don't share the spotlight easily. Rin's the exception."],
+		"2": ["Rin and I understand each other pretty well by now.", "Everyone watches the flashiest performer. Lately I'd rather Rin watch me."],
+		"3": ["I'm not going to pretend I'm not hoping this goes somewhere with Rin.", "I've never wanted the spotlight less than I want this."],
+		"won": ["Rin and I are happy. I hope you understand.", "Turns out the best performance wasn't on stage at all."],
 	},
 	"boon": {
 		"0": ["Yaa and I trade notes on herbs. And, lately, a bit more than notes.", "I've been meaning to spend more time at Yaa's garden myself."],

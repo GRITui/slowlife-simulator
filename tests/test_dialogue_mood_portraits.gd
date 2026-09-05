@@ -12,9 +12,9 @@ extends SceneTree
 #      the neutral portrait when the mood-specific PNG doesn't exist
 #      yet (the art batch is still running), with a real
 #      ResourceLoader.exists() against the real filesystem.
-#   5. show_dialogue_with_mood("Ek", ..., "happy") hides the portrait
+#   5. show_dialogue_with_mood("Mali", ..., "happy") hides the portrait
 #      cleanly when NEITHER the mood PNG nor the neutral PNG exists on
-#      disk (Ek has no art at all yet — must not crash on a
+#      disk (Mali has no art at all yet — must not crash on a
 #      totally-absent asset).
 #   6. The ORIGINAL plain show_dialogue signal/handler still behaves
 #      identically — this is the "did not regress TASK-376" gate.
@@ -77,7 +77,7 @@ func _initialize() -> void:
 
 	# All 12 speakers present.
 	var expected_all_speakers := ["Elder", "Child", "Handler", "Monk", "Trader", "Buffalo",
-		"Ek", "Fah", "Ploy", "Chang", "Klong", "Yaa"]
+		"Mali", "Fah", "Ploy", "Kwan", "Rin", "Yaa"]
 	for sp in expected_all_speakers:
 		_check(portrait_paths.has(sp),
 			"PORTRAIT_PATHS has entry for speaker '%s'" % sp)
@@ -102,7 +102,7 @@ func _initialize() -> void:
 	# 6 romance candidates must each have EXACTLY the 9 universal PLUS
 	# in_love and shy (11 total).
 	var expected_romance_extra := ["in_love", "shy"]
-	for sp in ["Ek", "Fah", "Ploy", "Chang", "Klong", "Yaa"]:
+	for sp in ["Mali", "Fah", "Ploy", "Kwan", "Rin", "Yaa"]:
 		var moods_v: Variant = portrait_paths.get(sp, {})
 		_check(typeof(moods_v) == TYPE_DICTIONARY,
 			"PORTRAIT_PATHS['%s'] is a nested Dictionary (not the old flat String)" % sp)
@@ -210,23 +210,23 @@ func _initialize() -> void:
 		"plain show_dialogue('Monk', ...) still works after a mood-aware emission")
 
 	# --- E. Romance candidate with NO art at all ---
-	# Ek has zero existing portrait art (no ek_neutral.png on disk, no
+	# Mali has zero existing portrait art (no ek_neutral.png on disk, no
 	# ek_happy.png on disk). The handler must NOT crash and must hide
 	# the Portrait cleanly (both the specific mood AND the neutral
 	# fallback fail ResourceLoader.exists()).
-	var ek_happy_path: String = String(portrait_paths["Ek"]["happy"])
-	var ek_neutral_path: String = String(portrait_paths["Ek"]["neutral"])
+	var ek_happy_path: String = String(portrait_paths["Mali"]["happy"])
+	var ek_neutral_path: String = String(portrait_paths["Mali"]["neutral"])
 	_check(not ResourceLoader.exists(ek_neutral_path),
-		"precondition: ek_neutral.png is NOT on disk yet (Ek has no portrait art yet)")
+		"precondition: ek_neutral.png is NOT on disk yet (Mali has no portrait art yet)")
 	_check(not ResourceLoader.exists(ek_happy_path),
-		"precondition: ek_happy.png is NOT on disk yet (Ek has no portrait art yet)")
-	var ek_resolve: String = world.call("_resolve_portrait_path", "Ek", "happy")
+		"precondition: ek_happy.png is NOT on disk yet (Mali has no portrait art yet)")
+	var ek_resolve: String = world.call("_resolve_portrait_path", "Mali", "happy")
 	_check(ek_resolve == ek_happy_path,
-		"_resolve_portrait_path('Ek', 'happy') returns the mood-specific path ('%s'); disk-existence + fallback-to-neutral is the handler's job" % ek_happy_path)
-	sb_plain.show_dialogue_with_mood.emit("Ek", "test", "happy")
+		"_resolve_portrait_path('Mali', 'happy') returns the mood-specific path ('%s'); disk-existence + fallback-to-neutral is the handler's job" % ek_happy_path)
+	sb_plain.show_dialogue_with_mood.emit("Mali", "test", "happy")
 	await process_frame
 	_check(portrait.visible == false,
-		"show_dialogue_with_mood('Ek', ..., 'happy') hides Portrait (Ek has no art at all yet)")
+		"show_dialogue_with_mood('Mali', ..., 'happy') hides Portrait (Mali has no art at all yet)")
 
 	# Also exercise in_love for a romance candidate — same shape, same
 	# expected fallback-to-neutral behavior. Confirms the romance-only

@@ -12,8 +12,8 @@ var _dialogue_tween: Tween
 
 # Speaker -> mood -> portrait art path. Keyed by the exact strings each
 # script already passes to SignalBus.show_dialogue (Elder/Child/Handler/
-# Monk/Trader/Buffalo plus the 6 romance candidates Ek/Fah/Ploy/Chang/
-# Klong/Yaa — no romance call sites exist yet but the data structure
+# Monk/Trader/Buffalo plus the 6 romance candidates Mali/Fah/Ploy/Kwan/
+# Rin/Yaa — no romance call sites exist yet but the data structure
 # is built out for them now so the new show_dialogue_with_mood handler
 # can resolve them as soon as art lands).
 #
@@ -108,7 +108,7 @@ const PORTRAIT_PATHS: Dictionary = {
 	# old flat PORTRAIT_PATHS, so there is nothing to regress). ALL 11
 	# moods use the new <lowercase>_<mood>.png convention; they will
 	# light up progressively as the art batch finishes.
-	"Ek": {
+	"Mali": {
 		"neutral": "res://assets/ui/portraits/ek_neutral.png",
 		"happy": "res://assets/ui/portraits/ek_happy.png",
 		"excited": "res://assets/ui/portraits/ek_excited.png",
@@ -147,7 +147,7 @@ const PORTRAIT_PATHS: Dictionary = {
 		"in_love": "res://assets/ui/portraits/ploy_in_love.png",
 		"shy": "res://assets/ui/portraits/ploy_shy.png",
 	},
-	"Chang": {
+	"Kwan": {
 		"neutral": "res://assets/ui/portraits/chang_neutral.png",
 		"happy": "res://assets/ui/portraits/chang_happy.png",
 		"excited": "res://assets/ui/portraits/chang_excited.png",
@@ -160,7 +160,7 @@ const PORTRAIT_PATHS: Dictionary = {
 		"in_love": "res://assets/ui/portraits/chang_in_love.png",
 		"shy": "res://assets/ui/portraits/chang_shy.png",
 	},
-	"Klong": {
+	"Rin": {
 		"neutral": "res://assets/ui/portraits/klong_neutral.png",
 		"happy": "res://assets/ui/portraits/klong_happy.png",
 		"excited": "res://assets/ui/portraits/klong_excited.png",
@@ -367,7 +367,7 @@ func _ensure_buffalo_race() -> void:
 	var race: Node = script.new()
 	race.name = "BuffaloRace"
 	add_child(race)
-	# TASK-052: peer NPCs Ek + Fah (romance candidates).
+	# TASK-052: peer NPCs Mali + Fah (romance candidates).
 	_ensure_peer_npcs()
 	# TASK-057: quest chains (QuestLog listens for objective events).
 	_ensure_quest_log()

@@ -21,11 +21,11 @@ const WARNING_FRACTIONS: Array[float] = [0.25, 0.5, 0.75]
 ## still exercise them with a temporary pair (matching their explicit-
 ## parameter signature) without PAIRS itself having to stay empty.
 const PAIRS: Dictionary = {
-	"ek": {"rival_id": "yai", "rival_name": "Yai", "candidate_name": "Ek"},
+	"ek": {"rival_id": "yai", "rival_name": "Yai", "candidate_name": "Mali"},
 	"fah": {"rival_id": "ohm", "rival_name": "Ohm", "candidate_name": "Fah"},
 	"ploy": {"rival_id": "rung", "rival_name": "Rung", "candidate_name": "Ploy"},
-	"chang": {"rival_id": "note", "rival_name": "Note", "candidate_name": "Chang"},
-	"klong": {"rival_id": "fon", "rival_name": "Fon", "candidate_name": "Klong"},
+	"chang": {"rival_id": "note", "rival_name": "Note", "candidate_name": "Kwan"},
+	"klong": {"rival_id": "fon", "rival_name": "Fon", "candidate_name": "Rin"},
 	"yaa": {"rival_id": "boon", "rival_name": "Boon", "candidate_name": "Yaa"},
 }
 

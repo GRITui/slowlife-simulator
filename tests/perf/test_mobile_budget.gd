@@ -35,7 +35,7 @@ func _initialize() -> void:
 			# Y-sort budget: visible actors/props (z>=0) <= 49, excluding
 			# ground dressing (z<0) and logic containers.
 			# History: 32->36 (TASK-029: +Buffalo/+CookingStation/+MarketStall);
-			# 36->40 (TASK-052: peer NPCs Ek + Fah); 40->44 (#131: Headman +
+			# 36->40 (TASK-052: peer NPCs Mali + Fah); 40->44 (#131: Headman +
 			# Vet); 44->49 (Phase 3 audit, 2026-09-02: TASK-322's
 			# CarpenterUpgrade has a Sprite2D and legitimately counts. TASK-321's
 			# MiningSpot does NOT — it's a logic-only interactable with no
@@ -57,7 +57,7 @@ func _initialize() -> void:
 			# same exclusion list for the same reason (logic-only
 			# interactables, no visible sprite, same treatment as the prior
 			# unlockable spots — both ship as invisible interact zones).
-			# 51->54 (TASK-341: Chang/Klong/Yaa, 3 more romance candidates,
+			# 51->54 (TASK-341: Kwan/Rin/Yaa, 3 more romance candidates,
 			# each with a real Sprite2D — same treatment as Ploy/Nok).
 			# 54->60 (TASK-342: Yai/Ohm/Rung/Note/Fon/Boon, 6 rival NPCs,
 			# each with a real Sprite2D — same treatment as the romance

@@ -25,7 +25,7 @@ func _initialize() -> void:
 	await process_frame
 	await process_frame
 	var ek: Node = main.get_node_or_null("EkNPC")
-	_check(ek != null, "Ek available")
+	_check(ek != null, "Mali available")
 	if ek == null:
 		await process_frame
 		quit(1)

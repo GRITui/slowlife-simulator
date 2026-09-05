@@ -80,7 +80,7 @@ func _initialize() -> void:
 	# --- Tier-0 talk() reveals the competing interest (TASK-345 fix baked in) ---
 	# DialogueDB.get_rival_line() at tier=0 with has_won=false returns a
 	# pool where every entry names the candidate in the first 12 chars of
-	# the line (e.g. "Ek's been talking about..." / "You're the one...").
+	# the line (e.g. "Mali's been talking about..." / "You're the one...").
 	# We assert that the candidate's capitalized display name appears ANY-
 	# WHERE in the line, which is the contract the spec's Tests section
 	# calls out ("a simple .contains() check against the candidate's
@@ -96,7 +96,13 @@ func _initialize() -> void:
 		_last_speaker = ""
 		_last_line = ""
 		node.talk()
-		var expected_name: String = String(r["candidate_id"]).capitalize()
+		# TASK-383 gender/name rewrite: candidate display names (Mali/Kwan/
+		# Rin/etc.) no longer match String(candidate_id).capitalize() --
+		# that mechanical derivation broke when Ek/Chang/Klong were renamed
+		# to feminine names not derivable from their (unchanged) lowercase
+		# npc_id. Read the real configured name from RivalClock.PAIRS
+		# instead of assuming id-capitalization ever equals display name.
+		var expected_name: String = String(clock.PAIRS[r["candidate_id"]]["candidate_name"]) if clock != null else String(r["candidate_id"]).capitalize()
 		_check(_last_speaker == String(r["display"]),
 			"%s tier-0 talk() emits display_name speaker" % r["name"])
 		_check(_last_line.contains(expected_name),

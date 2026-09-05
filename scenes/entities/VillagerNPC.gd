@@ -256,7 +256,7 @@ func _try_trader_sell() -> bool:
 	return false
 
 func _try_specialty_sell() -> bool:
-	# Channel C: Specialty Buyer — handled in RomanceNPC for Fah/Ek,
+	# Channel C: Specialty Buyer — handled in RomanceNPC for Fah/Mali,
 	# but VillagerNPC also checks for those ids if somehow routed here.
 	if npc_id != "fah" and npc_id != "ek":
 		return false
@@ -264,7 +264,7 @@ func _try_specialty_sell() -> bool:
 	var day: int = int(tm.day) if tm != null and "day" in tm else 1
 	if not GameData.can_specialty_sell(npc_id, day):
 		return false
-	# Thematic categories: Fah buys rare fish, Ek buys hot-season crops.
+	# Thematic categories: Fah buys rare fish, Mali buys hot-season crops.
 	var want_item: String = ""
 	if npc_id == "fah":
 		for item_id in ["pla_nin_big", "pla_soi_big", "pla_chon_big", "mango_sticky_rice", "lotus_root"]:
