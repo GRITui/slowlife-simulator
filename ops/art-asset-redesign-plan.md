@@ -18,7 +18,7 @@ particle resources excluded — those aren't image-generation targets).
 | 2 | NPC/animal portraits (part 2) | 7 (fah, headman, niran, vet, somchai, nong_ton, monkey) | DONE (2026-09-05, all 7 in assets/ui/portraits/) |
 | 3 | UI bars/frames + hearts/icons | 10 (action_prompt, crop_progress_bar_fill/under, energy_bar, harmony_bar, inventory_slot, season_display, heart_empty/full, silver_coin) | DONE (2026-09-05) — heart_empty/full/silver_coin needed a re-gen (first pass's Draw Things output wasn't real alpha, baked-in background) + local flood-fill removal, not a straight copy-in like the other 7 |
 | 4 | Tilesets | 9 (canal, ground_dryearth/grass/ricepaddy, plantable_soil, structure_floor/wall, water_lotuspond/surface) | DONE (2026-09-05) — see caveats below |
-| 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | pending |
+| 5 | Environment (festival + props) | 3 (merchant_cart, wing_kwai_flag, wing_kwai_official_stand) | DONE (2026-09-05) — clean first-pass generations, no retries needed |
 | 6 | Environment (general, ~25 files) | ~25 (bamboo/banana/durian trees, dock, clay stove, etc.) | pending |
 | 7 | Crops (growth stages, ~84 files) | ~84 | pending, large — may need its own sub-batches |
 | 8 | Items (~155 files) | ~155 | pending, large — may need its own sub-batches |
