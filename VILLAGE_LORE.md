@@ -38,6 +38,53 @@ The village runs on three things: the harvest, the harmony, and the calendar. No
 
 *(Both are designed romance candidates per this round's request — see `docs/research` / `PO_INBOX.md` for the affinity-system spec needed to make that mechanical. The dialogue in `DialogueDB.gd`'s `niran`/`fah` branches is written in four tiers — stranger, friendly, close, romantic — ready for whichever affinity value gates them.)*
 
+### Romance candidate persona/flaw archetypes (locked 2026-09-05)
+
+Owner-sourced (via Gemini) a "traditional Siam dating sim" archetype set —
+six personas each with a distinct normal-mode charm and a "gap moe"
+comedic flaw. Per this project's standing rule (Gemini output gets
+verified, not pasted in unreviewed — see `AI-ENG-001`), these were
+matched against each candidate's ALREADY-ESTABLISHED occupation and
+dialogue voice rather than taken as literal replacements — every
+candidate keeps her existing job/visual identity (fisher's net, paddy
+fields, market stall, carving tools, drum, herb basket); only the
+underlying persona/flaw layer is new.
+
+- **Ek** (rice-paddy farmer, established as competitive/guarded — "still
+  sizing you up") → **Cool Swordswoman**: fearless, stoic front. Flaw:
+  flusters into a stuttering mess the moment a compliment is sincere
+  rather than competitive banter.
+- **Fah** (canal fisher, established as quiet/reads-the-water) →
+  **Chill Buffalo Whisperer** (adapted: reads canal/tide instead of
+  buffalo/weather): unbothered, sharp-tongued, sees things others miss.
+  Flaw: disorganized recluse — a messy hut, sleeps straight through the
+  morning catch.
+- **Ploy** (dessert vendor, established as warm/magnetic — "first one's
+  always free") → **Village Bombshell**: confident, playful, turns
+  heads. Flaw: a dessert prodigy who is catastrophically bad at any
+  savory cooking (rice, curry) — one-trick genius, hopeless outside it.
+- **Chang** (wood carver, established as quiet/soft-spoken — "I don't
+  talk much while I carve") → **Soft Silk Weaver** (adapted craft):
+  sweet, patient, quiet grace. Flaw: an unhinged, trash-talking
+  tactician the instant a riverboat race or kite duel starts.
+- **Klong** (festival drummer, established as lively/teasing — "might
+  drag you into the dance circle") → **Sensual Canal Trader** (persona
+  match over literal trade): bold, flirtatious, takes charge. Flaw:
+  terrified of ghost stories (phi) — fearless on stage, useless in the
+  dark.
+- **Yaa** (herbalist/gardener) → **Sharp Herbalist Scholar**: the one
+  direct occupation match, needed no adaptation. Brilliant, precise
+  about plants and medicine. Flaw: zero physical coordination — trips
+  over thresholds and into mud paddies despite handling delicate herbs
+  all day.
+
+This is persona/flaw canon only — it does NOT yet change any actual
+`DialogueDB.gd` dialogue text. Rewriting each candidate's dialogue tiers
+to actually reflect these voices/flaws is real narrative-writing work
+(self-executed tier per `CLAUDE.md`, not delegated) and is queued as a
+separate follow-up task rather than folded into tonight's art-pipeline
+work.
+
 ## The two festivals
 
 **Loy Krathong** — once a season, the valley releases krathongs on the lotus pond. Village harmony rises. The pond glows a little that night; the lanterns aren't just decoration, they're the one night a year the whole village agrees to stop and look at the water instead of working around it.

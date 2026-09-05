@@ -779,3 +779,21 @@ SHIPPED (2026-09-05): `SignalBus.show_relationship_status(npc_id, display_name)`
 
 Scope note: the "avatar" and "overworld sprite" art assets this screen's avatar slot is meant to eventually show are NOT part of this task's shipped work -- generating those is folded into TASK-377's per-character img2img pilot (starting with Fah), not duplicated here. This task is the screen/plumbing only.</researcher_notes>
 </task_item>
+
+<task_item>
+  <id>TASK-382</id>
+  <source>OWNER</source>
+  <status>SPECCED</status>
+  <priority>P3 (narrative depth pass, no mechanical dependency -- affinity/gift/schedule systems all already work regardless of dialogue voice)</priority>
+  <title>Rewrite romance-candidate dialogue tiers to match locked persona/flaw archetypes</title>
+  <description>Owner sourced a 6-persona "traditional Siam dating sim" archetype set (via Gemini) and asked which existing romance candidate fits each best. Locked mapping recorded in `VILLAGE_LORE.md`'s new "Romance candidate persona/flaw archetypes" section (2026-09-05) -- each candidate keeps her existing occupation/visual identity; only the persona/flaw layer is new:
+  - Ek -> Cool Swordswoman (stoic/guarded front, flusters at sincere compliments)
+  - Fah -> Chill Buffalo Whisperer, adapted to canal/tide-reading (unbothered nature-reader, disorganized recluse)
+  - Ploy -> Village Bombshell (magnetic, but catastrophic at savory cooking despite being a dessert prodigy)
+  - Chang -> Soft Silk Weaver, adapted craft (quiet patient artisan, unhinged trash-talker during races/games)
+  - Klong -> Sensual Canal Trader, persona-matched not trade-matched (bold/flirtatious on stage, terrified of ghost stories)
+  - Yaa -> Sharp Herbalist Scholar (direct occupation match; zero physical coordination, trips constantly)
+
+  Scope: rewrite each candidate's existing 4-5 dialogue tiers in `DialogueDB.gd` (stranger/friendly/close/rival/romantic -- exact tier list already established per-candidate, read each candidate's current entries first) to actually voice these personas, and script specific "flaw" beats into the tier progression (e.g. a rival-tier or milestone-tier line where the flaw surfaces for comedic/intimacy effect, per the master brief's "trigger flaws during key plot events" instruction). Do NOT change gift preferences, affinity thresholds, schedule data, or any other mechanical system -- this is dialogue TEXT only. Use the established Siamese terminology naturally where it fits the existing setting (sabai, chong kraben, ruan thai, phi) but do not force vocabulary that clashes with this project's already-established simpler, warmer prose style (see existing DialogueDB.gd lines for tone reference) -- adapt, don't paste the source brief's register wholesale.</description>
+  <researcher_notes>Self-executed tier per CLAUDE.md ("Narrative/dialogue writing... voice consistency across 6+ romance candidates is also a judgment call a cheap model tends to flatten") -- do not delegate this to Cline/OpenCode. Gemini's original brief is a starting creative brief, not a spec to transcribe verbatim; the persona/flaw MATCHING is locked, but the actual line-by-line dialogue voice is this task's own writing work, calibrated against this project's existing tone (cozy, non-punishing, understated humor) rather than the source brief's more overtly "gap moe" anime-dating-sim register.</researcher_notes>
+</task_item>
