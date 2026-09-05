@@ -10,17 +10,199 @@ extends Node2D
 
 var _dialogue_tween: Tween
 
-# Speaker name -> portrait art. Keyed by the exact strings each script already
-# passes to SignalBus.show_dialogue (Elder/Child/Handler/Monk/Trader/Buffalo).
-# Speakers with no portrait (System, Camera, Farmer) just hide the slot.
+# Speaker -> mood -> portrait art path. Keyed by the exact strings each
+# script already passes to SignalBus.show_dialogue (Elder/Child/Handler/
+# Monk/Trader/Buffalo plus the 6 romance candidates Ek/Fah/Ploy/Chang/
+# Klong/Yaa — no romance call sites exist yet but the data structure
+# is built out for them now so the new show_dialogue_with_mood handler
+# can resolve them as soon as art lands).
+#
+# Mood taxonomy (TASK-377, locked):
+#   universal (all 12): neutral, happy, excited, sad, angry, disappointed,
+#                       worry, tired, bored  (9 moods)
+#   romance-only (6):   in_love, shy added on top of the universal 9
+#                       (11 moods total per romance candidate)
+#
+# IMPORTANT: the 6 already-shipped (non-romance) speakers keep their
+# "neutral" entry pointing at the EXACT unchanged flat file from TASK-376
+# (res://assets/ui/portraits/elder.png etc.) — those 6 PNGs are the
+# shipping portrait art today and renaming or moving them would regress
+# TASK-376. Every other mood for those 6 speakers, and ALL 11 moods for
+# the 6 romance candidates, use the new <lowercase>_<mood>.png convention
+# under res://assets/ui/portraits/. The mood-variant PNGs are mostly not
+# on disk yet (the Draw Things art batch is generating them in the
+# background); the runtime resolves that gracefully via
+# _resolve_portrait_path()'s fallback-to-neutral + ResourceLoader.exists()
+# guard. As each mood image lands and is promoted by
+# tools/promote_task377_portraits.py, it "lights up" with no further code
+# change required.
 const PORTRAIT_PATHS: Dictionary = {
-	"Elder": "res://assets/ui/portraits/elder.png",
-	"Child": "res://assets/ui/portraits/child.png",
-	"Handler": "res://assets/ui/portraits/handler.png",
-	"Monk": "res://assets/ui/portraits/monk.png",
-	"Trader": "res://assets/ui/portraits/trader.png",
-	"Buffalo": "res://assets/ui/portraits/buffalo.png",
+	"Elder": {
+		"neutral": "res://assets/ui/portraits/elder.png", # TASK-376 ship file — unchanged
+		"happy": "res://assets/ui/portraits/elder_happy.png",
+		"excited": "res://assets/ui/portraits/elder_excited.png",
+		"sad": "res://assets/ui/portraits/elder_sad.png",
+		"angry": "res://assets/ui/portraits/elder_angry.png",
+		"disappointed": "res://assets/ui/portraits/elder_disappointed.png",
+		"worry": "res://assets/ui/portraits/elder_worry.png",
+		"tired": "res://assets/ui/portraits/elder_tired.png",
+		"bored": "res://assets/ui/portraits/elder_bored.png",
+	},
+	"Child": {
+		"neutral": "res://assets/ui/portraits/child.png", # TASK-376 ship file — unchanged
+		"happy": "res://assets/ui/portraits/child_happy.png",
+		"excited": "res://assets/ui/portraits/child_excited.png",
+		"sad": "res://assets/ui/portraits/child_sad.png",
+		"angry": "res://assets/ui/portraits/child_angry.png",
+		"disappointed": "res://assets/ui/portraits/child_disappointed.png",
+		"worry": "res://assets/ui/portraits/child_worry.png",
+		"tired": "res://assets/ui/portraits/child_tired.png",
+		"bored": "res://assets/ui/portraits/child_bored.png",
+	},
+	"Handler": {
+		"neutral": "res://assets/ui/portraits/handler.png", # TASK-376 ship file — unchanged
+		"happy": "res://assets/ui/portraits/handler_happy.png",
+		"excited": "res://assets/ui/portraits/handler_excited.png",
+		"sad": "res://assets/ui/portraits/handler_sad.png",
+		"angry": "res://assets/ui/portraits/handler_angry.png",
+		"disappointed": "res://assets/ui/portraits/handler_disappointed.png",
+		"worry": "res://assets/ui/portraits/handler_worry.png",
+		"tired": "res://assets/ui/portraits/handler_tired.png",
+		"bored": "res://assets/ui/portraits/handler_bored.png",
+	},
+	"Monk": {
+		"neutral": "res://assets/ui/portraits/monk.png", # TASK-376 ship file — unchanged
+		"happy": "res://assets/ui/portraits/monk_happy.png",
+		"excited": "res://assets/ui/portraits/monk_excited.png",
+		"sad": "res://assets/ui/portraits/monk_sad.png",
+		"angry": "res://assets/ui/portraits/monk_angry.png",
+		"disappointed": "res://assets/ui/portraits/monk_disappointed.png",
+		"worry": "res://assets/ui/portraits/monk_worry.png",
+		"tired": "res://assets/ui/portraits/monk_tired.png",
+		"bored": "res://assets/ui/portraits/monk_bored.png",
+	},
+	"Trader": {
+		"neutral": "res://assets/ui/portraits/trader.png", # TASK-376 ship file — unchanged
+		"happy": "res://assets/ui/portraits/trader_happy.png",
+		"excited": "res://assets/ui/portraits/trader_excited.png",
+		"sad": "res://assets/ui/portraits/trader_sad.png",
+		"angry": "res://assets/ui/portraits/trader_angry.png",
+		"disappointed": "res://assets/ui/portraits/trader_disappointed.png",
+		"worry": "res://assets/ui/portraits/trader_worry.png",
+		"tired": "res://assets/ui/portraits/trader_tired.png",
+		"bored": "res://assets/ui/portraits/trader_bored.png",
+	},
+	"Buffalo": {
+		"neutral": "res://assets/ui/portraits/buffalo.png", # TASK-376 ship file — unchanged
+		"happy": "res://assets/ui/portraits/buffalo_happy.png",
+		"excited": "res://assets/ui/portraits/buffalo_excited.png",
+		"sad": "res://assets/ui/portraits/buffalo_sad.png",
+		"angry": "res://assets/ui/portraits/buffalo_angry.png",
+		"disappointed": "res://assets/ui/portraits/buffalo_disappointed.png",
+		"worry": "res://assets/ui/portraits/buffalo_worry.png",
+		"tired": "res://assets/ui/portraits/buffalo_tired.png",
+		"bored": "res://assets/ui/portraits/buffalo_bored.png",
+	},
+	# Romance candidates — no pre-existing portrait at all (the loose
+	# fah.png sitting in assets/ui/portraits/ was never wired into the
+	# old flat PORTRAIT_PATHS, so there is nothing to regress). ALL 11
+	# moods use the new <lowercase>_<mood>.png convention; they will
+	# light up progressively as the art batch finishes.
+	"Ek": {
+		"neutral": "res://assets/ui/portraits/ek_neutral.png",
+		"happy": "res://assets/ui/portraits/ek_happy.png",
+		"excited": "res://assets/ui/portraits/ek_excited.png",
+		"sad": "res://assets/ui/portraits/ek_sad.png",
+		"angry": "res://assets/ui/portraits/ek_angry.png",
+		"disappointed": "res://assets/ui/portraits/ek_disappointed.png",
+		"worry": "res://assets/ui/portraits/ek_worry.png",
+		"tired": "res://assets/ui/portraits/ek_tired.png",
+		"bored": "res://assets/ui/portraits/ek_bored.png",
+		"in_love": "res://assets/ui/portraits/ek_in_love.png",
+		"shy": "res://assets/ui/portraits/ek_shy.png",
+	},
+	"Fah": {
+		"neutral": "res://assets/ui/portraits/fah_neutral.png",
+		"happy": "res://assets/ui/portraits/fah_happy.png",
+		"excited": "res://assets/ui/portraits/fah_excited.png",
+		"sad": "res://assets/ui/portraits/fah_sad.png",
+		"angry": "res://assets/ui/portraits/fah_angry.png",
+		"disappointed": "res://assets/ui/portraits/fah_disappointed.png",
+		"worry": "res://assets/ui/portraits/fah_worry.png",
+		"tired": "res://assets/ui/portraits/fah_tired.png",
+		"bored": "res://assets/ui/portraits/fah_bored.png",
+		"in_love": "res://assets/ui/portraits/fah_in_love.png",
+		"shy": "res://assets/ui/portraits/fah_shy.png",
+	},
+	"Ploy": {
+		"neutral": "res://assets/ui/portraits/ploy_neutral.png",
+		"happy": "res://assets/ui/portraits/ploy_happy.png",
+		"excited": "res://assets/ui/portraits/ploy_excited.png",
+		"sad": "res://assets/ui/portraits/ploy_sad.png",
+		"angry": "res://assets/ui/portraits/ploy_angry.png",
+		"disappointed": "res://assets/ui/portraits/ploy_disappointed.png",
+		"worry": "res://assets/ui/portraits/ploy_worry.png",
+		"tired": "res://assets/ui/portraits/ploy_tired.png",
+		"bored": "res://assets/ui/portraits/ploy_bored.png",
+		"in_love": "res://assets/ui/portraits/ploy_in_love.png",
+		"shy": "res://assets/ui/portraits/ploy_shy.png",
+	},
+	"Chang": {
+		"neutral": "res://assets/ui/portraits/chang_neutral.png",
+		"happy": "res://assets/ui/portraits/chang_happy.png",
+		"excited": "res://assets/ui/portraits/chang_excited.png",
+		"sad": "res://assets/ui/portraits/chang_sad.png",
+		"angry": "res://assets/ui/portraits/chang_angry.png",
+		"disappointed": "res://assets/ui/portraits/chang_disappointed.png",
+		"worry": "res://assets/ui/portraits/chang_worry.png",
+		"tired": "res://assets/ui/portraits/chang_tired.png",
+		"bored": "res://assets/ui/portraits/chang_bored.png",
+		"in_love": "res://assets/ui/portraits/chang_in_love.png",
+		"shy": "res://assets/ui/portraits/chang_shy.png",
+	},
+	"Klong": {
+		"neutral": "res://assets/ui/portraits/klong_neutral.png",
+		"happy": "res://assets/ui/portraits/klong_happy.png",
+		"excited": "res://assets/ui/portraits/klong_excited.png",
+		"sad": "res://assets/ui/portraits/klong_sad.png",
+		"angry": "res://assets/ui/portraits/klong_angry.png",
+		"disappointed": "res://assets/ui/portraits/klong_disappointed.png",
+		"worry": "res://assets/ui/portraits/klong_worry.png",
+		"tired": "res://assets/ui/portraits/klong_tired.png",
+		"bored": "res://assets/ui/portraits/klong_bored.png",
+		"in_love": "res://assets/ui/portraits/klong_in_love.png",
+		"shy": "res://assets/ui/portraits/klong_shy.png",
+	},
+	"Yaa": {
+		"neutral": "res://assets/ui/portraits/yaa_neutral.png",
+		"happy": "res://assets/ui/portraits/yaa_happy.png",
+		"excited": "res://assets/ui/portraits/yaa_excited.png",
+		"sad": "res://assets/ui/portraits/yaa_sad.png",
+		"angry": "res://assets/ui/portraits/yaa_angry.png",
+		"disappointed": "res://assets/ui/portraits/yaa_disappointed.png",
+		"worry": "res://assets/ui/portraits/yaa_worry.png",
+		"tired": "res://assets/ui/portraits/yaa_tired.png",
+		"bored": "res://assets/ui/portraits/yaa_bored.png",
+		"in_love": "res://assets/ui/portraits/yaa_in_love.png",
+		"shy": "res://assets/ui/portraits/yaa_shy.png",
+	},
 }
+
+# Resolve the portrait asset path for (speaker, mood), falling back to
+# the speaker's "neutral" entry when the requested mood variant isn't
+# on disk yet (art batch still generating) or wasn't authored for that
+# speaker. Returns "" when the speaker itself isn't in PORTRAIT_PATHS
+# (System / Camera / Farmer — handled by callers, same as before).
+func _resolve_portrait_path(speaker: String, mood: String) -> String:
+	var moods: Dictionary = PORTRAIT_PATHS.get(speaker, {})
+	if moods.is_empty():
+		return ""
+	var path: String = String(moods.get(mood, ""))
+	if path == "" and mood != "neutral":
+		# Fall back to neutral if the specific mood variant doesn't exist
+		# yet (art still generating) or was never authored for this speaker.
+		path = String(moods.get("neutral", ""))
+	return path
 
 func _ready() -> void:
 	# world render first (TASK-007): builds layers/props/bounds into World now that
@@ -34,6 +216,11 @@ func _ready() -> void:
 	if wr != null:
 		SignalBus.world_render = wr
 	SignalBus.show_dialogue.connect(_on_show_dialogue)
+	# TASK-377: mood-aware variant of show_dialogue. Existing call sites
+	# keep emitting show_dialogue (unchanged); this handler is wired up
+	# plumbing only in this task and will start receiving emissions once
+	# future gameplay code opts into the new signal.
+	SignalBus.show_dialogue_with_mood.connect(_on_show_dialogue_with_mood)
 	SignalBus.season_changed.connect(_on_season_tint)
 	SignalBus.weather_changed.connect(_on_weather)
 	# init tint
@@ -755,7 +942,12 @@ func _on_show_dialogue(speaker: String, text: String) -> void:
 	dialogue_label.text = "%s: %s" % [speaker, text]
 	dialogue_panel.visible = true
 	if dialogue_portrait:
-		var portrait_path: String = String(PORTRAIT_PATHS.get(speaker, ""))
+		# TASK-377: resolve through the mood-aware dict, defaulting to the
+		# speaker's "neutral" entry. For the 6 already-shipped speakers
+		# their "neutral" entry still points at the EXACT unchanged flat
+		# file from TASK-376, so this produces identical visible behavior
+		# to the pre-TASK-377 lookup for every existing call site.
+		var portrait_path: String = _resolve_portrait_path(speaker, "neutral")
 		if portrait_path != "" and ResourceLoader.exists(portrait_path):
 			dialogue_portrait.texture = load(portrait_path) as Texture2D
 			dialogue_portrait.visible = true
@@ -768,6 +960,30 @@ func _on_show_dialogue(speaker: String, text: String) -> void:
 	_dialogue_tween.tween_interval(3.5)
 	_dialogue_tween.tween_property(dialogue_panel, "modulate:a", 0.0, 0.6)
 	_dialogue_tween.tween_callback(func(): dialogue_panel.visible = false)
+
+# TASK-377: mood-aware variant of the dialogue handler. Reuses
+# _on_show_dialogue() for all of the label/panel/fade-tween display
+# logic (no duplication), then overrides ONLY the portrait texture and
+# visibility using the mood-aware lookup. If the mood's specific PNG
+# isn't on disk yet (art batch still generating), falls back to the
+# speaker's neutral portrait; if THAT is missing too (e.g. a romance
+# candidate with no art at all yet), the portrait hides cleanly.
+# ResourceLoader.exists() guards against a load() of a missing asset
+# crashing the dialogue.
+func _on_show_dialogue_with_mood(speaker: String, text: String, mood: String) -> void:
+	_on_show_dialogue(speaker, text)
+	if dialogue_portrait:
+		var portrait_path: String = _resolve_portrait_path(speaker, mood)
+		if portrait_path == "" or not ResourceLoader.exists(portrait_path):
+			# Mood-specific asset not on disk yet (art still generating)
+			# or mood not authored for this speaker — fall back to the
+			# neutral portrait path before deciding to hide.
+			portrait_path = _resolve_portrait_path(speaker, "neutral")
+		if portrait_path != "" and ResourceLoader.exists(portrait_path):
+			dialogue_portrait.texture = load(portrait_path) as Texture2D
+			dialogue_portrait.visible = true
+		else:
+			dialogue_portrait.visible = false
 
 func _on_season_tint(season: String) -> void:
 	if tint_rect == null:

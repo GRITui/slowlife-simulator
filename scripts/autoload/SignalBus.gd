@@ -20,6 +20,15 @@ signal stamina_changed(current_stamina: float, max_stamina: float)
 signal binthabat_offered(item_id: String, harmony_yield: int)
 signal infrastructure_repaired(structure_id: String)
 signal show_dialogue(speaker_name: String, text: String)
+# TASK-377: same shape as show_dialogue but with an explicit mood key so the
+# World portrait slot can pick the matching mood variant art instead of
+# always falling back to the speaker's neutral portrait. The original
+# show_dialogue signal is intentionally untouched — all existing call
+# sites continue to emit show_dialogue and get the neutral portrait
+# path, identical behavior to today. show_dialogue_with_mood is wired up
+# plumbing only in this task; no gameplay code emits it yet (that's a
+# follow-up task once the mood art finishes generating).
+signal show_dialogue_with_mood(speaker_name: String, text: String, mood: String)
 signal barter_completed(have_id: String, want_id: String)
 # TASK-352: every scene transition (doors now; save/load, debug teleport,
 # festival cutscenes later) goes through SceneLoader via this one signal.
