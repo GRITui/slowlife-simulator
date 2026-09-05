@@ -985,3 +985,15 @@ LOCKED CONTENT (write verbatim, do not let the delegate paraphrase):
 - Fish-Keeper's one-shot teaching line (fires after receiving 3 fish of any kind): "Salt first, always salt first -- draws the water out before it draws the rot in. Smoke it slow over banana leaf after that, and it'll outlast the season instead of the week. Nobody around here bothered to ask before you."
 - Ploen's one-shot reaction line (fires after the player gives her the returned note, obtained from the Scrap Collector): "...Where did you find that? I dropped it near the canal weeks ago and never went back for it. Some feelings sound worse written down than they felt at the time -- don't you dare repeat a word of it. ...And don't tell anyone I said that either."</researcher_notes>
 </task_item>
+
+<task_item>
+  <id>TASK-392</id>
+  <source>OWNER</source>
+  <status>COMPLETED</status>
+  <priority>P2 (real playtest-found gap in the core farming loop)</priority>
+  <title>Gate tilling/watering/harvesting on actually owning the tool</title>
+  <description>Owner playtest finding (2026-09-05): "player should not be able to dig until equip hoe, this logic should apply to another action too." Investigated before implementing: `GameData.tool_tiers` (hoe/watering_can/sickle, all starting at tier 1) only ever scaled an efficiency bonus -- there was no concept of owning or not owning a tool at all, unlike `fishing_rod`, which is a real inventory item gated via `has_item()`. Asked the owner to resolve the ambiguity between "own it, no equip step" and a full gear-cycle equip system (like fishing rod/net) -- owner chose the former.
+
+SHIPPED (2026-09-05): all 3 tools (hoe/watering_can/sickle) granted as real starting inventory items at `World._ready()` (same idempotent pattern as `fishing_rod` -- existing saves get them retroactively, nothing taken away). `Player._try_grid_interact()` now checks `has_item()` before till/plant, water, and harvest, each with a friendly soft-fail line mirroring `FishingSpot.gd`'s established "you need a fishing rod" pattern. Same gate applied to `_mounted_interact_3x3()` (the buffalo auto-plow), per-category so a player missing only the sickle can still plant/water while mounted. `tests/test_tool_ownership_gate.gd` (16 checks, drives real `_unhandled_input` presses, not direct `GridManager` calls -- the existing test suite mostly bypasses `Player.gd`'s wrapper entirely, which is why 0 existing tests broke despite the real behavior change) wired into `run_gate.sh`. Full 3x gate green. Merged/pushed directly (small, well-scoped, self-executed -- no delegate dispatch).</description>
+  <researcher_notes>Self-executed: core farming-loop logic, small and tightly scoped, higher care warranted than a typical delegate dispatch given how central till/water/harvest are to every save.</researcher_notes>
+</task_item>
