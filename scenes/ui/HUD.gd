@@ -19,6 +19,12 @@ extends CanvasLayer
 # TASK-350 — seed indicator widget (visible both desktop + mobile, but the
 # touch-to-cycle path is mobile-only and lives on the SeedIndicator Control).
 @onready var seed_label: Label = find_child("SeedLabel", true, false) as Label
+# TASK-359 — fishing gear indicator widget (visible both desktop + mobile,
+# same pattern as the SeedIndicator above — mirror of TASK-350's exact
+# shape so future controller work finds one underlying pattern, not two
+# parallel cycle widgets). The touch-to-cycle path is mobile-only and
+# lives on the GearIndicator Control itself.
+@onready var gear_label: Label = find_child("GearLabel", true, false) as Label
 # TASK-378 — perfection tracker button.
 @onready var completion_tracker_button: Button = $Margin/Root/StatPanel/HBox/TimeBox/CompletionTrackerRow/CompletionTrackerButton if has_node("Margin/Root/StatPanel/HBox/TimeBox/CompletionTrackerRow/CompletionTrackerButton") else null
 
@@ -34,6 +40,9 @@ const _BASE_FONT_SIZES: Dictionary = {
 	# TASK-358 fish almanac — same 10pt baseline as SkillsLabel so the
 	# accessibility font-scaler covers it without a new code path.
 	"AlmanacLabel": 10,
+	# TASK-359: gear label same 10pt baseline as SkillsLabel so the
+	# accessibility font-scaler covers it without a new code path.
+	"GearLabel": 10,
 }
 @export var font_scale: float = 1.0
 @export var high_contrast: bool = false
@@ -163,6 +172,28 @@ func _update_seed_label() -> void:
 	else:
 		seed_label.text = primed
 
+## TASK-359 — read Player._primed_gear_id and update the GearLabel. Same
+## poll-on-minute-tick approach as _update_seed_label above: the primed
+## gear changes infrequently (G presses), the player gets immediate
+## dialogue-line feedback ("Gear: Rod/Net.") so a one-minute eventual-
+## consistent HUD refresh is fine without a dedicated signal. Falls
+## back to "Rod" when no player is in the tree — matches Player.gd's own
+## default _primed_gear_id and FishingSpot._get_active_gear_id().
+func _update_gear_label() -> void:
+	if gear_label == null:
+		return
+	var primed: String = "fishing_rod" # matches Player._primed_gear_id default
+	var players: Array = get_tree().get_nodes_in_group("player")
+	if not players.is_empty():
+		var raw: Variant = (players[0] as Node).get("_primed_gear_id")
+		if raw != null:
+			primed = String(raw)
+	# Strip the "fishing_" prefix for a compact "Rod" / "Net" label.
+	var pretty: String = primed
+	if pretty.begins_with("fishing_"):
+		pretty = pretty.substr("fishing_".length())
+	gear_label.text = pretty.capitalize()
+
 func _on_silver_changed(silver: int) -> void:
 	var lbl: Label = find_child("SilverLabel", true, false) as Label
 	if lbl:
@@ -238,6 +269,9 @@ func _ready() -> void:
 	# minute-tick refresh; prime it now so the label is correct on boot.
 	_update_almanac_label()
 	_update_seed_label()
+	# TASK-359 — gear label read-out. Same eventual-consistent minute-tick
+	# refresh; prime it now so the label is correct on boot.
+	_update_gear_label()
 	_on_stamina_changed(GameData.current_stamina, GameData.max_stamina)
 	_on_harmony_changed(GameData.harmony)
 	_on_season_changed(GameData.current_season)
@@ -290,6 +324,7 @@ func _on_minute_ticked(day: int, hour: int, minute: int) -> void:
 	_update_skills_label()
 	_update_almanac_label()
 	_update_seed_label()
+	_update_gear_label()
 
 func _on_crop_progress(_crop_id: int, progress: int, max_stage: int) -> void:
 	if crop_label:

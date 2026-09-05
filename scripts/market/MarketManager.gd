@@ -75,6 +75,14 @@ const BUY_OFFERS: Dictionary[String, Array] = {
 		{"item": "fish_sauce", "price": 14},
 		{"item": "shrimp_paste", "price": 16},
 		{"item": "fishing_rod", "price": 40},
+		# TASK-359: fishing_net — 3-4 fish per cast but no rare/legendary
+		# access while active, plus 8.0 stamina cost per cast. Priced at 45
+		# (vs rod's 40) — a modest premium reflecting the net's real
+		# power (3-4x catch volume per cast) balanced against permanently
+		# losing rare/legendary access while it's the active gear. Listed
+		# in hot only — the same season fishing_rod is sold in (the rod
+		# itself isn't sold year-round, so the net shouldn't be either).
+		{"item": "fishing_net", "price": 45},
 		{"item": "ornate_shrine_blueprint", "price": 50},
 		{"item": "ornate_bed_blueprint", "price": 50},
 		{"item": "floor_rug", "price": 25},
