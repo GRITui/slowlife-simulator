@@ -205,10 +205,15 @@ const DIALOGUE: Dictionary = {
 	# The 8 original lines are preserved as anchors (2 per old tier,
 	# redistributed to their nearest new level) with new lines filling the
 	# expanded resolution in between.
-	"ek": {
+		# TASK-382: rewritten to voice her locked persona -- Cool
+		# Swordswoman (stoic, guarded, controlled edge) with a specific
+		# flaw: sincere compliments (not competitive banter, which she
+		# handles fine) fluster her into a stammering mess. Flaw beats
+		# land at 5 (first crack), 8 (she names it), 10 (she owns it).
+		"ek": {
 		"1": [
 			"You're new to the paddies. Mind the eastern bund, it floods first.",
-			"Elder says you're doing fine for a first season. High praise, from her.",
+			"Don't expect a warm welcome. I don't hand those out for nothing.",
 		],
 		"2": [
 			"Still sizing you up. Don't take it personally.",
@@ -223,8 +228,8 @@ const DIALOGUE: Dictionary = {
 			"I look forward to seeing whose plot does better this week.",
 		],
 		"5": [
+			"Wait — you meant that? Actually meant it? Give me a second. I don't know what to do with sincere.",
 			"You've gotten better. Doesn't mean I'll go easy on you.",
-			"Half the reason I work harder is you're right there working too.",
 		],
 		"6": [
 			"Honestly — I look forward to the days you're out in the fields too.",
@@ -235,8 +240,8 @@ const DIALOGUE: Dictionary = {
 			"Somewhere along the way this stopped feeling like rivalry.",
 		],
 		"8": [
+			"Say something sincere again and I swear I'll trip over my own feet. Don't test me.",
 			"I think about you more than I compete with you these days.",
-			"Don't tell anyone I said that. Actually — tell whoever you want.",
 		],
 		"9": [
 			"Walk the canal path with me tonight? Just us, no rivalry this time.",
@@ -244,7 +249,7 @@ const DIALOGUE: Dictionary = {
 		],
 		"10": [
 			"There's no version of this farm, or this life, I want without you in it.",
-			"You're not my rival anymore. Haven't been for a long time.",
+			"Say something sweet right now and I might actually let myself get flustered in front of you. Go on. Try me.",
 		],
 		# TASK-345/341: the early-warning fairness fix — once a rival warning
 		# has fired (RivalClock at 25/50/75%), Mali's OWN level-1 dialogue
@@ -332,7 +337,12 @@ const DIALOGUE: Dictionary = {
 
 	# TASK-346: retrofitted to 10 numbered levels (see the "ek" comment
 	# above for the general approach).
-	"fah": {
+		# TASK-382: rewritten for her locked persona -- Chill Buffalo
+		# Whisperer, adapted to canal/tide-reading (unbothered, serene
+		# about the water). Flaw: hopelessly disorganized everywhere
+		# else -- loses gear, never finishes a chore, doesn't notice.
+		# Flaw beats at 3 (hint), 5, 8 (names it), 10 (owns it).
+		"fah": {
 		"1": [
 			"The canal's calm this morning. Good for thinking, if you like that sort of thing.",
 			"You fish? No — didn't think so. Ask me sometime, if you're curious.",
@@ -342,7 +352,7 @@ const DIALOGUE: Dictionary = {
 			"Come back if you want to actually learn something about the water.",
 		],
 		"3": [
-			"Caught something strange near the lotus maze yesterday. Still thinking about it.",
+			"Caught something strange near the lotus maze yesterday. Still thinking about it. Also possibly still in my bag somewhere — I should check.",
 			"You're quieter than the village gives you credit for. I like that.",
 		],
 		"4": [
@@ -350,7 +360,7 @@ const DIALOGUE: Dictionary = {
 			"You ask better questions than most people bother to.",
 		],
 		"5": [
-			"I saved you a spot on the dock. Didn't think about why until after.",
+			"I saved you a spot on the dock. Also lost three hooks and my second-best net this week, but the spot's still there.",
 			"There's a difference between being alone and being lonely. You're helping with the second one.",
 		],
 		"6": [
@@ -362,7 +372,7 @@ const DIALOGUE: Dictionary = {
 			"Quiet is easier to share with the right person. Turns out.",
 		],
 		"8": [
-			"I think about what you'd say about a catch before I even land it.",
+			"My hut is a disaster. I know. I've known for years. I just never got around to it.",
 			"You've made the water feel less like the only company I need.",
 		],
 		"9": [
@@ -371,7 +381,7 @@ const DIALOGUE: Dictionary = {
 		],
 		"10": [
 			"I used to think I preferred the water to people. That was before you.",
-			"Wherever you are is quieter and better than anywhere I'd be without you.",
+			"Come live with a mess of nets and half-finished projects? That's genuinely the offer.",
 		],
 		# TASK-345/341: early-warning fairness fix (see the "ek" comment
 		# above for the general approach).
@@ -393,7 +403,12 @@ const DIALOGUE: Dictionary = {
 	# Same 5-tier structure (stranger/friendly/close/rival/romantic).
 	# TASK-346: retrofitted to 10 numbered levels (see the "ek" comment
 	# above for the general approach).
-	"ploy": {
+		# TASK-382: rewritten for her locked persona -- Village Bombshell
+		# (magnetic, effortlessly charming with everyone). Flaw: an
+		# actual dessert prodigy who is catastrophically, dangerously
+		# bad at savory cooking -- a fact she avoids admitting. Flaw
+		# beats at 3 (hint), 6, 9 (she confesses), 10 (owns it).
+		"ploy": {
 		"1": [
 			"New to the village? Have a taste — first one's always free.",
 			"Careful, the mango sticky rice sells out by midday. Ask the market why.",
@@ -404,7 +419,7 @@ const DIALOGUE: Dictionary = {
 		],
 		"3": [
 			"I saved you the last piece. Don't tell the headman, he'll want it too.",
-			"You've got flour on your sleeve again. Here, hold still —",
+			"Never ask me to cook you dinner, by the way. Sweets, yes. Anything savory is a small disaster.",
 		],
 		"4": [
 			"I started setting a piece aside before you even show up.",
@@ -415,8 +430,8 @@ const DIALOGUE: Dictionary = {
 			"Somehow you're the customer I look forward to most.",
 		],
 		"6": [
+			"I tried making som tam again last week. The mortar and I are no longer speaking.",
 			"Everyone gets my sweets. You get the ones I actually make for myself.",
-			"I talk to the whole village every day. Somehow you're the one I think about after.",
 		],
 		"7": [
 			"I've started saving my best batch for whenever you show up next.",
@@ -427,11 +442,11 @@ const DIALOGUE: Dictionary = {
 			"Everyone in this village gets a taste of something. You get all of me, if you want it.",
 		],
 		"9": [
-			"Come by after the stall closes tonight? Just us, no customers, no sweets to sell.",
+			"Come by after the stall closes tonight? Just us, no customers, no sweets to sell. Fair warning, if I offer to cook you dinner, say no.",
 			"I used to give my best to everyone equally. Not anymore. Not since you.",
 		],
 		"10": [
-			"The stall was never the sweetest thing about this place. You are.",
+			"The stall was never the sweetest thing about this place. You are. And you're stuck with my terrible curry forever now, I hope you know that.",
 			"I don't want to imagine closing up shop each night without you waiting for me.",
 		],
 		# TASK-345/341: early-warning fairness fix (see the "ek" comment
@@ -451,7 +466,12 @@ const DIALOGUE: Dictionary = {
 	# TASK-341: 3 more romance candidates, authored directly in TASK-346's
 	# 10-level shape (no old 4-tier draft ever existed for these). Also
 	# folds in TASK-345's early-warning fix from the start via "1_warned".
-	"chang": {
+		# TASK-382: rewritten for her locked persona -- Soft Silk Weaver,
+		# adapted to woodcarving (quiet, patient, gentle artisan). Flaw:
+		# an unrecognizably intense, unhinged trash-talker the instant
+		# any race/game/competition starts. Flaw beats at 3 (hint), 6
+		# (surfaces), 9-10 (she owns it, self-aware).
+		"chang": {
 		"1": [
 			"You're here for a mask? Uncle Somchai handles those. I just... hold the chisel steady.",
 			"Careful where you step — wood shavings everywhere. Occupational hazard.",
@@ -462,7 +482,7 @@ const DIALOGUE: Dictionary = {
 		],
 		"3": [
 			"This one's for the festival. Takes weeks to get the eyes right.",
-			"You noticed the grain pattern? Not many do.",
+			"Don't ever race me at the festival games, by the way. I turn into someone you won't recognize.",
 		],
 		"4": [
 			"I don't show unfinished work to just anyone.",
@@ -473,7 +493,7 @@ const DIALOGUE: Dictionary = {
 			"You ask good questions about the wood. Better than most.",
 		],
 		"6": [
-			"I don't usually let people watch this part. You're the exception.",
+			"You should have heard me at the kite race last season. Not proud of it. Slightly proud of it.",
 			"Some evenings I look forward to just... you being nearby while I work.",
 		],
 		"7": [
@@ -486,11 +506,11 @@ const DIALOGUE: Dictionary = {
 		],
 		"9": [
 			"Stay while I finish this one? I'd like you here when it's done.",
-			"I carved something for you. Not for the festival. Just for you.",
+			"I carved something for you. Not for the festival. Just for you. Also — race you there. Loser explains to Somchai why we're both out of breath.",
 		],
 		"10": [
 			"I used to think the wood was the only thing that needed my full attention. That's not true anymore.",
-			"Every piece I make now, some part of it is for you, whether I mean to or not.",
+			"Every piece I make now, some part of it is for you, whether I mean to or not. Just don't ever challenge me to anything with a finish line. I can't promise who shows up.",
 		],
 		"1_warned": [
 			"Someone's been asking whether I've... noticed you. I said I hadn't decided what I noticed yet.",
@@ -501,7 +521,13 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
-	"klong": {
+		# TASK-382: rewritten for her locked persona -- Sensual Canal
+		# Trader, matched by persona rather than trade (bold, magnetic
+		# performer on stage). Flaw: genuinely terrified of ghost
+		# stories -- a nice contrast beat since Nong Ton knows every
+		# ghost story in the village. Flaw beats at 3 (hint), 6, 9
+		# (surfaces around Nong Ton).
+		"klong": {
 		"1": [
 			"Come to see the drumming? Stick around, it gets louder.",
 			"New face! Careful, I might drag you into the dance circle.",
@@ -513,7 +539,7 @@ const DIALOGUE: Dictionary = {
 		],
 		"3": [
 			"I'm teaching the festival rhythm to the kids this week. Want to learn too?",
-			"You've got good timing, for someone who claims they can't dance.",
+			"Whatever you do, don't let Nong Ton tell you a ghost story near me. I will not be performing well that night.",
 		],
 		"4": [
 			"I don't perform for just anyone up close like this. Consider it a preview.",
@@ -524,7 +550,7 @@ const DIALOGUE: Dictionary = {
 			"I catch myself performing a little harder when I know you're watching.",
 		],
 		"6": [
-			"I don't let just anyone see me practice the hard parts, the mistakes and all.",
+			"I can face a thousand people at a festival without blinking. One ghost story and I'm sleeping with the lamp lit.",
 			"Some nights I'd rather sit and talk with you than run the set one more time.",
 		],
 		"7": [
@@ -536,12 +562,12 @@ const DIALOGUE: Dictionary = {
 			"Everyone else gets the performance. You get whatever this is underneath it.",
 		],
 		"9": [
-			"Stay after the crowd clears tonight? Just the two of us and the drums going quiet.",
+			"Stay after the crowd clears tonight? Just the two of us and the drums going quiet. Not TOO quiet, though — no ghost talk.",
 			"I've started writing a rhythm that's just for you. Haven't played it for anyone else.",
 		],
 		"10": [
 			"I used to think the crowd was the only thing that made me feel alive. That was before you.",
-			"Every festival from here on, I want you exactly where you were tonight — right next to me.",
+			"Every festival from here on, I want you exactly where you were tonight — right next to me. Preferably somewhere Nong Ton isn't telling stories.",
 		],
 		"1_warned": [
 			"Someone asked if I'd 'made a move' on you yet. Told them it's none of their business. Is it, though?",
@@ -552,7 +578,13 @@ const DIALOGUE: Dictionary = {
 		],
 	},
 
-	"yaa": {
+		# TASK-382: rewritten for her locked persona -- Sharp Herbalist
+		# Scholar (direct occupation match; precise, direct, well-read
+		# about what she grows). Flaw: essentially zero physical
+		# coordination outside her plant work -- trips, drops things,
+		# walks into the same root every time. Flaw beats at 3 (hint),
+		# 6, 9-10 (running joke she's fully aware of).
+		"yaa": {
 		"1": [
 			"Looking for herbs? I keep the good ones past the reeds, not on display.",
 			"Careful with the lotus stems, they bruise easy. Like most gentle things.",
@@ -563,7 +595,7 @@ const DIALOGUE: Dictionary = {
 		],
 		"3": [
 			"This one calms fever, that one settles the stomach. Ask, I don't mind explaining.",
-			"You have a gentle hand with the plants. Not everyone does.",
+			"Mind the root by the gate. I trip on it at least once a week. I've had years to learn better.",
 		],
 		"4": [
 			"I don't usually share what I'm growing until it's ready. I might, for you.",
@@ -574,7 +606,7 @@ const DIALOGUE: Dictionary = {
 			"There's a calm about you that matches the garden. I like having you here.",
 		],
 		"6": [
-			"I don't tell many people about the rare plants past the tree line. You're one of the few.",
+			"Steadiest hands in the valley with a mortar and pestle. I still walked into my own doorframe this morning.",
 			"Some afternoons I'd rather sit with you among the herbs than tend them alone.",
 		],
 		"7": [
@@ -586,12 +618,12 @@ const DIALOGUE: Dictionary = {
 			"You've made this garden feel less like the only company I need.",
 		],
 		"9": [
-			"Stay past sunset? The herbs smell different once the day cools.",
+			"Stay past sunset? The herbs smell different once the day cools. Mind your step on the way in, obviously — I never do.",
 			"I've started growing things I think you'd like, not just what's useful. Didn't plan that. Just happened.",
 		],
 		"10": [
 			"I used to think I preferred the garden to people. That was before you.",
-			"Wherever you are is gentler and better than anywhere I'd be without you.",
+			"Wherever you are is gentler and better than anywhere I'd be without you. Just walk a step behind me. I'll explain why eventually.",
 		],
 		"1_warned": [
 			"Someone's been asking after you at the herb stall. Said you two should talk sometime. I didn't love hearing that, if I'm honest.",
