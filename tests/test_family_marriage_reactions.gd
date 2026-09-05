@@ -74,6 +74,18 @@ func _run_all() -> void:
 		world.queue_free()
 		return
 
+	# TASK-385 landed alongside this task and added a once-per-day gift
+	# hint to the same FlavorNPC._talk() path (Charoen and Somsri are both
+	# family-gift-hint NPCs). That hint fires independently of marriage
+	# state and would otherwise pre-empt the "normal flavor line" this
+	# test expects on a fresh NPC's first-ever talk. Pre-arm the hint's
+	# cooldown (using the REAL active day, now that World's TimeManager
+	# exists) for every FlavorNPC-based npc_id this test touches, so this
+	# file stays isolated to testing ONLY the marriage-reaction feature.
+	var tm_setup: Node = sb.time_manager
+	var today: int = int(tm_setup.day) if tm_setup != null and "day" in tm_setup else 1
+	gd.family_gift_hint_last_day = {"charoen": today, "somsri": today}
+
 	var FlavorDialogueScript: GDScript = load("res://scripts/narrative/FlavorDialogue.gd") as GDScript
 	var charoen_pool: Array = FlavorDialogueScript.FLAVOR_LINES.get("charoen", [])
 	_check(charoen_pool.size() == 3, "Charoen has 3 normal flavor lines (unaffected by this task)")
