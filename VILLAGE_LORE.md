@@ -50,28 +50,30 @@ candidate keeps her existing job/visual identity (fisher's net, paddy
 fields, market stall, carving tools, drum, herb basket); only the
 underlying persona/flaw layer is new.
 
-- **Ek** (rice-paddy farmer, established as competitive/guarded — "still
-  sizing you up") → **Cool Swordswoman**: fearless, stoic front. Flaw:
-  flusters into a stuttering mess the moment a compliment is sincere
-  rather than competitive banter.
-- **Fah** (canal fisher, established as quiet/reads-the-water) →
-  **Chill Buffalo Whisperer** (adapted: reads canal/tide instead of
-  buffalo/weather): unbothered, sharp-tongued, sees things others miss.
-  Flaw: disorganized recluse — a messy hut, sleeps straight through the
-  morning catch.
-- **Ploy** (dessert vendor, established as warm/magnetic — "first one's
-  always free") → **Village Bombshell**: confident, playful, turns
-  heads. Flaw: a dessert prodigy who is catastrophically bad at any
-  savory cooking (rice, curry) — one-trick genius, hopeless outside it.
-- **Chang** (wood carver, established as quiet/soft-spoken — "I don't
-  talk much while I carve") → **Soft Silk Weaver** (adapted craft):
-  sweet, patient, quiet grace. Flaw: an unhinged, trash-talking
-  tactician the instant a riverboat race or kite duel starts.
-- **Klong** (festival drummer, established as lively/teasing — "might
-  drag you into the dance circle") → **Sensual Canal Trader** (persona
-  match over literal trade): bold, flirtatious, takes charge. Flaw:
-  terrified of ghost stories (phi) — fearless on stage, useless in the
-  dark.
+- **Mali** (rice-paddy farmer, npc_id `ek`, established as
+  competitive/guarded — "still sizing you up") → **Cool Swordswoman**:
+  fearless, stoic front. Flaw: flusters into a stuttering mess the
+  moment a compliment is sincere rather than competitive banter.
+- **Fah** (canal fisher, npc_id `fah`, established as
+  quiet/reads-the-water) → **Chill Buffalo Whisperer** (adapted: reads
+  canal/tide instead of buffalo/weather): unbothered, sharp-tongued,
+  sees things others miss. Flaw: disorganized recluse — a messy hut,
+  sleeps straight through the morning catch.
+- **Ploy** (dessert vendor, npc_id `ploy`, established as
+  warm/magnetic — "first one's always free") → **Village Bombshell**:
+  confident, playful, turns heads. Flaw: a dessert prodigy who is
+  catastrophically bad at any savory cooking (rice, curry) — one-trick
+  genius, hopeless outside it.
+- **Kwan** (wood carver, npc_id `chang`, established as
+  quiet/soft-spoken — "I don't talk much while I carve") → **Soft Silk
+  Weaver** (adapted craft): sweet, patient, quiet grace. Flaw: an
+  unhinged, trash-talking tactician the instant a riverboat race or
+  kite duel starts.
+- **Rin** (festival drummer, npc_id `klong`, established as
+  lively/teasing — "might drag you into the dance circle") →
+  **Sensual Canal Trader** (persona match over literal trade): bold,
+  flirtatious, takes charge. Flaw: terrified of ghost stories (phi) —
+  fearless on stage, useless in the dark.
 - **Yaa** (herbalist/gardener) → **Sharp Herbalist Scholar**: the one
   direct occupation match, needed no adaptation. Brilliant, precise
   about plants and medicine. Flaw: zero physical coordination — trips

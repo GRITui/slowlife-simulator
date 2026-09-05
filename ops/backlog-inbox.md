@@ -786,12 +786,12 @@ Scope note: the "avatar" and "overworld sprite" art assets this screen's avatar 
   <status>SPECCED</status>
   <priority>P3 (narrative depth pass, no mechanical dependency -- affinity/gift/schedule systems all already work regardless of dialogue voice)</priority>
   <title>Rewrite romance-candidate dialogue tiers to match locked persona/flaw archetypes</title>
-  <description>Owner sourced a 6-persona "traditional Siam dating sim" archetype set (via Gemini) and asked which existing romance candidate fits each best. Locked mapping recorded in `VILLAGE_LORE.md`'s new "Romance candidate persona/flaw archetypes" section (2026-09-05) -- each candidate keeps her existing occupation/visual identity; only the persona/flaw layer is new:
-  - Ek -> Cool Swordswoman (stoic/guarded front, flusters at sincere compliments)
+  <description>Owner sourced a 6-persona "traditional Siam dating sim" archetype set (via Gemini) and asked which existing romance candidate fits each best. Locked mapping recorded in `VILLAGE_LORE.md`'s new "Romance candidate persona/flaw archetypes" section (2026-09-05) -- each candidate keeps her existing occupation/visual identity; only the persona/flaw layer is new. NOTE (2026-09-05 follow-up): display names Ek/Chang/Klong were subsequently renamed to Mali/Kwan/Rin (feminine-name pass, npc_id keys `ek`/`chang`/`klong` UNCHANGED) -- use the current display names below:
+  - Mali (npc_id `ek`) -> Cool Swordswoman (stoic/guarded front, flusters at sincere compliments)
   - Fah -> Chill Buffalo Whisperer, adapted to canal/tide-reading (unbothered nature-reader, disorganized recluse)
   - Ploy -> Village Bombshell (magnetic, but catastrophic at savory cooking despite being a dessert prodigy)
-  - Chang -> Soft Silk Weaver, adapted craft (quiet patient artisan, unhinged trash-talker during races/games)
-  - Klong -> Sensual Canal Trader, persona-matched not trade-matched (bold/flirtatious on stage, terrified of ghost stories)
+  - Kwan (npc_id `chang`) -> Soft Silk Weaver, adapted craft (quiet patient artisan, unhinged trash-talker during races/games)
+  - Rin (npc_id `klong`) -> Sensual Canal Trader, persona-matched not trade-matched (bold/flirtatious on stage, terrified of ghost stories)
   - Yaa -> Sharp Herbalist Scholar (direct occupation match; zero physical coordination, trips constantly)
 
   Scope: rewrite each candidate's existing 4-5 dialogue tiers in `DialogueDB.gd` (stranger/friendly/close/rival/romantic -- exact tier list already established per-candidate, read each candidate's current entries first) to actually voice these personas, and script specific "flaw" beats into the tier progression (e.g. a rival-tier or milestone-tier line where the flaw surfaces for comedic/intimacy effect, per the master brief's "trigger flaws during key plot events" instruction). Do NOT change gift preferences, affinity thresholds, schedule data, or any other mechanical system -- this is dialogue TEXT only. Use the established Siamese terminology naturally where it fits the existing setting (sabai, chong kraben, ruan thai, phi) but do not force vocabulary that clashes with this project's already-established simpler, warmer prose style (see existing DialogueDB.gd lines for tone reference) -- adapt, don't paste the source brief's register wholesale.</description>
