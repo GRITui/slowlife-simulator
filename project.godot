@@ -28,6 +28,7 @@ FrameCap="*res://scripts/core/FrameCap.gd"
 TimeManager="*res://scenes/core/TimeManager.tscn"
 SceneLoader="*res://scripts/autoload/SceneLoader.gd"
 AudioManager="*res://scripts/autoload/AudioManager.gd"
+DebugInputDriver="*res://scripts/autoload/DebugInputDriver.gd"
 
 [config]
 
