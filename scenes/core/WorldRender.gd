@@ -50,13 +50,17 @@ const PROPS := [
 	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(17, 1), "kind": "cap"},
 	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(18, 1), "kind": "cap"},
 	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(19, 1), "kind": "cap"},
-	# Home hut W (front row y=8 on home floor, caps y=7)
-	{"tex": "res://assets/environment/structure_wall_front.png", "cell": Vector2i(0, 8), "kind": "wall"},
-	{"tex": "res://assets/environment/structure_wall_front.png", "cell": Vector2i(1, 8), "kind": "wall"},
-	{"tex": "res://assets/environment/structure_wall_front.png", "cell": Vector2i(2, 8), "kind": "wall"},
-	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(0, 7), "kind": "cap"},
-	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(1, 7), "kind": "cap"},
-	{"tex": "res://assets/environment/structure_wall_cap.png", "cell": Vector2i(2, 7), "kind": "cap"},
+	# Home hut W (front row y=8 on home floor, caps y=7). Owner request
+	# (2026-09-05): distinct farmhouse exterior art, no longer sharing
+	# structure_wall_front/cap.png with the temple and village hall --
+	# weathered wood-plank wall + thatch roof cap, generated via Draw
+	# Things (Transparent Image LoRA confirmed working this session).
+	{"tex": "res://assets/environment/farmhouse_wall_front.png", "cell": Vector2i(0, 8), "kind": "wall"},
+	{"tex": "res://assets/environment/farmhouse_wall_front.png", "cell": Vector2i(1, 8), "kind": "wall"},
+	{"tex": "res://assets/environment/farmhouse_wall_front.png", "cell": Vector2i(2, 8), "kind": "wall"},
+	{"tex": "res://assets/environment/farmhouse_wall_cap.png", "cell": Vector2i(0, 7), "kind": "cap"},
+	{"tex": "res://assets/environment/farmhouse_wall_cap.png", "cell": Vector2i(1, 7), "kind": "cap"},
+	{"tex": "res://assets/environment/farmhouse_wall_cap.png", "cell": Vector2i(2, 7), "kind": "cap"},
 	# Village hall S (front row y=15, caps y=14)
 	{"tex": "res://assets/environment/structure_wall_front.png", "cell": Vector2i(6, 15), "kind": "wall"},
 	{"tex": "res://assets/environment/structure_wall_front.png", "cell": Vector2i(7, 15), "kind": "wall"},
