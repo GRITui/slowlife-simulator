@@ -155,6 +155,15 @@ def main() -> int:
     out.save(args.output)
     colors = out.getcolors(maxcolors=100000)
     print(f"OK {args.output}: {out.size[0]}x{out.size[1]}, {len(colors) if colors else '>100k'} colors")
+    if args.tile:
+        # seam gate: mean absolute edge diff across opposite tile edges (16-grid)
+        import numpy as np
+        t = np.asarray(out.convert("RGB").resize(
+            (out.width // args.scale, out.height // args.scale), Image.NEAREST), dtype=float)
+        lr = float(np.abs(t[:, 0] - t[:, -1]).mean())
+        tb = float(np.abs(t[0, :] - t[-1, :]).mean())
+        flag = "OK" if (lr < 12 and tb < 12) else "SEAM WARNING"
+        print(f"SEAM {flag}: left-right={lr:.1f} top-bottom={tb:.1f} (lower=more seamless)")
     return 0
 
 

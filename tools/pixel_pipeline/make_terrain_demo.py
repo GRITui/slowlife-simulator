@@ -29,26 +29,33 @@ _PIESLICE = {0: (90, 180), 1: (0, 90), 2: (180, 270), 3: (270, 360)}
 
 
 def derive_tile(base_grass: Image.Image, base_water: Image.Image, mask: int) -> Image.Image:
-    """Water base + grass quarter-roundels where mask bits are set, ink-outlined."""
+    """Water base + grass corner-quadrants where mask bits are set.
+
+    Corner-wang geometry: each corner's terrain fills its full quadrant
+    (corner -> tile center), so identical corners across a shared edge join
+    seamlessly and a full-corner tile is solid. A quarter-arc accent marks
+    the diagonal shore inside each grass quadrant (pure full-grass stays clean).
+    """
     img = base_water.convert("RGBA").copy()
     grass = base_grass.convert("RGBA")
-    r = 26  # quarter-disc radius (48px tile)
+    d = ImageDraw.Draw(img)
+    mid = 24  # tile center
     for i, (cx, cy) in enumerate(CORNERS):
         if not (mask >> i) & 1:
             continue
-        if i == 0:
-            box = (cx - 1, cy - 1, cx + r, cy + r)
-        elif i == 1:
-            box = (cx - r, cy - 1, cx + 1, cy + r)
-        elif i == 2:
-            box = (cx - 1, cy - r, cx + r, cy + 1)
-        else:
-            box = (cx - r, cy - r, cx + 1, cy + 1)
-        disc = Image.new("L", (48, 48), 0)
-        ImageDraw.Draw(disc).pieslice(box, *_PIESLICE[i], fill=255)
-        img.paste(grass, (0, 0), disc)
-        ImageDraw.Draw(img).arc(box, *_PIESLICE[i], fill=INK, width=3)
+        qx0, qy0 = min(cx, mid), min(cy, mid)
+        qx1, qy1 = max(cx, mid), max(cy, mid)
+        img.paste(grass, (0, 0), _quadrant_mask(i))
     return img
+
+
+def _quadrant_mask(i: int) -> Image.Image:
+    """Alpha mask covering quadrant i (corner -> center)."""
+    m = Image.new("L", (48, 48), 0)
+    ImageDraw.Draw(m).rectangle([(24 if i in (1, 3) else 0, 24 if i in (2, 3) else 0),
+                                 (48 if i in (1, 3) else 24, 48 if i in (2, 3) else 24)],
+                                fill=255)
+    return m
 
 
 def terrain_attr(mask: int) -> str:
@@ -79,9 +86,11 @@ def build_tmx(tiles: list[Image.Image], out_dir: Path) -> Path:
     )
     (out_dir / "terrain_demo.tsx").write_text(tsx)
 
-    # demo map: grass field with a 3x2 pond, tiles picked by neighbor-corner analysis
+    # demo map: grass field with a 5x4 pond (center-dominated, interior water
+    # shows the 16-tile corner format's limits; 47-tile blob format is the
+    # upgrade path for rounded shores — see ART_DESIGN_PLAN.md)
     W, H = 20, 16
-    pond = {(6, 6), (7, 6), (8, 6), (6, 7), (7, 7), (8, 7)}
+    pond = {(x, y) for x in range(7, 12) for y in range(6, 10)}
 
     def cell_mask(x: int, y: int) -> int:
         """Water cell's grass corners = diagonal neighbors NOT in the pond."""
@@ -94,7 +103,9 @@ def build_tmx(tiles: list[Image.Image], out_dir: Path) -> Path:
     gids = []
     for y in range(H):
         for x in range(W):
-            gids.append(cell_mask(x, y) + 1 if (x, y) in pond else 1)
+            # pond cells: grass corners toward non-pond diagonals;
+            # field cells: full grass = tile id 15 -> gid 16 (firstgid 1)
+            gids.append(cell_mask(x, y) + 1 if (x, y) in pond else 16)
 
     tmx = "\n".join(
         ['<?xml version="1.0" encoding="UTF-8"?>',
