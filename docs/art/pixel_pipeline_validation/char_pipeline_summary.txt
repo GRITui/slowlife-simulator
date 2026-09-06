@@ -1,0 +1,48 @@
+Character Design Pipeline Test Results
+=====================================
+
+Pipeline command:
+  PY=~/.venvs/artpipe/bin/python
+  $PY tools/pixel_pipeline/pixelate.py /tmp/char_concept.png /tmp/char_sprite.png \
+    --grid 16 --grid-h 24 --scale 3 --center-frac 0.9
+
+Output metrics:
+  Size:        48 × 72 px  (16×24 authoring grid ×3 NEAREST)
+  Mode:        RGBA (true alpha, binary/hard edges)
+  Colors:      18  (repo canon: 8–12 per asset)
+  Transparent: 27.3%  (>0 = sprite has alpha)
+
+ASCII render of 16×24 authoring grid:
+  ....oooooooo....
+  .oooHHHoooooooo.
+  oooooooooooooooo
+  oooooooooooooooo
+  .oooooooo@Hoooo.
+  ...HHooooooHH..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ..oooooooooooo..
+  ......ooooHoooo.
+  ......ooooHoooo.
+  ......ooooHoooo.
+  ......ooooHoooo.
+  ......ooooHoooo.
+
+What this tests:
+  • Stage 3: PixelOE contrast-aware downscale to 16×24 grid
+  • Stage 4: Palette quantization (18 colors because concept has many zones)
+  • Repo convention: 8–12 colors per asset — this concept needs simplification
+  • True alpha preserved throughout
+
+Key file: /tmp/char_sprite.png (48×72 final output)
+Concept source: /tmp/char_concept.png (256×384)
+
+Added to repo: docs/art/pixel_pipeline_validation/
