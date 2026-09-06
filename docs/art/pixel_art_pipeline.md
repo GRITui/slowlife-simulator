@@ -188,6 +188,41 @@ raw generation's subject silhouette reaches within ~10px of any edge,
 switch to color-key removal proactively rather than discovering the
 flood-fill failure after the fact.
 
+### 9. An animal noun in a human subject's description bleeds the animal into the portrait
+**Symptom**: the `handler` portrait ("Thai buffalo handler") came back
+as a horned buffalo/cow head instead of a human face — twice, including
+one attempt whose negative prompt explicitly listed
+`horns, animal features, monster, demon`.
+**Root cause**: the model weights the animal noun as a subject
+descriptor, not as an occupation modifier. Negative-prompting the
+resulting features doesn't undo it, because the animal is baked into
+how the subject itself was interpreted.
+**Fix**: remove the animal word from the prompt entirely. "a Thai
+farmer man with a cloth headwrap, ordinary human face" produced a
+correct human portrait on the first try. Generally: **when a subject's
+name contains another entity's noun (buffalo handler, horse trainer,
+fishmonger), describe the person WITHOUT that noun** rather than trying
+to negative-prompt your way out of it.
+
+### 10. Colored/noisy generated backgrounds defeat corner-sampled color-keying
+**Symptom**: six portraits (`monk`, `fah`, `headman`, `niran`, `vet`,
+`somchai`) came back with solid black/purple/gray backgrounds instead
+of the requested white, and the corner-average color key from failure
+mode #8 left the background fully opaque.
+**Root cause**: two compounding issues — the model ignores "white
+background" for portrait subjects fairly often (these characters'
+original prompts said "isolated on pitch black background", so the
+association is strong), and a corner-AVERAGE is a poor background
+estimate when the background is noisy or gradient (the monk's four
+corners ranged ~30 apart per channel).
+**Fix**: sample the **modal** color across every border pixel (quantize
+to 16-value buckets, take the most common) rather than averaging four
+corners, with a wider tolerance (~110 summed across channels). That
+recovered 6 of 7 in post with no regeneration. For the remaining one
+(a genuinely noisy purple gradient), regeneration with `PURE WHITE
+#FFFFFF empty background, nothing behind the subject` plus explicit
+negative-prompting of each wrong background color worked.
+
 ## Recommendations for the next batch (portraits, batch 7-9)
 
 1. **Portraits (64×64, outline-first)**: given #6 above, a face has

@@ -142,12 +142,30 @@ system memory pressure (not a content/logic problem) after 4 of 9
 items — resumed cleanly with a second script for the remaining 5 plus
 one retry, no data lost, `git status` confirmed clean before and after.
 
-**This completes the 16-bit redo for everything except the 13 NPC/
-animal portraits** — batches 3, 4, 5, 6, and the 2 farmhouse interior
-tiles are now fully on the new pipeline. Portraits are the one
-remaining piece (batches 7/8/9 — crops, items, character sprites —
-were never on the old soft-shaded style to begin with; they're still
-unbuilt, tracked separately below).
+**Run 4 — portraits** (2026-09-06): all 13 NPC/animal dialogue
+portraits at the spec's 64x64 grid (1:1 with the existing in-game size,
+no upscale — the most pixel budget of any asset class here). Character
+descriptions reused verbatim from the project's own existing prompt
+JSONs so likenesses stay consistent with the established roster; only
+the style half of each prompt was swapped to the 16-bit treatment.
+Validated on 2 portraits (elder, buffalo) before running the rest, per
+the pipeline doc's own recommendation.
+
+Caveats: `handler` came back as a horned buffalo head twice before
+the fix (see `docs/art/pixel_art_pipeline.md` failure mode #9 — an
+animal noun in a human subject's description bleeds the animal into
+the portrait; the fix is dropping the word, not negative-prompting it).
+Six portraits came back with solid black/purple/gray backgrounds that
+corner-sampled color-keying couldn't strip — recovered in post via
+modal-edge-color sampling (failure mode #10), with one regeneration.
+A transient Draw Things socket timeout also killed the first portrait
+run outright after 4 images; the resumed script added retry-on-timeout.
+
+**THE 16-BIT REDO IS NOW COMPLETE** across every shipped art category:
+batches 3 (UI), 4 (tilesets), 5 (festival/market props), 6 (~25
+environment files), the 2 farmhouse interior tiles, and the 13
+portraits. Batches 7/8/9 (crops, items, character sprites) were never
+on the old soft-shaded style — they're still unbuilt, tracked below.
 
 ## Batch 6 caveats (2026-09-05)
 
