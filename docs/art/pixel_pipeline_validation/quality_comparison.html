@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pixel Pipeline Quality Comparison</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #f5f0e8; margin: 20px; }
+    h1 { color: #333; }
+    .comparison { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; text-align: center; }
+    .card img { max-width: 100%; height: auto; margin-bottom: 8px; }
+    .card h3 { font-size: 12px; color: #555; margin: 4px 0; }
+    .card .metrics { font-size: 11px; color: #666; }
+    .status-bad { color: #c62828; }
+    .status-ok { color: #2e7d32; }
+    .status-boundary { color: #f57c00; }
+  </style>
+</head>
+<body>
+  <h1>Pixel Art Pipeline Quality Comparison</h1>
+  <p>Convention: 8-12 colors per asset. NEAREST ×3 upscale from 16px authoring grid.</p>
+  <div class="comparison">
+    <!-- ORIGINAL (bad) -->
+    <div class="card">
+      <h3>Test 1: Original</h3>
+      <img src="char_sprite.png" alt="Test 1" width="120"/>
+      <div class="metrics">18 colors ❌<br/>transparent 21.1%</div>
+      <div class="status-bad">OVER CONVENTION</div>
+    </div>
+    <!-- MINIMAL (marginal) -->
+    <div class="card">
+      <h3>Test 2: Minimal</h3>
+      <img src="char_48x72.png" alt="Test 2" width="120"/>
+      <div class="metrics">17 colors ❌<br/>transparent 34.6%</div>
+      <div class="status-bad">OVER CONVENTION</div>
+    </div>
+    <!-- ULTRA-SIMPLE (AAA) -->
+    <div class="card">
+      <h3>Test 3: Ultra-simple</h3>
+      <img src="ultra_square_sprite.png" alt="Test 3" width="120"/>
+      <div class="metrics">12 colors ✓<br/>transparent 33.2%</div>
+      <div class="status-ok">BOUNDARY OK</div>
+    </div>
+    <!-- CHARACTER AAA (48×72) -->
+    <div class="card">
+      <h3>Char Sprite AAA</h3>
+      <img src="char_48x72.png" alt="Char Sprite" width="120"/>
+      <div class="metrics">12 colors ✓<br/>transparent 34.4%</div>
+      <div class="status-ok">CONVENTION OK</div>
+    </div>
+  </div>
+  <hr>
+  <p><strong>Key findings:</strong></p>
+  <ul>
+    <li>Pipeline crashed on complex concepts (recursive_mutex error)</li>
+    <li>4 solid-color concepts work best — PixelOE preserves flat colors</li>
+    <li>12 colors is the maximum for 8–12 convention compliance</li>
+    <li>Both square (48×48) and character (48×72) formats achieve 12 colors</li>
+    <li>True alpha channel preserved throughout</li>
+  </ul>
+  <p><strong>Pipeline command:</strong></p>
+  <pre>PY=~/.venvs/artpipe/bin/python
+$PY tools/pixel_pipeline/pixelate.py /tmp/ultra_simple.png /tmp/output.png \
+  --grid 16 --scale 3 --center-frac 0.9</pre>
+  <p>or for characters:</p>
+  <pre>$PY tools/pixel_pipeline/pixelate.py /tmp/ultra_simple.png /tmp/output.png \
+  --grid 16 --grid-h 24 --scale 3 --center-frac 0.9</pre>
+</body>
+</html>
