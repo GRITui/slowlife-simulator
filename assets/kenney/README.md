@@ -1,7 +1,10 @@
 # Kenney art source packs (imported 2026-09-07)
 
-Three CC0 (public domain) Kenney packs, imported raw for the full art-style
-replacement tracked as `TASK-321` in `backlog.json`. Each subfolder keeps the
+Six CC0 (public domain) Kenney packs, imported raw for the full art-style
+replacement tracked as `TASK-321` in `backlog.json`: three world/character
+packs (`tiny_farm`, `tiny_dungeon`, `tiny_town`) plus three UI/icon packs
+(`emotes`, `game_icons`, `ui_rpg`) added the same day to cover HUD, menus,
+and dialogue reactions. Each world-pack subfolder keeps the
 pack's own `LICENSE.txt`, `Tilesheet.txt`, `Preview.png` (full sheet sample),
 `Tiles/` (individual 16x16 PNGs, easiest to reference by name), and
 `Tilemap/` (packed sheet, for TileSet atlas import).
@@ -43,6 +46,31 @@ Decision made 2026-09-07 with the project owner: use a single `tiny_dungeon`
 character frame for the player, **horizontally flipped for left/right
 facing, same frame reused for up/down** — directional facing without a real
 walk-cycle. See `TASK-321` for the wiring scope.
+
+## emotes/ — speech-bubble / reaction icons (added 2026-09-07)
+
+`Pixel/Style 1`...`Style 8/` — 8 pixel-art emote sets, 30 icons each, native
+16x16px (matches the tile packs' scale, unlike the pack's Vector variants
+which were skipped). Use for NPC mood bubbles, quest markers, dialogue
+reactions (anger, alert, cash, heart, question mark, sleep, etc.). Pick one
+style set for consistency rather than mixing across styles.
+
+## game_icons/ — generic UI/inventory icon set (added 2026-09-07)
+
+`PNG/Black/1x`, `PNG/White/1x` (50x50) and `.../2x` (100x100) — 105 icons
+each color/scale, plus `Spritesheet/` packed atlases with XML metadata.
+General-purpose icons (arrows, gear, heart, coin, bag, tools, etc.) for menus,
+inventory slots, settings. Not farm-themed — this is the "everything else"
+icon fallback pool alongside `ui_rpg/`.
+
+## ui_rpg/ — RPG UI widgets (added 2026-09-07)
+
+`PNG/` — 87 native-sized widgets: buttons (long/round/square, per-color +
+pressed states), panels (incl. inset), stat bars (blue/green/red/yellow,
+horizontal + vertical, with matching `barBack_*` frames — good fit for
+health/stamina/hunger bars), arrows, cursors (hand/sword/gauntlet), and
+check/cross/circle icons. `Spritesheet/` has the packed atlas + XML.
+Maps directly onto the existing `assets/ui/` needs (hearts, buttons, panels).
 
 ## What this commit does NOT do yet
 
