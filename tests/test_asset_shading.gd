@@ -57,7 +57,10 @@ const SCAN_ROOTS := [
 const SPOT_CHECKS := [
 	["assets/items/banana.png",                3],   # 2 colors pre-pass -> 5 post
 	["assets/items/rice_grain.png",             5],   # 4 colors pre-pass -> 8 post
-	["assets/characters/npc_elder_idle_01.png", 10],  # 8 colors pre-pass -> 22 post
+	["assets/characters/npc_elder_idle_01.png", 3],   # Kenney-sourced replacement (c7e651e,
+	# post-dates the 54c8f49 shading pass so was never run through it) is
+	# flat 4-color art; threshold rebaselined to that legitimate content
+	# instead of the old pre-Kenney custom sprite's 8->22 figures.
 	["assets/environment/dock.png",             4],   # 2 colors pre-pass -> 10 post
 	["assets/environment/crops/cabbage_stage1.png", 2],  # 2 colors pre-pass -> 3 post (tiny sprout)
 	["assets/particles/smoke_puff.png",         1],   # 1 color pre-pass -> 3 post (tiny particle)
