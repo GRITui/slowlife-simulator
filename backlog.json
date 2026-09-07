@@ -2077,6 +2077,24 @@
       "notes": "PO_INBOX r14 reopen: offer_quest now wired but 22 objective IDs unwired. Wire each to real event/handler and ensure TraderNPC instanced. Approved for next step.",
       "completed_at": "2026-09-01",
       "pr_number": 170
+    },
+    {
+      "id": "TASK-321",
+      "category": "art",
+      "title": "Full art-style replacement with Kenney CC0 packs (Tiny Farm + Tiny Dungeon + Tiny Town)",
+      "status": "planned",
+      "priority": "high",
+      "files": [
+        "assets/kenney/tiny_farm/",
+        "assets/kenney/tiny_dungeon/",
+        "assets/kenney/tiny_town/",
+        "assets/tilesets/",
+        "assets/characters/",
+        "assets/environment/",
+        "ART_STYLE_GUIDE.md"
+      ],
+      "notes": "Owner decision 2026-09-07: full replace of the shipped 16-bit Thai-countryside art with Kenney CC0 packs, after reviewing a categorized sample of each pack. tiny_farm covers terrain/crops/farm objects/animals/buildings; tiny_town covers buildings/trees/structures; tiny_dungeon covers character/NPC frames + items. Native tile size 16x16, scale 3x to match the existing 48x48 grid (scale via node/TileSet, not pre-upscaled PNGs). Player character gap: no pack has a walk-cycle/directional sprite sheet -- decided to use one tiny_dungeon character frame, horizontally flipped for left/right, same frame reused for up/down (no real walk-cycle). Raw packs imported and documented in assets/kenney/README.md; this task covers the actual re-wiring: TileSet resources, character SpriteFrames, scene references, ART_STYLE_GUIDE.md rewrite (supersedes the 2026-08-31 locked palette/pipeline section), and must re-run existing test gates (run_tests.gd, run_engine_tests.gd, test_mobile_budget.gd) since the y-sort budget is already at 48/48 per PO_INBOX.md r15 -- swapping sprite sheets must not change draw-call counts.",
+      "created_at": "2026-09-07"
     }
   ]
 }
