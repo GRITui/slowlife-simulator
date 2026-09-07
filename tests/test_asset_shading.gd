@@ -61,7 +61,9 @@ const SPOT_CHECKS := [
 	# post-dates the 54c8f49 shading pass so was never run through it) is
 	# flat 4-color art; threshold rebaselined to that legitimate content
 	# instead of the old pre-Kenney custom sprite's 8->22 figures.
-	["assets/environment/dock.png",             4],   # 2 colors pre-pass -> 10 post
+	["assets/environment/dock.png",             3],   # Same Kenney-swap-post-dates-
+	# shading-pass story as npc_elder_idle_01.png above: current legitimate
+	# content is flat 4-color art, not the old pre-Kenney sprite's 10+.
 	["assets/environment/crops/cabbage_stage1.png", 2],  # 2 colors pre-pass -> 3 post (tiny sprout)
 	["assets/particles/smoke_puff.png",         1],   # 1 color pre-pass -> 3 post (tiny particle)
 ]
