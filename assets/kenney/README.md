@@ -72,6 +72,20 @@ health/stamina/hunger bars), arrows, cursors (hand/sword/gauntlet), and
 check/cross/circle icons. `Spritesheet/` has the packed atlas + XML.
 Maps directly onto the existing `assets/ui/` needs (hearts, buttons, panels).
 
+## tiny_battle/ — water tile source (added 2026-09-07)
+
+`Tiles/` — 198 tiles, **18x11 grid** (wider than the other packs' 12x11 —
+don't reuse the standard `idx = row*12+col` math here, it's `row*18+col`).
+Imported specifically to fix a gap: none of the other six packs contain a
+real water tile, so pass 1 of `TASK-321` had used flat procedural-color
+fallbacks for `assets/tilesets/canal.png`, `water_surface.png`, and
+`water_lotuspond.png`. `tiny_battle/Tiles/tile_0037.png` (row 2, col 1 —
+open lake water, no shoreline blending, confirmed via indexed-grid
+inspection) now backs all three, 3x nearest-neighbor scaled like every
+other tileset. Rest of the pack (roads, RTS-style unit/building icons,
+faction-colored vehicles) is not used — kept for potential future
+water-adjacent tiles (shore/dock edges) if needed.
+
 ## What this commit does NOT do yet
 
 This commit only imports and documents the raw source packs. It does not
