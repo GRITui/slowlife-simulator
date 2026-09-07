@@ -1,5 +1,15 @@
 # ART STYLE GUIDE: Thai Rural Countryside Sim
 
+> **✓ Superseded 2026-09-07 — Kenney CC0 art-style replacement (`TASK-321`)**
+> The soft-shaded custom palette/pipeline below (2026-08-31 Claude Design
+> redesign) was fully replaced with Kenney CC0 asset packs, per owner
+> decision. Tile metrics (48x48 grid, 48x72 characters, y-sort rules) are
+> unchanged — only the source art and its sourcing/curation process changed.
+> See **"Kenney CC0 Art Source (2026-09-07, supersedes palette above)"**
+> near the end of this file for the current, load-bearing pipeline
+> documentation. The palette table and soft-shading rules below are kept for
+> historical reference only — do not use them to judge current art.
+
 ## Core Palette — soft-shaded, ~70 colors (Claude Design redesign, 2026-08-31)
 
 > **✓ Superseded 2026-08-31** — The Claude Design redesign pass replaced every
@@ -251,3 +261,107 @@
 - **Visual**: Clear skies, gentle lighting
 - **Festivals**: Harvest celebrations, temple events
 - **Goodwill**: Higher base village harmony
+---
+
+## Kenney CC0 Art Source (2026-09-07, supersedes palette above)
+
+Full replace of the shipped custom Thai-countryside art with Kenney CC0
+(public domain) packs, tracked as `TASK-321`. This section is the
+load-bearing documentation for current art — the palette table earlier in
+this file describes the prior pipeline and is historical only.
+
+### Source packs
+
+Seven world/character packs plus three UI/icon packs, imported raw into
+`assets/kenney/` and documented per-pack in `assets/kenney/README.md`:
+
+| Pack | Covers |
+|---|---|
+| `tiny_farm` | terrain, crops (multi-stage growth), farm objects, animals, 2 static farmer icons |
+| `tiny_dungeon` | character/NPC single-frame art, small items (potions/weapons/shields/keys) |
+| `tiny_town` | buildings, trees/bushes, stone & brick walls — no characters |
+| `tiny_battle` | water tile source only (`tile_0037.png`, open lake water) — 18x11 grid, different index math (`row*18+col`) than the other packs' 12x11 |
+| `emotes` | 8 pixel-art 16x16 reaction-icon sets for NPC mood bubbles/dialogue |
+| `game_icons` | 105 generic B/W icons (1x/2x) for menus/inventory |
+| `ui_rpg` | 87 RPG UI widgets (buttons, panels, stat bars, cursors) mapping onto `assets/ui/` |
+
+### Scale convention
+
+Native tile size is **16x16px**; shipped grid is **48x48px** (3x). Scale is
+applied via node `scale` / TileSet pixel size — never by pre-upscaling PNGs
+— which keeps nearest-neighbor filtering crisp and matches the rest of the
+project's pixel-art handling.
+
+### Character-sprite compositing convention
+
+Overworld NPC/player sprites are single Kenney tiles scaled and pasted
+bottom-aligned onto a transparent canvas, not full redraws:
+
+- **Standard canvas**: 48x72. Tile scaled 3x to 48x48 (scale = canvas
+  width / 16), pasted at `x=0, y=canvas_height-48=24`.
+- **Smaller canvas** (e.g. child NPCs): 32x48. Tile scaled 2x to 32x32,
+  pasted at `x=0, y=48-32=16`.
+- **General rule**: canvas height = 1.5 x canvas width; scale factor =
+  canvas width / 16. One legacy exception (`nong_ton_idle_01.png`, 40x58)
+  preserves an original pre-Kenney custom-sprite dimension and was
+  deliberately left alone rather than forced onto the 16-multiple grid.
+
+### Known gap: player character animation
+
+No pack contains a multi-frame directional walk-cycle. Decision: use a
+single `tiny_dungeon` character frame, horizontally flipped for left/right
+facing, same frame reused for up/down — no real walk-cycle.
+
+### Known gap: water tiles
+
+None of the six original packs had a real water tile; `tiny_battle` was
+imported specifically to fix this (`tile_0037.png` backs `canal.png`,
+`water_surface.png`, `water_lotuspond.png`).
+
+### Pipeline history
+
+1. **Pass 1** (automated): all 426 previously-deleted asset files
+   (tilesets, characters, environment incl. `crops/`, items, ui) regenerated
+   from the Kenney packs and written back to their **original paths at
+   their original pixel dimensions** — this is why no scene (`.tscn`)
+   or script (`.gd`) file needed any path changes; every `res://assets/...`
+   reference the codebase already had kept working unmodified. Picks were
+   category-level, not hand-curated per file (round-robin pools).
+2. **Pass 2, items** (`assets/items/`): 157 Thai-food/ingredient icons
+   re-substituted with closer semantic matches across the full pool
+   (produce baskets, potions for soups, size-tiered weapons for
+   fish/shrimp, crystals/shields for ritual items) instead of the pass-1
+   single-pool round-robin.
+3. **Pass 2, water**: `tiny_battle` added, canal/pond/water-surface tiles
+   backed by real water art instead of a flat-color procedural fallback.
+4. **Pass 2, characters** (2026-09-07): audited `assets/characters/` and
+   found 14 sprite files (`boon`, `ek`, `note`, `npc_priest` idle+walk,
+   `npc_child` walk) had been pass-1-substituted with weapon/item icons
+   instead of humanoid art — a genuine content bug, not a style choice.
+   Re-composited each from a correct humanoid `tiny_dungeon` tile
+   (rogue/villager/knight/priest-like/child-sized figures), preserving
+   each file's exact existing dimensions.
+
+### Scene/resource re-wiring status
+
+Audited 2026-09-07: there are **no `SpriteFrames` or `TileSet` `.tres`
+resources** in this project — every character and tileset texture is
+referenced by a direct `res://assets/...` path, either as a `.tscn`
+`ext_resource` (characters, crop data) or as a string path in a `.gd`
+dictionary (`WorldRender.gd`'s tileset map, `VillagerNPC.gd`'s per-NPC
+portrait map). Since pass 1 preserved every file's original path, and a
+full scan of every `res://assets/*.png` / `*.tres` reference across all
+`.tscn`/`.tres`/`.gd` files found zero missing/broken paths, **no scene
+re-wiring was needed** — the path-stability decision in pass 1 made this
+a non-issue by construction.
+
+### Test gates
+
+`tests/test_asset_shading.gd`'s dimension-preservation check applies to
+every `.png` under `assets/items`, `assets/environment`, `assets/characters`,
+`assets/particles` (must match `assets/.pre_pass_alpha_snapshot.json`);
+its 6 `SPOT_CHECKS` files carry an additional opaque-color-count and
+alpha-invariant check. Any future re-substitution pass must preserve exact
+existing dimensions per file and must run `godot --headless --import`
+before the test suites (the `.import` cache is gitignored and stale
+metadata for a changed PNG can make headless `load()` return null).
